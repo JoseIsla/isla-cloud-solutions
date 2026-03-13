@@ -54,6 +54,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     sessionStorage.setItem('islacloud_token', res.token);
   };
 
+  const devLogin = () => {
+    const fakeUser: User = { id: 0, email: 'dev@localhost', name: 'Dev Admin', role: 'admin' };
+    setUser(fakeUser);
+    setToken('dev-token');
+    sessionStorage.setItem('islacloud_token', 'dev-token');
+  };
+
   const logout = () => {
     setToken(null);
     setUser(null);
