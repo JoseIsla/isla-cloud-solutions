@@ -137,4 +137,9 @@
       linear-gradient(90deg, hsl(214 100% 50% / 0.03) 1px, transparent 1px);
     background-size: 60px 60px;
   }
+
+  .marquee-container:hover .animate-marquee,
+  .marquee-container:hover .animate-marquee-reverse {
+    animation-play-state: paused;
+  }
 }

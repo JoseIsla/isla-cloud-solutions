@@ -16,7 +16,7 @@ const MarqueeRow = ({
   const doubled = [...items, ...items];
 
   return (
-    <div className="relative overflow-hidden">
+    <div className="relative overflow-hidden marquee-container">
       <div className="pointer-events-none absolute inset-y-0 left-0 w-24 z-10 bg-gradient-to-r from-secondary/50 to-transparent" />
       <div className="pointer-events-none absolute inset-y-0 right-0 w-24 z-10 bg-gradient-to-l from-secondary/50 to-transparent" />
       <div
