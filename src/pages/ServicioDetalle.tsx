@@ -1,16 +1,45 @@
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, CheckCircle } from "lucide-react";
+import { ArrowLeft, CheckCircle, Server, Shield, Cloud, Monitor, Globe, Smartphone, Lock, Wrench, Database, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Layout from "@/components/Layout";
-import { services } from "@/data/services";
+import { services as fallbackServices } from "@/data/services";
 import { serviceImages } from "@/data/serviceImages";
+import { servicesApi, type ServiceFromAPI } from "@/lib/api";
+import { useEffect, useState } from "react";
+
+const iconMap: Record<string, LucideIcon> = {
+  Server, Shield, Cloud, Monitor, Globe, Smartphone, Lock, Wrench, Database,
+};
 
 const ServicioDetalle = () => {
   const { slug } = useParams();
-  const service = services.find((s) => s.slug === slug);
+  const [apiService, setApiService] = useState<ServiceFromAPI | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [apiError, setApiError] = useState(false);
 
-  if (!service) {
+  useEffect(() => {
+    if (!slug) return;
+    servicesApi.get(slug)
+      .then((data) => { setApiService(data); setLoading(false); })
+      .catch(() => { setApiError(true); setLoading(false); });
+  }, [slug]);
+
+  // Fallback to hardcoded if API fails
+  const fallback = fallbackServices.find((s) => s.slug === slug);
+  const useApi = apiService && !apiError;
+
+  if (loading) {
+    return (
+      <Layout>
+        <div className="py-32 text-center">
+          <div className="text-muted-foreground">Cargando...</div>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (!useApi && !fallback) {
     return (
       <Layout>
         <div className="py-32 text-center">
@@ -23,8 +52,14 @@ const ServicioDetalle = () => {
     );
   }
 
-  const Icon = service.icon;
-  const heroImage = serviceImages[service.slug];
+  // Normalize data
+  const title = useApi ? apiService!.title : fallback!.title;
+  const description = useApi ? apiService!.description : fallback!.description;
+  const longDescription = useApi ? apiService!.long_description : fallback!.longDescription;
+  const features = useApi ? (apiService!.features || []) : fallback!.features;
+  const iconName = useApi ? apiService!.icon : '';
+  const Icon = useApi ? (iconMap[iconName] || Server) : fallback!.icon;
+  const imageUrl = useApi ? apiService!.image_url : serviceImages[fallback!.slug];
 
   return (
     <Layout>
@@ -39,9 +74,9 @@ const ServicioDetalle = () => {
               <Icon size={32} className="text-primary" />
             </div>
             <h1 className="text-4xl md:text-5xl font-heading font-bold text-hero-foreground mb-6">
-              {service.title}
+              {title}
             </h1>
-            <p className="text-hero-foreground/70 text-lg leading-relaxed">{service.description}</p>
+            <p className="text-hero-foreground/70 text-lg leading-relaxed">{description}</p>
           </motion.div>
         </div>
       </section>
@@ -51,11 +86,11 @@ const ServicioDetalle = () => {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
             <div className="lg:col-span-2 space-y-10">
-              {heroImage && (
+              {imageUrl && (
                 <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
                   <img
-                    src={heroImage}
-                    alt={service.title}
+                    src={imageUrl}
+                    alt={title}
                     className="w-full rounded-2xl object-cover aspect-video shadow-lg"
                     loading="lazy"
                   />
@@ -63,7 +98,14 @@ const ServicioDetalle = () => {
               )}
               <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
                 <h2 className="text-2xl font-heading font-bold text-foreground mb-6">Descripción del servicio</h2>
-                <p className="text-muted-foreground leading-relaxed text-lg">{service.longDescription}</p>
+                {useApi ? (
+                  <div
+                    className="text-muted-foreground leading-relaxed text-lg prose prose-lg max-w-none"
+                    dangerouslySetInnerHTML={{ __html: longDescription }}
+                  />
+                ) : (
+                  <p className="text-muted-foreground leading-relaxed text-lg">{longDescription}</p>
+                )}
               </motion.div>
             </div>
 
@@ -76,7 +118,7 @@ const ServicioDetalle = () => {
               >
                 <h3 className="font-heading font-semibold text-lg text-card-foreground mb-6">Características</h3>
                 <ul className="space-y-4">
-                  {service.features.map((feature) => (
+                  {features.map((feature) => (
                     <li key={feature} className="flex items-start gap-3 text-sm text-muted-foreground">
                       <CheckCircle size={18} className="text-primary mt-0.5 shrink-0" />
                       {feature}
