@@ -5,8 +5,15 @@ import { Button } from "@/components/ui/button";
 import Layout from "@/components/Layout";
 import { toast } from "sonner";
 import { contactsApi } from "@/lib/api";
+import { useCMSValue } from "@/hooks/useCMS";
 
 const ContactoPage = () => {
+  const title = useCMSValue('contact_title', 'Hablemos de tu proyecto');
+  const subtitle = useCMSValue('contact_subtitle', 'Cuéntanos qué necesitas y te asesoraremos sin compromiso.');
+  const contactEmail = useCMSValue('contact_email', 'info@islacloudsolutions.com');
+  const contactPhone = useCMSValue('contact_phone', '+34 900 000 000');
+  const contactAddress = useCMSValue('contact_address', 'España');
+
   const [form, setForm] = useState({ nombre: "", email: "", empresa: "", telefono: "", mensaje: "" });
   const [loading, setLoading] = useState(false);
 
@@ -22,7 +29,6 @@ const ContactoPage = () => {
       toast.success("Mensaje enviado correctamente. Nos pondremos en contacto contigo pronto.");
       setForm({ nombre: "", email: "", empresa: "", telefono: "", mensaje: "" });
     } catch {
-      // Fallback if API not available
       toast.success("Mensaje enviado correctamente. Nos pondremos en contacto contigo pronto.");
       setForm({ nombre: "", email: "", empresa: "", telefono: "", mensaje: "" });
     } finally {
@@ -37,10 +43,10 @@ const ContactoPage = () => {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-2xl">
             <span className="text-primary text-sm font-semibold uppercase tracking-wider">Contacto</span>
             <h1 className="text-4xl md:text-5xl font-heading font-bold text-hero-foreground mt-3 mb-6">
-              Hablemos de tu proyecto
+              {title}
             </h1>
             <p className="text-hero-foreground/70 text-lg">
-              Cuéntanos qué necesitas y te asesoraremos sin compromiso.
+              {subtitle}
             </p>
           </motion.div>
         </div>
@@ -136,7 +142,7 @@ const ContactoPage = () => {
                     </div>
                     <div>
                       <p className="text-sm font-medium text-foreground">Email</p>
-                      <p className="text-sm text-muted-foreground">info@islacloudsolutions.com</p>
+                      <p className="text-sm text-muted-foreground">{contactEmail}</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
@@ -145,7 +151,7 @@ const ContactoPage = () => {
                     </div>
                     <div>
                       <p className="text-sm font-medium text-foreground">Teléfono</p>
-                      <p className="text-sm text-muted-foreground">+34 900 000 000</p>
+                      <p className="text-sm text-muted-foreground">{contactPhone}</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
@@ -154,7 +160,7 @@ const ContactoPage = () => {
                     </div>
                     <div>
                       <p className="text-sm font-medium text-foreground">Ubicación</p>
-                      <p className="text-sm text-muted-foreground">España</p>
+                      <p className="text-sm text-muted-foreground">{contactAddress}</p>
                     </div>
                   </div>
                 </div>

@@ -10,6 +10,14 @@ const HeroSection = () => {
   const subtitle = useCMSValue('hero_subtitle', 'Más de 20 años siendo el socio tecnológico de empresas que necesitan un departamento IT profesional, cercano y disponible 24x7.');
   const ctaPrimary = useCMSValue('hero_cta_primary', 'Solicita información');
   const ctaSecondary = useCMSValue('hero_cta_secondary', 'Nuestros servicios');
+  const badge = useCMSValue('hero_badge', 'Tu socio tecnológico de confianza');
+
+  const stat1Value = useCMSValue('hero_stat_1_value', '+20');
+  const stat1Label = useCMSValue('hero_stat_1_label', 'Años experiencia');
+  const stat2Value = useCMSValue('hero_stat_2_value', '24/7');
+  const stat2Label = useCMSValue('hero_stat_2_label', 'Soporte técnico');
+  const stat3Value = useCMSValue('hero_stat_3_value', '99.9%');
+  const stat3Label = useCMSValue('hero_stat_3_label', 'Uptime SLA');
 
   // Split title to highlight "Tecnología"
   const titleParts = title.split('Tecnología');
@@ -27,7 +35,7 @@ const HeroSection = () => {
         <div className="max-w-3xl">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
             <span className="inline-block px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase bg-primary/15 text-primary border border-primary/20 mb-6">
-              Tu socio tecnológico de confianza
+              {badge}
             </span>
           </motion.div>
 
@@ -80,9 +88,9 @@ const HeroSection = () => {
             className="flex gap-10 mt-16 pt-8 border-t border-hero-foreground/10"
           >
             {[
-              { number: "+20", label: "Años experiencia" },
-              { number: "24/7", label: "Soporte técnico" },
-              { number: "99.9%", label: "Uptime SLA" },
+              { number: stat1Value, label: stat1Label },
+              { number: stat2Value, label: stat2Label },
+              { number: stat3Value, label: stat3Label },
             ].map((stat) => (
               <div key={stat.label}>
                 <div className="text-2xl md:text-3xl font-heading font-bold text-primary">{stat.number}</div>
