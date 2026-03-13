@@ -4,6 +4,7 @@ import { ArrowLeft, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Layout from "@/components/Layout";
 import { services } from "@/data/services";
+import { serviceImages } from "@/data/serviceImages";
 
 const ServicioDetalle = () => {
   const { slug } = useParams();
@@ -23,12 +24,13 @@ const ServicioDetalle = () => {
   }
 
   const Icon = service.icon;
+  const heroImage = serviceImages[service.slug];
 
   return (
     <Layout>
       {/* Hero */}
-      <section className="bg-hero grid-pattern py-24">
-        <div className="container mx-auto px-4">
+      <section className="relative bg-hero grid-pattern py-24 overflow-hidden">
+        <div className="container mx-auto px-4 relative z-10">
           <Link to="/servicios" className="inline-flex items-center gap-2 text-primary text-sm mb-8 hover:gap-3 transition-all">
             <ArrowLeft size={16} /> Todos los servicios
           </Link>
@@ -48,7 +50,17 @@ const ServicioDetalle = () => {
       <section className="py-24 bg-background">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-2 space-y-10">
+              {heroImage && (
+                <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+                  <img
+                    src={heroImage}
+                    alt={service.title}
+                    className="w-full rounded-2xl object-cover aspect-video shadow-lg"
+                    loading="lazy"
+                  />
+                </motion.div>
+              )}
               <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
                 <h2 className="text-2xl font-heading font-bold text-foreground mb-6">Descripción del servicio</h2>
                 <p className="text-muted-foreground leading-relaxed text-lg">{service.longDescription}</p>
