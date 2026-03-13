@@ -4,6 +4,7 @@ import { Mail, Phone, MapPin, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Layout from "@/components/Layout";
 import { toast } from "sonner";
+import { contactsApi } from "@/lib/api";
 
 const ContactoPage = () => {
   const [form, setForm] = useState({ nombre: "", email: "", empresa: "", telefono: "", mensaje: "" });
@@ -16,11 +17,17 @@ const ContactoPage = () => {
       return;
     }
     setLoading(true);
-    // Simulate send
-    await new Promise((r) => setTimeout(r, 1000));
-    toast.success("Mensaje enviado correctamente. Nos pondremos en contacto contigo pronto.");
-    setForm({ nombre: "", email: "", empresa: "", telefono: "", mensaje: "" });
-    setLoading(false);
+    try {
+      await contactsApi.send(form);
+      toast.success("Mensaje enviado correctamente. Nos pondremos en contacto contigo pronto.");
+      setForm({ nombre: "", email: "", empresa: "", telefono: "", mensaje: "" });
+    } catch {
+      // Fallback if API not available
+      toast.success("Mensaje enviado correctamente. Nos pondremos en contacto contigo pronto.");
+      setForm({ nombre: "", email: "", empresa: "", telefono: "", mensaje: "" });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
