@@ -11,6 +11,7 @@ import ServiciosPage from "./pages/Servicios";
 import ServicioDetalle from "./pages/ServicioDetalle";
 import SobreNosotros from "./pages/SobreNosotros";
 import BlogPage from "./pages/Blog";
+import BlogDetalle from "./pages/BlogDetalle";
 import ContactoPage from "./pages/Contacto";
 import NotFound from "./pages/NotFound";
 import PoliticaPrivacidad from "./pages/PoliticaPrivacidad";
