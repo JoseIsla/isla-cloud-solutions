@@ -1,0 +1,66 @@
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
+import Layout from "@/components/Layout";
+import { services } from "@/data/services";
+
+const ServiciosPage = () => {
+  return (
+    <Layout>
+      {/* Hero */}
+      <section className="bg-hero grid-pattern py-24">
+        <div className="container mx-auto px-4">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-2xl">
+            <span className="text-primary text-sm font-semibold uppercase tracking-wider">Servicios</span>
+            <h1 className="text-4xl md:text-5xl font-heading font-bold text-hero-foreground mt-3 mb-6">
+              Soluciones IT completas para tu negocio
+            </h1>
+            <p className="text-hero-foreground/70 text-lg">
+              Descubre todos nuestros servicios tecnológicos diseñados para impulsar la productividad y seguridad de tu empresa.
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Services grid */}
+      <section className="py-24 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {services.map((service, index) => {
+              const Icon = service.icon;
+              return (
+                <motion.div
+                  key={service.slug}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.06 }}
+                >
+                  <Link
+                    to={`/servicios/${service.slug}`}
+                    className="group block p-8 rounded-2xl bg-card border border-border hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 h-full"
+                  >
+                    <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
+                      <Icon size={28} className="text-primary" />
+                    </div>
+                    <h2 className="font-heading font-semibold text-xl text-card-foreground mb-3">
+                      {service.title}
+                    </h2>
+                    <p className="text-muted-foreground text-sm leading-relaxed mb-5">
+                      {service.description}
+                    </p>
+                    <span className="text-primary text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
+                      Ver detalle <ArrowRight size={14} />
+                    </span>
+                  </Link>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+    </Layout>
+  );
+};
+
+export default ServiciosPage;
