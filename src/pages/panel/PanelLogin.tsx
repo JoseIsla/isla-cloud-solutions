@@ -5,7 +5,7 @@ import { Lock } from 'lucide-react';
 import { toast } from 'sonner';
 
 const PanelLogin = () => {
-  const { login } = useAuth();
+  const { login, devLogin } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
