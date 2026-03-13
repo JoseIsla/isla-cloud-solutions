@@ -4,6 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
+import { CMSProvider } from "@/hooks/useCMS";
 import CookieBanner from "@/components/CookieBanner";
 import Index from "./pages/Index";
 import ServiciosPage from "./pages/Servicios";
@@ -20,6 +21,7 @@ import PanelServicios from "./pages/panel/PanelServicios";
 import PanelNoticias from "./pages/panel/PanelNoticias";
 import PanelContactos from "./pages/panel/PanelContactos";
 import PanelContenidos from "./pages/panel/PanelContenidos";
+import PanelClientes from "./pages/panel/PanelClientes";
 
 const queryClient = new QueryClient();
 
@@ -41,12 +43,13 @@ const AppRoutes = () => (
     <Route path="/privacidad" element={<PoliticaPrivacidad />} />
     <Route path="/legal" element={<AvisoLegal />} />
     
-    {/* Admin Panel - NO public link */}
+    {/* Admin Panel */}
     <Route path="/panel" element={<ProtectedRoute><PanelDashboard /></ProtectedRoute>} />
     <Route path="/panel/servicios" element={<ProtectedRoute><PanelServicios /></ProtectedRoute>} />
     <Route path="/panel/noticias" element={<ProtectedRoute><PanelNoticias /></ProtectedRoute>} />
     <Route path="/panel/contactos" element={<ProtectedRoute><PanelContactos /></ProtectedRoute>} />
     <Route path="/panel/contenidos" element={<ProtectedRoute><PanelContenidos /></ProtectedRoute>} />
+    <Route path="/panel/clientes" element={<ProtectedRoute><PanelClientes /></ProtectedRoute>} />
 
     <Route path="*" element={<NotFound />} />
   </Routes>
@@ -59,8 +62,10 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
-          <AppRoutes />
-          <CookieBanner />
+          <CMSProvider>
+            <AppRoutes />
+            <CookieBanner />
+          </CMSProvider>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
