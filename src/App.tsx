@@ -37,6 +37,8 @@ const AppRoutes = () => (
     <Route path="/sobre-nosotros" element={<SobreNosotros />} />
     <Route path="/blog" element={<BlogPage />} />
     <Route path="/contacto" element={<ContactoPage />} />
+    <Route path="/privacidad" element={<PoliticaPrivacidad />} />
+    <Route path="/legal" element={<AvisoLegal />} />
     
     {/* Admin Panel - NO public link */}
     <Route path="/panel" element={<ProtectedRoute><PanelDashboard /></ProtectedRoute>} />
