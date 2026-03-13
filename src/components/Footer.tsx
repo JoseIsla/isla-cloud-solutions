@@ -1,7 +1,33 @@
 import { Link } from "react-router-dom";
 import { Mail, Phone, MapPin } from "lucide-react";
+import { useCMSValue } from "@/hooks/useCMS";
+import { useEffect, useState } from "react";
+import { servicesApi, type ServiceFromAPI } from "@/lib/api";
 
 const Footer = () => {
+  const description = useCMSValue('footer_description', 'Tu socio tecnológico de confianza. Más de 20 años de experiencia en soluciones IT para empresas.');
+  const contactEmail = useCMSValue('contact_email', 'info@islacloudsolutions.com');
+  const contactPhone = useCMSValue('contact_phone', '+34 900 000 000');
+  const contactAddress = useCMSValue('contact_address', 'España');
+
+  const [apiServices, setApiServices] = useState<ServiceFromAPI[] | null>(null);
+
+  useEffect(() => {
+    servicesApi.list()
+      .then(setApiServices)
+      .catch(() => setApiServices(null));
+  }, []);
+
+  const serviceLinks = apiServices && apiServices.length > 0
+    ? apiServices.slice(0, 5).map(s => ({ label: s.short_title || s.title, slug: s.slug }))
+    : [
+        { label: "Cloud Servers", slug: "cloud-servers" },
+        { label: "Hosting Profesional", slug: "hosting" },
+        { label: "Administración IT", slug: "administracion-it" },
+        { label: "Desarrollo Web", slug: "desarrollo-web" },
+        { label: "Seguridad IT", slug: "seguridad" },
+      ];
+
   return (
     <footer className="bg-navy text-hero-foreground">
       <div className="container mx-auto px-4 py-16">
@@ -12,7 +38,7 @@ const Footer = () => {
               Isla Cloud <span className="text-primary">Solutions</span>
             </h3>
             <p className="text-hero-foreground/60 text-sm leading-relaxed mb-6">
-              Tu socio tecnológico de confianza. Más de 20 años de experiencia en soluciones IT para empresas.
+              {description}
             </p>
           </div>
 
@@ -22,11 +48,13 @@ const Footer = () => {
               Servicios
             </h4>
             <ul className="space-y-2 text-sm text-hero-foreground/60">
-              <li><Link to="/servicios/cloud-servers" className="hover:text-primary transition-colors">Cloud Servers</Link></li>
-              <li><Link to="/servicios/hosting" className="hover:text-primary transition-colors">Hosting Profesional</Link></li>
-              <li><Link to="/servicios/administracion-it" className="hover:text-primary transition-colors">Administración IT</Link></li>
-              <li><Link to="/servicios/desarrollo-web" className="hover:text-primary transition-colors">Desarrollo Web</Link></li>
-              <li><Link to="/servicios/seguridad" className="hover:text-primary transition-colors">Seguridad IT</Link></li>
+              {serviceLinks.map(s => (
+                <li key={s.slug}>
+                  <Link to={`/servicios/${s.slug}`} className="hover:text-primary transition-colors">
+                    {s.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -50,15 +78,15 @@ const Footer = () => {
             <ul className="space-y-3 text-sm text-hero-foreground/60">
               <li className="flex items-center gap-2">
                 <Mail size={14} className="text-primary" />
-                <span>info@islacloudsolutions.com</span>
+                <span>{contactEmail}</span>
               </li>
               <li className="flex items-center gap-2">
                 <Phone size={14} className="text-primary" />
-                <span>+34 900 000 000</span>
+                <span>{contactPhone}</span>
               </li>
               <li className="flex items-start gap-2">
                 <MapPin size={14} className="text-primary mt-0.5" />
-                <span>España</span>
+                <span>{contactAddress}</span>
               </li>
             </ul>
           </div>
