@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.islacloudsolutions.com:3012';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.islacloudsolutions.com:3010';
 
 interface RequestOptions {
   method?: string;
