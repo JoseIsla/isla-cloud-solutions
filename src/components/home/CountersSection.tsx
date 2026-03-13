@@ -2,13 +2,6 @@ import { motion, useInView } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { useCMSValue } from "@/hooks/useCMS";
 
-const counters = [
-  { target: 298, suffix: "+", label: "Proyectos" },
-  { target: 315, suffix: "+", label: "Mantenimientos" },
-  { target: 169, suffix: "+", label: "Clientes" },
-  { target: 167, suffix: "+", label: "Sistemas administrados" },
-];
-
 const AnimatedCounter = ({ target, suffix, duration = 2000 }: { target: number; suffix: string; duration?: number }) => {
   const [count, setCount] = useState(0);
   const ref = useRef<HTMLSpanElement>(null);
@@ -38,6 +31,13 @@ const AnimatedCounter = ({ target, suffix, duration = 2000 }: { target: number; 
 };
 
 const CountersSection = () => {
+  const counters = [
+    { target: parseInt(useCMSValue('counter_projects', '298')) || 298, suffix: "+", label: useCMSValue('counter_projects_label', 'Proyectos') },
+    { target: parseInt(useCMSValue('counter_maintenance', '315')) || 315, suffix: "+", label: useCMSValue('counter_maintenance_label', 'Mantenimientos') },
+    { target: parseInt(useCMSValue('counter_clients', '169')) || 169, suffix: "+", label: useCMSValue('counter_clients_label', 'Clientes') },
+    { target: parseInt(useCMSValue('counter_systems', '167')) || 167, suffix: "+", label: useCMSValue('counter_systems_label', 'Sistemas administrados') },
+  ];
+
   return (
     <section className="py-16 bg-hero relative overflow-hidden">
       <div className="absolute inset-0 grid-pattern opacity-20" />
