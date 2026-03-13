@@ -5,6 +5,7 @@ import { contentsApi, type ContentFromAPI } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Save } from 'lucide-react';
 import { toast } from 'sonner';
+import RichEditor from '@/components/ui/rich-editor';
 
 const PanelContenidos = () => {
   const { token } = useAuth();
