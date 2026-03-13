@@ -147,6 +147,15 @@ async function initDB() {
     // Contact page
     ['contact_title', 'Título Contacto', 'Hablemos de tu proyecto', 'text'],
     ['contact_subtitle', 'Subtítulo Contacto', 'Cuéntanos qué necesitas y te asesoramos sin compromiso.', 'text'],
+    // Counters
+    ['counter_projects', 'Contador: Proyectos (valor)', '298', 'text'],
+    ['counter_projects_label', 'Contador: Proyectos (etiqueta)', 'Proyectos', 'text'],
+    ['counter_maintenance', 'Contador: Mantenimientos (valor)', '315', 'text'],
+    ['counter_maintenance_label', 'Contador: Mantenimientos (etiqueta)', 'Mantenimientos', 'text'],
+    ['counter_clients', 'Contador: Clientes (valor)', '169', 'text'],
+    ['counter_clients_label', 'Contador: Clientes (etiqueta)', 'Clientes', 'text'],
+    ['counter_systems', 'Contador: Sistemas (valor)', '167', 'text'],
+    ['counter_systems_label', 'Contador: Sistemas (etiqueta)', 'Sistemas administrados', 'text'],
     // Footer
     ['footer_description', 'Descripción footer', 'Soluciones Cloud y tecnología IT para empresas. Más de 20 años de experiencia como tu socio tecnológico.', 'text'],
   ];
