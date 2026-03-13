@@ -1,33 +1,20 @@
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
 import { Calendar } from "lucide-react";
+import { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
-
-const blogPosts = [
-  {
-    id: 1,
-    title: "Cómo proteger tu empresa del ransomware en 2026",
-    excerpt: "Descubre las mejores prácticas y herramientas para proteger tu infraestructura IT contra ataques de ransomware.",
-    date: "2026-03-10",
-    category: "Seguridad",
-  },
-  {
-    id: 2,
-    title: "Ventajas de migrar a la nube para PYMEs",
-    excerpt: "La migración cloud ya no es solo para grandes empresas. Analizamos los beneficios para pequeñas y medianas empresas.",
-    date: "2026-03-01",
-    category: "Cloud",
-  },
-  {
-    id: 3,
-    title: "Novedades en administración de sistemas con IA",
-    excerpt: "La inteligencia artificial está revolucionando la gestión de infraestructuras IT. Te contamos las últimas tendencias.",
-    date: "2026-02-20",
-    category: "Tecnología",
-  },
-];
+import { newsApi, type NewsFromAPI } from "@/lib/api";
 
 const BlogPage = () => {
+  const [posts, setPosts] = useState<NewsFromAPI[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    newsApi.list()
+      .then(setPosts)
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
   return (
     <Layout>
       <section className="bg-hero grid-pattern py-24">
@@ -46,36 +33,65 @@ const BlogPage = () => {
 
       <section className="py-24 bg-background">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {blogPosts.map((post, index) => (
-              <motion.article
-                key={post.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.08 }}
-                className="group rounded-2xl bg-card border border-border overflow-hidden hover:shadow-lg hover:shadow-primary/5 transition-all duration-300"
-              >
-                <div className="h-48 bg-gradient-to-br from-primary/20 to-accent/10 flex items-center justify-center">
-                  <span className="text-primary/40 text-6xl font-heading font-bold">{post.id}</span>
-                </div>
-                <div className="p-6">
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="text-xs font-semibold uppercase tracking-wider text-primary bg-primary/10 px-2 py-1 rounded">
-                      {post.category}
-                    </span>
-                    <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                      <Calendar size={12} /> {new Date(post.date).toLocaleDateString("es-ES")}
-                    </span>
+          {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="rounded-2xl bg-card border border-border overflow-hidden animate-pulse">
+                  <div className="h-48 bg-secondary" />
+                  <div className="p-6 space-y-3">
+                    <div className="h-4 bg-secondary rounded w-1/3" />
+                    <div className="h-5 bg-secondary rounded w-3/4" />
+                    <div className="h-4 bg-secondary rounded w-full" />
                   </div>
-                  <h2 className="font-heading font-semibold text-lg text-card-foreground mb-2 group-hover:text-primary transition-colors">
-                    {post.title}
-                  </h2>
-                  <p className="text-muted-foreground text-sm leading-relaxed">{post.excerpt}</p>
                 </div>
-              </motion.article>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : posts.length === 0 ? (
+            <div className="text-center py-16">
+              <p className="text-muted-foreground text-lg">No hay noticias publicadas todavía.</p>
+              <p className="text-muted-foreground/60 text-sm mt-2">Las noticias se gestionan desde el panel de administración.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {posts.map((post, index) => (
+                <motion.article
+                  key={post.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.08 }}
+                  className="group rounded-2xl bg-card border border-border overflow-hidden hover:shadow-lg hover:shadow-primary/5 transition-all duration-300"
+                >
+                  {post.image_url ? (
+                    <div className="h-48 overflow-hidden">
+                      <img src={post.image_url} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    </div>
+                  ) : (
+                    <div className="h-48 bg-gradient-to-br from-primary/20 to-accent/10 flex items-center justify-center">
+                      <span className="text-primary/30 text-5xl font-heading font-bold">IC</span>
+                    </div>
+                  )}
+                  <div className="p-6">
+                    <div className="flex items-center gap-3 mb-3">
+                      {post.category && (
+                        <span className="text-xs font-semibold uppercase tracking-wider text-primary bg-primary/10 px-2 py-1 rounded">
+                          {post.category}
+                        </span>
+                      )}
+                      <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <Calendar size={12} />
+                        {new Date(post.published_at || post.created_at).toLocaleDateString("es-ES")}
+                      </span>
+                    </div>
+                    <h2 className="font-heading font-semibold text-lg text-card-foreground mb-2 group-hover:text-primary transition-colors">
+                      {post.title}
+                    </h2>
+                    <p className="text-muted-foreground text-sm leading-relaxed line-clamp-3">{post.excerpt}</p>
+                  </div>
+                </motion.article>
+              ))}
+            </div>
+          )}
         </div>
       </section>
     </Layout>
