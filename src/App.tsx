@@ -11,6 +11,7 @@ import ServiciosPage from "./pages/Servicios";
 import ServicioDetalle from "./pages/ServicioDetalle";
 import SobreNosotros from "./pages/SobreNosotros";
 import BlogPage from "./pages/Blog";
+import BlogDetalle from "./pages/BlogDetalle";
 import ContactoPage from "./pages/Contacto";
 import NotFound from "./pages/NotFound";
 import PoliticaPrivacidad from "./pages/PoliticaPrivacidad";
@@ -39,6 +40,7 @@ const AppRoutes = () => (
     <Route path="/servicios/:slug" element={<ServicioDetalle />} />
     <Route path="/sobre-nosotros" element={<SobreNosotros />} />
     <Route path="/blog" element={<BlogPage />} />
+    <Route path="/blog/:slug" element={<BlogDetalle />} />
     <Route path="/contacto" element={<ContactoPage />} />
     <Route path="/privacidad" element={<PoliticaPrivacidad />} />
     <Route path="/legal" element={<AvisoLegal />} />
