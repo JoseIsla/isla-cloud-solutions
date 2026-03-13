@@ -5,6 +5,7 @@ import { newsApi, type NewsFromAPI } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Plus, Pencil, Trash2, X } from 'lucide-react';
 import { toast } from 'sonner';
+import RichEditor from '@/components/ui/rich-editor';
 
 const PanelNoticias = () => {
   const { token } = useAuth();
@@ -87,11 +88,9 @@ const PanelNoticias = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-foreground mb-1">Contenido</label>
-                <textarea
+                <RichEditor
                   value={editing.content ?? ''}
-                  onChange={(e) => setEditing({ ...editing, content: e.target.value })}
-                  rows={8}
-                  className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm resize-none"
+                  onChange={(html) => setEditing({ ...editing, content: html })}
                 />
               </div>
               <label className="flex items-center gap-3 cursor-pointer">

@@ -5,6 +5,7 @@ import { contentsApi, type ContentFromAPI } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Save } from 'lucide-react';
 import { toast } from 'sonner';
+import RichEditor from '@/components/ui/rich-editor';
 
 const PanelContenidos = () => {
   const { token } = useAuth();
@@ -45,12 +46,19 @@ const PanelContenidos = () => {
                 <Save size={14} /> Guardar
               </Button>
             </div>
-            <textarea
-              value={editValues[c.content_key] ?? ''}
-              onChange={(e) => setEditValues({ ...editValues, [c.content_key]: e.target.value })}
-              rows={4}
-              className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm resize-none"
-            />
+            {c.content_type === 'html' ? (
+              <RichEditor
+                value={editValues[c.content_key] ?? ''}
+                onChange={(html) => setEditValues({ ...editValues, [c.content_key]: html })}
+              />
+            ) : (
+              <textarea
+                value={editValues[c.content_key] ?? ''}
+                onChange={(e) => setEditValues({ ...editValues, [c.content_key]: e.target.value })}
+                rows={4}
+                className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm resize-none"
+              />
+            )}
           </div>
         ))}
         {contentEntries.length === 0 && (
