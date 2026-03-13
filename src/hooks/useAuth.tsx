@@ -12,7 +12,6 @@ interface AuthContextType {
   user: User | null;
   token: string | null;
   login: (email: string, password: string) => Promise<void>;
-  devLogin: () => void;
   logout: () => void;
   isLoading: boolean;
 }
@@ -54,13 +53,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     sessionStorage.setItem('islacloud_token', res.token);
   };
 
-  const devLogin = () => {
-    const fakeUser: User = { id: 0, email: 'dev@localhost', name: 'Dev Admin', role: 'admin' };
-    setUser(fakeUser);
-    setToken('dev-token');
-    sessionStorage.setItem('islacloud_token', 'dev-token');
-  };
-
   const logout = () => {
     setToken(null);
     setUser(null);
@@ -68,7 +60,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, devLogin, logout, isLoading }}>
+    <AuthContext.Provider value={{ user, token, login, logout, isLoading }}>
       {children}
     </AuthContext.Provider>
   );

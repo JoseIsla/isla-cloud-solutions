@@ -31,6 +31,25 @@ async function apiRequest<T>(endpoint: string, options: RequestOptions = {}): Pr
   return res.json();
 }
 
+// Upload image (multipart)
+async function uploadImage(file: File, token: string): Promise<{ url: string; filename: string }> {
+  const formData = new FormData();
+  formData.append('image', file);
+
+  const res = await fetch(`${API_BASE_URL}/api/upload`, {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${token}` },
+    body: formData,
+  });
+
+  if (!res.ok) {
+    const error = await res.json().catch(() => ({ error: 'Error subiendo imagen' }));
+    throw new Error(error.error || `Error ${res.status}`);
+  }
+
+  return res.json();
+}
+
 // Auth
 export const authApi = {
   login: (email: string, password: string) =>
@@ -81,6 +100,20 @@ export const contentsApi = {
     apiRequest(`/api/contents/${key}`, { method: 'PUT', body: { value, title }, token }),
 };
 
+// Clients
+export const clientsApi = {
+  list: () => apiRequest<ClientFromAPI[]>('/api/clients'),
+  create: (data: Partial<ClientFromAPI>, token: string) =>
+    apiRequest<{ id: number }>('/api/clients', { method: 'POST', body: data, token }),
+  update: (id: number, data: Partial<ClientFromAPI>, token: string) =>
+    apiRequest('/api/clients/' + id, { method: 'PUT', body: data, token }),
+  delete: (id: number, token: string) =>
+    apiRequest('/api/clients/' + id, { method: 'DELETE', token }),
+};
+
+// Upload
+export { uploadImage };
+
 // Types
 export interface ServiceFromAPI {
   id: number;
@@ -126,4 +159,13 @@ export interface ContentFromAPI {
   title: string;
   value: string;
   content_type: string;
+}
+
+export interface ClientFromAPI {
+  id: number;
+  name: string;
+  logo_url: string;
+  website_url: string;
+  sort_order: number;
+  is_active: number;
 }

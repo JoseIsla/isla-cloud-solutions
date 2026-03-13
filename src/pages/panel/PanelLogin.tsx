@@ -5,7 +5,7 @@ import { Lock } from 'lucide-react';
 import { toast } from 'sonner';
 
 const PanelLogin = () => {
-  const { login, devLogin } = useAuth();
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -61,11 +61,6 @@ const PanelLogin = () => {
           <Button variant="hero" size="lg" className="w-full" type="submit" disabled={loading}>
             {loading ? 'Accediendo...' : 'Iniciar Sesión'}
           </Button>
-          <div className="pt-3 border-t border-border">
-            <Button variant="outline" size="lg" className="w-full text-muted-foreground" type="button" onClick={devLogin}>
-              🛠️ Dev: Acceder sin API (temporal)
-            </Button>
-          </div>
         </form>
       </div>
     </div>
