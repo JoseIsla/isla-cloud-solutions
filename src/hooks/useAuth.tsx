@@ -12,6 +12,7 @@ interface AuthContextType {
   user: User | null;
   token: string | null;
   login: (email: string, password: string) => Promise<void>;
+  devLogin: () => void;
   logout: () => void;
   isLoading: boolean;
 }
