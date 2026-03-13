@@ -17,8 +17,18 @@ const PORT = process.env.PORT || 3001;
 
 // Security
 app.use(helmet());
+const allowedOrigins = (process.env.CORS_ORIGIN || 'https://www.islacloudsolutions.com')
+  .split(',')
+  .map(o => o.trim());
+
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'https://www.islacloudsolutions.com',
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
 }));
 
