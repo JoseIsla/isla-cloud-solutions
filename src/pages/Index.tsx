@@ -4,6 +4,7 @@ import ServicesSection from "@/components/home/ServicesSection";
 import WhyUsSection from "@/components/home/WhyUsSection";
 import CountersSection from "@/components/home/CountersSection";
 import ClientsSection from "@/components/home/ClientsSection";
+import TrustSection from "@/components/home/TrustSection";
 import CTASection from "@/components/home/CTASection";
 
 const Index = () => {
@@ -14,6 +15,7 @@ const Index = () => {
       <WhyUsSection />
       <CountersSection />
       <ClientsSection />
+      <TrustSection />
       <CTASection />
     </Layout>
   );
