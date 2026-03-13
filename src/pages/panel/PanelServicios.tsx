@@ -90,11 +90,9 @@ const PanelServicios = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-foreground mb-1">Descripción completa</label>
-                <textarea
+                <RichEditor
                   value={editing.long_description ?? ''}
-                  onChange={(e) => setEditing({ ...editing, long_description: e.target.value })}
-                  rows={5}
-                  className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm resize-none"
+                  onChange={(html) => setEditing({ ...editing, long_description: html })}
                 />
               </div>
               <div>
