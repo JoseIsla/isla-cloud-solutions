@@ -15,6 +15,7 @@ const Index = () => {
       <WhyUsSection />
       <CountersSection />
       <ClientsSection />
+      <TrustSection />
       <CTASection />
     </Layout>
   );
