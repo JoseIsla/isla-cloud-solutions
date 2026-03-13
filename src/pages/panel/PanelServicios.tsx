@@ -5,6 +5,7 @@ import { servicesApi, type ServiceFromAPI } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Plus, Pencil, Trash2, X } from 'lucide-react';
 import { toast } from 'sonner';
+import RichEditor from '@/components/ui/rich-editor';
 
 const PanelServicios = () => {
   const { token } = useAuth();
