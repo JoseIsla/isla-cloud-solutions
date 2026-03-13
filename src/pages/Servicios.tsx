@@ -1,10 +1,26 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Server, Shield, Cloud, Monitor, Globe, Smartphone, Lock, Wrench, Database, type LucideIcon } from "lucide-react";
 import Layout from "@/components/Layout";
-import { services } from "@/data/services";
+import { services as fallbackServices } from "@/data/services";
+import { servicesApi, type ServiceFromAPI } from "@/lib/api";
+import { useEffect, useState } from "react";
+
+const iconMap: Record<string, LucideIcon> = {
+  Server, Shield, Cloud, Monitor, Globe, Smartphone, Lock, Wrench, Database,
+};
 
 const ServiciosPage = () => {
+  const [apiServices, setApiServices] = useState<ServiceFromAPI[] | null>(null);
+
+  useEffect(() => {
+    servicesApi.list()
+      .then(setApiServices)
+      .catch(() => setApiServices(null));
+  }, []);
+
+  const useApi = apiServices && apiServices.length > 0;
+
   return (
     <Layout>
       {/* Hero */}
@@ -26,36 +42,67 @@ const ServiciosPage = () => {
       <section className="py-24 bg-background">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {services.map((service, index) => {
-              const Icon = service.icon;
-              return (
-                <motion.div
-                  key={service.slug}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.06 }}
-                >
-                  <Link
-                    to={`/servicios/${service.slug}`}
-                    className="group block p-8 rounded-2xl bg-card border border-border hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 h-full"
-                  >
-                    <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
-                      <Icon size={28} className="text-primary" />
-                    </div>
-                    <h2 className="font-heading font-semibold text-xl text-card-foreground mb-3">
-                      {service.title}
-                    </h2>
-                    <p className="text-muted-foreground text-sm leading-relaxed mb-5">
-                      {service.description}
-                    </p>
-                    <span className="text-primary text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
-                      Ver detalle <ArrowRight size={14} />
-                    </span>
-                  </Link>
-                </motion.div>
-              );
-            })}
+            {useApi
+              ? apiServices!.map((service, index) => {
+                  const Icon = iconMap[service.icon] || Server;
+                  return (
+                    <motion.div
+                      key={service.slug}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: index * 0.06 }}
+                    >
+                      <Link
+                        to={`/servicios/${service.slug}`}
+                        className="group block p-8 rounded-2xl bg-card border border-border hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 h-full"
+                      >
+                        <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
+                          <Icon size={28} className="text-primary" />
+                        </div>
+                        <h2 className="font-heading font-semibold text-xl text-card-foreground mb-3">
+                          {service.title}
+                        </h2>
+                        <p className="text-muted-foreground text-sm leading-relaxed mb-5">
+                          {service.description}
+                        </p>
+                        <span className="text-primary text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
+                          Ver detalle <ArrowRight size={14} />
+                        </span>
+                      </Link>
+                    </motion.div>
+                  );
+                })
+              : fallbackServices.map((service, index) => {
+                  const Icon = service.icon;
+                  return (
+                    <motion.div
+                      key={service.slug}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: index * 0.06 }}
+                    >
+                      <Link
+                        to={`/servicios/${service.slug}`}
+                        className="group block p-8 rounded-2xl bg-card border border-border hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 h-full"
+                      >
+                        <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
+                          <Icon size={28} className="text-primary" />
+                        </div>
+                        <h2 className="font-heading font-semibold text-xl text-card-foreground mb-3">
+                          {service.title}
+                        </h2>
+                        <p className="text-muted-foreground text-sm leading-relaxed mb-5">
+                          {service.description}
+                        </p>
+                        <span className="text-primary text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
+                          Ver detalle <ArrowRight size={14} />
+                        </span>
+                      </Link>
+                    </motion.div>
+                  );
+                })}
           </div>
         </div>
       </section>
