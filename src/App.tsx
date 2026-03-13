@@ -11,6 +11,8 @@ import SobreNosotros from "./pages/SobreNosotros";
 import BlogPage from "./pages/Blog";
 import ContactoPage from "./pages/Contacto";
 import NotFound from "./pages/NotFound";
+import PoliticaPrivacidad from "./pages/PoliticaPrivacidad";
+import AvisoLegal from "./pages/AvisoLegal";
 import PanelLogin from "./pages/panel/PanelLogin";
 import PanelDashboard from "./pages/panel/PanelDashboard";
 import PanelServicios from "./pages/panel/PanelServicios";
