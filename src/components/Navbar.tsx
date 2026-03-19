@@ -53,19 +53,42 @@ const Navbar = () => {
 
           {/* Desktop nav */}
           <div className="hidden lg:flex items-center gap-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                  location.pathname === link.path
-                    ? "text-white bg-white/15"
-                    : "text-white/70 hover:text-white hover:bg-white/10"
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              const isHash = link.path.startsWith("/#");
+              const isActive = isHash
+                ? location.pathname === "/" && location.hash === link.path.slice(1)
+                : location.pathname === link.path;
+
+              const handleClick = (e: React.MouseEvent) => {
+                if (isHash) {
+                  e.preventDefault();
+                  const id = link.path.slice(2);
+                  if (isHome) {
+                    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+                  } else {
+                    navigate("/");
+                    setTimeout(() => {
+                      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+                    }, 300);
+                  }
+                }
+              };
+
+              return (
+                <Link
+                  key={link.path}
+                  to={isHash ? "/" : link.path}
+                  onClick={handleClick}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                    isActive
+                      ? "text-white bg-white/15"
+                      : "text-white/70 hover:text-white hover:bg-white/10"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
           </div>
 
           <div className="hidden lg:block">
