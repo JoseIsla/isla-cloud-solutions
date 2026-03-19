@@ -57,17 +57,19 @@ const ServicesSection = () => {
 
       const rect = section.getBoundingClientRect();
       const viewportHeight = window.innerHeight;
-      const start = viewportHeight * 0.9;
-      const end = viewportHeight * 0.2;
-      const progress = Math.max(0, Math.min(1, (start - rect.top) / (start - end)));
+      const start = viewportHeight * 0.95;
+      const end = viewportHeight * 0.1;
+      const raw = (start - rect.top) / (start - end);
+      // Ease-in curve for a more dramatic ramp-up
+      const progress = Math.max(0, Math.min(1, raw * raw));
       const maxLift =
-        window.innerWidth >= 1280 ? 240 :
-        window.innerWidth >= 1024 ? 208 :
-        window.innerWidth >= 768 ? 156 :
-        112;
+        window.innerWidth >= 1280 ? 320 :
+        window.innerWidth >= 1024 ? 272 :
+        window.innerWidth >= 768 ? 200 :
+        144;
 
       setOverlap({
-        capOpacity: Math.min(1, progress * 1.1),
+        capOpacity: Math.min(1, progress * 1.2),
         lift: progress * maxLift,
       });
     };
