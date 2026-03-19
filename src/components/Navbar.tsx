@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import logo from "@/assets/logo.png";
 
 const navLinks = [
   { label: "Inicio", path: "/" },
-  { label: "Servicios", path: "/servicios" },
+  { label: "Servicios", path: "/#servicios" },
   { label: "Sobre Nosotros", path: "/sobre-nosotros" },
   { label: "Blog", path: "/blog" },
   { label: "Contacto", path: "/contacto" },
@@ -16,6 +16,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const isHome = location.pathname === "/";
 
   useEffect(() => {
@@ -52,19 +53,42 @@ const Navbar = () => {
 
           {/* Desktop nav */}
           <div className="hidden lg:flex items-center gap-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                  location.pathname === link.path
-                    ? "text-white bg-white/15"
-                    : "text-white/70 hover:text-white hover:bg-white/10"
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              const isHash = link.path.startsWith("/#");
+              const isActive = isHash
+                ? location.pathname === "/" && location.hash === link.path.slice(1)
+                : location.pathname === link.path;
+
+              const handleClick = (e: React.MouseEvent) => {
+                if (isHash) {
+                  e.preventDefault();
+                  const id = link.path.slice(2);
+                  if (isHome) {
+                    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+                  } else {
+                    navigate("/");
+                    setTimeout(() => {
+                      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+                    }, 300);
+                  }
+                }
+              };
+
+              return (
+                <Link
+                  key={link.path}
+                  to={isHash ? "/" : link.path}
+                  onClick={handleClick}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                    isActive
+                      ? "text-white bg-white/15"
+                      : "text-white/70 hover:text-white hover:bg-white/10"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
           </div>
 
           <div className="hidden lg:block">
@@ -86,20 +110,38 @@ const Navbar = () => {
         {isOpen && (
           <div className="lg:hidden pb-6 border-t border-white/10 mt-2 pt-4 bg-hero/95 backdrop-blur-md -mx-4 px-4">
             <div className="flex flex-col gap-2">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  onClick={() => setIsOpen(false)}
-                  className={`px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
-                    location.pathname === link.path
-                      ? "text-white bg-white/15"
-                      : "text-white/70 hover:text-white"
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              ))}
+              {navLinks.map((link) => {
+                const isHash = link.path.startsWith("/#");
+                const handleMobileClick = (e: React.MouseEvent) => {
+                  setIsOpen(false);
+                  if (isHash) {
+                    e.preventDefault();
+                    const id = link.path.slice(2);
+                    if (isHome) {
+                      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+                    } else {
+                      navigate("/");
+                      setTimeout(() => {
+                        document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+                      }, 300);
+                    }
+                  }
+                };
+                return (
+                  <Link
+                    key={link.path}
+                    to={isHash ? "/" : link.path}
+                    onClick={handleMobileClick}
+                    className={`px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
+                      location.pathname === link.path
+                        ? "text-white bg-white/15"
+                        : "text-white/70 hover:text-white"
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              })}
               <Button variant="hero" size="default" className="mt-2" asChild>
                 <Link to="/contacto" onClick={() => setIsOpen(false)}>
                   Solicitar Consulta

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { services as fallbackServices } from "@/data/services";
 import { servicesApi, type ServiceFromAPI } from "@/lib/api";
 import { useCMSValue } from "@/hooks/useCMS";
+import servicesBg from "@/assets/services-bg.jpg";
 import {
   Server, Shield, Cloud, Monitor, Globe, Smartphone,
   Lock, Wrench, Database, type LucideIcon
@@ -16,9 +17,10 @@ const iconMap: Record<string, LucideIcon> = {
 };
 
 const ServicesSection = () => {
-  const sectionLabel = useCMSValue('services_section_label', 'Nuestros Servicios');
-  const sectionTitle = useCMSValue('services_section_title', 'Soluciones IT completas para tu empresa');
-  const sectionSubtitle = useCMSValue('services_section_subtitle', 'Desde la gestión diaria de tu IT hasta la estrategia tecnológica a largo plazo, Isla Cloud cubre todo el espectro de necesidades IT de tu empresa.');
+  const sectionTitle = useCMSValue(
+    'services_section_title',
+    'Resolvemos los Problemas Tecnológicos que Frenan tu Empresa'
+  );
   const [apiServices, setApiServices] = useState<ServiceFromAPI[] | null>(null);
 
   useEffect(() => {
@@ -29,69 +31,81 @@ const ServicesSection = () => {
 
   const useApi = apiServices && apiServices.length > 0;
 
-  const renderCard = (
-    slug: string,
-    title: string,
-    description: string,
-    Icon: LucideIcon,
-    index: number
-  ) => (
-    <motion.div
-      key={slug}
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ delay: index * 0.06, duration: 0.5 }}
-    >
-      <Link
-        to={`/servicios/${slug}`}
-        className="group flex flex-col h-full p-8 rounded-2xl bg-card border border-border hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500 hover:-translate-y-1"
-      >
-        <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300">
-          <Icon size={28} className="text-primary group-hover:text-primary-foreground transition-colors" />
-        </div>
-        <h3 className="font-heading font-bold text-lg text-card-foreground mb-3">
-          {title}
-        </h3>
-        <p className="text-muted-foreground text-sm leading-relaxed mb-6 flex-1">
-          {description}
-        </p>
-        <span className="inline-flex items-center gap-2 text-primary text-sm font-semibold group-hover:gap-3 transition-all">
-          Más información <ArrowRight size={16} />
-        </span>
-      </Link>
-    </motion.div>
-  );
+  const serviceItems = useApi
+    ? apiServices!.map((s) => ({
+        slug: s.slug,
+        title: s.short_title,
+        Icon: iconMap[s.icon] || Server,
+      }))
+    : fallbackServices.map((s) => ({
+        slug: s.slug,
+        title: s.shortTitle,
+        Icon: s.icon,
+      }));
 
   return (
-    <section className="py-20 md:py-28 bg-secondary/30">
-      <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="max-w-3xl mb-16"
-        >
-          <span className="text-primary text-sm font-bold uppercase tracking-widest">
-            {sectionLabel}
-          </span>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-foreground mt-4 leading-tight">
-            {sectionTitle}
-          </h2>
-          <p className="text-muted-foreground text-lg mt-5 leading-relaxed">
-            {sectionSubtitle}
-          </p>
-        </motion.div>
+    <section
+      id="servicios"
+      className="relative min-h-screen flex items-center -mt-20 md:-mt-28"
+    >
+      {/* Full-bleed background image */}
+      <div className="absolute inset-0">
+        <img
+          src={servicesBg}
+          alt=""
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/70 to-black/50" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/40" />
+      </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {useApi
-            ? apiServices!.map((service, index) => {
-                const Icon = iconMap[service.icon] || Server;
-                return renderCard(service.slug, service.short_title, service.description, Icon, index);
-              })
-            : fallbackServices.map((service, index) => {
-                return renderCard(service.slug, service.shortTitle, service.description, service.icon, index);
-              })}
+      {/* Content */}
+      <div className="container mx-auto px-4 relative z-10 py-32 md:py-40">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
+          {/* Left — Big heading */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+            className="lg:sticky lg:top-32"
+          >
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-white leading-[1.1]">
+              {sectionTitle}
+            </h2>
+          </motion.div>
+
+          {/* Right — Service links list */}
+          <div className="flex flex-col">
+            {serviceItems.map((service, index) => (
+              <motion.div
+                key={service.slug}
+                initial={{ opacity: 0, x: 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.06, duration: 0.5 }}
+              >
+                <Link
+                  to={`/servicios/${service.slug}`}
+                  className="group flex items-center justify-between py-5 md:py-6 border-b border-white/10 hover:border-white/30 transition-all duration-300"
+                >
+                  <div className="flex items-center gap-4">
+                    <service.Icon
+                      size={22}
+                      className="text-primary flex-shrink-0"
+                    />
+                    <span className="text-white text-lg md:text-xl font-medium group-hover:text-primary transition-colors duration-300">
+                      {service.title}
+                    </span>
+                  </div>
+                  <ArrowRight
+                    size={20}
+                    className="text-white/30 group-hover:text-primary group-hover:translate-x-1 transition-all duration-300 flex-shrink-0"
+                  />
+                </Link>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
