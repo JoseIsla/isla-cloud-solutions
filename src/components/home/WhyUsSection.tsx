@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Clock, Headphones, Shield, Award } from "lucide-react";
+import { Clock, Headphones, Shield, Award, CheckCircle } from "lucide-react";
 import { useCMSValue } from "@/hooks/useCMS";
 
 const icons = [Clock, Headphones, Shield, Award];
@@ -7,55 +7,63 @@ const icons = [Clock, Headphones, Shield, Award];
 const WhyUsSection = () => {
   const sectionLabel = useCMSValue('whyus_section_label', '¿Por qué elegirnos?');
   const sectionTitle = useCMSValue('whyus_section_title', 'Tu infraestructura IT en las mejores manos');
+  const sectionSubtitle = useCMSValue('whyus_section_subtitle', 'A diferencia de proveedores que solo "arreglan" problemas, adoptamos un enfoque proactivo para prevenir incidencias, desbloquear eficiencias e impulsar el crecimiento a largo plazo.');
 
   const reasons = [
-    { title: useCMSValue('whyus_reason_1_title', '+20 años de experiencia'), description: useCMSValue('whyus_reason_1_desc', 'Más de dos décadas resolviendo retos tecnológicos empresariales.') },
-    { title: useCMSValue('whyus_reason_2_title', 'Soporte 24x7'), description: useCMSValue('whyus_reason_2_desc', 'Equipo técnico disponible las 24 horas, los 7 días de la semana.') },
-    { title: useCMSValue('whyus_reason_3_title', 'Seguridad garantizada'), description: useCMSValue('whyus_reason_3_desc', 'Protocolos de seguridad avanzados y cumplimiento RGPD.') },
-    { title: useCMSValue('whyus_reason_4_title', 'SLA garantizado'), description: useCMSValue('whyus_reason_4_desc', 'Acuerdos de nivel de servicio con tiempos de respuesta comprometidos.') },
+    { title: useCMSValue('whyus_reason_1_title', '+20 años de experiencia'), description: useCMSValue('whyus_reason_1_desc', 'Más de dos décadas resolviendo retos tecnológicos empresariales con un equipo de expertos certificados.') },
+    { title: useCMSValue('whyus_reason_2_title', 'Soporte 24x7'), description: useCMSValue('whyus_reason_2_desc', 'Cuando tu equipo necesita ayuda, no debería tener que esperar. Nuestro soporte está siempre disponible.') },
+    { title: useCMSValue('whyus_reason_3_title', 'Seguridad garantizada'), description: useCMSValue('whyus_reason_3_desc', 'Monitorización 24/7, autenticación multifactor y experiencia nivel CISO mantienen tu organización segura.') },
+    { title: useCMSValue('whyus_reason_4_title', 'Transparencia total'), description: useCMSValue('whyus_reason_4_desc', 'Sin sorpresas. Cada ticket, dispositivo y tiempo de respuesta es visible a través de nuestro portal de cliente.') },
   ];
 
   return (
-    <section className="py-24 bg-hero grid-pattern">
+    <section className="py-20 md:py-28 bg-background">
       <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <span className="text-primary text-sm font-semibold uppercase tracking-wider">
-            {sectionLabel}
-          </span>
-          <h2 className="text-3xl md:text-4xl font-heading font-bold text-hero-foreground mt-3">
-            {sectionTitle}
-          </h2>
-        </motion.div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+          {/* Left side - Title */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <span className="text-primary text-sm font-bold uppercase tracking-widest">
+              {sectionLabel}
+            </span>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-foreground mt-4 leading-tight">
+              {sectionTitle}
+            </h2>
+            <p className="text-muted-foreground text-lg mt-6 leading-relaxed">
+              {sectionSubtitle}
+            </p>
+          </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {reasons.map((reason, index) => {
-            const Icon = icons[index];
-            return (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="text-center"
-              >
-                <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-5">
-                  <Icon size={28} className="text-primary" />
-                </div>
-                <h3 className="font-heading font-semibold text-hero-foreground mb-2">
-                  {reason.title}
-                </h3>
-                <p className="text-hero-foreground/60 text-sm leading-relaxed">
-                  {reason.description}
-                </p>
-              </motion.div>
-            );
-          })}
+          {/* Right side - Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {reasons.map((reason, index) => {
+              const Icon = icons[index];
+              return (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1, duration: 0.5 }}
+                  className="p-6 rounded-2xl bg-card border border-border hover:border-primary/20 hover:shadow-lg transition-all duration-300"
+                >
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
+                    <Icon size={24} className="text-primary" />
+                  </div>
+                  <h3 className="font-heading font-bold text-foreground mb-2">
+                    {reason.title}
+                  </h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed">
+                    {reason.description}
+                  </p>
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>

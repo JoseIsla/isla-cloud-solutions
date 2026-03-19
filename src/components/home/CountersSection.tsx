@@ -32,17 +32,17 @@ const AnimatedCounter = ({ target, suffix, duration = 2000 }: { target: number; 
 
 const CountersSection = () => {
   const counters = [
-    { target: parseInt(useCMSValue('counter_projects', '298')) || 298, suffix: "+", label: useCMSValue('counter_projects_label', 'Proyectos') },
-    { target: parseInt(useCMSValue('counter_maintenance', '315')) || 315, suffix: "+", label: useCMSValue('counter_maintenance_label', 'Mantenimientos') },
-    { target: parseInt(useCMSValue('counter_clients', '169')) || 169, suffix: "+", label: useCMSValue('counter_clients_label', 'Clientes') },
+    { target: parseInt(useCMSValue('counter_projects', '298')) || 298, suffix: "+", label: useCMSValue('counter_projects_label', 'Proyectos completados') },
+    { target: parseInt(useCMSValue('counter_maintenance', '315')) || 315, suffix: "+", label: useCMSValue('counter_maintenance_label', 'Mantenimientos activos') },
+    { target: parseInt(useCMSValue('counter_clients', '169')) || 169, suffix: "+", label: useCMSValue('counter_clients_label', 'Clientes satisfechos') },
     { target: parseInt(useCMSValue('counter_systems', '167')) || 167, suffix: "+", label: useCMSValue('counter_systems_label', 'Sistemas administrados') },
   ];
 
   return (
-    <section className="py-16 bg-hero relative overflow-hidden">
+    <section className="py-20 bg-hero relative overflow-hidden">
       <div className="absolute inset-0 grid-pattern opacity-20" />
       <div className="container mx-auto px-4 relative z-10">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {counters.map((c, i) => (
             <motion.div
               key={c.label}
@@ -52,10 +52,10 @@ const CountersSection = () => {
               transition={{ delay: i * 0.1 }}
               className="text-center"
             >
-              <div className="text-4xl md:text-5xl font-heading font-bold text-primary mb-2">
+              <div className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-primary mb-3">
                 <AnimatedCounter target={c.target} suffix={c.suffix} />
               </div>
-              <div className="text-hero-foreground/60 text-sm uppercase tracking-wider font-medium">
+              <div className="text-white/60 text-sm uppercase tracking-wider font-medium">
                 {c.label}
               </div>
             </motion.div>
