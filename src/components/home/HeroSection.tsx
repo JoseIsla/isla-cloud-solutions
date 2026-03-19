@@ -1,13 +1,13 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Newspaper, Trophy } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import heroBg from "@/assets/hero-bg.jpg";
 import { useCMSValue } from "@/hooks/useCMS";
 import { newsApi, casesApi, type NewsFromAPI, type CaseFromAPI } from "@/lib/api";
 
-const SLIDE_DURATION = 8000; // 8s per slide
+const PROGRESS_DURATION = 8; // seconds for progress bar to fill
 
 interface SlideData {
   tabLabel: string;
@@ -21,7 +21,7 @@ interface SlideData {
 
 const HeroSection = () => {
   const [activeSlide, setActiveSlide] = useState(0);
-  const [progress, setProgress] = useState(0);
+  const [progressKey, setProgressKey] = useState(0); // reset animation on tab change
   const [latestNews, setLatestNews] = useState<NewsFromAPI | null>(null);
   const [currentCase, setCurrentCase] = useState<CaseFromAPI | null>(null);
 
@@ -32,7 +32,6 @@ const HeroSection = () => {
   const ctaSecondary = useCMSValue('hero_cta_secondary', 'Nuestros servicios');
   const badge = useCMSValue('hero_badge', 'Tu socio tecnológico de confianza');
 
-  // Fetch latest published news
   useEffect(() => {
     newsApi.list().then((news) => {
       const published = news.filter((n) => n.is_published);
@@ -40,18 +39,15 @@ const HeroSection = () => {
     }).catch(() => {});
   }, []);
 
-  // Fetch random active case
   useEffect(() => {
     casesApi.list().then((cases) => {
       const active = cases.filter((c: CaseFromAPI) => c.is_active);
       if (active.length > 0) {
-        const random = active[Math.floor(Math.random() * active.length)];
-        setCurrentCase(random);
+        setCurrentCase(active[Math.floor(Math.random() * active.length)]);
       }
     }).catch(() => {});
   }, []);
 
-  // Build slides
   const slides: SlideData[] = [
     {
       tabLabel: "Isla Cloud Solutions",
@@ -83,31 +79,12 @@ const HeroSection = () => {
     },
   ];
 
-  // Auto-advance timer with progress bar
-  useEffect(() => {
-    const startTime = Date.now();
-    const interval = setInterval(() => {
-      const elapsed = Date.now() - startTime;
-      const pct = Math.min((elapsed % SLIDE_DURATION) / SLIDE_DURATION, 1);
-      setProgress(pct);
-
-      if (elapsed % SLIDE_DURATION < 50) {
-        setActiveSlide((prev) => (prev + 1) % slides.length);
-      }
-    }, 30);
-
-    return () => clearInterval(interval);
-  }, [activeSlide, slides.length]);
-
-  // Reset progress on manual tab click
-  const handleTabClick = useCallback((index: number) => {
+  const handleTabClick = (index: number) => {
+    if (index === activeSlide) return;
     setActiveSlide(index);
-    setProgress(0);
-  }, []);
+    setProgressKey((k) => k + 1); // restart progress animation
+  };
 
-  const currentSlideData = slides[activeSlide];
-
-  // Highlight word in title
   const renderTitle = (slide: SlideData) => {
     if (slide.titleHighlight) {
       const parts = slide.title.split(slide.titleHighlight);
@@ -124,9 +101,11 @@ const HeroSection = () => {
     return slide.title;
   };
 
+  const currentSlideData = slides[activeSlide];
+
   return (
     <section className="relative h-screen flex items-center overflow-hidden">
-      {/* Full-screen background */}
+      {/* Background */}
       <div className="absolute inset-0">
         <motion.img
           src={heroBg}
@@ -187,39 +166,39 @@ const HeroSection = () => {
         </div>
       </div>
 
-      {/* Bottom tab bar - Devoteam style */}
-      <div className="absolute bottom-0 left-0 right-0 z-10">
+      {/* Floating tab bar - Devoteam style */}
+      <div className="absolute bottom-8 left-0 right-0 z-10">
         <div className="container mx-auto px-4">
-          <div className="flex">
+          <div
+            className="flex"
+            style={{ gridTemplateColumns: `repeat(${slides.length}, 1fr)` }}
+          >
             {slides.map((slide, index) => (
               <button
                 key={index}
                 onClick={() => handleTabClick(index)}
-                className={`flex-1 relative py-5 px-4 text-sm font-medium transition-colors duration-300 text-left ${
+                className={`flex-1 relative py-4 px-6 text-sm md:text-base font-medium transition-colors duration-300 text-left cursor-pointer ${
                   index === activeSlide
                     ? "text-white"
-                    : "text-white/50 hover:text-white/70"
+                    : "text-white/40 hover:text-white/60"
                 }`}
               >
-                <div className="flex items-center gap-2">
-                  {index === 0 && <span className="hidden sm:inline">🏢</span>}
-                  {index === 1 && <Newspaper size={16} className="hidden sm:inline shrink-0" />}
-                  {index === 2 && <Trophy size={16} className="hidden sm:inline shrink-0" />}
-                  <span className="truncate">{slide.tabLabel}</span>
-                </div>
+                <span className="truncate block">{slide.tabLabel}</span>
 
-                {/* Progress bar */}
-                <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-white/10">
+                {/* Bottom progress line */}
+                <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-white/10 rounded-full overflow-hidden">
                   {index === activeSlide && (
                     <motion.div
-                      className="h-full bg-primary"
+                      key={`progress-${progressKey}-${index}`}
+                      className="h-full rounded-full"
+                      style={{ background: "hsl(var(--primary))" }}
                       initial={{ width: "0%" }}
-                      animate={{ width: `${progress * 100}%` }}
-                      transition={{ duration: 0.05, ease: "linear" }}
+                      animate={{ width: "100%" }}
+                      transition={{
+                        duration: PROGRESS_DURATION,
+                        ease: "linear",
+                      }}
                     />
-                  )}
-                  {index < activeSlide && (
-                    <div className="h-full bg-primary w-full" />
                   )}
                 </div>
               </button>
