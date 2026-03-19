@@ -24,26 +24,38 @@ const HeroSection = () => {
   const hasKeyword = titleParts.length > 1;
 
   return (
-    <section className="relative min-h-[90vh] flex items-center overflow-hidden bg-hero">
+    <section className="relative h-screen flex items-center overflow-hidden">
+      {/* Full-screen background image */}
       <div className="absolute inset-0">
-        <img src={heroBg} alt="" className="w-full h-full object-cover opacity-40" />
-        <div className="absolute inset-0 bg-gradient-to-r from-hero via-hero/90 to-hero/60" />
+        <motion.img
+          src={heroBg}
+          alt=""
+          className="w-full h-full object-cover"
+          initial={{ scale: 1.1 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 8, ease: "easeOut" }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/30" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
       </div>
-      <div className="absolute inset-0 grid-pattern opacity-30" />
 
+      {/* Content */}
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-3xl">
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-            <span className="inline-block px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase bg-primary/15 text-primary border border-primary/20 mb-6">
-              {badge}
-            </span>
-          </motion.div>
+          <motion.span
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="inline-block text-white/70 text-base md:text-lg font-body mb-4"
+          >
+            {badge}
+          </motion.span>
 
           <motion.h1
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.15 }}
-            className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-hero-foreground leading-tight mb-6"
+            transition={{ duration: 0.8, delay: 0.5 }}
+            className="text-4xl md:text-5xl lg:text-[3.5rem] xl:text-6xl font-heading font-bold text-white leading-[1.1] mb-8"
           >
             {hasKeyword ? (
               <>
@@ -59,8 +71,8 @@ const HeroSection = () => {
           <motion.p
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="text-lg md:text-xl text-hero-foreground/70 mb-10 max-w-2xl leading-relaxed"
+            transition={{ duration: 0.8, delay: 0.7 }}
+            className="text-lg md:text-xl text-white/60 mb-10 max-w-2xl leading-relaxed"
           >
             {subtitle}
           </motion.p>
@@ -68,7 +80,7 @@ const HeroSection = () => {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.45 }}
+            transition={{ duration: 0.8, delay: 0.9 }}
             className="flex flex-col sm:flex-row gap-4"
           >
             <Button variant="hero" size="xl" asChild>
@@ -76,30 +88,45 @@ const HeroSection = () => {
                 {ctaPrimary} <ArrowRight size={20} />
               </Link>
             </Button>
-            <Button variant="heroOutline" size="xl" asChild>
+            <Button
+              variant="outline"
+              size="xl"
+              className="border-white/30 text-white hover:bg-white/10 hover:text-white bg-transparent"
+              asChild
+            >
               <Link to="/servicios">{ctaSecondary}</Link>
             </Button>
           </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 0.7 }}
-            className="flex gap-10 mt-16 pt-8 border-t border-hero-foreground/10"
-          >
-            {[
-              { number: stat1Value, label: stat1Label },
-              { number: stat2Value, label: stat2Label },
-              { number: stat3Value, label: stat3Label },
-            ].map((stat) => (
-              <div key={stat.label}>
-                <div className="text-2xl md:text-3xl font-heading font-bold text-primary">{stat.number}</div>
-                <div className="text-xs text-hero-foreground/50 uppercase tracking-wider mt-1">{stat.label}</div>
-              </div>
-            ))}
-          </motion.div>
         </div>
       </div>
+
+      {/* Bottom stats bar */}
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 1.2 }}
+        className="absolute bottom-0 left-0 right-0 z-10"
+      >
+        <div className="bg-black/40 backdrop-blur-md border-t border-white/10">
+          <div className="container mx-auto px-4">
+            <div className="flex items-center justify-start gap-12 md:gap-16 py-5 overflow-x-auto">
+              {[
+                { number: stat1Value, label: stat1Label },
+                { number: stat2Value, label: stat2Label },
+                { number: stat3Value, label: stat3Label },
+              ].map((stat, i) => (
+                <div key={stat.label} className="flex items-center gap-4 shrink-0">
+                  {i > 0 && <div className="w-px h-8 bg-white/20 -ml-6 md:-ml-8" />}
+                  <div className={i > 0 ? "pl-2" : ""}>
+                    <div className="text-xl md:text-2xl font-heading font-bold text-white">{stat.number}</div>
+                    <div className="text-xs text-white/50 uppercase tracking-wider">{stat.label}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </motion.div>
     </section>
   );
 };
