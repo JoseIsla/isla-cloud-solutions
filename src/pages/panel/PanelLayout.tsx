@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, FileText, Newspaper, MessageSquare, Settings, LogOut, Menu, X, Users } from 'lucide-react';
+import { LayoutDashboard, FileText, Newspaper, MessageSquare, Settings, LogOut, Menu, X, Users, Trophy } from 'lucide-react';
 
 const sidebarLinks = [
   { label: 'Dashboard', path: '/panel', icon: LayoutDashboard },
   { label: 'Servicios', path: '/panel/servicios', icon: FileText },
   { label: 'Clientes', path: '/panel/clientes', icon: Users },
+  { label: 'Casos de Éxito', path: '/panel/casos', icon: Trophy },
   { label: 'Noticias', path: '/panel/noticias', icon: Newspaper },
   { label: 'Contactos', path: '/panel/contactos', icon: MessageSquare },
   { label: 'Contenidos', path: '/panel/contenidos', icon: Settings },

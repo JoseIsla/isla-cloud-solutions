@@ -104,7 +104,21 @@ async function initDB() {
     )
   `);
 
-  // Create default admin user
+  // Success cases table
+  await conn.query(`
+    CREATE TABLE IF NOT EXISTS success_cases (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      title VARCHAR(255) NOT NULL,
+      client_name VARCHAR(255) NOT NULL,
+      excerpt TEXT,
+      description LONGTEXT,
+      image_url VARCHAR(500),
+      sort_order INT DEFAULT 0,
+      is_active TINYINT(1) DEFAULT 1,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    )
+  `);
   const hashedPassword = await bcrypt.hash('IslaCloud2024!', 12);
   await conn.query(`
     INSERT IGNORE INTO users (email, password, name, role)
