@@ -181,10 +181,10 @@ const HeroSection = () => {
         </div>
       </div>
 
-      {/* Floating tab bar — Devoteam style: centered with generous margins */}
-      <div className="absolute bottom-12 left-0 right-0 z-10">
+      {/* Floating tab bar — Devoteam style */}
+      <div className="absolute bottom-6 md:bottom-12 left-0 right-0 z-10">
         <div className="container mx-auto px-4">
-          <div className="mx-6 md:mx-16 lg:mx-24 relative" ref={tabsContainerRef}>
+          <div className="mx-0 md:mx-16 lg:mx-24 relative" ref={tabsContainerRef}>
             {/* Background track line */}
             <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-white/10" />
 
@@ -210,7 +210,7 @@ const HeroSection = () => {
                   key={index}
                   data-tab
                   onClick={() => handleTabClick(index)}
-                  className={`flex-1 py-5 px-6 text-sm md:text-base font-medium transition-colors duration-300 text-left cursor-pointer ${
+                  className={`flex-1 py-3 px-2 md:py-5 md:px-6 text-xs md:text-base font-medium transition-colors duration-300 text-left cursor-pointer ${
                     index === activeSlide
                       ? "text-white"
                       : "text-white/40 hover:text-white/60"
