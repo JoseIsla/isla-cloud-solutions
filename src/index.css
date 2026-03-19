@@ -179,12 +179,15 @@
     background: linear-gradient(
       180deg,
       hsl(var(--services-overlay-top)) 0%,
-      hsl(var(--services-overlay-mid)) 40%,
-      hsl(var(--background) / 0.36) 76%,
+      hsl(var(--services-overlay-mid)) 26%,
+      hsl(var(--background) / 0.56) 62%,
+      hsl(var(--background) / 0.16) 82%,
       transparent 100%
     );
-    box-shadow: 0 -18px 36px hsl(var(--background) / 0.08);
-    will-change: transform, opacity, backdrop-filter;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow: 0 -18px 36px hsl(var(--background) / 0.12);
+    will-change: transform, opacity;
   }
 
   .services-image-overlay {

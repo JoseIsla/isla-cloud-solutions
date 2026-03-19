@@ -1,9 +1,4 @@
-import {
-  motion,
-  useMotionTemplate,
-  useScroll,
-  useTransform,
-} from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { services as fallbackServices } from "@/data/services";
@@ -45,13 +40,12 @@ const ServicesSection = () => {
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
-    offset: ["start 92%", "start 42%"],
+    offset: ["start end", "start 32%"],
   });
 
-  const overlapOpacity = useTransform(scrollYProgress, [0, 0.4, 1], [0, 0.72, 1]);
-  const overlapLift = useTransform(scrollYProgress, [0, 1], [24, 0]);
-  const overlapBlur = useTransform(scrollYProgress, [0, 1], [0, 18]);
-  const overlapBackdrop = useMotionTemplate`blur(${overlapBlur}px)`;
+  const overlapOpacity = useTransform(scrollYProgress, [0, 0.2, 0.65, 1], [0, 0.24, 0.88, 1]);
+  const overlapScale = useTransform(scrollYProgress, [0, 1], [0.94, 1]);
+  const overlapY = useTransform(scrollYProgress, [0, 1], [28, 0]);
 
   useEffect(() => {
     servicesApi
@@ -78,20 +72,17 @@ const ServicesSection = () => {
     <section
       id="servicios"
       ref={sectionRef}
-      className="relative z-20 -mt-32 md:-mt-44 lg:-mt-56"
+      className="relative z-20 -mt-40 md:-mt-56 lg:-mt-72"
     >
       <motion.div
         aria-hidden="true"
-        className="services-overlap-mask pointer-events-none absolute inset-x-0 -top-20 z-20 h-20 md:-top-28 md:h-28 lg:-top-32 lg:h-32"
-        style={{
-          opacity: overlapOpacity,
-          y: overlapLift,
-          backdropFilter: overlapBackdrop,
-          WebkitBackdropFilter: overlapBackdrop,
-        }}
-      />
+        className="pointer-events-none sticky top-16 md:top-20 z-30 h-24 md:h-32 lg:h-36"
+        style={{ opacity: overlapOpacity, y: overlapY, scaleY: overlapScale }}
+      >
+        <div className="services-overlap-mask h-full w-full" />
+      </motion.div>
 
-      <div className="relative min-h-screen overflow-hidden">
+      <div className="relative -mt-24 md:-mt-32 lg:-mt-36 min-h-screen overflow-hidden rounded-t-[2rem] md:rounded-t-[2.75rem]">
         <div className="absolute inset-0">
           <img
             src={servicesBg}
@@ -103,7 +94,7 @@ const ServicesSection = () => {
           <div className="services-image-vignette absolute inset-0" />
         </div>
 
-        <div className="container relative z-10 mx-auto px-4 py-28 md:py-36 lg:py-40">
+        <div className="container relative z-10 mx-auto px-4 pt-32 pb-24 md:pt-40 md:pb-32 lg:pt-44 lg:pb-36">
           <div className="grid grid-cols-1 items-start gap-8 md:gap-10 lg:grid-cols-12 lg:gap-16">
             <motion.div
               initial={{ opacity: 0, y: 40 }}
@@ -112,13 +103,13 @@ const ServicesSection = () => {
               transition={{ duration: 0.7 }}
               className="lg:col-span-5 lg:sticky lg:top-32"
             >
-              <h2 className="services-heading max-w-md font-heading text-4xl font-bold leading-[0.96] md:text-5xl lg:text-[4rem]">
+              <h2 className="services-heading max-w-[5.5ch] font-heading text-4xl font-bold leading-[0.96] md:text-5xl lg:text-[4.25rem]">
                 {sectionTitle}
               </h2>
             </motion.div>
 
-            <div className="lg:col-span-7 lg:pt-10">
-              <div className="grid grid-cols-1 gap-3 md:gap-4 sm:grid-cols-2">
+            <div className="lg:col-span-7 lg:pt-12">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:gap-4">
                 {serviceItems.map((service, index) => (
                   <motion.div
                     key={service.slug}
