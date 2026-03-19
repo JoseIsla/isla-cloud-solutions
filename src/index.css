@@ -175,7 +175,15 @@
     animation: gradient-shift 12s ease-in-out infinite;
   }
 
-
+  .services-overlap-cap {
+    background: linear-gradient(
+      180deg,
+      hsl(var(--background)) 0%,
+      hsl(var(--background) / 0.94) 26%,
+      hsl(var(--background) / 0.42) 72%,
+      transparent 100%
+    );
+  }
 
   .services-image-overlay {
     background: linear-gradient(
