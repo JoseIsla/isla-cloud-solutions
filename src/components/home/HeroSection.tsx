@@ -124,16 +124,20 @@ const HeroSection = () => {
 
   return (
     <section className="relative h-screen flex items-center overflow-hidden">
-      {/* Background */}
+      {/* Background — crossfade between slides */}
       <div className="absolute inset-0">
-        <motion.img
-          src={heroBg}
-          alt=""
-          className="w-full h-full object-cover"
-          initial={{ scale: 1.1 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 10, ease: "easeOut" }}
-        />
+        <AnimatePresence mode="sync">
+          <motion.img
+            key={activeSlide}
+            src={slideBackgrounds[activeSlide]}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover"
+            initial={{ opacity: 0, scale: 1.05 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ opacity: { duration: 0.8 }, scale: { duration: 6, ease: "easeOut" } }}
+          />
+        </AnimatePresence>
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/30" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30" />
       </div>
