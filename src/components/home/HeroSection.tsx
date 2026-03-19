@@ -153,8 +153,8 @@ const HeroSection = () => {
               exit="exit"
               variants={{
                 hidden: {},
-                visible: { transition: { staggerChildren: 0.12, delayChildren: 0.1 } },
-                exit: { transition: { staggerChildren: 0.05 } },
+                visible: { transition: { staggerChildren: 0.07, delayChildren: 0.05 } },
+                exit: { transition: { staggerChildren: 0.03 } },
               }}
             >
               {/* Badge */}
@@ -170,8 +170,8 @@ const HeroSection = () => {
                   className="inline-block text-white/60 text-sm md:text-base font-body uppercase tracking-wider"
                   variants={{
                     hidden: { y: "100%" },
-                    visible: { y: 0, transition: { duration: 0.6, ease: [0.33, 1, 0.68, 1] } },
-                    exit: { y: "-100%", transition: { duration: 0.3, ease: [0.33, 1, 0.68, 1] } },
+                    visible: { y: 0, transition: { duration: 0.35, ease: [0.25, 1, 0.5, 1] } },
+                    exit: { y: "-100%", transition: { duration: 0.2, ease: [0.5, 0, 0.75, 0] } },
                   }}
                 >
                   {currentSlideData.badge}
@@ -191,8 +191,8 @@ const HeroSection = () => {
                   className="text-4xl md:text-5xl lg:text-[3.5rem] xl:text-6xl font-heading font-bold text-white leading-[1.1]"
                   variants={{
                     hidden: { y: "100%" },
-                    visible: { y: 0, transition: { duration: 0.7, ease: [0.33, 1, 0.68, 1] } },
-                    exit: { y: "-100%", transition: { duration: 0.3, ease: [0.33, 1, 0.68, 1] } },
+                    visible: { y: 0, transition: { duration: 0.4, ease: [0.25, 1, 0.5, 1] } },
+                    exit: { y: "-100%", transition: { duration: 0.2, ease: [0.5, 0, 0.75, 0] } },
                   }}
                 >
                   {renderTitle(currentSlideData)}
@@ -212,8 +212,8 @@ const HeroSection = () => {
                   className="text-lg md:text-xl text-white/60 max-w-2xl leading-relaxed"
                   variants={{
                     hidden: { y: "100%" },
-                    visible: { y: 0, transition: { duration: 0.7, ease: [0.33, 1, 0.68, 1] } },
-                    exit: { y: "-100%", transition: { duration: 0.3, ease: [0.33, 1, 0.68, 1] } },
+                    visible: { y: 0, transition: { duration: 0.4, ease: [0.25, 1, 0.5, 1] } },
+                    exit: { y: "-100%", transition: { duration: 0.2, ease: [0.5, 0, 0.75, 0] } },
                   }}
                 >
                   {currentSlideData.subtitle}
@@ -224,9 +224,9 @@ const HeroSection = () => {
               <motion.div
                 className="flex flex-col sm:flex-row gap-4"
                 variants={{
-                  hidden: { opacity: 0, y: 30 },
-                  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.33, 1, 0.68, 1] } },
-                  exit: { opacity: 0, y: -20, transition: { duration: 0.25 } },
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: [0.25, 1, 0.5, 1] } },
+                  exit: { opacity: 0, y: -15, transition: { duration: 0.15 } },
                 }}
               >
                 <Button variant="hero" size="xl" asChild>
