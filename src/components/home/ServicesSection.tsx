@@ -57,16 +57,16 @@ const ServicesSection = () => {
 
       const rect = section.getBoundingClientRect();
       const viewportHeight = window.innerHeight;
-      const start = viewportHeight * 0.95;
-      const end = viewportHeight * 0.1;
+      const start = viewportHeight * 0.85;
+      const end = viewportHeight * 0.05;
       const raw = (start - rect.top) / (start - end);
-      // Ease-in curve for a more dramatic ramp-up
-      const progress = Math.max(0, Math.min(1, raw * raw));
+      // Linear progress for tight scroll sync
+      const progress = Math.max(0, Math.min(1, raw));
       const maxLift =
-        window.innerWidth >= 1280 ? 320 :
-        window.innerWidth >= 1024 ? 272 :
-        window.innerWidth >= 768 ? 200 :
-        144;
+        window.innerWidth >= 1280 ? 420 :
+        window.innerWidth >= 1024 ? 360 :
+        window.innerWidth >= 768 ? 280 :
+        200;
 
       setOverlap({
         capOpacity: Math.min(1, progress * 1.2),
