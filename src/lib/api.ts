@@ -111,6 +111,18 @@ export const clientsApi = {
     apiRequest('/api/clients/' + id, { method: 'DELETE', token }),
 };
 
+// Cases (success stories)
+export const casesApi = {
+  list: (token?: string | null) => apiRequest<CaseFromAPI[]>('/api/cases', { token: token || undefined }),
+  get: (id: number) => apiRequest<CaseFromAPI>(`/api/cases/${id}`),
+  create: (data: Partial<CaseFromAPI>, token: string) =>
+    apiRequest<{ id: number }>('/api/cases', { method: 'POST', body: data, token }),
+  update: (id: number, data: Partial<CaseFromAPI>, token: string) =>
+    apiRequest('/api/cases/' + id, { method: 'PUT', body: data, token }),
+  delete: (id: number, token: string) =>
+    apiRequest('/api/cases/' + id, { method: 'DELETE', token }),
+};
+
 // Upload
 export { uploadImage };
 
@@ -168,4 +180,16 @@ export interface ClientFromAPI {
   website_url: string;
   sort_order: number;
   is_active: number;
+}
+
+export interface CaseFromAPI {
+  id: number;
+  title: string;
+  client_name: string;
+  excerpt: string;
+  description: string;
+  image_url: string;
+  sort_order: number;
+  is_active: number;
+  created_at: string;
 }

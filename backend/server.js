@@ -11,6 +11,7 @@ const contactsRoutes = require('./routes/contacts');
 const contentsRoutes = require('./routes/contents');
 const uploadRoutes = require('./routes/upload');
 const clientsRoutes = require('./routes/clients');
+const casesRoutes = require('./routes/cases');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -47,6 +48,7 @@ app.use('/api/contacts', contactsRoutes);
 app.use('/api/contents', contentsRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/clients', clientsRoutes);
+app.use('/api/cases', casesRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

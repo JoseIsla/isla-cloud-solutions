@@ -19,20 +19,21 @@ const Navbar = () => {
   const isHome = location.pathname === "/";
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60);
+    const onScroll = () => setScrolled(window.scrollY > 80);
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const transparent = isHome && !scrolled && !isOpen;
+  // Fully transparent when on hero (home + not scrolled + mobile menu closed)
+  const isTransparent = isHome && !scrolled && !isOpen;
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        transparent
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out ${
+        isTransparent
           ? "bg-transparent border-b border-transparent"
-          : "bg-hero/95 backdrop-blur-md border-b border-primary/10"
+          : "bg-hero/95 backdrop-blur-md border-b border-white/5 shadow-lg shadow-black/10"
       }`}
     >
       <div className="container mx-auto px-4">
@@ -55,10 +56,10 @@ const Navbar = () => {
               <Link
                 key={link.path}
                 to={link.path}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                   location.pathname === link.path
-                    ? "text-primary bg-primary/10"
-                    : "text-white/80 hover:text-white hover:bg-white/10"
+                    ? "text-white bg-white/15"
+                    : "text-white/70 hover:text-white hover:bg-white/10"
                 }`}
               >
                 {link.label}
@@ -83,7 +84,7 @@ const Navbar = () => {
 
         {/* Mobile menu */}
         {isOpen && (
-          <div className="lg:hidden pb-6 border-t border-primary/10 mt-2 pt-4 bg-hero/95 backdrop-blur-md -mx-4 px-4">
+          <div className="lg:hidden pb-6 border-t border-white/10 mt-2 pt-4 bg-hero/95 backdrop-blur-md -mx-4 px-4">
             <div className="flex flex-col gap-2">
               {navLinks.map((link) => (
                 <Link
@@ -92,7 +93,7 @@ const Navbar = () => {
                   onClick={() => setIsOpen(false)}
                   className={`px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
                     location.pathname === link.path
-                      ? "text-primary bg-primary/10"
+                      ? "text-white bg-white/15"
                       : "text-white/70 hover:text-white"
                   }`}
                 >
