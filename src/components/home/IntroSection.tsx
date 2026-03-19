@@ -22,3 +22,7 @@ const IntroSection = () => {
       </div>
     </section>
   );
+};
+
+export default IntroSection;
+
