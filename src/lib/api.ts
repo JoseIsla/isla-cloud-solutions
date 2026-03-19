@@ -181,3 +181,15 @@ export interface ClientFromAPI {
   sort_order: number;
   is_active: number;
 }
+
+export interface CaseFromAPI {
+  id: number;
+  title: string;
+  client_name: string;
+  excerpt: string;
+  description: string;
+  image_url: string;
+  sort_order: number;
+  is_active: number;
+  created_at: string;
+}
