@@ -11,6 +11,7 @@ const contactsRoutes = require('./routes/contacts');
 const contentsRoutes = require('./routes/contents');
 const uploadRoutes = require('./routes/upload');
 const clientsRoutes = require('./routes/clients');
+const casesRoutes = require('./routes/cases');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
