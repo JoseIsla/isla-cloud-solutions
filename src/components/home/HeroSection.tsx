@@ -7,8 +7,6 @@ import heroBg from "@/assets/hero-bg.jpg";
 import { useCMSValue } from "@/hooks/useCMS";
 import { newsApi, casesApi, type NewsFromAPI, type CaseFromAPI } from "@/lib/api";
 
-const PROGRESS_DURATION = 8; // seconds for progress bar to fill
-
 interface SlideData {
   tabLabel: string;
   badge: string;
@@ -21,11 +19,11 @@ interface SlideData {
 
 const HeroSection = () => {
   const [activeSlide, setActiveSlide] = useState(0);
-  const [progressKey, setProgressKey] = useState(0); // reset animation on tab change
   const [latestNews, setLatestNews] = useState<NewsFromAPI | null>(null);
   const [currentCase, setCurrentCase] = useState<CaseFromAPI | null>(null);
+  const tabsContainerRef = useRef<HTMLDivElement>(null);
+  const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 });
 
-  // CMS values for slide 1
   const title = useCMSValue('hero_title', 'Soluciones Cloud y Tecnología para Empresas');
   const subtitle = useCMSValue('hero_subtitle', 'Más de 20 años siendo el socio tecnológico de empresas que necesitan un departamento IT profesional, cercano y disponible 24x7.');
   const ctaPrimary = useCMSValue('hero_cta_primary', 'Solicita información');
@@ -79,10 +77,27 @@ const HeroSection = () => {
     },
   ];
 
+  // Measure tab positions for the sliding indicator
+  useEffect(() => {
+    const updateIndicator = () => {
+      const container = tabsContainerRef.current;
+      if (!container) return;
+      const tabs = container.querySelectorAll<HTMLButtonElement>('[data-tab]');
+      const tab = tabs[activeSlide];
+      if (!tab) return;
+      setIndicatorStyle({
+        left: tab.offsetLeft,
+        width: tab.offsetWidth,
+      });
+    };
+    updateIndicator();
+    window.addEventListener('resize', updateIndicator);
+    return () => window.removeEventListener('resize', updateIndicator);
+  }, [activeSlide]);
+
   const handleTabClick = (index: number) => {
     if (index === activeSlide) return;
     setActiveSlide(index);
-    setProgressKey((k) => k + 1); // restart progress animation
   };
 
   const renderTitle = (slide: SlideData) => {
@@ -166,43 +181,45 @@ const HeroSection = () => {
         </div>
       </div>
 
-      {/* Floating tab bar - Devoteam style */}
-      <div className="absolute bottom-8 left-0 right-0 z-10">
+      {/* Floating tab bar — Devoteam style: centered with generous margins */}
+      <div className="absolute bottom-12 left-0 right-0 z-10">
         <div className="container mx-auto px-4">
-          <div
-            className="flex"
-            style={{ gridTemplateColumns: `repeat(${slides.length}, 1fr)` }}
-          >
-            {slides.map((slide, index) => (
-              <button
-                key={index}
-                onClick={() => handleTabClick(index)}
-                className={`flex-1 relative py-4 px-6 text-sm md:text-base font-medium transition-colors duration-300 text-left cursor-pointer ${
-                  index === activeSlide
-                    ? "text-white"
-                    : "text-white/40 hover:text-white/60"
-                }`}
-              >
-                <span className="truncate block">{slide.tabLabel}</span>
+          <div className="mx-6 md:mx-16 lg:mx-24 relative" ref={tabsContainerRef}>
+            {/* Background track line */}
+            <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-white/10" />
 
-                {/* Bottom progress line */}
-                <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-white/10 rounded-full overflow-hidden">
-                  {index === activeSlide && (
-                    <motion.div
-                      key={`progress-${progressKey}-${index}`}
-                      className="h-full rounded-full"
-                      style={{ background: "hsl(var(--primary))" }}
-                      initial={{ width: "0%" }}
-                      animate={{ width: "100%" }}
-                      transition={{
-                        duration: PROGRESS_DURATION,
-                        ease: "linear",
-                      }}
-                    />
-                  )}
-                </div>
-              </button>
-            ))}
+            {/* Sliding indicator — spring bounce like Devoteam */}
+            <motion.div
+              className="absolute bottom-0 h-[3px]"
+              style={{ background: "hsl(var(--primary))" }}
+              animate={{
+                left: indicatorStyle.left,
+                width: indicatorStyle.width,
+              }}
+              transition={{
+                type: "spring",
+                stiffness: 300,
+                damping: 25,
+                mass: 1,
+              }}
+            />
+
+            <div className="flex">
+              {slides.map((slide, index) => (
+                <button
+                  key={index}
+                  data-tab
+                  onClick={() => handleTabClick(index)}
+                  className={`flex-1 py-5 px-6 text-sm md:text-base font-medium transition-colors duration-300 text-left cursor-pointer ${
+                    index === activeSlide
+                      ? "text-white"
+                      : "text-white/40 hover:text-white/60"
+                  }`}
+                >
+                  <span className="truncate block">{slide.tabLabel}</span>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
