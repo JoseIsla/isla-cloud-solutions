@@ -1,29 +1,61 @@
-import { motion } from "framer-motion";
+import {
+  motion,
+  useMotionTemplate,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { services as fallbackServices } from "@/data/services";
 import { servicesApi, type ServiceFromAPI } from "@/lib/api";
 import { useCMSValue } from "@/hooks/useCMS";
 import servicesBg from "@/assets/services-bg.jpg";
 import {
-  Server, Shield, Cloud, Monitor, Globe, Smartphone,
-  Lock, Wrench, Database, type LucideIcon
+  Server,
+  Shield,
+  Cloud,
+  Monitor,
+  Globe,
+  Smartphone,
+  Lock,
+  Wrench,
+  Database,
+  type LucideIcon,
 } from "lucide-react";
 
 const iconMap: Record<string, LucideIcon> = {
-  Server, Shield, Cloud, Monitor, Globe, Smartphone,
-  Lock, Wrench, Database,
+  Server,
+  Shield,
+  Cloud,
+  Monitor,
+  Globe,
+  Smartphone,
+  Lock,
+  Wrench,
+  Database,
 };
 
 const ServicesSection = () => {
+  const sectionRef = useRef<HTMLElement | null>(null);
   const sectionTitle = useCMSValue(
-    'services_section_title',
-    'Resolvemos los Problemas Tecnológicos que Frenan tu Empresa'
+    "services_section_title",
+    "Resolvemos los Problemas Tecnológicos que Frenan tu Empresa"
   );
   const [apiServices, setApiServices] = useState<ServiceFromAPI[] | null>(null);
 
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start 92%", "start 42%"],
+  });
+
+  const overlapOpacity = useTransform(scrollYProgress, [0, 0.4, 1], [0, 0.72, 1]);
+  const overlapLift = useTransform(scrollYProgress, [0, 1], [24, 0]);
+  const overlapBlur = useTransform(scrollYProgress, [0, 1], [0, 18]);
+  const overlapBackdrop = useMotionTemplate`blur(${overlapBlur}px)`;
+
   useEffect(() => {
-    servicesApi.list()
+    servicesApi
+      .list()
       .then(setApiServices)
       .catch(() => setApiServices(null));
   }, []);
@@ -31,74 +63,76 @@ const ServicesSection = () => {
   const useApi = apiServices && apiServices.length > 0;
 
   const serviceItems = useApi
-    ? apiServices!.map((s) => ({
-        slug: s.slug,
-        title: s.short_title,
-        Icon: iconMap[s.icon] || Server,
+    ? apiServices!.map((service) => ({
+        slug: service.slug,
+        title: service.short_title,
+        Icon: iconMap[service.icon] || Server,
       }))
-    : fallbackServices.map((s) => ({
-        slug: s.slug,
-        title: s.shortTitle,
-        Icon: s.icon,
+    : fallbackServices.map((service) => ({
+        slug: service.slug,
+        title: service.shortTitle,
+        Icon: service.icon,
       }));
 
   return (
     <section
       id="servicios"
-      className="relative -mt-24 md:-mt-32 z-10"
+      ref={sectionRef}
+      className="relative z-20 -mt-32 md:-mt-44 lg:-mt-56"
     >
-      {/* Top fade — creates the "eating" effect over the gradient text */}
-      <div className="h-24 md:h-32 bg-gradient-to-b from-background to-transparent relative z-20 pointer-events-none" />
+      <motion.div
+        aria-hidden="true"
+        className="services-overlap-mask pointer-events-none absolute inset-x-0 -top-20 z-20 h-20 md:-top-28 md:h-28 lg:-top-32 lg:h-32"
+        style={{
+          opacity: overlapOpacity,
+          y: overlapLift,
+          backdropFilter: overlapBackdrop,
+          WebkitBackdropFilter: overlapBackdrop,
+        }}
+      />
 
-      {/* Main content area with background image */}
-      <div className="relative min-h-screen flex items-center overflow-hidden">
-        {/* Full-bleed background image */}
+      <div className="relative min-h-screen overflow-hidden">
         <div className="absolute inset-0">
           <img
             src={servicesBg}
             alt=""
-            className="w-full h-full object-cover"
+            loading="lazy"
+            className="h-full w-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/65 to-black/40" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/30" />
+          <div className="services-image-overlay absolute inset-0" />
+          <div className="services-image-vignette absolute inset-0" />
         </div>
 
-        {/* Content */}
-        <div className="container mx-auto px-4 relative z-10 py-24 md:py-32">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
-            {/* Left — Big heading (5 cols) */}
+        <div className="container relative z-10 mx-auto px-4 py-28 md:py-36 lg:py-40">
+          <div className="grid grid-cols-1 items-start gap-8 md:gap-10 lg:grid-cols-12 lg:gap-16">
             <motion.div
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.7 }}
               className="lg:col-span-5 lg:sticky lg:top-32"
             >
-              <h2 className="text-4xl md:text-5xl lg:text-[3.5rem] font-heading font-bold text-white/60 leading-[1.1]">
+              <h2 className="services-heading max-w-md font-heading text-4xl font-bold leading-[0.96] md:text-5xl lg:text-[4rem]">
                 {sectionTitle}
               </h2>
             </motion.div>
 
-            {/* Right — Service cards grid (7 cols) */}
-            <div className="lg:col-span-7">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
+            <div className="lg:col-span-7 lg:pt-10">
+              <div className="grid grid-cols-1 gap-3 md:gap-4 sm:grid-cols-2">
                 {serviceItems.map((service, index) => (
                   <motion.div
                     key={service.slug}
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
+                    viewport={{ once: true, amount: 0.2 }}
                     transition={{ delay: index * 0.05, duration: 0.4 }}
                   >
                     <Link
                       to={`/servicios/${service.slug}`}
-                      className="group flex flex-col gap-3 p-5 md:p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300"
+                      className="services-card group flex min-h-[152px] flex-col justify-between gap-10 rounded-[1.75rem] p-5 md:p-6"
                     >
-                      <service.Icon
-                        size={24}
-                        className="text-white/70 group-hover:text-primary transition-colors duration-300"
-                      />
-                      <span className="text-white text-sm md:text-base font-semibold leading-snug">
+                      <service.Icon size={26} className="services-card-icon" />
+                      <span className="services-card-title text-lg font-semibold leading-tight md:text-xl">
                         {service.title}
                       </span>
                     </Link>
