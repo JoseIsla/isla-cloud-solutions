@@ -114,6 +114,15 @@ const ServicesSection = () => {
       className="relative z-20"
       style={{ marginTop: `-${overlap.lift}px` }}
     >
+      {/* Fade from background color into the image — above the section edge */}
+      <div
+        aria-hidden="true"
+        className="services-overlap-cap pointer-events-none absolute inset-x-0 z-30 h-20 md:h-28 lg:h-36"
+        style={{
+          opacity: overlap.capOpacity,
+          top: `-${Math.min(overlap.lift * 0.85, 120)}px`,
+        }}
+      />
 
       <div className="relative min-h-screen overflow-hidden">
         <div className="absolute inset-0">
