@@ -8,7 +8,7 @@ const IntroSection = () => {
   );
 
   return (
-    <section className="pt-20 md:pt-28 pb-40 md:pb-52 bg-background">
+    <section className="pt-20 md:pt-28 pb-32 md:pb-44 bg-background">
       <div className="container mx-auto px-4">
         <motion.p
           initial={{ opacity: 0, y: 30 }}
