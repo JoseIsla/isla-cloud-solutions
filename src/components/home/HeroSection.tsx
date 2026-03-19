@@ -251,12 +251,7 @@ const HeroSection = () => {
           </AnimatePresence>
         </div>
       </div>
-                )}
-              </div>
-            </motion.div>
-          </AnimatePresence>
-        </div>
-      </div>
+
 
       {/* Floating tab bar — Devoteam style */}
       <div className="absolute bottom-6 md:bottom-12 left-0 right-0 z-10">
