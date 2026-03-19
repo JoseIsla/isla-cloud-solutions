@@ -23,7 +23,7 @@ import PanelNoticias from "./pages/panel/PanelNoticias";
 import PanelContactos from "./pages/panel/PanelContactos";
 import PanelContenidos from "./pages/panel/PanelContenidos";
 import PanelClientes from "./pages/panel/PanelClientes";
-
+import PanelCasos from "./pages/panel/PanelCasos";
 const queryClient = new QueryClient();
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
