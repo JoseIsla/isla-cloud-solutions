@@ -15,7 +15,7 @@ const IntroSection = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="text-xl md:text-2xl lg:text-3xl font-heading font-medium leading-relaxed max-w-5xl animated-gradient-text"
+          className="text-xl md:text-2xl lg:text-3xl font-heading font-medium leading-relaxed max-w-5xl mx-auto text-center animated-gradient-text"
         >
           {introText}
         </motion.p>
