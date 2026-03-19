@@ -8,7 +8,7 @@ const IntroSection = () => {
   );
 
   return (
-    <section className="relative z-0 overflow-visible bg-background pt-20 md:pt-28 pb-20 md:pb-28 lg:pb-32">
+    <section className="relative z-0 bg-background pt-20 md:pt-28 pb-32 md:pb-40 lg:pb-48">
       <div className="container mx-auto px-4">
         <motion.p
           initial={{ opacity: 0, y: 30 }}
