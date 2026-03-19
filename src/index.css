@@ -146,17 +146,17 @@
   .animated-gradient-text {
     background: linear-gradient(
       90deg,
-      hsl(var(--foreground)) 0%,
-      hsl(var(--primary)) 25%,
-      hsl(var(--tech-cyan)) 50%,
-      hsl(var(--primary)) 75%,
-      hsl(var(--foreground)) 100%
+      hsl(var(--muted-foreground)) 0%,
+      hsl(var(--primary) / 0.7) 25%,
+      hsl(var(--tech-cyan) / 0.6) 50%,
+      hsl(var(--primary) / 0.7) 75%,
+      hsl(var(--muted-foreground)) 100%
     );
     background-size: 300% 100%;
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    animation: gradient-shift 6s ease-in-out infinite;
+    animation: gradient-shift 12s ease-in-out infinite;
   }
 
   @keyframes gradient-shift {
