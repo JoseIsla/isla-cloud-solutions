@@ -46,7 +46,7 @@ const ServicesSection = () => {
   return (
     <section
       id="servicios"
-      className="relative min-h-screen flex items-center -mt-20 md:-mt-28"
+      className="relative min-h-screen flex items-center -mt-24 md:-mt-32 z-10 rounded-t-3xl overflow-hidden"
     >
       {/* Full-bleed background image */}
       <div className="absolute inset-0">
