@@ -34,6 +34,20 @@ const HeroSection = () => {
   const ctaSecondary = useCMSValue('hero_cta_secondary', 'Nuestros servicios');
   const badge = useCMSValue('hero_badge', 'Tu socio tecnológico de confianza');
 
+  const tab1Label = useCMSValue('hero_tab1_label', 'Isla Cloud Solutions');
+  const tab2Label = useCMSValue('hero_tab2_label', 'Último en el Blog');
+  const tab3Label = useCMSValue('hero_tab3_label', 'Casos de Éxito');
+
+  const slide2Fallback = useCMSValue('hero_slide2_title', 'Novedades en nuestro blog');
+  const slide2FallbackDesc = useCMSValue('hero_slide2_subtitle', 'Descubre las últimas noticias y artículos sobre tecnología empresarial.');
+  const slide2Cta = useCMSValue('hero_slide2_cta', 'Leer artículo');
+  const slide2CtaSec = useCMSValue('hero_slide2_cta_secondary', 'Ver todo el blog');
+
+  const slide3Fallback = useCMSValue('hero_slide3_title', 'Nuestros clientes hablan por nosotros');
+  const slide3FallbackDesc = useCMSValue('hero_slide3_subtitle', 'Descubre cómo hemos ayudado a empresas como la tuya a crecer con tecnología.');
+  const slide3Cta = useCMSValue('hero_slide3_cta', 'Solicitar consulta');
+  const slide3CtaSec = useCMSValue('hero_slide3_cta_secondary', 'Nuestros servicios');
+
   useEffect(() => {
     newsApi.list().then((news) => {
       const published = news.filter((n) => n.is_published);
@@ -52,7 +66,7 @@ const HeroSection = () => {
 
   const slides: SlideData[] = [
     {
-      tabLabel: "Isla Cloud Solutions",
+      tabLabel: tab1Label,
       badge,
       title,
       titleHighlight: "Tecnología",
@@ -61,27 +75,26 @@ const HeroSection = () => {
       ctaSecondary: { text: ctaSecondary, to: "/servicios" },
     },
     {
-      tabLabel: "Último en el Blog",
+      tabLabel: tab2Label,
       badge: latestNews?.category || "Blog",
-      title: latestNews?.title || "Novedades en nuestro blog",
-      subtitle: latestNews?.excerpt || "Descubre las últimas noticias y artículos sobre tecnología empresarial.",
+      title: latestNews?.title || slide2Fallback,
+      subtitle: latestNews?.excerpt || slide2FallbackDesc,
       ctaPrimary: {
-        text: "Leer artículo",
+        text: slide2Cta,
         to: latestNews ? `/blog/${latestNews.slug}` : "/blog",
       },
-      ctaSecondary: { text: "Ver todo el blog", to: "/blog" },
+      ctaSecondary: { text: slide2CtaSec, to: "/blog" },
     },
     {
-      tabLabel: "Casos de Éxito",
+      tabLabel: tab3Label,
       badge: currentCase?.client_name || "Caso de éxito",
-      title: currentCase?.title || "Nuestros clientes hablan por nosotros",
-      subtitle: currentCase?.excerpt || "Descubre cómo hemos ayudado a empresas como la tuya a crecer con tecnología.",
-      ctaPrimary: { text: "Solicitar consulta", to: "/contacto" },
-      ctaSecondary: { text: "Nuestros servicios", to: "/servicios" },
+      title: currentCase?.title || slide3Fallback,
+      subtitle: currentCase?.excerpt || slide3FallbackDesc,
+      ctaPrimary: { text: slide3Cta, to: "/contacto" },
+      ctaSecondary: { text: slide3CtaSec, to: "/servicios" },
     },
   ];
 
-  // Measure tab positions for the sliding indicator
   useEffect(() => {
     const updateIndicator = () => {
       const container = tabsContainerRef.current;
@@ -124,7 +137,6 @@ const HeroSection = () => {
 
   return (
     <section className="relative h-screen flex items-center overflow-hidden">
-      {/* Background — per-slide image with zoom */}
       <div className="absolute inset-0">
         <AnimatePresence initial={false}>
           <motion.img
@@ -142,7 +154,6 @@ const HeroSection = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30" />
       </div>
 
-      {/* Content */}
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-3xl">
           <AnimatePresence mode="wait">
@@ -157,7 +168,6 @@ const HeroSection = () => {
                 exit: { transition: { staggerChildren: 0.03 } },
               }}
             >
-              {/* Badge */}
               <motion.div
                 className="overflow-hidden mb-4"
                 variants={{
@@ -178,7 +188,6 @@ const HeroSection = () => {
                 </motion.span>
               </motion.div>
 
-              {/* Title */}
               <motion.div
                 className="overflow-hidden mb-8"
                 variants={{
@@ -199,7 +208,6 @@ const HeroSection = () => {
                 </motion.h1>
               </motion.div>
 
-              {/* Subtitle */}
               <motion.div
                 className="overflow-hidden mb-10"
                 variants={{
@@ -220,7 +228,6 @@ const HeroSection = () => {
                 </motion.p>
               </motion.div>
 
-              {/* CTAs */}
               <motion.div
                 className="flex flex-col sm:flex-row gap-4"
                 variants={{
@@ -252,15 +259,10 @@ const HeroSection = () => {
         </div>
       </div>
 
-
-      {/* Floating tab bar — Devoteam style */}
       <div className="absolute bottom-6 md:bottom-12 left-0 right-0 z-10">
         <div className="container mx-auto px-4">
           <div className="mx-0 md:mx-16 lg:mx-24 relative" ref={tabsContainerRef}>
-            {/* Background track line */}
             <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-white/10" />
-
-            {/* Sliding indicator — spring bounce like Devoteam */}
             <motion.div
               className="absolute bottom-0 h-[3px]"
               style={{ background: "hsl(var(--primary))" }}
@@ -275,7 +277,6 @@ const HeroSection = () => {
                 mass: 1,
               }}
             />
-
             <div className="flex">
               {slides.map((slide, index) => (
                 <button

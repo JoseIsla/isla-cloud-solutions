@@ -10,12 +10,16 @@ const CTASection = () => {
   const buttonText = useCMSValue('cta_button', 'Solicitar consulta gratuita');
   const phone = useCMSValue('contact_phone', '+34 900 000 000');
 
+  const card1Title = useCMSValue('cta_card1_title', '¿Necesitas ayuda?');
+  const card1Desc = useCMSValue('cta_card1_desc', 'Llama a nuestro equipo y te ayudaremos.');
+  const card2Title = useCMSValue('cta_card2_title', 'Enfoque proactivo');
+  const card2Desc = useCMSValue('cta_card2_desc', 'Precios flexibles y adaptados. Solo pagas por lo que necesitas, cuando lo necesitas.');
+
   return (
     <section className="py-20 md:py-28 bg-hero relative overflow-hidden">
       <div className="absolute inset-0 grid-pattern opacity-15" />
       <div className="container mx-auto px-4 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Left - Main CTA */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -39,7 +43,6 @@ const CTASection = () => {
             </Button>
           </motion.div>
 
-          {/* Right - Contact cards */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -51,8 +54,8 @@ const CTASection = () => {
               <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center mb-4">
                 <Phone size={22} className="text-primary" />
               </div>
-              <h3 className="text-white font-heading font-bold mb-2">¿Necesitas ayuda?</h3>
-              <p className="text-white/50 text-sm mb-3">Llama a nuestro equipo y te ayudaremos.</p>
+              <h3 className="text-white font-heading font-bold mb-2">{card1Title}</h3>
+              <p className="text-white/50 text-sm mb-3">{card1Desc}</p>
               <a href={`tel:${phone.replace(/\s/g, '')}`} className="text-primary text-sm font-semibold hover:underline">
                 {phone}
               </a>
@@ -61,8 +64,8 @@ const CTASection = () => {
               <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center mb-4">
                 <Settings size={22} className="text-primary" />
               </div>
-              <h3 className="text-white font-heading font-bold mb-2">Enfoque proactivo</h3>
-              <p className="text-white/50 text-sm">Precios flexibles y adaptados. Solo pagas por lo que necesitas, cuando lo necesitas.</p>
+              <h3 className="text-white font-heading font-bold mb-2">{card2Title}</h3>
+              <p className="text-white/50 text-sm">{card2Desc}</p>
             </div>
           </motion.div>
         </div>
