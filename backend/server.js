@@ -48,6 +48,7 @@ app.use('/api/contacts', contactsRoutes);
 app.use('/api/contents', contentsRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/clients', clientsRoutes);
+app.use('/api/cases', casesRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
