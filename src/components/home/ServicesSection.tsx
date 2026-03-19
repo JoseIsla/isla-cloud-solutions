@@ -112,15 +112,18 @@ const ServicesSection = () => {
       className="relative z-20"
       style={{ marginTop: `-${overlap.lift}px` }}
     >
-      <div className="relative min-h-screen overflow-visible">
-        <div
-          aria-hidden="true"
-          className="services-overlap-cap pointer-events-none absolute inset-x-0 top-0 z-20 h-20 md:h-24 lg:h-28"
-          style={{ opacity: overlap.capOpacity }}
-        />
+      {/* Gradient cap OUTSIDE/ABOVE the section to fade out the intro text */}
+      <div
+        aria-hidden="true"
+        className="services-overlap-cap pointer-events-none absolute inset-x-0 z-30 h-24 md:h-32 lg:h-40"
+        style={{
+          opacity: overlap.capOpacity,
+          top: `-${Math.min(overlap.lift, 96)}px`,
+        }}
+      />
 
-        <div className="relative min-h-screen overflow-hidden rounded-t-[2rem] md:rounded-t-[2.75rem]">
-          <div className="absolute inset-0">
+      <div className="relative min-h-screen overflow-hidden">
+        <div className="absolute inset-0">
             <img
               src={servicesBg}
               alt=""
