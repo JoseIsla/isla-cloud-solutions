@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import logo from "@/assets/logo.png";
 
 const navLinks = [
   { label: "Inicio", path: "/" },
-  { label: "Servicios", path: "/servicios" },
+  { label: "Servicios", path: "/#servicios" },
   { label: "Sobre Nosotros", path: "/sobre-nosotros" },
   { label: "Blog", path: "/blog" },
   { label: "Contacto", path: "/contacto" },
