@@ -15,10 +15,9 @@ const IntroSection = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="text-xl md:text-2xl lg:text-3xl font-heading font-medium leading-relaxed text-foreground/80 max-w-5xl"
+          className="text-xl md:text-2xl lg:text-3xl font-heading font-medium leading-relaxed max-w-5xl animated-gradient-text"
         >
-          <span className="text-gradient font-bold">Isla Cloud Solutions</span>{" "}
-          {introText.replace('Isla Cloud Solutions ', '')}
+          {introText}
         </motion.p>
       </div>
     </section>
