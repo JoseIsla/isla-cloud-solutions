@@ -148,24 +148,87 @@ const HeroSection = () => {
           <AnimatePresence mode="wait">
             <motion.div
               key={activeSlide}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.5 }}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              variants={{
+                hidden: {},
+                visible: { transition: { staggerChildren: 0.12, delayChildren: 0.1 } },
+                exit: { transition: { staggerChildren: 0.05 } },
+              }}
             >
-              <span className="inline-block text-white/60 text-sm md:text-base font-body mb-4 uppercase tracking-wider">
-                {currentSlideData.badge}
-              </span>
+              {/* Badge */}
+              <motion.div
+                className="overflow-hidden mb-4"
+                variants={{
+                  hidden: { opacity: 0 },
+                  visible: { opacity: 1 },
+                  exit: { opacity: 0 },
+                }}
+              >
+                <motion.span
+                  className="inline-block text-white/60 text-sm md:text-base font-body uppercase tracking-wider"
+                  variants={{
+                    hidden: { y: "100%" },
+                    visible: { y: 0, transition: { duration: 0.6, ease: [0.33, 1, 0.68, 1] } },
+                    exit: { y: "-100%", transition: { duration: 0.3, ease: [0.33, 1, 0.68, 1] } },
+                  }}
+                >
+                  {currentSlideData.badge}
+                </motion.span>
+              </motion.div>
 
-              <h1 className="text-4xl md:text-5xl lg:text-[3.5rem] xl:text-6xl font-heading font-bold text-white leading-[1.1] mb-8">
-                {renderTitle(currentSlideData)}
-              </h1>
+              {/* Title */}
+              <motion.div
+                className="overflow-hidden mb-8"
+                variants={{
+                  hidden: { opacity: 0 },
+                  visible: { opacity: 1 },
+                  exit: { opacity: 0 },
+                }}
+              >
+                <motion.h1
+                  className="text-4xl md:text-5xl lg:text-[3.5rem] xl:text-6xl font-heading font-bold text-white leading-[1.1]"
+                  variants={{
+                    hidden: { y: "100%" },
+                    visible: { y: 0, transition: { duration: 0.7, ease: [0.33, 1, 0.68, 1] } },
+                    exit: { y: "-100%", transition: { duration: 0.3, ease: [0.33, 1, 0.68, 1] } },
+                  }}
+                >
+                  {renderTitle(currentSlideData)}
+                </motion.h1>
+              </motion.div>
 
-              <p className="text-lg md:text-xl text-white/60 mb-10 max-w-2xl leading-relaxed">
-                {currentSlideData.subtitle}
-              </p>
+              {/* Subtitle */}
+              <motion.div
+                className="overflow-hidden mb-10"
+                variants={{
+                  hidden: { opacity: 0 },
+                  visible: { opacity: 1 },
+                  exit: { opacity: 0 },
+                }}
+              >
+                <motion.p
+                  className="text-lg md:text-xl text-white/60 max-w-2xl leading-relaxed"
+                  variants={{
+                    hidden: { y: "100%" },
+                    visible: { y: 0, transition: { duration: 0.7, ease: [0.33, 1, 0.68, 1] } },
+                    exit: { y: "-100%", transition: { duration: 0.3, ease: [0.33, 1, 0.68, 1] } },
+                  }}
+                >
+                  {currentSlideData.subtitle}
+                </motion.p>
+              </motion.div>
 
-              <div className="flex flex-col sm:flex-row gap-4">
+              {/* CTAs */}
+              <motion.div
+                className="flex flex-col sm:flex-row gap-4"
+                variants={{
+                  hidden: { opacity: 0, y: 30 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.33, 1, 0.68, 1] } },
+                  exit: { opacity: 0, y: -20, transition: { duration: 0.25 } },
+                }}
+              >
                 <Button variant="hero" size="xl" asChild>
                   <Link to={currentSlideData.ctaPrimary.to}>
                     {currentSlideData.ctaPrimary.text} <ArrowRight size={20} />
@@ -183,11 +246,12 @@ const HeroSection = () => {
                     </Link>
                   </Button>
                 )}
-              </div>
+              </motion.div>
             </motion.div>
           </AnimatePresence>
         </div>
       </div>
+
 
       {/* Floating tab bar — Devoteam style */}
       <div className="absolute bottom-6 md:bottom-12 left-0 right-0 z-10">
