@@ -59,7 +59,7 @@ const SobreNosotros = () => {
             viewport={{ once: true }}
             className="text-3xl font-heading font-bold text-foreground text-center mb-16"
           >
-            Nuestros valores
+            {useCMSValue('about_values_title', 'Nuestros valores')}
           </motion.h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {values.map((value, index) => {
