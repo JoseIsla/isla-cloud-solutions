@@ -172,6 +172,44 @@ async function initDB() {
     ['counter_systems_label', 'Contador: Sistemas (etiqueta)', 'Sistemas administrados', 'text'],
     // Footer
     ['footer_description', 'Descripción footer', 'Soluciones Cloud y tecnología IT para empresas. Más de 20 años de experiencia como tu socio tecnológico.', 'text'],
+    // Hero tabs & slides
+    ['hero_badge', 'Badge del Hero', 'Soluciones IT Profesionales', 'text'],
+    ['hero_tab1_label', 'Hero Tab 1', 'Infraestructura', 'text'],
+    ['hero_tab2_label', 'Hero Tab 2', 'Cloud', 'text'],
+    ['hero_tab3_label', 'Hero Tab 3', 'Seguridad', 'text'],
+    ['hero_slide2_title', 'Hero Slide 2 Título', 'Cloud Computing Empresarial', 'text'],
+    ['hero_slide2_subtitle', 'Hero Slide 2 Subtítulo', 'Migra tu infraestructura a la nube con seguridad y rendimiento garantizado.', 'text'],
+    ['hero_slide2_cta', 'Hero Slide 2 Botón principal', 'Migrar a la nube', 'text'],
+    ['hero_slide2_cta_secondary', 'Hero Slide 2 Botón secundario', 'Ver soluciones cloud', 'text'],
+    ['hero_slide3_title', 'Hero Slide 3 Título', 'Ciberseguridad Avanzada', 'text'],
+    ['hero_slide3_subtitle', 'Hero Slide 3 Subtítulo', 'Protege tu empresa con soluciones de seguridad de última generación.', 'text'],
+    ['hero_slide3_cta', 'Hero Slide 3 Botón principal', 'Proteger mi empresa', 'text'],
+    ['hero_slide3_cta_secondary', 'Hero Slide 3 Botón secundario', 'Ver servicios de seguridad', 'text'],
+    // Trust badge
+    ['trust_section_label', 'Trust Sección Etiqueta', 'Confianza', 'text'],
+    ['trust_section_title', 'Trust Sección Título', 'Verificados por plataformas independientes', 'text'],
+    ['trust_section_subtitle', 'Trust Sección Subtítulo', 'Nuestra reputación está respaldada por reseñas reales de clientes en plataformas de confianza.', 'text'],
+    ['trust_badge_name', 'Trust Badge Nombre', 'TrustLocal', 'text'],
+    ['trust_badge_score', 'Trust Badge Puntuación', '9,0', 'text'],
+    ['trust_badge_max_score', 'Trust Badge Puntuación máxima', '10', 'text'],
+    ['trust_badge_reviews', 'Trust Badge Reseñas', '10', 'text'],
+    ['trust_badge_url', 'Trust Badge URL', 'https://trustlocal.es/madrid/parla/diseno-web/isla-cloud-solutions/', 'text'],
+    ['trust_badge_stars', 'Trust Badge Estrellas', '4.5', 'text'],
+    ['trust_badge_description', 'Trust Badge Descripción', 'Diseñadores web en Parla', 'text'],
+    // CTA cards
+    ['cta_card1_title', 'CTA Tarjeta 1 Título', '¿Necesitas ayuda?', 'text'],
+    ['cta_card1_desc', 'CTA Tarjeta 1 Descripción', 'Llama a nuestro equipo y te ayudaremos.', 'text'],
+    ['cta_card2_title', 'CTA Tarjeta 2 Título', 'Enfoque proactivo', 'text'],
+    ['cta_card2_desc', 'CTA Tarjeta 2 Descripción', 'Precios flexibles y adaptados. Solo pagas por lo que necesitas, cuando lo necesitas.', 'text'],
+    // WhyUs extra
+    ['whyus_section_label', 'WhyUs Sección Etiqueta', '¿Por qué elegirnos?', 'text'],
+    ['whyus_section_subtitle', 'WhyUs Sección Subtítulo', 'Razones por las que más de 60 empresas confían en Isla Cloud.', 'text'],
+    // Intro
+    ['intro_text', 'Texto de introducción', '<p>Somos tu socio tecnológico. Gestionamos, protegemos y optimizamos toda tu infraestructura IT para que tú te centres en hacer crecer tu negocio.</p>', 'html'],
+    // Contact data
+    ['contact_phone', 'Teléfono de contacto', '+34 910 000 000', 'text'],
+    ['contact_email', 'Email de contacto', 'info@islacloudsolutions.com', 'text'],
+    ['contact_address', 'Dirección', 'Madrid, España', 'text'],
   ];
 
   for (const [key, title, value, type] of defaultContents) {
