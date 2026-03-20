@@ -219,6 +219,13 @@ async function initDB() {
     // About page extras
     ['about_history_title', 'Título sección Historia', 'Nuestra historia', 'text'],
     ['about_values_title', 'Título sección Valores', 'Nuestros valores', 'text'],
+    // Navigation
+    ['nav_link1_label', 'Nav: Enlace 1', 'Inicio', 'text'],
+    ['nav_link2_label', 'Nav: Enlace 2', 'Servicios', 'text'],
+    ['nav_link3_label', 'Nav: Enlace 3', 'Sobre Nosotros', 'text'],
+    ['nav_link4_label', 'Nav: Enlace 4', 'Blog', 'text'],
+    ['nav_link5_label', 'Nav: Enlace 5', 'Contacto', 'text'],
+    ['nav_cta_text', 'Nav: Botón CTA', 'Solicitar Consulta', 'text'],
   ];
 
   for (const [key, title, value, type] of defaultContents) {

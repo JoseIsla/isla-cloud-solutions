@@ -3,16 +3,24 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import logo from "@/assets/logo.png";
-
-const navLinks = [
-  { label: "Inicio", path: "/" },
-  { label: "Servicios", path: "/#servicios" },
-  { label: "Sobre Nosotros", path: "/sobre-nosotros" },
-  { label: "Blog", path: "/blog" },
-  { label: "Contacto", path: "/contacto" },
-];
+import { useCMSValue } from "@/hooks/useCMS";
 
 const Navbar = () => {
+  const nav1 = useCMSValue('nav_link1_label', 'Inicio');
+  const nav2 = useCMSValue('nav_link2_label', 'Servicios');
+  const nav3 = useCMSValue('nav_link3_label', 'Sobre Nosotros');
+  const nav4 = useCMSValue('nav_link4_label', 'Blog');
+  const nav5 = useCMSValue('nav_link5_label', 'Contacto');
+  const navCta = useCMSValue('nav_cta_text', 'Solicitar Consulta');
+
+  const navLinks = [
+    { label: nav1, path: "/" },
+    { label: nav2, path: "/#servicios" },
+    { label: nav3, path: "/sobre-nosotros" },
+    { label: nav4, path: "/blog" },
+    { label: nav5, path: "/contacto" },
+  ];
+
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
@@ -93,7 +101,7 @@ const Navbar = () => {
 
           <div className="hidden lg:block">
             <Button variant="hero" size="default" asChild>
-              <Link to="/contacto">Solicitar Consulta</Link>
+              <Link to="/contacto">{navCta}</Link>
             </Button>
           </div>
 
@@ -144,7 +152,7 @@ const Navbar = () => {
               })}
               <Button variant="hero" size="default" className="mt-2" asChild>
                 <Link to="/contacto" onClick={() => setIsOpen(false)}>
-                  Solicitar Consulta
+                  {navCta}
                 </Link>
               </Button>
             </div>
