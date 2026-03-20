@@ -84,8 +84,19 @@ const sectionGroups: SectionGroup[] = [
     description: 'Datos de contacto y descripción del pie de página.',
     keys: [
       'contact_phone', 'contact_email', 'contact_address',
+      'contact_title', 'contact_subtitle',
       'footer_description',
     ],
+  },
+  {
+    label: '📰 Blog (Página)',
+    description: 'Título y subtítulo de la página del blog.',
+    keys: ['blog_page_title', 'blog_page_subtitle'],
+  },
+  {
+    label: '🏢 Sobre Nosotros',
+    description: 'Textos de la página Sobre Nosotros.',
+    keys: ['about_title', 'about_subtitle', 'about_history_title', 'about_history', 'about_values_title'],
   },
 ];
 
