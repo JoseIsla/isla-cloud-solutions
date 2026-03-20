@@ -98,6 +98,11 @@ const sectionGroups: SectionGroup[] = [
     description: 'Textos de la página Sobre Nosotros.',
     keys: ['about_title', 'about_subtitle', 'about_history_title', 'about_history', 'about_values_title'],
   },
+  {
+    label: '🧭 Navegación',
+    description: 'Etiquetas del menú de navegación y botón CTA.',
+    keys: ['nav_link1_label', 'nav_link2_label', 'nav_link3_label', 'nav_link4_label', 'nav_link5_label', 'nav_cta_text'],
+  },
 ];
 
 const allKnownKeys = sectionGroups.flatMap(g => g.keys);
