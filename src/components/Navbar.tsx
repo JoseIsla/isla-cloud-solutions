@@ -153,7 +153,7 @@ const Navbar = () => {
               })}
               <Button variant="hero" size="default" className="mt-2" asChild>
                 <Link to="/contacto" onClick={() => setIsOpen(false)}>
-                  Solicitar Consulta
+                  {navCta}
                 </Link>
               </Button>
             </div>
