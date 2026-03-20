@@ -21,7 +21,6 @@ const Navbar = () => {
     { label: nav5, path: "/contacto" },
   ];
 
-const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
