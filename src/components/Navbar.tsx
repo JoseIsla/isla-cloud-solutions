@@ -102,7 +102,7 @@ const Navbar = () => {
 
           <div className="hidden lg:block">
             <Button variant="hero" size="default" asChild>
-              <Link to="/contacto">Solicitar Consulta</Link>
+              <Link to="/contacto">{navCta}</Link>
             </Button>
           </div>
 
