@@ -210,6 +210,15 @@ async function initDB() {
     ['contact_phone', 'Teléfono de contacto', '+34 910 000 000', 'text'],
     ['contact_email', 'Email de contacto', 'info@islacloudsolutions.com', 'text'],
     ['contact_address', 'Dirección', 'Madrid, España', 'text'],
+    // Services page
+    ['services_page_title', 'Título página Servicios', 'Soluciones IT completas para tu negocio', 'text'],
+    ['services_page_subtitle', 'Subtítulo página Servicios', 'Descubre todos nuestros servicios tecnológicos diseñados para impulsar la productividad y seguridad de tu empresa.', 'text'],
+    // Blog page
+    ['blog_page_title', 'Título página Blog', 'Noticias y actualidad IT', 'text'],
+    ['blog_page_subtitle', 'Subtítulo página Blog', 'Mantente al día con las últimas noticias del sector tecnológico y novedades de Isla Cloud Solutions.', 'text'],
+    // About page extras
+    ['about_history_title', 'Título sección Historia', 'Nuestra historia', 'text'],
+    ['about_values_title', 'Título sección Valores', 'Nuestros valores', 'text'],
   ];
 
   for (const [key, title, value, type] of defaultContents) {
