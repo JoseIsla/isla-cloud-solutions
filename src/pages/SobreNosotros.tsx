@@ -40,7 +40,7 @@ const SobreNosotros = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto">
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-              <h2 className="text-3xl font-heading font-bold text-foreground mb-8">Nuestra historia</h2>
+              <h2 className="text-3xl font-heading font-bold text-foreground mb-8">{useCMSValue('about_history_title', 'Nuestra historia')}</h2>
               <div
                 className="space-y-6 text-muted-foreground leading-relaxed prose prose-p:text-muted-foreground"
                 dangerouslySetInnerHTML={{ __html: history }}
@@ -59,7 +59,7 @@ const SobreNosotros = () => {
             viewport={{ once: true }}
             className="text-3xl font-heading font-bold text-foreground text-center mb-16"
           >
-            Nuestros valores
+            {useCMSValue('about_values_title', 'Nuestros valores')}
           </motion.h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {values.map((value, index) => {

@@ -32,8 +32,8 @@ const sectionGroups: SectionGroup[] = [
   },
   {
     label: '⚙️ Servicios',
-    description: 'Título de la sección de servicios en el landing.',
-    keys: ['services_section_title'],
+    description: 'Título de la sección de servicios en el landing y página de servicios.',
+    keys: ['services_section_title', 'services_page_title', 'services_page_subtitle'],
   },
   {
     label: '✅ ¿Por qué elegirnos?',
@@ -84,8 +84,19 @@ const sectionGroups: SectionGroup[] = [
     description: 'Datos de contacto y descripción del pie de página.',
     keys: [
       'contact_phone', 'contact_email', 'contact_address',
+      'contact_title', 'contact_subtitle',
       'footer_description',
     ],
+  },
+  {
+    label: '📰 Blog (Página)',
+    description: 'Título y subtítulo de la página del blog.',
+    keys: ['blog_page_title', 'blog_page_subtitle'],
+  },
+  {
+    label: '🏢 Sobre Nosotros',
+    description: 'Textos de la página Sobre Nosotros.',
+    keys: ['about_title', 'about_subtitle', 'about_history_title', 'about_history', 'about_values_title'],
   },
 ];
 

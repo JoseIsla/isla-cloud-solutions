@@ -4,6 +4,7 @@ import { ArrowRight, Server, Shield, Cloud, Monitor, Globe, Smartphone, Lock, Wr
 import Layout from "@/components/Layout";
 import { services as fallbackServices } from "@/data/services";
 import { servicesApi, type ServiceFromAPI } from "@/lib/api";
+import { useCMSValue } from "@/hooks/useCMS";
 import { useEffect, useState } from "react";
 
 const iconMap: Record<string, LucideIcon> = {
@@ -29,10 +30,10 @@ const ServiciosPage = () => {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-2xl">
             <span className="text-primary text-sm font-semibold uppercase tracking-wider">Servicios</span>
             <h1 className="text-4xl md:text-5xl font-heading font-bold text-hero-foreground mt-3 mb-6">
-              Soluciones IT completas para tu negocio
+              {useCMSValue('services_page_title', 'Soluciones IT completas para tu negocio')}
             </h1>
             <p className="text-hero-foreground/70 text-lg">
-              Descubre todos nuestros servicios tecnológicos diseñados para impulsar la productividad y seguridad de tu empresa.
+              {useCMSValue('services_page_subtitle', 'Descubre todos nuestros servicios tecnológicos diseñados para impulsar la productividad y seguridad de tu empresa.')}
             </p>
           </motion.div>
         </div>
