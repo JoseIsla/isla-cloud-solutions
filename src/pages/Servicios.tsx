@@ -4,6 +4,7 @@ import { ArrowRight, Server, Shield, Cloud, Monitor, Globe, Smartphone, Lock, Wr
 import Layout from "@/components/Layout";
 import { services as fallbackServices } from "@/data/services";
 import { servicesApi, type ServiceFromAPI } from "@/lib/api";
+import { useCMSValue } from "@/hooks/useCMS";
 import { useEffect, useState } from "react";
 
 const iconMap: Record<string, LucideIcon> = {

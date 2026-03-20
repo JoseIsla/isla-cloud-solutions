@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { newsApi, type NewsFromAPI } from "@/lib/api";
+import { useCMSValue } from "@/hooks/useCMS";
 
 const BlogPage = () => {
   const [posts, setPosts] = useState<NewsFromAPI[]>([]);
