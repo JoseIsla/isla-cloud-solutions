@@ -32,8 +32,8 @@ const sectionGroups: SectionGroup[] = [
   },
   {
     label: '⚙️ Servicios',
-    description: 'Título de la sección de servicios en el landing.',
-    keys: ['services_section_title'],
+    description: 'Título de la sección de servicios en el landing y página de servicios.',
+    keys: ['services_section_title', 'services_page_title', 'services_page_subtitle'],
   },
   {
     label: '✅ ¿Por qué elegirnos?',
