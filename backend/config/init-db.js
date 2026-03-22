@@ -226,6 +226,18 @@ async function initDB() {
     ['nav_link4_label', 'Nav: Enlace 4', 'Blog', 'text'],
     ['nav_link5_label', 'Nav: Enlace 5', 'Contacto', 'text'],
     ['nav_cta_text', 'Nav: Botón CTA', 'Solicitar Consulta', 'text'],
+    // Navigation visibility
+    ['nav_link1_visible', 'Nav: Enlace 1 Visible', 'true', 'text'],
+    ['nav_link2_visible', 'Nav: Enlace 2 Visible', 'true', 'text'],
+    ['nav_link3_visible', 'Nav: Enlace 3 Visible', 'true', 'text'],
+    ['nav_link4_visible', 'Nav: Enlace 4 Visible', 'true', 'text'],
+    ['nav_link5_visible', 'Nav: Enlace 5 Visible', 'true', 'text'],
+    // Navigation order
+    ['nav_link1_order', 'Nav: Enlace 1 Orden', '1', 'text'],
+    ['nav_link2_order', 'Nav: Enlace 2 Orden', '2', 'text'],
+    ['nav_link3_order', 'Nav: Enlace 3 Orden', '3', 'text'],
+    ['nav_link4_order', 'Nav: Enlace 4 Orden', '4', 'text'],
+    ['nav_link5_order', 'Nav: Enlace 5 Orden', '5', 'text'],
   ];
 
   for (const [key, title, value, type] of defaultContents) {
