@@ -54,7 +54,7 @@ const Footer = () => {
           {/* Services */}
           <div>
             <h4 className="font-heading font-semibold text-sm uppercase tracking-wider mb-4 text-primary">
-              Servicios
+              {footerServicesTitle}
             </h4>
             <ul className="space-y-2 text-sm text-hero-foreground/60">
               {serviceLinks.map(s => (
