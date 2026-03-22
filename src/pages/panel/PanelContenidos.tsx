@@ -12,6 +12,7 @@ interface SectionGroup {
   label: string;
   description: string;
   keys: string[];
+  customRenderer?: boolean;
 }
 
 const sectionGroups: SectionGroup[] = [
