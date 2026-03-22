@@ -210,6 +210,16 @@ async function initDB() {
     ['contact_phone', 'Teléfono de contacto', '+34 910 000 000', 'text'],
     ['contact_email', 'Email de contacto', 'info@islacloudsolutions.com', 'text'],
     ['contact_address', 'Dirección', 'Madrid, España', 'text'],
+    // Footer
+    ['footer_services_title', 'Footer: Título Servicios', 'Servicios', 'text'],
+    ['footer_company_title', 'Footer: Título Empresa', 'Empresa', 'text'],
+    ['footer_contact_title', 'Footer: Título Contacto', 'Contacto', 'text'],
+    ['footer_company_link1', 'Footer: Enlace Empresa 1', 'Sobre Nosotros', 'text'],
+    ['footer_company_link2', 'Footer: Enlace Empresa 2', 'Noticias', 'text'],
+    ['footer_company_link3', 'Footer: Enlace Empresa 3', 'Contacto', 'text'],
+    ['footer_legal_link1', 'Footer: Enlace Legal 1', 'Política de Privacidad', 'text'],
+    ['footer_legal_link2', 'Footer: Enlace Legal 2', 'Aviso Legal', 'text'],
+    ['footer_copyright', 'Footer: Copyright', '© {year} Isla Cloud Solutions. Todos los derechos reservados.', 'text'],
     // Services page
     ['services_page_title', 'Título página Servicios', 'Soluciones IT completas para tu negocio', 'text'],
     ['services_page_subtitle', 'Subtítulo página Servicios', 'Descubre todos nuestros servicios tecnológicos diseñados para impulsar la productividad y seguridad de tu empresa.', 'text'],
