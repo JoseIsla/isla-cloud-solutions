@@ -9,6 +9,15 @@ const Footer = () => {
   const contactEmail = useCMSValue('contact_email', 'info@islacloudsolutions.com');
   const contactPhone = useCMSValue('contact_phone', '+34 900 000 000');
   const contactAddress = useCMSValue('contact_address', 'España');
+  const footerServicesTitle = useCMSValue('footer_services_title', 'Servicios');
+  const footerCompanyTitle = useCMSValue('footer_company_title', 'Empresa');
+  const footerContactTitle = useCMSValue('footer_contact_title', 'Contacto');
+  const footerCompanyLink1 = useCMSValue('footer_company_link1', 'Sobre Nosotros');
+  const footerCompanyLink2 = useCMSValue('footer_company_link2', 'Noticias');
+  const footerCompanyLink3 = useCMSValue('footer_company_link3', 'Contacto');
+  const footerLegal1 = useCMSValue('footer_legal_link1', 'Política de Privacidad');
+  const footerLegal2 = useCMSValue('footer_legal_link2', 'Aviso Legal');
+  const footerCopyright = useCMSValue('footer_copyright', '© {year} Isla Cloud Solutions. Todos los derechos reservados.');
 
   const [apiServices, setApiServices] = useState<ServiceFromAPI[] | null>(null);
 
@@ -45,7 +54,7 @@ const Footer = () => {
           {/* Services */}
           <div>
             <h4 className="font-heading font-semibold text-sm uppercase tracking-wider mb-4 text-primary">
-              Servicios
+              {footerServicesTitle}
             </h4>
             <ul className="space-y-2 text-sm text-hero-foreground/60">
               {serviceLinks.map(s => (
@@ -61,19 +70,19 @@ const Footer = () => {
           {/* Company */}
           <div>
             <h4 className="font-heading font-semibold text-sm uppercase tracking-wider mb-4 text-primary">
-              Empresa
+              {footerCompanyTitle}
             </h4>
             <ul className="space-y-2 text-sm text-hero-foreground/60">
-              <li><Link to="/sobre-nosotros" className="hover:text-primary transition-colors">Sobre Nosotros</Link></li>
-              <li><Link to="/blog" className="hover:text-primary transition-colors">Noticias</Link></li>
-              <li><Link to="/contacto" className="hover:text-primary transition-colors">Contacto</Link></li>
+              <li><Link to="/sobre-nosotros" className="hover:text-primary transition-colors">{footerCompanyLink1}</Link></li>
+              <li><Link to="/blog" className="hover:text-primary transition-colors">{footerCompanyLink2}</Link></li>
+              <li><Link to="/contacto" className="hover:text-primary transition-colors">{footerCompanyLink3}</Link></li>
             </ul>
           </div>
 
           {/* Contact */}
           <div>
             <h4 className="font-heading font-semibold text-sm uppercase tracking-wider mb-4 text-primary">
-              Contacto
+              {footerContactTitle}
             </h4>
             <ul className="space-y-3 text-sm text-hero-foreground/60">
               <li className="flex items-center gap-2">
@@ -94,11 +103,11 @@ const Footer = () => {
 
         <div className="border-t border-hero-foreground/10 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-hero-foreground/40 text-xs">
-            © {new Date().getFullYear()} Isla Cloud Solutions. Todos los derechos reservados.
+            {footerCopyright.replace('{year}', String(new Date().getFullYear()))}
           </p>
           <div className="flex gap-6 text-xs text-hero-foreground/40">
-            <Link to="/privacidad" className="hover:text-primary transition-colors">Política de Privacidad</Link>
-            <Link to="/legal" className="hover:text-primary transition-colors">Aviso Legal</Link>
+            <Link to="/privacidad" className="hover:text-primary transition-colors">{footerLegal1}</Link>
+            <Link to="/legal" className="hover:text-primary transition-colors">{footerLegal2}</Link>
           </div>
         </div>
       </div>

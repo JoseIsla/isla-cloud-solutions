@@ -83,11 +83,13 @@ const sectionGroups: SectionGroup[] = [
   },
   {
     label: '📞 Contacto & Footer',
-    description: 'Datos de contacto y descripción del pie de página.',
+    description: 'Datos de contacto, textos del pie de página y enlaces legales.',
     keys: [
       'contact_phone', 'contact_email', 'contact_address',
       'contact_title', 'contact_subtitle',
-      'footer_description',
+      'footer_description', 'footer_services_title', 'footer_company_title', 'footer_contact_title',
+      'footer_company_link1', 'footer_company_link2', 'footer_company_link3',
+      'footer_legal_link1', 'footer_legal_link2', 'footer_copyright',
     ],
   },
   {
