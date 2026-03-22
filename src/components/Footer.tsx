@@ -9,6 +9,15 @@ const Footer = () => {
   const contactEmail = useCMSValue('contact_email', 'info@islacloudsolutions.com');
   const contactPhone = useCMSValue('contact_phone', '+34 900 000 000');
   const contactAddress = useCMSValue('contact_address', 'España');
+  const footerServicesTitle = useCMSValue('footer_services_title', 'Servicios');
+  const footerCompanyTitle = useCMSValue('footer_company_title', 'Empresa');
+  const footerContactTitle = useCMSValue('footer_contact_title', 'Contacto');
+  const footerCompanyLink1 = useCMSValue('footer_company_link1', 'Sobre Nosotros');
+  const footerCompanyLink2 = useCMSValue('footer_company_link2', 'Noticias');
+  const footerCompanyLink3 = useCMSValue('footer_company_link3', 'Contacto');
+  const footerLegal1 = useCMSValue('footer_legal_link1', 'Política de Privacidad');
+  const footerLegal2 = useCMSValue('footer_legal_link2', 'Aviso Legal');
+  const footerCopyright = useCMSValue('footer_copyright', '© {year} Isla Cloud Solutions. Todos los derechos reservados.');
 
   const [apiServices, setApiServices] = useState<ServiceFromAPI[] | null>(null);
 
