@@ -208,7 +208,11 @@ const PanelContenidos = () => {
               </button>
               {isOpen && (
                 <div className="p-5 pt-0 space-y-3">
-                  {group.keys.map(renderField)}
+                  {group.customRenderer && group.label === '🧭 Navegación' ? (
+                    <NavLinksManager contents={contents} editValues={editValues} setEditValues={setEditValues} />
+                  ) : (
+                    group.keys.map(renderField)
+                  )}
                 </div>
               )}
             </div>
