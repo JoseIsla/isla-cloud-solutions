@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Save, ChevronDown, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
 import RichEditor from '@/components/ui/rich-editor';
+import NavLinksManager from '@/components/panel/NavLinksManager';
 
 interface SectionGroup {
   label: string;
