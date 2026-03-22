@@ -103,11 +103,11 @@ const Footer = () => {
 
         <div className="border-t border-hero-foreground/10 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-hero-foreground/40 text-xs">
-            © {new Date().getFullYear()} Isla Cloud Solutions. Todos los derechos reservados.
+            {footerCopyright.replace('{year}', String(new Date().getFullYear()))}
           </p>
           <div className="flex gap-6 text-xs text-hero-foreground/40">
-            <Link to="/privacidad" className="hover:text-primary transition-colors">Política de Privacidad</Link>
-            <Link to="/legal" className="hover:text-primary transition-colors">Aviso Legal</Link>
+            <Link to="/privacidad" className="hover:text-primary transition-colors">{footerLegal1}</Link>
+            <Link to="/legal" className="hover:text-primary transition-colors">{footerLegal2}</Link>
           </div>
         </div>
       </div>
