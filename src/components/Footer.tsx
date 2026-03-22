@@ -70,12 +70,12 @@ const Footer = () => {
           {/* Company */}
           <div>
             <h4 className="font-heading font-semibold text-sm uppercase tracking-wider mb-4 text-primary">
-              Empresa
+              {footerCompanyTitle}
             </h4>
             <ul className="space-y-2 text-sm text-hero-foreground/60">
-              <li><Link to="/sobre-nosotros" className="hover:text-primary transition-colors">Sobre Nosotros</Link></li>
-              <li><Link to="/blog" className="hover:text-primary transition-colors">Noticias</Link></li>
-              <li><Link to="/contacto" className="hover:text-primary transition-colors">Contacto</Link></li>
+              <li><Link to="/sobre-nosotros" className="hover:text-primary transition-colors">{footerCompanyLink1}</Link></li>
+              <li><Link to="/blog" className="hover:text-primary transition-colors">{footerCompanyLink2}</Link></li>
+              <li><Link to="/contacto" className="hover:text-primary transition-colors">{footerCompanyLink3}</Link></li>
             </ul>
           </div>
 
