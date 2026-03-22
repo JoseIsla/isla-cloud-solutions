@@ -6,11 +6,13 @@ import { Button } from '@/components/ui/button';
 import { Save, ChevronDown, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
 import RichEditor from '@/components/ui/rich-editor';
+import NavLinksManager from '@/components/panel/NavLinksManager';
 
 interface SectionGroup {
   label: string;
   description: string;
   keys: string[];
+  customRenderer?: boolean;
 }
 
 const sectionGroups: SectionGroup[] = [
@@ -100,8 +102,11 @@ const sectionGroups: SectionGroup[] = [
   },
   {
     label: '🧭 Navegación',
-    description: 'Etiquetas del menú de navegación y botón CTA.',
-    keys: ['nav_link1_label', 'nav_link2_label', 'nav_link3_label', 'nav_link4_label', 'nav_link5_label', 'nav_cta_text'],
+    description: 'Gestiona etiquetas, visibilidad y orden de los enlaces del menú.',
+    keys: ['nav_link1_label', 'nav_link2_label', 'nav_link3_label', 'nav_link4_label', 'nav_link5_label', 'nav_cta_text',
+           'nav_link1_visible', 'nav_link2_visible', 'nav_link3_visible', 'nav_link4_visible', 'nav_link5_visible',
+           'nav_link1_order', 'nav_link2_order', 'nav_link3_order', 'nav_link4_order', 'nav_link5_order'],
+    customRenderer: true as any,
   },
 ];
 
@@ -203,7 +208,11 @@ const PanelContenidos = () => {
               </button>
               {isOpen && (
                 <div className="p-5 pt-0 space-y-3">
-                  {group.keys.map(renderField)}
+                  {group.customRenderer && group.label === '🧭 Navegación' ? (
+                    <NavLinksManager contents={contents} editValues={editValues} setEditValues={setEditValues} />
+                  ) : (
+                    group.keys.map(renderField)
+                  )}
                 </div>
               )}
             </div>

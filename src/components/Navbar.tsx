@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
@@ -13,13 +13,30 @@ const Navbar = () => {
   const nav5 = useCMSValue('nav_link5_label', 'Contacto');
   const navCta = useCMSValue('nav_cta_text', 'Solicitar Consulta');
 
-  const navLinks = [
-    { label: nav1, path: "/" },
-    { label: nav2, path: "/#servicios" },
-    { label: nav3, path: "/sobre-nosotros" },
-    { label: nav4, path: "/blog" },
-    { label: nav5, path: "/contacto" },
+  const vis1 = useCMSValue('nav_link1_visible', 'true');
+  const vis2 = useCMSValue('nav_link2_visible', 'true');
+  const vis3 = useCMSValue('nav_link3_visible', 'true');
+  const vis4 = useCMSValue('nav_link4_visible', 'true');
+  const vis5 = useCMSValue('nav_link5_visible', 'true');
+
+  const ord1 = useCMSValue('nav_link1_order', '1');
+  const ord2 = useCMSValue('nav_link2_order', '2');
+  const ord3 = useCMSValue('nav_link3_order', '3');
+  const ord4 = useCMSValue('nav_link4_order', '4');
+  const ord5 = useCMSValue('nav_link5_order', '5');
+
+  const allLinks = [
+    { label: nav1, path: "/", visible: vis1 !== 'false', order: parseInt(ord1) || 1 },
+    { label: nav2, path: "/#servicios", visible: vis2 !== 'false', order: parseInt(ord2) || 2 },
+    { label: nav3, path: "/sobre-nosotros", visible: vis3 !== 'false', order: parseInt(ord3) || 3 },
+    { label: nav4, path: "/blog", visible: vis4 !== 'false', order: parseInt(ord4) || 4 },
+    { label: nav5, path: "/contacto", visible: vis5 !== 'false', order: parseInt(ord5) || 5 },
   ];
+
+  const navLinks = useMemo(
+    () => allLinks.filter(l => l.visible).sort((a, b) => a.order - b.order),
+    [nav1, nav2, nav3, nav4, nav5, vis1, vis2, vis3, vis4, vis5, ord1, ord2, ord3, ord4, ord5]
+  );
 
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
