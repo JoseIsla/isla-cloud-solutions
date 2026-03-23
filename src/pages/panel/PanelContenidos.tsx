@@ -7,6 +7,7 @@ import { Save, ChevronDown, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
 import RichEditor from '@/components/ui/rich-editor';
 import NavLinksManager from '@/components/panel/NavLinksManager';
+import LogoUploader from '@/components/panel/LogoUploader';
 
 interface SectionGroup {
   label: string;
