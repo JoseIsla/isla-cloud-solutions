@@ -44,9 +44,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* Brand */}
           <div>
-            <h3 className="font-heading font-bold text-xl mb-4">
-              Isla Cloud <span className="text-primary">Solutions</span>
-            </h3>
+            <img src={footerLogo} alt="Isla Cloud Solutions" className="h-10 w-auto mb-4" />
             <p className="text-hero-foreground/60 text-sm leading-relaxed mb-6">
               {description}
             </p>
