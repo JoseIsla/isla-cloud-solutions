@@ -7,6 +7,7 @@ import { Save, ChevronDown, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
 import RichEditor from '@/components/ui/rich-editor';
 import NavLinksManager from '@/components/panel/NavLinksManager';
+import LogoUploader from '@/components/panel/LogoUploader';
 
 interface SectionGroup {
   label: string;
@@ -16,6 +17,12 @@ interface SectionGroup {
 }
 
 const sectionGroups: SectionGroup[] = [
+  {
+    label: '🖼️ Logotipos',
+    description: 'Sube logos personalizados para el Navbar y el Footer.',
+    keys: ['site_logo_navbar', 'site_logo_footer'],
+    customRenderer: true as any,
+  },
   {
     label: '🏠 Hero (Cabecera)',
     description: 'Título principal, subtítulo, botones y pestañas del slider.',
@@ -212,6 +219,8 @@ const PanelContenidos = () => {
                 <div className="p-5 pt-0 space-y-3">
                   {group.customRenderer && group.label === '🧭 Navegación' ? (
                     <NavLinksManager contents={contents} editValues={editValues} setEditValues={setEditValues} />
+                  ) : group.customRenderer && group.label === '🖼️ Logotipos' ? (
+                    <LogoUploader contents={contents} editValues={editValues} setEditValues={setEditValues} />
                   ) : (
                     group.keys.map(renderField)
                   )}

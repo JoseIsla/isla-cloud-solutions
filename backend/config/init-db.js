@@ -248,6 +248,9 @@ async function initDB() {
     ['nav_link3_order', 'Nav: Enlace 3 Orden', '3', 'text'],
     ['nav_link4_order', 'Nav: Enlace 4 Orden', '4', 'text'],
     ['nav_link5_order', 'Nav: Enlace 5 Orden', '5', 'text'],
+    // Logos
+    ['site_logo_navbar', 'Logo Navbar', '', 'text'],
+    ['site_logo_footer', 'Logo Footer', '', 'text'],
   ];
 
   for (const [key, title, value, type] of defaultContents) {

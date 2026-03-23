@@ -2,10 +2,12 @@ import { useState, useEffect, useMemo } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
-import logo from "@/assets/logos/logotipo-blanco-small.png";
+import defaultLogo from "@/assets/logos/logotipo-blanco-small.png";
 import { useCMSValue } from "@/hooks/useCMS";
 
 const Navbar = () => {
+  const navbarLogoUrl = useCMSValue('site_logo_navbar', '');
+  const logo = navbarLogoUrl || defaultLogo;
   const nav1 = useCMSValue('nav_link1_label', 'Inicio');
   const nav2 = useCMSValue('nav_link2_label', 'Servicios');
   const nav3 = useCMSValue('nav_link3_label', 'Sobre Nosotros');
