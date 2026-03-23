@@ -18,6 +18,12 @@ interface SectionGroup {
 
 const sectionGroups: SectionGroup[] = [
   {
+    label: '🖼️ Logotipos',
+    description: 'Sube logos personalizados para el Navbar y el Footer.',
+    keys: ['site_logo_navbar', 'site_logo_footer'],
+    customRenderer: true as any,
+  },
+  {
     label: '🏠 Hero (Cabecera)',
     description: 'Título principal, subtítulo, botones y pestañas del slider.',
     keys: [
