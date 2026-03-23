@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
-import logo from "@/assets/logo.png";
+import logo from "@/assets/logos/logotipo-blanco-small.png";
 import { useCMSValue } from "@/hooks/useCMS";
 
 const Navbar = () => {
