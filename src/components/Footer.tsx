@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Mail, Phone, MapPin } from "lucide-react";
 import { useCMSValue } from "@/hooks/useCMS";
+import { Linkedin, Twitter, Facebook, Instagram, Youtube, Github } from "lucide-react";
 import defaultFooterLogo from "@/assets/logos/logotipo-blanco-small.png";
 import { useEffect, useState } from "react";
 import { servicesApi, type ServiceFromAPI } from "@/lib/api";
@@ -21,6 +22,21 @@ const Footer = () => {
   const footerLegal1 = useCMSValue('footer_legal_link1', 'Política de Privacidad');
   const footerLegal2 = useCMSValue('footer_legal_link2', 'Aviso Legal');
   const footerCopyright = useCMSValue('footer_copyright', '© {year} Isla Cloud Solutions. Todos los derechos reservados.');
+  const socialLinkedin = useCMSValue('social_linkedin', '');
+  const socialTwitter = useCMSValue('social_twitter', '');
+  const socialFacebook = useCMSValue('social_facebook', '');
+  const socialInstagram = useCMSValue('social_instagram', '');
+  const socialYoutube = useCMSValue('social_youtube', '');
+  const socialGithub = useCMSValue('social_github', '');
+
+  const socialLinks = [
+    { url: socialLinkedin, icon: Linkedin, label: 'LinkedIn' },
+    { url: socialTwitter, icon: Twitter, label: 'Twitter' },
+    { url: socialFacebook, icon: Facebook, label: 'Facebook' },
+    { url: socialInstagram, icon: Instagram, label: 'Instagram' },
+    { url: socialYoutube, icon: Youtube, label: 'YouTube' },
+    { url: socialGithub, icon: Github, label: 'GitHub' },
+  ].filter(s => s.url);
 
   const [apiServices, setApiServices] = useState<ServiceFromAPI[] | null>(null);
 
@@ -106,9 +122,21 @@ const Footer = () => {
           <p className="text-hero-foreground/40 text-xs">
             {footerCopyright.replace('{year}', String(new Date().getFullYear()))}
           </p>
-          <div className="flex gap-6 text-xs text-hero-foreground/40">
-            <Link to="/privacidad" className="hover:text-primary transition-colors">{footerLegal1}</Link>
-            <Link to="/legal" className="hover:text-primary transition-colors">{footerLegal2}</Link>
+          <div className="flex items-center gap-4">
+            {socialLinks.length > 0 && (
+              <div className="flex gap-3">
+                {socialLinks.map(({ url, icon: Icon, label }) => (
+                  <a key={label} href={url} target="_blank" rel="noopener noreferrer" aria-label={label}
+                    className="text-hero-foreground/40 hover:text-primary transition-colors">
+                    <Icon size={16} />
+                  </a>
+                ))}
+              </div>
+            )}
+            <div className="flex gap-6 text-xs text-hero-foreground/40">
+              <Link to="/privacidad" className="hover:text-primary transition-colors">{footerLegal1}</Link>
+              <Link to="/legal" className="hover:text-primary transition-colors">{footerLegal2}</Link>
+            </div>
           </div>
         </div>
       </div>
