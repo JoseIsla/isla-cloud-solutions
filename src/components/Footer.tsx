@@ -122,9 +122,21 @@ const Footer = () => {
           <p className="text-hero-foreground/40 text-xs">
             {footerCopyright.replace('{year}', String(new Date().getFullYear()))}
           </p>
-          <div className="flex gap-6 text-xs text-hero-foreground/40">
-            <Link to="/privacidad" className="hover:text-primary transition-colors">{footerLegal1}</Link>
-            <Link to="/legal" className="hover:text-primary transition-colors">{footerLegal2}</Link>
+          <div className="flex items-center gap-4">
+            {socialLinks.length > 0 && (
+              <div className="flex gap-3">
+                {socialLinks.map(({ url, icon: Icon, label }) => (
+                  <a key={label} href={url} target="_blank" rel="noopener noreferrer" aria-label={label}
+                    className="text-hero-foreground/40 hover:text-primary transition-colors">
+                    <Icon size={16} />
+                  </a>
+                ))}
+              </div>
+            )}
+            <div className="flex gap-6 text-xs text-hero-foreground/40">
+              <Link to="/privacidad" className="hover:text-primary transition-colors">{footerLegal1}</Link>
+              <Link to="/legal" className="hover:text-primary transition-colors">{footerLegal2}</Link>
+            </div>
           </div>
         </div>
       </div>

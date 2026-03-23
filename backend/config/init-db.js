@@ -251,6 +251,13 @@ async function initDB() {
     // Logos
     ['site_logo_navbar', 'Logo Navbar', '', 'text'],
     ['site_logo_footer', 'Logo Footer', '', 'text'],
+    // Social media
+    ['social_linkedin', 'Red Social: LinkedIn', '', 'text'],
+    ['social_twitter', 'Red Social: Twitter/X', '', 'text'],
+    ['social_facebook', 'Red Social: Facebook', '', 'text'],
+    ['social_instagram', 'Red Social: Instagram', '', 'text'],
+    ['social_youtube', 'Red Social: YouTube', '', 'text'],
+    ['social_github', 'Red Social: GitHub', '', 'text'],
   ];
 
   for (const [key, title, value, type] of defaultContents) {
