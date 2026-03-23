@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import { servicesApi, type ServiceFromAPI } from "@/lib/api";
 
 const Footer = () => {
+  const footerLogoUrl = useCMSValue('site_logo_footer', '');
+  const footerLogo = footerLogoUrl || defaultFooterLogo;
   const description = useCMSValue('footer_description', 'Tu socio tecnológico de confianza. Más de 20 años de experiencia en soluciones IT para empresas.');
   const contactEmail = useCMSValue('contact_email', 'info@islacloudsolutions.com');
   const contactPhone = useCMSValue('contact_phone', '+34 900 000 000');
