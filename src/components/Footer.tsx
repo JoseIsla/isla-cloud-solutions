@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Mail, Phone, MapPin } from "lucide-react";
 import { useCMSValue } from "@/hooks/useCMS";
+import { Linkedin, Twitter, Facebook, Instagram, Youtube, Github } from "lucide-react";
 import defaultFooterLogo from "@/assets/logos/logotipo-blanco-small.png";
 import { useEffect, useState } from "react";
 import { servicesApi, type ServiceFromAPI } from "@/lib/api";
