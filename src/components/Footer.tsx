@@ -22,6 +22,21 @@ const Footer = () => {
   const footerLegal1 = useCMSValue('footer_legal_link1', 'Política de Privacidad');
   const footerLegal2 = useCMSValue('footer_legal_link2', 'Aviso Legal');
   const footerCopyright = useCMSValue('footer_copyright', '© {year} Isla Cloud Solutions. Todos los derechos reservados.');
+  const socialLinkedin = useCMSValue('social_linkedin', '');
+  const socialTwitter = useCMSValue('social_twitter', '');
+  const socialFacebook = useCMSValue('social_facebook', '');
+  const socialInstagram = useCMSValue('social_instagram', '');
+  const socialYoutube = useCMSValue('social_youtube', '');
+  const socialGithub = useCMSValue('social_github', '');
+
+  const socialLinks = [
+    { url: socialLinkedin, icon: Linkedin, label: 'LinkedIn' },
+    { url: socialTwitter, icon: Twitter, label: 'Twitter' },
+    { url: socialFacebook, icon: Facebook, label: 'Facebook' },
+    { url: socialInstagram, icon: Instagram, label: 'Instagram' },
+    { url: socialYoutube, icon: Youtube, label: 'YouTube' },
+    { url: socialGithub, icon: Github, label: 'GitHub' },
+  ].filter(s => s.url);
 
   const [apiServices, setApiServices] = useState<ServiceFromAPI[] | null>(null);
 
