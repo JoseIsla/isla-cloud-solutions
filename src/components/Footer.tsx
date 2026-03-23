@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Mail, Phone, MapPin } from "lucide-react";
 import { useCMSValue } from "@/hooks/useCMS";
-import footerLogo from "@/assets/logos/logotipo-blanco-small.png";
+import defaultFooterLogo from "@/assets/logos/logotipo-blanco-small.png";
 import { useEffect, useState } from "react";
 import { servicesApi, type ServiceFromAPI } from "@/lib/api";
 
