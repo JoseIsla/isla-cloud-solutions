@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { CMSProvider } from "@/hooks/useCMS";
+import { AnimatePresence, motion } from "framer-motion";
 import CookieBanner from "@/components/CookieBanner";
 import Index from "./pages/Index";
 import ServiciosPage from "./pages/Servicios";
@@ -28,11 +29,33 @@ import PanelTestimonios from "./pages/panel/PanelTestimonios";
 import PanelFAQs from "./pages/panel/PanelFAQs";
 const queryClient = new QueryClient();
 
+const pageTransition = {
+  initial: { opacity: 0, scale: 0.97 },
+  animate: { opacity: 1, scale: 1 },
+  exit: { opacity: 0, scale: 1.02 },
+  transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
+};
+
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, isLoading } = useAuth();
-  if (isLoading) return <div className="min-h-screen bg-hero flex items-center justify-center"><div className="text-hero-foreground">Cargando...</div></div>;
-  if (!user) return <PanelLogin />;
-  return <>{children}</>;
+  if (isLoading) return (
+    <div className="min-h-screen bg-hero flex items-center justify-center">
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-hero-foreground">Cargando...</motion.div>
+    </div>
+  );
+  return (
+    <AnimatePresence mode="wait">
+      {!user ? (
+        <motion.div key="login" {...pageTransition}>
+          <PanelLogin />
+        </motion.div>
+      ) : (
+        <motion.div key="panel" {...pageTransition}>
+          {children}
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
 };
 
 const AppRoutes = () => (
