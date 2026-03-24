@@ -218,13 +218,3 @@ export interface CaseFromAPI {
   is_active: number;
   created_at: string;
 }
-  id: number;
-  title: string;
-  client_name: string;
-  excerpt: string;
-  description: string;
-  image_url: string;
-  sort_order: number;
-  is_active: number;
-  created_at: string;
-}
