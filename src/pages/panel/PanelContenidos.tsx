@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import RichEditor from '@/components/ui/rich-editor';
 import NavLinksManager from '@/components/panel/NavLinksManager';
 import LogoUploader from '@/components/panel/LogoUploader';
+import HeroImagesUploader from '@/components/panel/HeroImagesUploader';
 
 interface SectionGroup {
   label: string;
@@ -21,6 +22,12 @@ const sectionGroups: SectionGroup[] = [
     label: '🖼️ Logotipos',
     description: 'Sube logos personalizados para el Navbar y el Footer.',
     keys: ['site_logo_navbar', 'site_logo_footer'],
+    customRenderer: true as any,
+  },
+  {
+    label: '🌄 Imágenes del Hero',
+    description: 'Cambia las imágenes de fondo de los 3 slides del Hero.',
+    keys: ['hero_bg_slide1', 'hero_bg_slide2', 'hero_bg_slide3'],
     customRenderer: true as any,
   },
   {
@@ -228,6 +235,8 @@ const PanelContenidos = () => {
                     <NavLinksManager contents={contents} editValues={editValues} setEditValues={setEditValues} />
                   ) : group.customRenderer && group.label === '🖼️ Logotipos' ? (
                     <LogoUploader contents={contents} editValues={editValues} setEditValues={setEditValues} />
+                  ) : group.customRenderer && group.label === '🌄 Imágenes del Hero' ? (
+                    <HeroImagesUploader contents={contents} editValues={editValues} setEditValues={setEditValues} />
                   ) : (
                     group.keys.map(renderField)
                   )}

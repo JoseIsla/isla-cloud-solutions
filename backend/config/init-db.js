@@ -189,6 +189,10 @@ async function initDB() {
     ['counter_systems_label', 'Contador: Sistemas (etiqueta)', 'Sistemas administrados', 'text'],
     // Footer
     ['footer_description', 'Descripción footer', 'Soluciones Cloud y tecnología IT para empresas. Más de 20 años de experiencia como tu socio tecnológico.', 'text'],
+    // Hero background images
+    ['hero_bg_slide1', 'Hero: Fondo Slide 1', '', 'text'],
+    ['hero_bg_slide2', 'Hero: Fondo Slide 2', '', 'text'],
+    ['hero_bg_slide3', 'Hero: Fondo Slide 3', '', 'text'],
     // Hero tabs & slides
     ['hero_badge', 'Badge del Hero', 'Soluciones IT Profesionales', 'text'],
     ['hero_tab1_label', 'Hero Tab 1', 'Infraestructura', 'text'],

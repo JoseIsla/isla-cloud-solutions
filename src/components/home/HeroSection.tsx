@@ -3,11 +3,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-import heroBg from "@/assets/hero-bg.jpg";
-import heroBlogBg from "@/assets/hero-blog-bg.jpg";
-import heroCasesBg from "@/assets/hero-cases-bg.jpg";
-
-const slideBackgrounds = [heroBg, heroBlogBg, heroCasesBg];
+import defaultHeroBg from "@/assets/hero-bg.jpg";
+import defaultHeroBlogBg from "@/assets/hero-blog-bg.jpg";
+import defaultHeroCasesBg from "@/assets/hero-cases-bg.jpg";
 import { useCMSValue } from "@/hooks/useCMS";
 import { newsApi, casesApi, type NewsFromAPI, type CaseFromAPI } from "@/lib/api";
 
@@ -33,6 +31,15 @@ const HeroSection = () => {
   const ctaPrimary = useCMSValue('hero_cta_primary', 'Solicita información');
   const ctaSecondary = useCMSValue('hero_cta_secondary', 'Nuestros servicios');
   const badge = useCMSValue('hero_badge', 'Tu socio tecnológico de confianza');
+
+  const heroBg1 = useCMSValue('hero_bg_slide1', '');
+  const heroBg2 = useCMSValue('hero_bg_slide2', '');
+  const heroBg3 = useCMSValue('hero_bg_slide3', '');
+  const slideBackgrounds = [
+    heroBg1 || defaultHeroBg,
+    heroBg2 || defaultHeroBlogBg,
+    heroBg3 || defaultHeroCasesBg,
+  ];
 
   const tab1Label = useCMSValue('hero_tab1_label', 'Isla Cloud Solutions');
   const tab2Label = useCMSValue('hero_tab2_label', 'Último en el Blog');
