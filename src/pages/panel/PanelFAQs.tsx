@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { faqsApi, type FAQFromAPI } from '@/lib/api';
 import PanelLayout from './PanelLayout';
@@ -9,15 +9,26 @@ import { Label } from '@/components/ui/label';
 import { Plus, Edit, Trash2, HelpCircle, X, GripVertical } from 'lucide-react';
 import { toast } from 'sonner';
 import RichEditor from '@/components/ui/rich-editor';
+import { useDragReorder } from '@/hooks/useDragReorder';
 
 const PanelFAQs = () => {
   const { token } = useAuth();
   const [faqs, setFaqs] = useState<FAQFromAPI[]>([]);
   const [editing, setEditing] = useState<Partial<FAQFromAPI> | null>(null);
   const [loading, setLoading] = useState(false);
-  const [dragIdx, setDragIdx] = useState<number | null>(null);
-  const [overIdx, setOverIdx] = useState<number | null>(null);
-  const dragNodeRef = useRef<HTMLDivElement | null>(null);
+
+  const handleReorder = useCallback(async (reordered: FAQFromAPI[]) => {
+    if (!token) return;
+    try {
+      await Promise.all(reordered.map((faq, i) => faqsApi.update(faq.id, { ...faq, sort_order: i }, token)));
+      toast.success('Orden actualizado');
+    } catch {
+      toast.error('Error guardando orden');
+      fetchData();
+    }
+  }, [token]);
+
+  const { getDragProps, isDragOver } = useDragReorder({ items: faqs, setItems: setFaqs, onReorder: handleReorder });
 
   const fetchData = () => {
     if (!token) return;
@@ -57,52 +68,6 @@ const PanelFAQs = () => {
     }
   };
 
-  const handleDragStart = (idx: number, e: React.DragEvent<HTMLDivElement>) => {
-    setDragIdx(idx);
-    dragNodeRef.current = e.currentTarget;
-    e.dataTransfer.effectAllowed = 'move';
-    // Make ghost semi-transparent
-    requestAnimationFrame(() => {
-      if (dragNodeRef.current) dragNodeRef.current.style.opacity = '0.4';
-    });
-  };
-
-  const handleDragEnd = async () => {
-    if (dragNodeRef.current) dragNodeRef.current.style.opacity = '1';
-    if (dragIdx === null || overIdx === null || dragIdx === overIdx || !token) {
-      setDragIdx(null);
-      setOverIdx(null);
-      return;
-    }
-
-    const reordered = [...faqs];
-    const [moved] = reordered.splice(dragIdx, 1);
-    reordered.splice(overIdx, 0, moved);
-
-    // Optimistic UI update
-    setFaqs(reordered);
-    setDragIdx(null);
-    setOverIdx(null);
-
-    // Persist new order
-    try {
-      await Promise.all(
-        reordered.map((faq, i) =>
-          faqsApi.update(faq.id, { ...faq, sort_order: i }, token)
-        )
-      );
-      toast.success('Orden actualizado');
-    } catch {
-      toast.error('Error guardando orden');
-      fetchData(); // rollback
-    }
-  };
-
-  const handleDragOver = (idx: number, e: React.DragEvent) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-    if (overIdx !== idx) setOverIdx(idx);
-  };
 
   return (
     <PanelLayout>
@@ -167,15 +132,9 @@ const PanelFAQs = () => {
           {faqs.map((f, idx) => (
             <div
               key={f.id}
-              draggable
-              onDragStart={(e) => handleDragStart(idx, e)}
-              onDragEnd={handleDragEnd}
-              onDragOver={(e) => handleDragOver(idx, e)}
-              onDragEnter={(e) => e.preventDefault()}
+              {...getDragProps(idx)}
               className={`flex items-center gap-3 p-4 rounded-xl bg-card border transition-all duration-150 group ${
-                overIdx === idx && dragIdx !== null && dragIdx !== idx
-                  ? 'border-primary/40 shadow-md shadow-primary/5 scale-[1.01]'
-                  : 'border-border hover:border-primary/15'
+                isDragOver(idx) ? 'border-primary/40 shadow-md shadow-primary/5 scale-[1.01]' : 'border-border hover:border-primary/15'
               }`}
             >
               <GripVertical size={16} className="text-muted-foreground/30 shrink-0 cursor-grab active:cursor-grabbing" />
