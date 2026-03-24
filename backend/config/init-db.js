@@ -258,6 +258,10 @@ async function initDB() {
     ['social_instagram', 'Red Social: Instagram', '', 'text'],
     ['social_youtube', 'Red Social: YouTube', '', 'text'],
     ['social_github', 'Red Social: GitHub', '', 'text'],
+    // Testimonials section
+    ['testimonials_section_label', 'Testimonios: Etiqueta', 'Testimonios', 'text'],
+    ['testimonials_section_title', 'Testimonios: Título', 'Lo que dicen nuestros clientes', 'text'],
+    ['testimonials_section_subtitle', 'Testimonios: Subtítulo', 'La satisfacción de nuestros clientes es nuestra mejor carta de presentación.', 'text'],
   ];
 
   for (const [key, title, value, type] of defaultContents) {
