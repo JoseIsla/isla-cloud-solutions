@@ -25,6 +25,7 @@ import PanelContenidos from "./pages/panel/PanelContenidos";
 import PanelClientes from "./pages/panel/PanelClientes";
 import PanelCasos from "./pages/panel/PanelCasos";
 import PanelTestimonios from "./pages/panel/PanelTestimonios";
+import PanelFAQs from "./pages/panel/PanelFAQs";
 const queryClient = new QueryClient();
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -55,6 +56,7 @@ const AppRoutes = () => (
     <Route path="/panel/clientes" element={<ProtectedRoute><PanelClientes /></ProtectedRoute>} />
       <Route path="/panel/casos" element={<ProtectedRoute><PanelCasos /></ProtectedRoute>} />
       <Route path="/panel/testimonios" element={<ProtectedRoute><PanelTestimonios /></ProtectedRoute>} />
+      <Route path="/panel/faqs" element={<ProtectedRoute><PanelFAQs /></ProtectedRoute>} />
 
     <Route path="*" element={<NotFound />} />
   </Routes>

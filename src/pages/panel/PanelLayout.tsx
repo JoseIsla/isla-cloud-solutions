@@ -4,7 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, FileText, Newspaper, MessageSquare,
   LogOut, Menu, X, Users, Trophy, Globe, Pencil, MessageCircle,
-  ChevronLeft,
+  ChevronLeft, HelpCircle,
 } from 'lucide-react';
 import logotipoBlanco from '@/assets/logos/logotipo-blanco-small.png';
 import isotipoLogo from '@/assets/logos/isotipo.png';
@@ -24,6 +24,7 @@ const sidebarSections = [
       { label: 'Clientes', path: '/panel/clientes', icon: Users },
       { label: 'Casos de Éxito', path: '/panel/casos', icon: Trophy },
       { label: 'Testimonios', path: '/panel/testimonios', icon: MessageCircle },
+      { label: 'FAQs', path: '/panel/faqs', icon: HelpCircle },
       { label: 'Noticias / Blog', path: '/panel/noticias', icon: Newspaper },
     ],
   },

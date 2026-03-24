@@ -12,6 +12,7 @@ const contentsRoutes = require('./routes/contents');
 const uploadRoutes = require('./routes/upload');
 const clientsRoutes = require('./routes/clients');
 const casesRoutes = require('./routes/cases');
+const faqsRoutes = require('./routes/faqs');
 const testimonialsRoutes = require('./routes/testimonials');
 
 const app = express();

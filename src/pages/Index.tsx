@@ -7,6 +7,7 @@ import CountersSection from "@/components/home/CountersSection";
 import ClientsSection from "@/components/home/ClientsSection";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
 import TrustSection from "@/components/home/TrustSection";
+import FAQSection from "@/components/home/FAQSection";
 import CTASection from "@/components/home/CTASection";
 
 const Index = () => {
@@ -20,6 +21,7 @@ const Index = () => {
       <ClientsSection />
       <TestimonialsSection />
       <TrustSection />
+      <FAQSection />
       <CTASection />
     </Layout>
   );

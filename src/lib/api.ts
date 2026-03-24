@@ -135,6 +135,18 @@ export const casesApi = {
     apiRequest('/api/cases/' + id, { method: 'DELETE', token }),
 };
 
+// FAQs
+export const faqsApi = {
+  list: () => apiRequest<FAQFromAPI[]>('/api/faqs'),
+  listAll: (token: string) => apiRequest<FAQFromAPI[]>('/api/faqs/all', { token }),
+  create: (data: Partial<FAQFromAPI>, token: string) =>
+    apiRequest<{ id: number }>('/api/faqs', { method: 'POST', body: data, token }),
+  update: (id: number, data: Partial<FAQFromAPI>, token: string) =>
+    apiRequest('/api/faqs/' + id, { method: 'PUT', body: data, token }),
+  delete: (id: number, token: string) =>
+    apiRequest('/api/faqs/' + id, { method: 'DELETE', token }),
+};
+
 // Upload
 export { uploadImage };
 
@@ -214,6 +226,15 @@ export interface CaseFromAPI {
   excerpt: string;
   description: string;
   image_url: string;
+  sort_order: number;
+  is_active: number;
+  created_at: string;
+}
+
+export interface FAQFromAPI {
+  id: number;
+  question: string;
+  answer: string;
   sort_order: number;
   is_active: number;
   created_at: string;
