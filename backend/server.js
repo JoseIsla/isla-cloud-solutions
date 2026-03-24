@@ -86,9 +86,41 @@ app.use('/api/cases', casesRoutes);
 app.use('/api/testimonials', testimonialsRoutes);
 app.use('/api/faqs', faqsRoutes);
 
-// Health check
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+// Health check — detailed diagnostics
+app.get('/api/health', async (req, res) => {
+  const checks = {
+    server: { status: 'ok' },
+    database: { status: 'unknown' },
+    environment: { status: 'unknown', missing: [] },
+  };
+
+  // 1. Environment variables
+  const requiredEnvVars = ['DB_HOST', 'DB_USER', 'DB_PASSWORD', 'DB_NAME', 'JWT_SECRET'];
+  const missing = requiredEnvVars.filter((v) => !process.env[v]);
+  checks.environment.status = missing.length === 0 ? 'ok' : 'error';
+  checks.environment.missing = missing;
+
+  // 2. Database connectivity
+  try {
+    const pool = require('./config/db');
+    const conn = await pool.getConnection();
+    const rows = await conn.query('SELECT 1 AS ping');
+    conn.release();
+    checks.database.status = rows && rows[0] && rows[0].ping === 1 ? 'ok' : 'error';
+  } catch (err) {
+    checks.database.status = 'error';
+    checks.database.error = err.message;
+  }
+
+  const allOk = Object.values(checks).every((c) => c.status === 'ok');
+
+  res.status(allOk ? 200 : 503).json({
+    status: allOk ? 'healthy' : 'degraded',
+    timestamp: new Date().toISOString(),
+    node: process.version,
+    uptime: Math.round(process.uptime()) + 's',
+    checks,
+  });
 });
 
 // Error handler
