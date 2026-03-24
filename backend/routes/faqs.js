@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../config/db');
-const auth = require('../middleware/auth');
+const { authMiddleware } = require('../middleware/auth');
 
 // GET /api/faqs — public (active only, sorted)
 router.get('/', async (req, res) => {
@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
 });
 
 // GET /api/faqs/all — admin (all)
-router.get('/all', auth, async (req, res) => {
+router.get('/all', authMiddleware, async (req, res) => {
   try {
     const rows = await pool.query('SELECT * FROM faqs ORDER BY sort_order ASC, id ASC');
     res.json(rows);
@@ -26,7 +26,7 @@ router.get('/all', auth, async (req, res) => {
 });
 
 // POST /api/faqs — admin
-router.post('/', auth, async (req, res) => {
+router.post('/', authMiddleware, async (req, res) => {
   try {
     const { question, answer, sort_order = 0, is_active = 1 } = req.body;
     const result = await pool.query(
@@ -40,7 +40,7 @@ router.post('/', auth, async (req, res) => {
 });
 
 // PUT /api/faqs/:id — admin
-router.put('/:id', auth, async (req, res) => {
+router.put('/:id', authMiddleware, async (req, res) => {
   try {
     const { question, answer, sort_order, is_active } = req.body;
     await pool.query(
@@ -54,7 +54,7 @@ router.put('/:id', auth, async (req, res) => {
 });
 
 // DELETE /api/faqs/:id — admin
-router.delete('/:id', auth, async (req, res) => {
+router.delete('/:id', authMiddleware, async (req, res) => {
   try {
     await pool.query('DELETE FROM faqs WHERE id = ?', [req.params.id]);
     res.json({ success: true });
