@@ -6,9 +6,8 @@ const rateLimit = require('express-rate-limit');
 
 const router = express.Router();
 
-// Rate limiter for contact form
 const contactLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
+  windowMs: 15 * 60 * 1000,
   max: 5,
   message: { error: 'Demasiados intentos. Inténtalo de nuevo en 15 minutos.' },
 });
@@ -24,54 +23,65 @@ router.post('/', contactLimiter, [
   const errors = validationResult(req);
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
+  let conn;
   try {
     const { nombre, email, empresa, telefono, mensaje } = req.body;
-    const conn = await pool.getConnection();
+    conn = await pool.getConnection();
     await conn.query(
       'INSERT INTO contacts (nombre, email, empresa, telefono, mensaje) VALUES (?, ?, ?, ?, ?)',
       [nombre, email, empresa || '', telefono || '', mensaje]
     );
-    conn.release();
     res.status(201).json({ message: 'Mensaje enviado correctamente' });
   } catch (err) {
-    console.error(err);
+    console.error('POST /api/contacts error:', err.message);
     res.status(500).json({ error: 'Error del servidor' });
+  } finally {
+    if (conn) conn.release();
   }
 });
 
 // GET /api/contacts (admin)
 router.get('/', authMiddleware, async (req, res) => {
+  let conn;
   try {
-    const conn = await pool.getConnection();
+    conn = await pool.getConnection();
     const rows = await conn.query('SELECT * FROM contacts ORDER BY created_at DESC');
-    conn.release();
     res.json(rows);
   } catch (err) {
+    console.error('GET /api/contacts error:', err.message);
     res.status(500).json({ error: 'Error del servidor' });
+  } finally {
+    if (conn) conn.release();
   }
 });
 
 // PUT /api/contacts/:id/read (admin)
 router.put('/:id/read', authMiddleware, async (req, res) => {
+  let conn;
   try {
-    const conn = await pool.getConnection();
+    conn = await pool.getConnection();
     await conn.query('UPDATE contacts SET is_read = 1 WHERE id = ?', [req.params.id]);
-    conn.release();
     res.json({ message: 'Marcado como leído' });
   } catch (err) {
+    console.error('PUT /api/contacts/:id/read error:', err.message);
     res.status(500).json({ error: 'Error del servidor' });
+  } finally {
+    if (conn) conn.release();
   }
 });
 
 // DELETE /api/contacts/:id (admin)
 router.delete('/:id', authMiddleware, async (req, res) => {
+  let conn;
   try {
-    const conn = await pool.getConnection();
+    conn = await pool.getConnection();
     await conn.query('DELETE FROM contacts WHERE id = ?', [req.params.id]);
-    conn.release();
     res.json({ message: 'Contacto eliminado' });
   } catch (err) {
+    console.error('DELETE /api/contacts/:id error:', err.message);
     res.status(500).json({ error: 'Error del servidor' });
+  } finally {
+    if (conn) conn.release();
   }
 });
 
