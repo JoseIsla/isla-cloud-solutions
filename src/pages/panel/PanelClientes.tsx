@@ -1,10 +1,11 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import PanelLayout from './PanelLayout';
 import { clientsApi, uploadImage, type ClientFromAPI } from '@/lib/api';
 import { Button } from '@/components/ui/button';
-import { Plus, Pencil, Trash2, X, Upload, Building2 } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Upload, Building2, GripVertical } from 'lucide-react';
 import { toast } from 'sonner';
+import { useDragReorder } from '@/hooks/useDragReorder';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.islacloudsolutions.com';
 
@@ -15,6 +16,19 @@ const PanelClientes = () => {
   const [isNew, setIsNew] = useState(false);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleReorder = useCallback(async (reordered: ClientFromAPI[]) => {
+    if (!token) return;
+    try {
+      await Promise.all(reordered.map((c, i) => clientsApi.update(c.id, { ...c, sort_order: i }, token)));
+      toast.success('Orden actualizado');
+    } catch {
+      toast.error('Error guardando orden');
+      load();
+    }
+  }, [token]);
+
+  const { getDragProps, isDragOver } = useDragReorder({ items: clients, setItems: setClients, onReorder: handleReorder });
 
   const load = () => { clientsApi.list().then(setClients).catch(() => {}); };
   useEffect(load, []);
@@ -70,7 +84,7 @@ const PanelClientes = () => {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-xl font-heading font-bold text-foreground">Clientes</h2>
-            <p className="text-muted-foreground text-sm mt-0.5">{clients.length} clientes en el carrusel</p>
+            <p className="text-muted-foreground text-sm mt-0.5">{clients.length} clientes · <span className="text-muted-foreground/60">Arrastra para reordenar</span></p>
           </div>
           <Button size="sm" onClick={() => { setEditing({ name: '', logo_url: '', website_url: '', sort_order: 0 }); setIsNew(true); }}>
             <Plus size={16} /> Nuevo
@@ -127,15 +141,22 @@ const PanelClientes = () => {
           </div>
         )}
 
-        {/* Grid layout for clients */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-          {clients.map((c) => (
-            <div key={c.id} className="flex items-center gap-3 p-3 rounded-xl bg-card border border-border hover:border-primary/15 transition-colors group">
+        {/* List */}
+        <div className="space-y-1">
+          {clients.map((c, idx) => (
+            <div
+              key={c.id}
+              {...getDragProps(idx)}
+              className={`flex items-center gap-3 p-3 rounded-xl bg-card border transition-all duration-150 group ${
+                isDragOver(idx) ? 'border-primary/40 shadow-md shadow-primary/5 scale-[1.01]' : 'border-border hover:border-primary/15'
+              }`}
+            >
+              <GripVertical size={14} className="text-muted-foreground/30 shrink-0 cursor-grab active:cursor-grabbing" />
               {c.logo_url ? (
                 <img src={c.logo_url} alt={c.name} className="w-9 h-9 rounded-lg object-contain bg-muted/30 p-1 shrink-0" />
               ) : (
-                <div className="w-9 h-9 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0">
-                  <Building2 size={14} className="text-emerald-500" />
+                <div className="w-9 h-9 rounded-lg bg-accent/50 flex items-center justify-center shrink-0">
+                  <Building2 size={14} className="text-primary" />
                 </div>
               )}
               <span className="text-sm text-foreground truncate flex-1">{c.name}</span>

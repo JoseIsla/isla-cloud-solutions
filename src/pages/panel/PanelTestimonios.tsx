@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { testimonialsApi, uploadImage, type TestimonialFromAPI } from '@/lib/api';
 import PanelLayout from './PanelLayout';
@@ -7,8 +7,9 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { Plus, Edit, Trash2, MessageCircle, Star, X } from 'lucide-react';
+import { Plus, Edit, Trash2, MessageCircle, Star, X, GripVertical } from 'lucide-react';
 import { toast } from 'sonner';
+import { useDragReorder } from '@/hooks/useDragReorder';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.islacloudsolutions.com';
 
@@ -18,6 +19,18 @@ const PanelTestimonios = () => {
   const [editing, setEditing] = useState<Partial<TestimonialFromAPI> | null>(null);
   const [loading, setLoading] = useState(false);
 
+  const handleReorder = useCallback(async (reordered: TestimonialFromAPI[]) => {
+    if (!token) return;
+    try {
+      await Promise.all(reordered.map((t, i) => testimonialsApi.update(t.id, { ...t, sort_order: i }, token)));
+      toast.success('Orden actualizado');
+    } catch {
+      toast.error('Error guardando orden');
+      fetchData();
+    }
+  }, [token]);
+
+  const { getDragProps, isDragOver } = useDragReorder({ items: testimonials, setItems: setTestimonials, onReorder: handleReorder });
   const fetchData = () => {
     if (!token) return;
     testimonialsApi.listAll(token).then(setTestimonials).catch(() => toast.error('Error cargando testimonios'));
@@ -79,7 +92,7 @@ const PanelTestimonios = () => {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-xl font-heading font-bold text-foreground">Testimonios</h2>
-            <p className="text-muted-foreground text-sm mt-0.5">{testimonials.length} testimonios</p>
+            <p className="text-muted-foreground text-sm mt-0.5">{testimonials.length} testimonios · <span className="text-muted-foreground/60">Arrastra para reordenar</span></p>
           </div>
           <Button size="sm" onClick={() => setEditing({ author_name: '', author_role: '', author_company: '', quote: '', rating: 5, is_active: 1, sort_order: 0 })}>
             <Plus size={16} /> Nuevo
@@ -140,7 +153,7 @@ const PanelTestimonios = () => {
           </div>
         )}
 
-        <div className="space-y-2">
+        <div className="space-y-1">
           {testimonials.length === 0 && (
             <div className="p-12 text-center rounded-xl border border-dashed border-border">
               <MessageCircle size={32} className="mx-auto mb-3 text-muted-foreground/20" />
@@ -148,12 +161,19 @@ const PanelTestimonios = () => {
               <p className="text-muted-foreground/60 text-xs mt-1">Aparecerán en el landing entre Clientes y Confianza</p>
             </div>
           )}
-          {testimonials.map((t) => (
-            <div key={t.id} className="flex items-center gap-4 p-4 rounded-xl bg-card border border-border hover:border-primary/15 transition-colors group">
+          {testimonials.map((t, idx) => (
+            <div
+              key={t.id}
+              {...getDragProps(idx)}
+              className={`flex items-center gap-4 p-4 rounded-xl bg-card border transition-all duration-150 group ${
+                isDragOver(idx) ? 'border-primary/40 shadow-md shadow-primary/5 scale-[1.01]' : 'border-border hover:border-primary/15'
+              }`}
+            >
+              <GripVertical size={16} className="text-muted-foreground/30 shrink-0 cursor-grab active:cursor-grabbing" />
               {t.avatar_url ? (
                 <img src={t.avatar_url} alt="" className="w-10 h-10 rounded-full object-cover shrink-0" />
               ) : (
-                <div className="w-10 h-10 rounded-full bg-violet-500/10 flex items-center justify-center text-violet-500 font-bold text-sm shrink-0">
+                <div className="w-10 h-10 rounded-full bg-accent/50 flex items-center justify-center text-primary font-bold text-sm shrink-0">
                   {t.author_name.charAt(0).toUpperCase()}
                 </div>
               )}
