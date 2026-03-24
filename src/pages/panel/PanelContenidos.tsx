@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import RichEditor from '@/components/ui/rich-editor';
 import NavLinksManager from '@/components/panel/NavLinksManager';
 import LogoUploader from '@/components/panel/LogoUploader';
+import HeroImagesUploader from '@/components/panel/HeroImagesUploader';
 
 interface SectionGroup {
   label: string;

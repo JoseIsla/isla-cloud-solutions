@@ -32,6 +32,15 @@ const HeroSection = () => {
   const ctaSecondary = useCMSValue('hero_cta_secondary', 'Nuestros servicios');
   const badge = useCMSValue('hero_badge', 'Tu socio tecnológico de confianza');
 
+  const heroBg1 = useCMSValue('hero_bg_slide1', '');
+  const heroBg2 = useCMSValue('hero_bg_slide2', '');
+  const heroBg3 = useCMSValue('hero_bg_slide3', '');
+  const slideBackgrounds = [
+    heroBg1 || defaultHeroBg,
+    heroBg2 || defaultHeroBlogBg,
+    heroBg3 || defaultHeroCasesBg,
+  ];
+
   const tab1Label = useCMSValue('hero_tab1_label', 'Isla Cloud Solutions');
   const tab2Label = useCMSValue('hero_tab2_label', 'Último en el Blog');
   const tab3Label = useCMSValue('hero_tab3_label', 'Casos de Éxito');
