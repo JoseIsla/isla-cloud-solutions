@@ -3,11 +3,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-import heroBg from "@/assets/hero-bg.jpg";
-import heroBlogBg from "@/assets/hero-blog-bg.jpg";
-import heroCasesBg from "@/assets/hero-cases-bg.jpg";
-
-const slideBackgrounds = [heroBg, heroBlogBg, heroCasesBg];
+import defaultHeroBg from "@/assets/hero-bg.jpg";
+import defaultHeroBlogBg from "@/assets/hero-blog-bg.jpg";
+import defaultHeroCasesBg from "@/assets/hero-cases-bg.jpg";
 import { useCMSValue } from "@/hooks/useCMS";
 import { newsApi, casesApi, type NewsFromAPI, type CaseFromAPI } from "@/lib/api";
 
