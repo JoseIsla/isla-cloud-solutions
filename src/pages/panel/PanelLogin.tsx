@@ -35,11 +35,8 @@ const PanelLogin = () => {
 
       <div className="w-full max-w-sm relative z-10">
         <div className="text-center mb-8">
-          <div className="w-14 h-14 rounded-2xl bg-white/[0.06] border border-white/[0.08] flex items-center justify-center mx-auto mb-5 p-2.5 backdrop-blur-sm">
-            <img src={isotipoLogo} alt="Isla Cloud Solutions" className="w-full h-full object-contain" />
-          </div>
-          <img src={logotipoBlanco} alt="Isla Cloud Solutions" className="h-6 mx-auto mb-3 opacity-60" />
-          <p className="text-white/30 text-xs font-medium uppercase tracking-[0.2em]">Panel de Gestión</p>
+          <img src={logotipoBlanco} alt="Isla Cloud Solutions" className="h-8 mx-auto mb-4" />
+          <p className="text-white/25 text-[11px] font-medium uppercase tracking-[0.2em]">Panel de Gestión</p>
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 rounded-2xl bg-white/[0.04] border border-white/[0.08] backdrop-blur-sm space-y-4">
