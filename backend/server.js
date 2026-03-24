@@ -20,11 +20,27 @@ const PORT = process.env.PORT || 3001;
 app.use(helmet());
 const allowedOrigins = (process.env.CORS_ORIGIN || 'https://www.islacloudsolutions.com')
   .split(',')
-  .map(o => o.trim());
+  .map((o) => o.trim())
+  .filter(Boolean);
+
+const lovablePreviewHostSuffixes = ['.lovable.app', '.lovableproject.com'];
+
+function isAllowedOrigin(origin) {
+  if (!origin) return true;
+  if (allowedOrigins.includes(origin)) return true;
+
+  try {
+    const { hostname } = new URL(origin);
+
+    return lovablePreviewHostSuffixes.some((suffix) => hostname.endsWith(suffix));
+  } catch {
+    return false;
+  }
+}
 
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (isAllowedOrigin(origin)) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
