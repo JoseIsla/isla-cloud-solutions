@@ -235,6 +235,8 @@ const PanelContenidos = () => {
                     <NavLinksManager contents={contents} editValues={editValues} setEditValues={setEditValues} />
                   ) : group.customRenderer && group.label === '🖼️ Logotipos' ? (
                     <LogoUploader contents={contents} editValues={editValues} setEditValues={setEditValues} />
+                  ) : group.customRenderer && group.label === '🌄 Imágenes del Hero' ? (
+                    <HeroImagesUploader contents={contents} editValues={editValues} setEditValues={setEditValues} />
                   ) : (
                     group.keys.map(renderField)
                   )}
