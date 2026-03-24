@@ -119,6 +119,23 @@ async function initDB() {
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     )
   `);
+
+  // Testimonials table
+  await conn.query(`
+    CREATE TABLE IF NOT EXISTS testimonials (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      author_name VARCHAR(255) NOT NULL,
+      author_role VARCHAR(255),
+      author_company VARCHAR(255),
+      quote TEXT NOT NULL,
+      avatar_url VARCHAR(500),
+      rating TINYINT DEFAULT 5,
+      sort_order INT DEFAULT 0,
+      is_active TINYINT(1) DEFAULT 1,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    )
+  `);
   const hashedPassword = await bcrypt.hash('IslaCloud2024!', 12);
   await conn.query(`
     INSERT IGNORE INTO users (email, password, name, role)
