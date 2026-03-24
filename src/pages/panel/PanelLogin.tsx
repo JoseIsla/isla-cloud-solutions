@@ -35,7 +35,7 @@ const PanelLogin = () => {
 
       <div className="w-full max-w-sm relative z-10">
         <div className="text-center mb-8">
-          <img src={logotipoBlanco} alt="Isla Cloud Solutions" className="h-8 mx-auto mb-4" />
+          <img src={logotipoBlanco} alt="Isla Cloud Solutions" className="h-14 mx-auto mb-4" />
           <p className="text-white/25 text-[11px] font-medium uppercase tracking-[0.2em]">Panel de Gestión</p>
         </div>
 
