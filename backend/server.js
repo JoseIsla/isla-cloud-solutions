@@ -68,6 +68,7 @@ app.use('/api/upload', uploadRoutes);
 app.use('/api/clients', clientsRoutes);
 app.use('/api/cases', casesRoutes);
 app.use('/api/testimonials', testimonialsRoutes);
+app.use('/api/faqs', faqsRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

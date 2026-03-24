@@ -114,6 +114,11 @@ const sectionGroups: SectionGroup[] = [
     keys: ['testimonials_section_label', 'testimonials_section_title', 'testimonials_section_subtitle'],
   },
   {
+    label: '❓ FAQ (Textos)',
+    description: 'Etiqueta, título y subtítulo de la sección de preguntas frecuentes.',
+    keys: ['faq_section_label', 'faq_section_title', 'faq_section_subtitle'],
+  },
+  {
     label: '📰 Blog (Página)',
     description: 'Título y subtítulo de la página del blog.',
     keys: ['blog_page_title', 'blog_page_subtitle'],
