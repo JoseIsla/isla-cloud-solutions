@@ -133,6 +133,7 @@ export const casesApi = {
     apiRequest('/api/cases/' + id, { method: 'PUT', body: data, token }),
   delete: (id: number, token: string) =>
     apiRequest('/api/cases/' + id, { method: 'DELETE', token }),
+};
 
 // Upload
 export { uploadImage };
