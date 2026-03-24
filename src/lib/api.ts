@@ -111,6 +111,18 @@ export const clientsApi = {
     apiRequest('/api/clients/' + id, { method: 'DELETE', token }),
 };
 
+// Testimonials
+export const testimonialsApi = {
+  list: () => apiRequest<TestimonialFromAPI[]>('/api/testimonials'),
+  listAll: (token: string) => apiRequest<TestimonialFromAPI[]>('/api/testimonials/all', { token }),
+  create: (data: Partial<TestimonialFromAPI>, token: string) =>
+    apiRequest<{ id: number }>('/api/testimonials', { method: 'POST', body: data, token }),
+  update: (id: number, data: Partial<TestimonialFromAPI>, token: string) =>
+    apiRequest('/api/testimonials/' + id, { method: 'PUT', body: data, token }),
+  delete: (id: number, token: string) =>
+    apiRequest('/api/testimonials/' + id, { method: 'DELETE', token }),
+};
+
 // Cases (success stories)
 export const casesApi = {
   list: (token?: string | null) => apiRequest<CaseFromAPI[]>('/api/cases', { token: token || undefined }),
@@ -180,6 +192,19 @@ export interface ClientFromAPI {
   website_url: string;
   sort_order: number;
   is_active: number;
+}
+
+export interface TestimonialFromAPI {
+  id: number;
+  author_name: string;
+  author_role: string;
+  author_company: string;
+  quote: string;
+  avatar_url: string;
+  rating: number;
+  sort_order: number;
+  is_active: number;
+  created_at: string;
 }
 
 export interface CaseFromAPI {
