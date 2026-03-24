@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft, CheckCircle, Server, Shield, Cloud, Monitor, Globe, Smartphone, Lock, Wrench, Database, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Layout from "@/components/Layout";
+import usePageMeta from "@/hooks/usePageMeta";
 import { services as fallbackServices } from "@/data/services";
 import { serviceImages } from "@/data/serviceImages";
 import { servicesApi, type ServiceFromAPI } from "@/lib/api";
@@ -55,6 +56,13 @@ const ServicioDetalle = () => {
   // Normalize data
   const title = useApi ? apiService!.title : fallback!.title;
   const description = useApi ? apiService!.description : fallback!.description;
+
+  usePageMeta({
+    title,
+    description,
+    canonical: `/servicios/${slug}`,
+    ogImage: useApi ? apiService!.image_url : undefined,
+  });
   const longDescription = useApi ? apiService!.long_description : fallback!.longDescription;
   const features = useApi ? (apiService!.features || []) : fallback!.features;
   const iconName = useApi ? apiService!.icon : '';

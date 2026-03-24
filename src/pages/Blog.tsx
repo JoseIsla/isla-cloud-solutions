@@ -3,10 +3,17 @@ import { Calendar } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
+import usePageMeta from "@/hooks/usePageMeta";
 import { newsApi, type NewsFromAPI } from "@/lib/api";
 import { useCMSValue } from "@/hooks/useCMS";
 
 const BlogPage = () => {
+  usePageMeta({
+    title: 'Blog',
+    description: 'Noticias, artículos y novedades sobre tecnología, cloud, seguridad IT y transformación digital de Isla Cloud Solutions.',
+    canonical: '/blog',
+  });
+
   const [posts, setPosts] = useState<NewsFromAPI[]>([]);
   const [loading, setLoading] = useState(true);
 

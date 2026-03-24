@@ -1,12 +1,19 @@
 import { motion } from "framer-motion";
 import { Shield, Clock, Award, Users } from "lucide-react";
 import Layout from "@/components/Layout";
+import usePageMeta from "@/hooks/usePageMeta";
 import CTASection from "@/components/home/CTASection";
 import { useCMSValue } from "@/hooks/useCMS";
 
 const icons = [Shield, Clock, Award, Users];
 
 const SobreNosotros = () => {
+  usePageMeta({
+    title: 'Sobre Nosotros',
+    description: 'Más de 20 años creando soluciones tecnológicas. Conoce al equipo de Isla Cloud Solutions.',
+    canonical: '/sobre-nosotros',
+  });
+
   const title = useCMSValue('about_title', 'Más de 20 años creando soluciones tecnológicas');
   const subtitle = useCMSValue('about_subtitle', 'Somos un equipo de profesionales apasionados por la tecnología, dedicados a ser el socio tecnológico que tu empresa necesita.');
   const history = useCMSValue('about_history', '<p>Isla Cloud Solutions nació con la misión de proporcionar servicios tecnológicos de primer nivel a empresas que necesitan un socio de confianza para gestionar su infraestructura IT.</p><p>Con más de 20 años de experiencia en el sector, nuestro equipo de ingenieros y técnicos especializados ha gestionado la infraestructura de empresas de todos los sectores, desde instituciones culturales de prestigio internacional hasta empresas de innovación tecnológica.</p><p>Nuestro compromiso es claro: ser el departamento IT que tu empresa necesita, con la profesionalidad y la cercanía de un equipo que trabaja integrado en tu organización.</p>');
