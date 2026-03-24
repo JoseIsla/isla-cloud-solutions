@@ -133,16 +133,6 @@ export const casesApi = {
     apiRequest('/api/cases/' + id, { method: 'PUT', body: data, token }),
   delete: (id: number, token: string) =>
     apiRequest('/api/cases/' + id, { method: 'DELETE', token }),
-};
-  list: (token?: string | null) => apiRequest<CaseFromAPI[]>('/api/cases', { token: token || undefined }),
-  get: (id: number) => apiRequest<CaseFromAPI>(`/api/cases/${id}`),
-  create: (data: Partial<CaseFromAPI>, token: string) =>
-    apiRequest<{ id: number }>('/api/cases', { method: 'POST', body: data, token }),
-  update: (id: number, data: Partial<CaseFromAPI>, token: string) =>
-    apiRequest('/api/cases/' + id, { method: 'PUT', body: data, token }),
-  delete: (id: number, token: string) =>
-    apiRequest('/api/cases/' + id, { method: 'DELETE', token }),
-};
 
 // Upload
 export { uploadImage };
