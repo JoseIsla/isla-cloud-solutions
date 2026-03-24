@@ -136,6 +136,19 @@ async function initDB() {
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     )
   `);
+
+  // FAQs table
+  await conn.query(`
+    CREATE TABLE IF NOT EXISTS faqs (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      question VARCHAR(500) NOT NULL,
+      answer TEXT NOT NULL,
+      sort_order INT DEFAULT 0,
+      is_active TINYINT(1) DEFAULT 1,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    )
+  `);
   const hashedPassword = await bcrypt.hash('IslaCloud2024!', 12);
   await conn.query(`
     INSERT IGNORE INTO users (email, password, name, role)
@@ -283,6 +296,10 @@ async function initDB() {
     ['testimonials_section_label', 'Testimonios: Etiqueta', 'Testimonios', 'text'],
     ['testimonials_section_title', 'Testimonios: Título', 'Lo que dicen nuestros clientes', 'text'],
     ['testimonials_section_subtitle', 'Testimonios: Subtítulo', 'La satisfacción de nuestros clientes es nuestra mejor carta de presentación.', 'text'],
+    // FAQ section
+    ['faq_section_label', 'FAQ: Etiqueta', 'FAQ', 'text'],
+    ['faq_section_title', 'FAQ: Título', 'Preguntas frecuentes', 'text'],
+    ['faq_section_subtitle', 'FAQ: Subtítulo', 'Resolvemos las dudas más habituales sobre nuestros servicios.', 'text'],
   ];
 
   for (const [key, title, value, type] of defaultContents) {
