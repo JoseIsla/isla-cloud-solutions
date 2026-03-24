@@ -7,8 +7,10 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { Plus, Edit, Trash2, MessageCircle, Star } from 'lucide-react';
+import { Plus, Edit, Trash2, MessageCircle, Star, X } from 'lucide-react';
 import { toast } from 'sonner';
+
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.islacloudsolutions.com';
 
 const PanelTestimonios = () => {
   const { token } = useAuth();
@@ -57,8 +59,9 @@ const PanelTestimonios = () => {
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.[0] || !token) return;
     try {
-      const { url } = await uploadImage(e.target.files[0], token);
-      setEditing((prev) => prev ? { ...prev, avatar_url: url } : prev);
+      const result = await uploadImage(e.target.files[0], token);
+      const fullUrl = result.url.startsWith('http') ? result.url : `${API_BASE_URL}${result.url}`;
+      setEditing((prev) => prev ? { ...prev, avatar_url: fullUrl } : prev);
       toast.success('Imagen subida');
     } catch (err: any) {
       toast.error(err.message);
@@ -67,136 +70,107 @@ const PanelTestimonios = () => {
 
   const renderStars = (rating: number) =>
     Array.from({ length: 5 }, (_, i) => (
-      <Star key={i} size={16} className={i < rating ? "text-amber-400" : "text-muted-foreground/30"} fill={i < rating ? "currentColor" : "none"} />
+      <Star key={i} size={13} className={i < rating ? "text-amber-400" : "text-muted-foreground/20"} fill={i < rating ? "currentColor" : "none"} />
     ));
 
   return (
     <PanelLayout>
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-heading font-bold text-foreground">Testimonios</h2>
-          <Button onClick={() => setEditing({ author_name: '', author_role: '', author_company: '', quote: '', rating: 5, is_active: 1, sort_order: 0 })}>
-            <Plus size={18} /> Nuevo testimonio
+          <div>
+            <h2 className="text-xl font-heading font-bold text-foreground">Testimonios</h2>
+            <p className="text-muted-foreground text-sm mt-0.5">{testimonials.length} testimonios</p>
+          </div>
+          <Button size="sm" onClick={() => setEditing({ author_name: '', author_role: '', author_company: '', quote: '', rating: 5, is_active: 1, sort_order: 0 })}>
+            <Plus size={16} /> Nuevo
           </Button>
         </div>
 
         {editing && (
-          <div className="bg-card border border-border rounded-2xl p-6 space-y-4">
-            <h3 className="font-heading font-semibold text-lg">
-              {editing.id ? 'Editar testimonio' : 'Nuevo testimonio'}
-            </h3>
-            <div>
-              <Label>Cita / Testimonio *</Label>
-              <Textarea
-                value={editing.quote || ''}
-                onChange={(e) => setEditing({ ...editing, quote: e.target.value })}
-                placeholder="Lo que dice el cliente sobre vuestro servicio..."
-                rows={4}
-              />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <Label>Nombre *</Label>
-                <Input
-                  value={editing.author_name || ''}
-                  onChange={(e) => setEditing({ ...editing, author_name: e.target.value })}
-                  placeholder="Juan García"
-                />
+          <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="bg-card rounded-2xl border border-border p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl">
+              <div className="flex justify-between items-center mb-5">
+                <h3 className="font-heading font-semibold text-base">{editing.id ? 'Editar testimonio' : 'Nuevo testimonio'}</h3>
+                <button onClick={() => setEditing(null)} className="w-8 h-8 rounded-lg hover:bg-muted flex items-center justify-center"><X size={18} className="text-muted-foreground" /></button>
               </div>
-              <div>
-                <Label>Cargo</Label>
-                <Input
-                  value={editing.author_role || ''}
-                  onChange={(e) => setEditing({ ...editing, author_role: e.target.value })}
-                  placeholder="Director de IT"
-                />
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Cita / Testimonio</label>
+                  <Textarea value={editing.quote || ''} onChange={(e) => setEditing({ ...editing, quote: e.target.value })} placeholder="Lo que dice el cliente..." rows={3} />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div>
+                    <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Nombre</label>
+                    <Input value={editing.author_name || ''} onChange={(e) => setEditing({ ...editing, author_name: e.target.value })} />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Cargo</label>
+                    <Input value={editing.author_role || ''} onChange={(e) => setEditing({ ...editing, author_role: e.target.value })} />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Empresa</label>
+                    <Input value={editing.author_company || ''} onChange={(e) => setEditing({ ...editing, author_company: e.target.value })} />
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 gap-3">
+                  <div>
+                    <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Avatar</label>
+                    <Input type="file" accept="image/*" onChange={handleAvatarUpload} />
+                    {editing.avatar_url && <img src={editing.avatar_url} alt="" className="h-8 w-8 mt-1.5 rounded-full object-cover" />}
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Puntuación</label>
+                    <Input type="number" min={1} max={5} value={editing.rating || 5} onChange={(e) => setEditing({ ...editing, rating: parseInt(e.target.value) || 5 })} />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Orden</label>
+                    <Input type="number" value={editing.sort_order || 0} onChange={(e) => setEditing({ ...editing, sort_order: parseInt(e.target.value) })} />
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 p-3 rounded-lg bg-background border border-border">
+                  <Switch checked={!!editing.is_active} onCheckedChange={(checked) => setEditing({ ...editing, is_active: checked ? 1 : 0 })} />
+                  <Label className="text-sm">Activo</Label>
+                </div>
+                <div className="flex gap-3 pt-2">
+                  <Button onClick={handleSave} disabled={loading}>{loading ? 'Guardando...' : 'Guardar'}</Button>
+                  <Button variant="outline" onClick={() => setEditing(null)}>Cancelar</Button>
+                </div>
               </div>
-              <div>
-                <Label>Empresa</Label>
-                <Input
-                  value={editing.author_company || ''}
-                  onChange={(e) => setEditing({ ...editing, author_company: e.target.value })}
-                  placeholder="Empresa S.L."
-                />
-              </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div>
-                <Label>Avatar</Label>
-                <Input type="file" accept="image/*" onChange={handleAvatarUpload} />
-                {editing.avatar_url && <img src={editing.avatar_url} alt="" className="h-10 w-10 mt-2 rounded-full object-cover" />}
-              </div>
-              <div>
-                <Label>Puntuación (1-5)</Label>
-                <Input
-                  type="number"
-                  min={1}
-                  max={5}
-                  value={editing.rating || 5}
-                  onChange={(e) => setEditing({ ...editing, rating: parseInt(e.target.value) || 5 })}
-                />
-              </div>
-              <div>
-                <Label>Orden</Label>
-                <Input
-                  type="number"
-                  value={editing.sort_order || 0}
-                  onChange={(e) => setEditing({ ...editing, sort_order: parseInt(e.target.value) })}
-                />
-              </div>
-              <div className="flex items-center gap-3 pt-6">
-                <Switch
-                  checked={!!editing.is_active}
-                  onCheckedChange={(checked) => setEditing({ ...editing, is_active: checked ? 1 : 0 })}
-                />
-                <Label>Activo</Label>
-              </div>
-            </div>
-            <div className="flex gap-3">
-              <Button onClick={handleSave} disabled={loading}>
-                {loading ? 'Guardando...' : 'Guardar'}
-              </Button>
-              <Button variant="outline" onClick={() => setEditing(null)}>Cancelar</Button>
             </div>
           </div>
         )}
 
-        <div className="space-y-3">
+        <div className="space-y-2">
           {testimonials.length === 0 && (
-            <div className="text-center py-12 text-muted-foreground">
-              <MessageCircle size={48} className="mx-auto mb-4 opacity-30" />
-              <p>No hay testimonios todavía</p>
-              <p className="text-sm">Añade citas de tus clientes para mostrarlas en el landing</p>
+            <div className="p-12 text-center rounded-xl border border-dashed border-border">
+              <MessageCircle size={32} className="mx-auto mb-3 text-muted-foreground/20" />
+              <p className="text-muted-foreground text-sm">No hay testimonios</p>
+              <p className="text-muted-foreground/60 text-xs mt-1">Aparecerán en el landing entre Clientes y Confianza</p>
             </div>
           )}
           {testimonials.map((t) => (
-            <div key={t.id} className="flex items-center justify-between p-4 bg-card border border-border rounded-xl">
-              <div className="flex items-center gap-4 flex-1 min-w-0">
-                {t.avatar_url ? (
-                  <img src={t.avatar_url} alt="" className="w-10 h-10 rounded-full object-cover shrink-0" />
-                ) : (
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold shrink-0">
-                    {t.author_name.charAt(0).toUpperCase()}
-                  </div>
-                )}
-                <div className="min-w-0">
-                  <h4 className="font-medium text-foreground truncate">"{t.quote.slice(0, 60)}{t.quote.length > 60 ? '...' : ''}"</h4>
-                  <p className="text-sm text-muted-foreground">
-                    {t.author_name}{t.author_company ? ` · ${t.author_company}` : ''}
-                  </p>
-                  <div className="flex gap-0.5 mt-1">{renderStars(t.rating)}</div>
+            <div key={t.id} className="flex items-center gap-4 p-4 rounded-xl bg-card border border-border hover:border-primary/15 transition-colors group">
+              {t.avatar_url ? (
+                <img src={t.avatar_url} alt="" className="w-10 h-10 rounded-full object-cover shrink-0" />
+              ) : (
+                <div className="w-10 h-10 rounded-full bg-violet-500/10 flex items-center justify-center text-violet-500 font-bold text-sm shrink-0">
+                  {t.author_name.charAt(0).toUpperCase()}
                 </div>
-                {!t.is_active && (
-                  <span className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded shrink-0">Inactivo</span>
-                )}
+              )}
+              <div className="flex-1 min-w-0">
+                <p className="text-sm text-foreground truncate italic">"{t.quote.slice(0, 70)}{t.quote.length > 70 ? '...' : ''}"</p>
+                <div className="flex items-center gap-2 mt-0.5">
+                  <span className="text-xs font-medium text-foreground">{t.author_name}</span>
+                  {t.author_company && <span className="text-xs text-muted-foreground">· {t.author_company}</span>}
+                  <div className="flex gap-0.5 ml-1">{renderStars(t.rating)}</div>
+                </div>
               </div>
-              <div className="flex gap-2 shrink-0 ml-4">
-                <Button size="sm" variant="outline" onClick={() => setEditing(t)}>
-                  <Edit size={14} />
-                </Button>
-                <Button size="sm" variant="outline" className="text-destructive" onClick={() => handleDelete(t.id)}>
-                  <Trash2 size={14} />
-                </Button>
+              {!t.is_active && (
+                <span className="text-[10px] bg-muted text-muted-foreground px-2 py-0.5 rounded font-medium shrink-0">Inactivo</span>
+              )}
+              <div className="flex gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button onClick={() => setEditing(t)} className="p-2 rounded-lg hover:bg-primary/10 text-primary"><Edit size={15} /></button>
+                <button onClick={() => handleDelete(t.id)} className="p-2 rounded-lg hover:bg-destructive/10 text-destructive"><Trash2 size={15} /></button>
               </div>
             </div>
           ))}
