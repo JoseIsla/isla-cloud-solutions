@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import PanelLayout from './PanelLayout';
 import { servicesApi, uploadImage, type ServiceFromAPI } from '@/lib/api';
@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Plus, Pencil, Trash2, X, Upload, GripVertical, FileText } from 'lucide-react';
 import { toast } from 'sonner';
 import RichEditor from '@/components/ui/rich-editor';
+import { useDragReorder } from '@/hooks/useDragReorder';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.islacloudsolutions.com';
 
@@ -16,6 +17,19 @@ const PanelServicios = () => {
   const [isNew, setIsNew] = useState(false);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleReorder = useCallback(async (reordered: ServiceFromAPI[]) => {
+    if (!token) return;
+    try {
+      await Promise.all(reordered.map((s, i) => servicesApi.update(s.id, { ...s, sort_order: i }, token)));
+      toast.success('Orden actualizado');
+    } catch {
+      toast.error('Error guardando orden');
+      load();
+    }
+  }, [token]);
+
+  const { getDragProps, isDragOver } = useDragReorder({ items: services, setItems: setServices, onReorder: handleReorder });
 
   const load = () => { servicesApi.list().then(setServices).catch(() => {}); };
   useEffect(load, []);
@@ -71,7 +85,7 @@ const PanelServicios = () => {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-xl font-heading font-bold text-foreground">Servicios</h2>
-            <p className="text-muted-foreground text-sm mt-0.5">{services.length} servicios registrados</p>
+            <p className="text-muted-foreground text-sm mt-0.5">{services.length} servicios · <span className="text-muted-foreground/60">Arrastra para reordenar</span></p>
           </div>
           <Button size="sm" onClick={() => { setEditing({ slug: '', title: '', short_title: '', description: '', long_description: '', icon: 'Server', features: [], image_url: '', sort_order: 0 }); setIsNew(true); }}>
             <Plus size={16} /> Nuevo
@@ -150,10 +164,16 @@ const PanelServicios = () => {
         )}
 
         {/* List */}
-        <div className="space-y-2">
-          {services.map((s) => (
-            <div key={s.id} className="flex items-center gap-4 p-4 rounded-xl bg-card border border-border hover:border-primary/15 transition-colors group">
-              <GripVertical size={16} className="text-muted-foreground/30 shrink-0" />
+        <div className="space-y-1">
+          {services.map((s, idx) => (
+            <div
+              key={s.id}
+              {...getDragProps(idx)}
+              className={`flex items-center gap-4 p-4 rounded-xl bg-card border transition-all duration-150 group ${
+                isDragOver(idx) ? 'border-primary/40 shadow-md shadow-primary/5 scale-[1.01]' : 'border-border hover:border-primary/15'
+              }`}
+            >
+              <GripVertical size={16} className="text-muted-foreground/30 shrink-0 cursor-grab active:cursor-grabbing" />
               {s.image_url ? (
                 <img src={s.image_url} alt="" className="w-10 h-10 rounded-lg object-cover shrink-0" />
               ) : (
@@ -163,7 +183,7 @@ const PanelServicios = () => {
               )}
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-foreground truncate">{s.title}</p>
-                <p className="text-xs text-muted-foreground truncate">{s.slug} · Orden: {s.sort_order}</p>
+                <p className="text-xs text-muted-foreground truncate">{s.slug}</p>
               </div>
               <div className="flex gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button onClick={() => { setEditing(s); setIsNew(false); }} className="p-2 rounded-lg hover:bg-primary/10 text-primary"><Pencil size={15} /></button>
