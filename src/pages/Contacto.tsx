@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Layout from "@/components/Layout";
+import usePageMeta from "@/hooks/usePageMeta";
 import { toast } from "sonner";
 import { contactsApi } from "@/lib/api";
 import { useCMSValue } from "@/hooks/useCMS";

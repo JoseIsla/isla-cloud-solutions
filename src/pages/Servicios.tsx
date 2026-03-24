@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowRight, Server, Shield, Cloud, Monitor, Globe, Smartphone, Lock, Wrench, Database, type LucideIcon } from "lucide-react";
 import Layout from "@/components/Layout";
+import usePageMeta from "@/hooks/usePageMeta";
 import { services as fallbackServices } from "@/data/services";
 import { servicesApi, type ServiceFromAPI } from "@/lib/api";
 import { useCMSValue } from "@/hooks/useCMS";
@@ -12,6 +13,12 @@ const iconMap: Record<string, LucideIcon> = {
 };
 
 const ServiciosPage = () => {
+  usePageMeta({
+    title: 'Servicios IT',
+    description: 'Hosting, cloud servers, desarrollo web, consultoría IT, mantenimiento informático y más. Soluciones tecnológicas a medida para tu empresa.',
+    canonical: '/servicios',
+  });
+
   const [apiServices, setApiServices] = useState<ServiceFromAPI[] | null>(null);
 
   useEffect(() => {

@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Calendar, ArrowLeft, Tag } from "lucide-react";
 import Layout from "@/components/Layout";
+import usePageMeta from "@/hooks/usePageMeta";
 import { newsApi, type NewsFromAPI } from "@/lib/api";
 
 const BlogDetalle = () => {
@@ -50,6 +51,15 @@ const BlogDetalle = () => {
       </Layout>
     );
   }
+
+  usePageMeta({
+    title: post.title,
+    description: post.excerpt || `Lee ${post.title} en el blog de Isla Cloud Solutions.`,
+    canonical: `/blog/${slug}`,
+    ogImage: post.image_url || undefined,
+    type: 'article',
+    publishedTime: post.published_at || post.created_at,
+  });
 
   return (
     <Layout>

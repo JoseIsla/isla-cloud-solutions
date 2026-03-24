@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Shield, Clock, Award, Users } from "lucide-react";
 import Layout from "@/components/Layout";
+import usePageMeta from "@/hooks/usePageMeta";
 import CTASection from "@/components/home/CTASection";
 import { useCMSValue } from "@/hooks/useCMS";
 
