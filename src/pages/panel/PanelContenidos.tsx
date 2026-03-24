@@ -25,6 +25,12 @@ const sectionGroups: SectionGroup[] = [
     customRenderer: true as any,
   },
   {
+    label: '🌄 Imágenes del Hero',
+    description: 'Cambia las imágenes de fondo de los 3 slides del Hero.',
+    keys: ['hero_bg_slide1', 'hero_bg_slide2', 'hero_bg_slide3'],
+    customRenderer: true as any,
+  },
+  {
     label: '🏠 Hero (Cabecera)',
     description: 'Título principal, subtítulo, botones y pestañas del slider.',
     keys: [
