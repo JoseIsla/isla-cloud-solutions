@@ -9,6 +9,12 @@ import { contactsApi } from "@/lib/api";
 import { useCMSValue } from "@/hooks/useCMS";
 
 const ContactoPage = () => {
+  usePageMeta({
+    title: 'Contacto',
+    description: 'Contacta con Isla Cloud Solutions. Cuéntanos tu proyecto y te asesoramos sin compromiso.',
+    canonical: '/contacto',
+  });
+
   const title = useCMSValue('contact_title', 'Hablemos de tu proyecto');
   const subtitle = useCMSValue('contact_subtitle', 'Cuéntanos qué necesitas y te asesoraremos sin compromiso.');
   const contactEmail = useCMSValue('contact_email', 'info@islacloudsolutions.com');
