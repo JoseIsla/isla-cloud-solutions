@@ -18,8 +18,7 @@ const testimonialsRoutes = require('./routes/testimonials');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Security
-app.use(helmet());
+// CORS — must be BEFORE helmet so preflight OPTIONS work
 const allowedOrigins = (process.env.CORS_ORIGIN || 'https://www.islacloudsolutions.com')
   .split(',')
   .map((o) => o.trim())
@@ -33,7 +32,6 @@ function isAllowedOrigin(origin) {
 
   try {
     const { hostname } = new URL(origin);
-
     return lovablePreviewHostSuffixes.some((suffix) => hostname.endsWith(suffix));
   } catch {
     return false;
@@ -49,6 +47,23 @@ app.use(cors({
     }
   },
   credentials: true,
+}));
+
+// Explicit preflight handler for all routes
+app.options('*', cors({
+  origin: (origin, callback) => {
+    if (isAllowedOrigin(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+}));
+
+// Security — after CORS so preflight responses aren't blocked
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: 'cross-origin' },
 }));
 
 // Body parsing
