@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
-import { Lock } from 'lucide-react';
 import { toast } from 'sonner';
-
+import isotipoLogo from '@/assets/logos/isotipo.png';
 const PanelLogin = () => {
   const { login } = useAuth();
   const [email, setEmail] = useState('');
@@ -28,8 +27,8 @@ const PanelLogin = () => {
     <div className="min-h-screen bg-hero flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-4">
-            <Lock size={28} className="text-primary" />
+          <div className="w-20 h-20 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-4 p-3">
+            <img src={isotipoLogo} alt="Isla Cloud Solutions" className="w-full h-full object-contain" />
           </div>
           <h1 className="text-2xl font-heading font-bold text-hero-foreground">Panel de Administración</h1>
           <p className="text-hero-foreground/60 text-sm mt-2">Isla Cloud Solutions</p>

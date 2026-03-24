@@ -5,6 +5,7 @@ import {
   LayoutDashboard, FileText, Newspaper, MessageSquare,
   LogOut, Menu, X, Users, Trophy, PanelLeftOpen, Globe, Pencil,
 } from 'lucide-react';
+import logotipoBlanco from '@/assets/logos/logotipo-blanco-small.png';
 
 const sidebarSections = [
   {
@@ -43,11 +44,10 @@ const PanelLayout = ({ children }: { children: React.ReactNode }) => {
       {/* Sidebar */}
       <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-navy transform transition-transform lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="flex flex-col h-full">
-          <div className="p-6 border-b border-hero-foreground/10">
-            <h2 className="font-heading font-bold text-hero-foreground text-lg">
-              Isla Cloud <span className="text-primary">Panel</span>
-            </h2>
-            <p className="text-hero-foreground/50 text-xs mt-1">{user?.email}</p>
+          <div className="p-5 border-b border-hero-foreground/10 flex flex-col items-center gap-3">
+            <img src={logotipoBlanco} alt="Isla Cloud Solutions" className="h-8 object-contain" />
+            <span className="text-[10px] font-bold uppercase tracking-widest text-primary/80">Panel de Gestión</span>
+            <p className="text-hero-foreground/50 text-xs">{user?.email}</p>
           </div>
 
           <nav className="flex-1 p-4 space-y-5 overflow-y-auto">
