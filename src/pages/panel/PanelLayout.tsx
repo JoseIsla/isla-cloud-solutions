@@ -3,7 +3,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { Link, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, FileText, Newspaper, MessageSquare,
-  LogOut, Menu, X, Users, Trophy, PanelLeftOpen, Globe, Pencil,
+  LogOut, Menu, X, Users, Trophy, PanelLeftOpen, Globe, Pencil, MessageCircle,
 } from 'lucide-react';
 import logotipoBlanco from '@/assets/logos/logotipo-blanco-small.png';
 
@@ -21,6 +21,7 @@ const sidebarSections = [
       { label: 'Servicios', path: '/panel/servicios', icon: FileText },
       { label: 'Clientes', path: '/panel/clientes', icon: Users },
       { label: 'Casos de Éxito', path: '/panel/casos', icon: Trophy },
+      { label: 'Testimonios', path: '/panel/testimonios', icon: MessageCircle },
       { label: 'Noticias / Blog', path: '/panel/noticias', icon: Newspaper },
     ],
   },
