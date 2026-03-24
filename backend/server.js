@@ -26,40 +26,41 @@ const allowedOrigins = (process.env.CORS_ORIGIN || 'https://www.islacloudsolutio
 
 const lovablePreviewHostSuffixes = ['.lovable.app', '.lovableproject.com'];
 
+function getHostnameFromOrigin(origin) {
+  if (!origin || typeof origin !== 'string') return '';
+
+  return origin
+    .replace(/^https?:\/\//i, '')
+    .split('/')[0]
+    .split(':')[0]
+    .toLowerCase();
+}
+
 function isAllowedOrigin(origin) {
   if (!origin) return true;
   if (allowedOrigins.includes(origin)) return true;
 
-  try {
-    const { hostname } = new URL(origin);
-    return lovablePreviewHostSuffixes.some((suffix) => hostname.endsWith(suffix));
-  } catch {
-    return false;
-  }
+  const hostname = getHostnameFromOrigin(origin);
+  if (!hostname) return false;
+
+  return lovablePreviewHostSuffixes.some((suffix) => hostname.endsWith(suffix));
 }
 
-app.use(cors({
+const corsOptions = {
   origin: (origin, callback) => {
     if (isAllowedOrigin(origin)) {
-      callback(null, true);
+      return callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      return callback(null, false);
     }
   },
   credentials: true,
-}));
+  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 204,
+};
 
-// Explicit preflight handler for all routes
-app.options('*', cors({
-  origin: (origin, callback) => {
-    if (isAllowedOrigin(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,
-}));
+app.use(cors(corsOptions));
 
 // Security — after CORS so preflight responses aren't blocked
 app.use(helmet({
