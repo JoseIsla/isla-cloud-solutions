@@ -3,7 +3,7 @@ import { useAuth } from '@/hooks/useAuth';
 import PanelLayout from './PanelLayout';
 import { servicesApi, uploadImage, type ServiceFromAPI } from '@/lib/api';
 import { Button } from '@/components/ui/button';
-import { Plus, Pencil, Trash2, X, Upload, GripVertical } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Upload, GripVertical, FileText } from 'lucide-react';
 import { toast } from 'sonner';
 import RichEditor from '@/components/ui/rich-editor';
 
