@@ -21,9 +21,10 @@ router.get('/', async (req, res) => {
 
 // PUT /api/contents/:key (admin)
 router.put('/:key', authMiddleware, async (req, res) => {
+  let conn;
   try {
     const { value, title, content_type } = req.body;
-    const conn = await pool.getConnection();
+    conn = await pool.getConnection();
     const existing = await conn.query('SELECT id FROM contents WHERE content_key = ?', [req.params.key]);
     
     if (existing.length === 0) {
@@ -33,14 +34,16 @@ router.put('/:key', authMiddleware, async (req, res) => {
       );
     } else {
       await conn.query(
-        'UPDATE contents SET value = ?, title = COALESCE(?, title), content_type = COALESCE(?, content_type) WHERE content_key = ?',
+        'UPDATE contents SET value = ?, title = COALESCE(?, title), content_type = COALESCE(?, content_type), updated_at = NOW() WHERE content_key = ?',
         [value, title, content_type, req.params.key]
       );
     }
-    conn.release();
     res.json({ message: 'Contenido actualizado' });
   } catch (err) {
-    res.status(500).json({ error: 'Error del servidor' });
+    console.error('Error updating content:', req.params.key, err.message);
+    res.status(500).json({ error: 'Error del servidor: ' + err.message });
+  } finally {
+    if (conn) conn.release();
   }
 });
 
