@@ -3,6 +3,7 @@ const pool = require('../config/db');
 const { authMiddleware } = require('../middleware/auth');
 const { body, validationResult } = require('express-validator');
 const rateLimit = require('express-rate-limit');
+const { sendContactNotification } = require('../config/mailer');
 
 const router = express.Router();
 
@@ -32,6 +33,21 @@ router.post('/', contactLimiter, [
       [nombre, email, empresa || '', telefono || '', mensaje]
     );
     res.status(201).json({ message: 'Mensaje enviado correctamente' });
+
+    // Enviar notificación por email (no bloqueante)
+    let notifConn;
+    try {
+      notifConn = await pool.getConnection();
+      const rows = await notifConn.query("SELECT value FROM contents WHERE `key` = 'contact_email'");
+      const toEmail = (rows.length > 0 && rows[0].value) ? rows[0].value : process.env.SMTP_USER;
+      if (toEmail) {
+        sendContactNotification({ nombre, email, empresa, telefono, mensaje }, toEmail);
+      }
+    } catch (notifErr) {
+      console.error('Error obteniendo email destino:', notifErr.message);
+    } finally {
+      if (notifConn) notifConn.release();
+    }
   } catch (err) {
     console.error('POST /api/contacts error:', err.message);
     res.status(500).json({ error: 'Error del servidor' });
