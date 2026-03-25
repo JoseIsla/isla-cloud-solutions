@@ -3,11 +3,11 @@ import { motion } from "framer-motion";
 import { ArrowLeft, CheckCircle, Server, Shield, Cloud, Monitor, Globe, Smartphone, Lock, Wrench, Database, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Layout from "@/components/Layout";
-import usePageMeta from "@/hooks/usePageMeta";
+import usePageMeta, { SITE_URL, SITE_NAME } from "@/hooks/usePageMeta";
 import { services as fallbackServices } from "@/data/services";
 import { serviceImages } from "@/data/serviceImages";
 import { servicesApi, type ServiceFromAPI } from "@/lib/api";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 
 const iconMap: Record<string, LucideIcon> = {
   Server, Shield, Cloud, Monitor, Globe, Smartphone, Lock, Wrench, Database,
@@ -57,11 +57,27 @@ const ServicioDetalle = () => {
   const title = useApi ? apiService!.title : fallback!.title;
   const description = useApi ? apiService!.description : fallback!.description;
 
+  const serviceJsonLd = useMemo(() => ({
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: title,
+    description,
+    provider: {
+      '@type': 'Organization',
+      name: SITE_NAME,
+      url: SITE_URL,
+    },
+    url: `${SITE_URL}/servicios/${slug}`,
+    ...(useApi && apiService!.image_url ? { image: apiService!.image_url } : {}),
+    areaServed: { '@type': 'Country', name: 'España' },
+  }), [title, description, slug, useApi, apiService]);
+
   usePageMeta({
     title,
     description,
     canonical: `/servicios/${slug}`,
     ogImage: useApi ? apiService!.image_url : undefined,
+    jsonLd: serviceJsonLd,
   });
   const longDescription = useApi ? apiService!.long_description : fallback!.longDescription;
   const features = useApi ? (apiService!.features || []) : fallback!.features;
