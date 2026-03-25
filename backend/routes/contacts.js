@@ -3,7 +3,7 @@ const pool = require('../config/db');
 const { authMiddleware } = require('../middleware/auth');
 const { body, validationResult } = require('express-validator');
 const rateLimit = require('express-rate-limit');
-const { sendContactNotification } = require('../config/mailer');
+const { sendContactNotification, sendContactConfirmation } = require('../config/mailer');
 
 const router = express.Router();
 
@@ -43,6 +43,8 @@ router.post('/', contactLimiter, [
       if (toEmail) {
         sendContactNotification({ nombre, email, empresa, telefono, mensaje }, toEmail);
       }
+      // Confirmación al usuario
+      sendContactConfirmation({ nombre, email });
     } catch (notifErr) {
       console.error('Error obteniendo email destino:', notifErr.message);
     } finally {
