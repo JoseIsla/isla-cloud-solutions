@@ -11,9 +11,10 @@ interface PageMetaOptions {
   ogImage?: string;
   type?: 'website' | 'article';
   publishedTime?: string;
+  jsonLd?: Record<string, unknown>;
 }
 
-const usePageMeta = ({ title, description, canonical, ogImage, type = 'website', publishedTime }: PageMetaOptions) => {
+const usePageMeta = ({ title, description, canonical, ogImage, type = 'website', publishedTime, jsonLd }: PageMetaOptions) => {
   useEffect(() => {
     const fullTitle = title === SITE_NAME ? title : `${title} | ${SITE_NAME}`;
     const desc = description || DEFAULT_DESCRIPTION;
@@ -56,10 +57,23 @@ const usePageMeta = ({ title, description, canonical, ogImage, type = 'website',
       setMeta('property', 'article:published_time', publishedTime);
     }
 
+    // JSON-LD structured data
+    let scriptEl: HTMLScriptElement | null = null;
+    if (jsonLd) {
+      scriptEl = document.createElement('script');
+      scriptEl.type = 'application/ld+json';
+      scriptEl.textContent = JSON.stringify(jsonLd);
+      document.head.appendChild(scriptEl);
+    }
+
     return () => {
       document.title = SITE_NAME;
+      if (scriptEl && scriptEl.parentNode) {
+        scriptEl.parentNode.removeChild(scriptEl);
+      }
     };
-  }, [title, description, canonical, ogImage, type, publishedTime]);
+  }, [title, description, canonical, ogImage, type, publishedTime, jsonLd]);
 };
 
 export default usePageMeta;
+export { SITE_URL, SITE_NAME };
