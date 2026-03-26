@@ -105,11 +105,11 @@ const Footer = () => {
             <ul className="space-y-3 text-sm text-hero-foreground/60">
               <li className="flex items-center gap-2">
                 <Mail size={14} className="text-primary" />
-                <span>{contactEmail}</span>
+                <a href={`mailto:${contactEmail}`} className="hover:text-primary transition-colors">{contactEmail}</a>
               </li>
               <li className="flex items-center gap-2">
                 <Phone size={14} className="text-primary" />
-                <span>{contactPhone}</span>
+                <a href={`tel:${contactPhone}`} className="hover:text-primary transition-colors">{contactPhone}</a>
               </li>
               <li className="flex items-start gap-2">
                 <MapPin size={14} className="text-primary mt-0.5" />
