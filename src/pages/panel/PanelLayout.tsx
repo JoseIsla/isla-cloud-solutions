@@ -96,7 +96,7 @@ const PanelLayout = ({ children }: { children: React.ReactNode }) => {
                         to={link.path}
                         onClick={() => setSidebarOpen(false)}
                         title={collapsed ? link.label : undefined}
-                        className={`group flex items-center ${collapsed ? 'justify-center' : ''} gap-3 ${collapsed ? 'px-2' : 'px-3'} py-2 rounded-lg text-[13px] font-medium transition-all duration-150 ${
+                        className={`group relative flex items-center ${collapsed ? 'justify-center' : ''} gap-3 ${collapsed ? 'px-2' : 'px-3'} py-2 rounded-lg text-[13px] font-medium transition-all duration-150 ${
                           isActive
                             ? 'bg-primary/15 text-primary shadow-sm shadow-primary/5'
                             : 'text-white/50 hover:text-white/80 hover:bg-white/[0.04]'
