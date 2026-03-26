@@ -112,7 +112,7 @@ const HeroSection = () => {
       badge: currentCase?.client_name || "Caso de éxito",
       title: currentCase?.title || slide3Fallback,
       subtitle: currentCase?.excerpt || slide3FallbackDesc,
-      ctaPrimary: { text: slide3Cta, to: "/contacto" },
+      ctaPrimary: { text: "Ver caso de éxito", to: currentCase ? `/casos/${currentCase.id}` : "/contacto" },
       ctaSecondary: { text: slide3CtaSec, to: "/servicios" },
     },
   ];
