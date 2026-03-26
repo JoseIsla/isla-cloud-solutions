@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { casesApi, CaseFromAPI } from "@/lib/api";
@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import usePageMeta from "@/hooks/usePageMeta";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { sanitizeHTML } from "@/lib/sanitize";
 
 const CasoDetalle = () => {
@@ -61,8 +62,15 @@ const CasoDetalle = () => {
     );
   }
 
+  const breadcrumbs = useMemo(() => [
+    { name: 'Inicio', path: '/' },
+    { name: 'Casos de Éxito', path: '/casos' },
+    { name: caso.title, path: `/casos/${id}` },
+  ], [caso.title, id]);
+
   return (
     <Layout>
+      <BreadcrumbJsonLd items={breadcrumbs} />
       <motion.article
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
