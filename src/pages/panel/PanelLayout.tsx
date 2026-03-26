@@ -103,7 +103,12 @@ const PanelLayout = ({ children }: { children: React.ReactNode }) => {
                         }`}
                       >
                         <Icon size={collapsed ? 20 : 16} className={`shrink-0 ${isActive ? '' : 'group-hover:scale-105 transition-transform'}`} />
-                        {!collapsed && <span className="truncate">{link.label}</span>}
+                        {!collapsed && <span className="truncate flex-1">{link.label}</span>}
+                        {link.path === '/panel/contactos' && unreadCount > 0 && (
+                          <span className={`${collapsed ? 'absolute -top-1 -right-1' : ''} min-w-[18px] h-[18px] flex items-center justify-center rounded-full bg-red-500 text-white text-[10px] font-bold px-1 animate-pulse`}>
+                            {unreadCount}
+                          </span>
+                        )}
                       </Link>
                     );
                   })}
