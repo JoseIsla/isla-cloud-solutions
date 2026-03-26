@@ -13,6 +13,7 @@ const Navbar = () => {
   const nav3 = useCMSValue('nav_link3_label', 'Sobre Nosotros');
   const nav4 = useCMSValue('nav_link4_label', 'Blog');
   const nav5 = useCMSValue('nav_link5_label', 'Contacto');
+  const nav6 = useCMSValue('nav_link6_label', 'Casos de Éxito');
   const navCta = useCMSValue('nav_cta_text', 'Solicitar Consulta');
 
   const vis1 = useCMSValue('nav_link1_visible', 'true');
@@ -20,12 +21,14 @@ const Navbar = () => {
   const vis3 = useCMSValue('nav_link3_visible', 'true');
   const vis4 = useCMSValue('nav_link4_visible', 'true');
   const vis5 = useCMSValue('nav_link5_visible', 'true');
+  const vis6 = useCMSValue('nav_link6_visible', 'true');
 
   const ord1 = useCMSValue('nav_link1_order', '1');
   const ord2 = useCMSValue('nav_link2_order', '2');
   const ord3 = useCMSValue('nav_link3_order', '3');
   const ord4 = useCMSValue('nav_link4_order', '4');
   const ord5 = useCMSValue('nav_link5_order', '5');
+  const ord6 = useCMSValue('nav_link6_order', '6');
 
   const allLinks = [
     { label: nav1, path: "/", visible: vis1 !== 'false', order: parseInt(ord1) || 1 },
@@ -33,11 +36,12 @@ const Navbar = () => {
     { label: nav3, path: "/sobre-nosotros", visible: vis3 !== 'false', order: parseInt(ord3) || 3 },
     { label: nav4, path: "/blog", visible: vis4 !== 'false', order: parseInt(ord4) || 4 },
     { label: nav5, path: "/contacto", visible: vis5 !== 'false', order: parseInt(ord5) || 5 },
+    { label: nav6, path: "/casos", visible: vis6 !== 'false', order: parseInt(ord6) || 6 },
   ];
 
   const navLinks = useMemo(
     () => allLinks.filter(l => l.visible).sort((a, b) => a.order - b.order),
-    [nav1, nav2, nav3, nav4, nav5, vis1, vis2, vis3, vis4, vis5, ord1, ord2, ord3, ord4, ord5]
+    [nav1, nav2, nav3, nav4, nav5, nav6, vis1, vis2, vis3, vis4, vis5, vis6, ord1, ord2, ord3, ord4, ord5, ord6]
   );
 
   const [isOpen, setIsOpen] = useState(false);
