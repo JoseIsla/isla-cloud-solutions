@@ -23,6 +23,7 @@ const defaultLinks = [
   { index: 3, defaultPath: '/sobre-nosotros', defaultLabel: 'Sobre Nosotros' },
   { index: 4, defaultPath: '/blog', defaultLabel: 'Blog' },
   { index: 5, defaultPath: '/contacto', defaultLabel: 'Contacto' },
+  { index: 6, defaultPath: '/casos', defaultLabel: 'Casos de Éxito' },
 ];
 
 interface Props {

@@ -1,7 +1,14 @@
 import { motion } from "framer-motion";
 import Layout from "@/components/Layout";
+import usePageMeta from "@/hooks/usePageMeta";
 
 const PoliticaPrivacidad = () => {
+  usePageMeta({
+    title: "Política de Privacidad",
+    description: "Política de privacidad y protección de datos de Isla Cloud Solutions. Conoce cómo tratamos tu información personal.",
+    canonical: "/privacidad",
+  });
+
   return (
     <Layout>
       <section className="bg-hero grid-pattern py-24">
