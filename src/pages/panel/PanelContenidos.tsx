@@ -9,28 +9,52 @@ import RichEditor from '@/components/ui/rich-editor';
 import NavLinksManager from '@/components/panel/NavLinksManager';
 import LogoUploader from '@/components/panel/LogoUploader';
 import HeroImagesUploader from '@/components/panel/HeroImagesUploader';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
 interface SectionGroup {
   label: string;
   description: string;
   keys: string[];
   customRenderer?: boolean;
+  tab: string;
 }
 
+const TAB_CONFIG = [
+  { id: 'visual', label: '🎨 Visual', description: 'Logotipos, imágenes y navegación' },
+  { id: 'cabecera', label: '🏠 Cabecera', description: 'Hero e introducción' },
+  { id: 'secciones', label: '📦 Secciones', description: 'Servicios, contadores, clientes y más' },
+  { id: 'footer', label: '📞 Footer y CTA', description: 'Contacto, pie de página y redes' },
+];
+
 const sectionGroups: SectionGroup[] = [
+  // TAB: Visual
   {
+    tab: 'visual',
     label: '🖼️ Logotipos',
     description: 'Sube logos personalizados para el Navbar y el Footer.',
     keys: ['site_logo_navbar', 'site_logo_footer'],
-    customRenderer: true as any,
+    customRenderer: true,
   },
   {
+    tab: 'visual',
     label: '🌄 Imágenes del Hero',
     description: 'Cambia las imágenes de fondo de los 3 slides del Hero.',
     keys: ['hero_bg_slide1', 'hero_bg_slide2', 'hero_bg_slide3'],
-    customRenderer: true as any,
+    customRenderer: true,
   },
   {
+    tab: 'visual',
+    label: '🧭 Navegación',
+    description: 'Gestiona etiquetas, visibilidad y orden de los enlaces del menú.',
+    keys: ['nav_link1_label', 'nav_link2_label', 'nav_link3_label', 'nav_link4_label', 'nav_link5_label', 'nav_cta_text',
+           'nav_link1_visible', 'nav_link2_visible', 'nav_link3_visible', 'nav_link4_visible', 'nav_link5_visible',
+           'nav_link1_order', 'nav_link2_order', 'nav_link3_order', 'nav_link4_order', 'nav_link5_order'],
+    customRenderer: true,
+  },
+
+  // TAB: Cabecera
+  {
+    tab: 'cabecera',
     label: '🏠 Hero (Cabecera)',
     description: 'Título principal, subtítulo, botones y pestañas del slider.',
     keys: [
@@ -42,16 +66,21 @@ const sectionGroups: SectionGroup[] = [
     ],
   },
   {
+    tab: 'cabecera',
     label: '📝 Introducción',
     description: 'Texto principal que aparece debajo del hero.',
     keys: ['intro_text'],
   },
+
+  // TAB: Secciones
   {
+    tab: 'secciones',
     label: '⚙️ Servicios',
     description: 'Título de la sección de servicios en el landing y página de servicios.',
     keys: ['services_section_title', 'services_page_title', 'services_page_subtitle'],
   },
   {
+    tab: 'secciones',
     label: '✅ ¿Por qué elegirnos?',
     description: 'Título, subtítulo y las 4 razones.',
     keys: [
@@ -63,6 +92,7 @@ const sectionGroups: SectionGroup[] = [
     ],
   },
   {
+    tab: 'secciones',
     label: '📊 Contadores',
     description: 'Cifras y etiquetas de las métricas.',
     keys: [
@@ -73,11 +103,13 @@ const sectionGroups: SectionGroup[] = [
     ],
   },
   {
+    tab: 'secciones',
     label: '🏢 Clientes (Textos)',
     description: 'Etiqueta, título y subtítulo de la sección de clientes.',
     keys: ['clients_section_label', 'clients_section_title', 'clients_section_subtitle'],
   },
   {
+    tab: 'secciones',
     label: '🛡️ Confianza / TrustLocal',
     description: 'Sección de verificación y badge de confianza.',
     keys: [
@@ -87,6 +119,33 @@ const sectionGroups: SectionGroup[] = [
     ],
   },
   {
+    tab: 'secciones',
+    label: '💬 Testimonios (Textos)',
+    description: 'Etiqueta, título y subtítulo de la sección de testimonios.',
+    keys: ['testimonials_section_label', 'testimonials_section_title', 'testimonials_section_subtitle'],
+  },
+  {
+    tab: 'secciones',
+    label: '❓ FAQ (Textos)',
+    description: 'Etiqueta, título y subtítulo de la sección de preguntas frecuentes.',
+    keys: ['faq_section_label', 'faq_section_title', 'faq_section_subtitle'],
+  },
+  {
+    tab: 'secciones',
+    label: '📰 Blog (Página)',
+    description: 'Título y subtítulo de la página del blog.',
+    keys: ['blog_page_title', 'blog_page_subtitle'],
+  },
+  {
+    tab: 'secciones',
+    label: '🏢 Sobre Nosotros',
+    description: 'Textos de la página Sobre Nosotros.',
+    keys: ['about_title', 'about_subtitle', 'about_history_title', 'about_history', 'about_values_title'],
+  },
+
+  // TAB: Footer y CTA
+  {
+    tab: 'footer',
     label: '📢 CTA (Llamada a la acción)',
     description: 'Título, subtítulo, botón y tarjetas de contacto.',
     keys: [
@@ -96,6 +155,7 @@ const sectionGroups: SectionGroup[] = [
     ],
   },
   {
+    tab: 'footer',
     label: '📞 Contacto & Footer',
     description: 'Datos de contacto, textos del pie de página y enlaces legales.',
     keys: [
@@ -107,34 +167,6 @@ const sectionGroups: SectionGroup[] = [
       'social_linkedin', 'social_twitter', 'social_facebook',
       'social_instagram', 'social_youtube', 'social_github',
     ],
-  },
-  {
-    label: '💬 Testimonios (Textos)',
-    description: 'Etiqueta, título y subtítulo de la sección de testimonios.',
-    keys: ['testimonials_section_label', 'testimonials_section_title', 'testimonials_section_subtitle'],
-  },
-  {
-    label: '❓ FAQ (Textos)',
-    description: 'Etiqueta, título y subtítulo de la sección de preguntas frecuentes.',
-    keys: ['faq_section_label', 'faq_section_title', 'faq_section_subtitle'],
-  },
-  {
-    label: '📰 Blog (Página)',
-    description: 'Título y subtítulo de la página del blog.',
-    keys: ['blog_page_title', 'blog_page_subtitle'],
-  },
-  {
-    label: '🏢 Sobre Nosotros',
-    description: 'Textos de la página Sobre Nosotros.',
-    keys: ['about_title', 'about_subtitle', 'about_history_title', 'about_history', 'about_values_title'],
-  },
-  {
-    label: '🧭 Navegación',
-    description: 'Gestiona etiquetas, visibilidad y orden de los enlaces del menú.',
-    keys: ['nav_link1_label', 'nav_link2_label', 'nav_link3_label', 'nav_link4_label', 'nav_link5_label', 'nav_cta_text',
-           'nav_link1_visible', 'nav_link2_visible', 'nav_link3_visible', 'nav_link4_visible', 'nav_link5_visible',
-           'nav_link1_order', 'nav_link2_order', 'nav_link3_order', 'nav_link4_order', 'nav_link5_order'],
-    customRenderer: true as any,
   },
 ];
 
@@ -198,91 +230,111 @@ const PanelContenidos = () => {
     );
   };
 
+  const renderSectionGroup = (group: SectionGroup) => {
+    const hasContent = group.keys.some(k => contents[k]);
+    if (!hasContent) return null;
+
+    const isOpen = openSections[group.label] ?? false;
+
+    return (
+      <div key={group.label} className="rounded-2xl bg-card border border-border overflow-hidden">
+        <button
+          onClick={() => toggleSection(group.label)}
+          className="w-full flex items-center justify-between p-5 hover:bg-muted/50 transition-colors text-left"
+        >
+          <div>
+            <h3 className="font-heading font-semibold text-foreground">{group.label}</h3>
+            <p className="text-muted-foreground text-xs mt-0.5">{group.description}</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
+              {group.keys.filter(k => contents[k]).length} campos
+            </span>
+            {isOpen ? <ChevronDown size={18} className="text-muted-foreground" /> : <ChevronRight size={18} className="text-muted-foreground" />}
+          </div>
+        </button>
+        {isOpen && (
+          <div className="p-5 pt-0 space-y-3">
+            {group.customRenderer && group.label === '🧭 Navegación' ? (
+              <NavLinksManager contents={contents} editValues={editValues} setEditValues={setEditValues} />
+            ) : group.customRenderer && group.label === '🖼️ Logotipos' ? (
+              <LogoUploader contents={contents} editValues={editValues} setEditValues={setEditValues} />
+            ) : group.customRenderer && group.label === '🌄 Imágenes del Hero' ? (
+              <HeroImagesUploader contents={contents} editValues={editValues} setEditValues={setEditValues} />
+            ) : (
+              group.keys.map(renderField)
+            )}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   const contentKeys = Object.keys(contents);
   const ungroupedKeys = contentKeys.filter(k => !allKnownKeys.includes(k));
 
   return (
     <PanelLayout>
       <div className="mb-6">
-        <h2 className="font-heading font-semibold text-xl text-foreground">Gestión de Contenidos</h2>
+        <h2 className="font-heading font-semibold text-xl text-foreground">Contenidos CMS</h2>
         <p className="text-muted-foreground text-sm mt-1">
-          Todos los textos de la web organizados por sección. Edita y guarda individualmente.
+          Todos los textos e imágenes de la web organizados por categoría.
         </p>
       </div>
 
-      <div className="space-y-4">
-        {sectionGroups.map((group) => {
-          const hasContent = group.keys.some(k => contents[k]);
-          if (!hasContent) return null;
+      {Object.keys(contents).length === 0 ? (
+        <div className="p-8 rounded-2xl bg-card border border-border text-center text-muted-foreground">
+          No hay contenidos editables. La API no está disponible o no hay datos.
+        </div>
+      ) : (
+        <Tabs defaultValue="visual" className="w-full">
+          <TabsList className="w-full justify-start mb-6 bg-muted/50 p-1 rounded-xl h-auto flex-wrap">
+            {TAB_CONFIG.map(tab => (
+              <TabsTrigger
+                key={tab.id}
+                value={tab.id}
+                className="data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg px-4 py-2 text-sm"
+              >
+                {tab.label}
+              </TabsTrigger>
+            ))}
+          </TabsList>
 
-          const isOpen = openSections[group.label] ?? false;
+          {TAB_CONFIG.map(tab => (
+            <TabsContent key={tab.id} value={tab.id} className="space-y-4 mt-0">
+              {sectionGroups
+                .filter(g => g.tab === tab.id)
+                .map(renderSectionGroup)}
+            </TabsContent>
+          ))}
 
-          return (
-            <div key={group.label} className="rounded-2xl bg-card border border-border overflow-hidden">
+          {/* Ungrouped */}
+          {ungroupedKeys.length > 0 && (
+            <div className="mt-6 rounded-2xl bg-card border border-border overflow-hidden">
               <button
-                onClick={() => toggleSection(group.label)}
+                onClick={() => toggleSection('__other')}
                 className="w-full flex items-center justify-between p-5 hover:bg-muted/50 transition-colors text-left"
               >
                 <div>
-                  <h3 className="font-heading font-semibold text-foreground">{group.label}</h3>
-                  <p className="text-muted-foreground text-xs mt-0.5">{group.description}</p>
+                  <h3 className="font-heading font-semibold text-foreground">📦 Otros contenidos</h3>
+                  <p className="text-muted-foreground text-xs mt-0.5">Contenidos no clasificados.</p>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
-                    {group.keys.filter(k => contents[k]).length} campos
+                    {ungroupedKeys.length} campos
                   </span>
-                  {isOpen ? <ChevronDown size={18} className="text-muted-foreground" /> : <ChevronRight size={18} className="text-muted-foreground" />}
+                  {openSections['__other'] ? <ChevronDown size={18} className="text-muted-foreground" /> : <ChevronRight size={18} className="text-muted-foreground" />}
                 </div>
               </button>
-              {isOpen && (
+              {openSections['__other'] && (
                 <div className="p-5 pt-0 space-y-3">
-                  {group.customRenderer && group.label === '🧭 Navegación' ? (
-                    <NavLinksManager contents={contents} editValues={editValues} setEditValues={setEditValues} />
-                  ) : group.customRenderer && group.label === '🖼️ Logotipos' ? (
-                    <LogoUploader contents={contents} editValues={editValues} setEditValues={setEditValues} />
-                  ) : group.customRenderer && group.label === '🌄 Imágenes del Hero' ? (
-                    <HeroImagesUploader contents={contents} editValues={editValues} setEditValues={setEditValues} />
-                  ) : (
-                    group.keys.map(renderField)
-                  )}
+                  {ungroupedKeys.map(renderField)}
                 </div>
               )}
             </div>
-          );
-        })}
-
-        {/* Ungrouped (other CMS keys not in any section) */}
-        {ungroupedKeys.length > 0 && (
-          <div className="rounded-2xl bg-card border border-border overflow-hidden">
-            <button
-              onClick={() => toggleSection('__other')}
-              className="w-full flex items-center justify-between p-5 hover:bg-muted/50 transition-colors text-left"
-            >
-              <div>
-                <h3 className="font-heading font-semibold text-foreground">📦 Otros contenidos</h3>
-                <p className="text-muted-foreground text-xs mt-0.5">Contenidos no clasificados en una sección específica.</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
-                  {ungroupedKeys.length} campos
-                </span>
-                {openSections['__other'] ? <ChevronDown size={18} className="text-muted-foreground" /> : <ChevronRight size={18} className="text-muted-foreground" />}
-              </div>
-            </button>
-            {openSections['__other'] && (
-              <div className="p-5 pt-0 space-y-3">
-                {ungroupedKeys.map(renderField)}
-              </div>
-            )}
-          </div>
-        )}
-
-        {Object.keys(contents).length === 0 && (
-          <div className="p-8 rounded-2xl bg-card border border-border text-center text-muted-foreground">
-            No hay contenidos editables. La API no está disponible o no hay datos.
-          </div>
-        )}
-      </div>
+          )}
+        </Tabs>
+      )}
     </PanelLayout>
   );
 };
