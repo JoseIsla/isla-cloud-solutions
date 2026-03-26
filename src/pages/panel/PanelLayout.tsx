@@ -6,6 +6,7 @@ import {
   LogOut, Menu, X, Users, Trophy, Globe, Pencil, MessageCircle,
   ChevronLeft, HelpCircle,
 } from 'lucide-react';
+import PanelSearch from '@/components/panel/PanelSearch';
 import logotipoBlanco from '@/assets/logos/logotipo-blanco-small.png';
 import isotipoLogo from '@/assets/logos/isotipo.png';
 
