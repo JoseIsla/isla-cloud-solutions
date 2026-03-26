@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useConfirmDialog } from '@/hooks/useConfirmDialog';
 import { useAuth } from '@/hooks/useAuth';
-import { testimonialsApi, uploadImage, type TestimonialFromAPI } from '@/lib/api';
+import { testimonialsApi, uploadImage, type TestimonialFromAPI, API_BASE_URL } from '@/lib/api';
 import PanelLayout from './PanelLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,8 +11,6 @@ import { Label } from '@/components/ui/label';
 import { Plus, Edit, Trash2, MessageCircle, Star, X, GripVertical } from 'lucide-react';
 import { toast } from 'sonner';
 import { useDragReorder } from '@/hooks/useDragReorder';
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.islacloudsolutions.com';
 
 const PanelTestimonios = () => {
   const { token } = useAuth();

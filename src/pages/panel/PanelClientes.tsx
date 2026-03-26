@@ -2,13 +2,11 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import { useConfirmDialog } from '@/hooks/useConfirmDialog';
 import { useAuth } from '@/hooks/useAuth';
 import PanelLayout from './PanelLayout';
-import { clientsApi, uploadImage, type ClientFromAPI } from '@/lib/api';
+import { clientsApi, uploadImage, type ClientFromAPI, API_BASE_URL } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Plus, Pencil, Trash2, X, Upload, Building2, GripVertical } from 'lucide-react';
 import { toast } from 'sonner';
 import { useDragReorder } from '@/hooks/useDragReorder';
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.islacloudsolutions.com';
 
 const PanelClientes = () => {
   const { token } = useAuth();

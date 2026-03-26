@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useConfirmDialog } from '@/hooks/useConfirmDialog';
 import { useAuth } from '@/hooks/useAuth';
-import { casesApi, uploadImage, type CaseFromAPI } from '@/lib/api';
+import { casesApi, uploadImage, type CaseFromAPI, API_BASE_URL } from '@/lib/api';
 import PanelLayout from './PanelLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,8 +11,6 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Plus, Edit, Trash2, Trophy, X, Upload } from 'lucide-react';
 import { toast } from 'sonner';
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.islacloudsolutions.com';
 
 const PanelCasos = () => {
   const { token } = useAuth();
