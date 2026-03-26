@@ -65,7 +65,7 @@ const PanelDashboard = () => {
     { label: 'Ver contactos', desc: 'Mensajes del formulario web', to: '/panel/contactos', icon: MessageSquare },
   ];
 
-  const StatCard = ({ card, large }: { card: typeof primaryStats[0] & { badge?: number }, large?: boolean }) => {
+  const StatCard = ({ card, large }: { card: { label: string; value: number; icon: any; href: string; color: string; badge?: number }, large?: boolean }) => {
     const Icon = card.icon;
     return (
       <Link
