@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { contentsApi, type ContentFromAPI } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
-import { Save, ArrowUp, ArrowDown, GripVertical } from 'lucide-react';
+import { Save, GripVertical } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface NavLink {
@@ -34,6 +34,9 @@ interface Props {
 
 const NavLinksManager = ({ contents, editValues, setEditValues }: Props) => {
   const { token } = useAuth();
+  const [dragIdx, setDragIdx] = useState<number | null>(null);
+  const [overIdx, setOverIdx] = useState<number | null>(null);
+  const dragNodeRef = useRef<HTMLElement | null>(null);
 
   const links: NavLink[] = defaultLinks.map(d => ({
     index: d.index,
@@ -55,29 +58,43 @@ const NavLinksManager = ({ contents, editValues, setEditValues }: Props) => {
     setEditValues({ ...editValues, [link.labelKey]: newLabel });
   };
 
-  const handleMoveUp = (idx: number) => {
-    if (idx === 0) return;
-    const sorted = [...links];
-    const current = sorted[idx];
-    const above = sorted[idx - 1];
-    setEditValues({
-      ...editValues,
-      [current.orderKey]: String(above.order),
-      [above.orderKey]: String(current.order),
+  const handleDragStart = useCallback((idx: number, e: React.DragEvent) => {
+    setDragIdx(idx);
+    dragNodeRef.current = e.currentTarget as HTMLElement;
+    e.dataTransfer.effectAllowed = 'move';
+    requestAnimationFrame(() => {
+      if (dragNodeRef.current) dragNodeRef.current.style.opacity = '0.4';
     });
-  };
+  }, []);
 
-  const handleMoveDown = (idx: number) => {
-    if (idx === links.length - 1) return;
+  const handleDragEnd = useCallback(() => {
+    if (dragNodeRef.current) dragNodeRef.current.style.opacity = '1';
+    if (dragIdx === null || overIdx === null || dragIdx === overIdx) {
+      setDragIdx(null);
+      setOverIdx(null);
+      return;
+    }
+
+    // Reorder: swap the order values
     const sorted = [...links];
-    const current = sorted[idx];
-    const below = sorted[idx + 1];
-    setEditValues({
-      ...editValues,
-      [current.orderKey]: String(below.order),
-      [below.orderKey]: String(current.order),
+    const [moved] = sorted.splice(dragIdx, 1);
+    sorted.splice(overIdx, 0, moved);
+
+    const newEditValues = { ...editValues };
+    sorted.forEach((link, i) => {
+      newEditValues[link.orderKey] = String(i + 1);
     });
-  };
+    setEditValues(newEditValues);
+
+    setDragIdx(null);
+    setOverIdx(null);
+  }, [dragIdx, overIdx, links, editValues, setEditValues]);
+
+  const handleDragOver = useCallback((idx: number, e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    setOverIdx(idx);
+  }, []);
 
   const handleSaveAll = async () => {
     if (!token) return;
@@ -90,7 +107,6 @@ const NavLinksManager = ({ contents, editValues, setEditValues }: Props) => {
           contentsApi.update(link.orderKey, editValues[link.orderKey] ?? String(link.index), token, contents[link.orderKey]?.title),
         );
       }
-      // Save CTA too
       if (editValues['nav_cta_text'] !== undefined) {
         promises.push(contentsApi.update('nav_cta_text', editValues['nav_cta_text'], token, contents['nav_cta_text']?.title));
       }
@@ -107,11 +123,16 @@ const NavLinksManager = ({ contents, editValues, setEditValues }: Props) => {
         {links.map((link, idx) => (
           <div
             key={link.index}
-            className={`flex items-center gap-3 p-3 rounded-xl border transition-colors ${
+            draggable
+            onDragStart={(e) => handleDragStart(idx, e)}
+            onDragEnd={handleDragEnd}
+            onDragOver={(e) => handleDragOver(idx, e)}
+            onDragEnter={(e) => e.preventDefault()}
+            className={`flex items-center gap-3 p-3 rounded-xl border transition-colors cursor-grab active:cursor-grabbing ${
               link.visible
                 ? 'bg-background border-border'
                 : 'bg-muted/30 border-border/50 opacity-60'
-            }`}
+            } ${overIdx === idx && dragIdx !== null && dragIdx !== idx ? 'border-primary/40 bg-primary/5' : ''}`}
           >
             <GripVertical size={16} className="text-muted-foreground shrink-0" />
 
@@ -124,23 +145,6 @@ const NavLinksManager = ({ contents, editValues, setEditValues }: Props) => {
               <span className="text-xs text-muted-foreground font-mono truncate">
                 {link.defaultPath}
               </span>
-            </div>
-
-            <div className="flex items-center gap-1 shrink-0">
-              <button
-                onClick={() => handleMoveUp(idx)}
-                disabled={idx === 0}
-                className="p-1 rounded hover:bg-muted disabled:opacity-30 transition-colors"
-              >
-                <ArrowUp size={14} className="text-muted-foreground" />
-              </button>
-              <button
-                onClick={() => handleMoveDown(idx)}
-                disabled={idx === links.length - 1}
-                className="p-1 rounded hover:bg-muted disabled:opacity-30 transition-colors"
-              >
-                <ArrowDown size={14} className="text-muted-foreground" />
-              </button>
             </div>
 
             <Switch
