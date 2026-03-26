@@ -4,7 +4,7 @@ import Layout from "@/components/Layout";
 import { casesApi, CaseFromAPI } from "@/lib/api";
 import { motion } from "framer-motion";
 import { Trophy, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import usePageMeta from "@/hooks/usePageMeta";
 
 const Casos = () => {
@@ -48,8 +48,18 @@ const Casos = () => {
         <div className="max-w-6xl mx-auto px-4">
 
           {loading ? (
-            <div className="flex items-center justify-center py-20">
-              <p className="text-muted-foreground">Cargando...</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="rounded-2xl border border-border bg-card overflow-hidden">
+                  <Skeleton className="aspect-video w-full" />
+                  <div className="p-6 space-y-3">
+                    <Skeleton className="h-3 w-24" />
+                    <Skeleton className="h-5 w-3/4" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-1/2" />
+                  </div>
+                </div>
+              ))}
             </div>
           ) : cases.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 gap-4">

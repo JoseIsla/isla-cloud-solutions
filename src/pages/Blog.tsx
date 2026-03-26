@@ -19,7 +19,7 @@ const BlogPage = () => {
 
   useEffect(() => {
     newsApi.list()
-      .then(setPosts)
+      .then((data) => setPosts(data.filter((p) => p.is_published)))
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
