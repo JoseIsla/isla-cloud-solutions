@@ -34,9 +34,33 @@ const ServicioDetalle = () => {
   if (loading) {
     return (
       <Layout>
-        <div className="py-32 text-center">
-          <div className="text-muted-foreground">Cargando...</div>
-        </div>
+        <section className="bg-hero grid-pattern py-24">
+          <div className="container mx-auto px-4">
+            <div className="h-3 w-28 bg-hero-foreground/10 rounded animate-pulse mb-8" />
+            <div className="max-w-3xl space-y-4">
+              <div className="w-16 h-16 rounded-2xl bg-hero-foreground/10 animate-pulse" />
+              <div className="h-10 w-2/3 bg-hero-foreground/10 rounded animate-pulse" />
+              <div className="h-4 w-full bg-hero-foreground/10 rounded animate-pulse" />
+              <div className="h-4 w-4/5 bg-hero-foreground/10 rounded animate-pulse" />
+            </div>
+          </div>
+        </section>
+        <section className="py-24 bg-background">
+          <div className="container mx-auto px-4">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
+              <div className="lg:col-span-2 space-y-4">
+                <div className="rounded-2xl bg-muted aspect-video animate-pulse" />
+                <div className="h-4 w-full bg-muted rounded animate-pulse" />
+                <div className="h-4 w-5/6 bg-muted rounded animate-pulse" />
+                <div className="h-4 w-3/4 bg-muted rounded animate-pulse" />
+              </div>
+              <div className="p-8 rounded-2xl bg-card border border-border space-y-4">
+                <div className="h-5 w-1/2 bg-muted rounded animate-pulse" />
+                {[1,2,3,4].map(i => <div key={i} className="h-4 w-full bg-muted rounded animate-pulse" />)}
+              </div>
+            </div>
+          </div>
+        </section>
       </Layout>
     );
   }

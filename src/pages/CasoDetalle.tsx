@@ -30,10 +30,19 @@ const CasoDetalle = () => {
   if (loading) {
     return (
       <Layout>
-        <div className="min-h-[60vh] flex items-center justify-center">
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-muted-foreground">
-            Cargando...
-          </motion.div>
+        <div className="max-w-4xl mx-auto px-4 py-12 md:py-20">
+          <div className="h-4 w-24 bg-muted rounded animate-pulse mb-8" />
+          <div className="rounded-2xl bg-muted aspect-video animate-pulse mb-8" />
+          <div className="space-y-4">
+            <div className="h-3 w-20 bg-muted rounded animate-pulse" />
+            <div className="h-8 w-3/4 bg-muted rounded animate-pulse" />
+            <div className="h-4 w-1/3 bg-muted rounded animate-pulse" />
+          </div>
+          <div className="mt-8 space-y-3">
+            <div className="h-4 w-full bg-muted rounded animate-pulse" />
+            <div className="h-4 w-5/6 bg-muted rounded animate-pulse" />
+            <div className="h-4 w-4/6 bg-muted rounded animate-pulse" />
+          </div>
         </div>
       </Layout>
     );

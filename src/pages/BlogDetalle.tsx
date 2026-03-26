@@ -26,13 +26,23 @@ const BlogDetalle = () => {
       <Layout>
         <section className="bg-hero grid-pattern py-24">
           <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto animate-pulse space-y-4">
-              <div className="h-4 bg-hero-foreground/10 rounded w-1/4" />
-              <div className="h-10 bg-hero-foreground/10 rounded w-3/4" />
-              <div className="h-4 bg-hero-foreground/10 rounded w-1/2" />
+            <div className="max-w-3xl mx-auto space-y-4">
+              <div className="h-3 w-16 bg-hero-foreground/10 rounded animate-pulse" />
+              <div className="h-4 bg-hero-foreground/10 rounded w-1/4 animate-pulse" />
+              <div className="h-10 bg-hero-foreground/10 rounded w-3/4 animate-pulse" />
+              <div className="h-4 bg-hero-foreground/10 rounded w-1/2 animate-pulse" />
             </div>
           </div>
         </section>
+        <div className="bg-background py-16">
+          <div className="container mx-auto px-4 max-w-3xl space-y-4">
+            <div className="h-4 w-full bg-muted rounded animate-pulse" />
+            <div className="h-4 w-5/6 bg-muted rounded animate-pulse" />
+            <div className="h-4 w-4/6 bg-muted rounded animate-pulse" />
+            <div className="h-4 w-full bg-muted rounded animate-pulse" />
+            <div className="h-4 w-3/4 bg-muted rounded animate-pulse" />
+          </div>
+        </div>
       </Layout>
     );
   }
