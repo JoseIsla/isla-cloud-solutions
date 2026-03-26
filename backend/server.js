@@ -104,10 +104,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, process.env.UPLOAD_DIR || './uploads')));
 
 // Routes
-app.use('/api/auth', authRoutes);
+app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/services', servicesRoutes);
 app.use('/api/news', newsRoutes);
-app.use('/api/contacts', contactsRoutes);
+app.use('/api/contacts', contactLimiter, contactsRoutes);
 app.use('/api/contents', contentsRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/clients', clientsRoutes);
