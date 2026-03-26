@@ -7,6 +7,7 @@ import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { CMSProvider } from "@/hooks/useCMS";
 import { AnimatePresence, motion } from "framer-motion";
 import CookieBanner from "@/components/CookieBanner";
+import ScrollToTop from "@/components/ScrollToTop";
 import Index from "./pages/Index";
 import ServiciosPage from "./pages/Servicios";
 import ServicioDetalle from "./pages/ServicioDetalle";
@@ -97,6 +98,7 @@ const App = () => (
       <BrowserRouter>
         <AuthProvider>
           <CMSProvider>
+            <ScrollToTop />
             <AppRoutes />
             <CookieBanner />
           </CMSProvider>

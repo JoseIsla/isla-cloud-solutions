@@ -45,7 +45,7 @@ const CasoDetalle = () => {
         <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4">
           <p className="text-muted-foreground text-lg">Caso de éxito no encontrado</p>
           <Button asChild variant="outline">
-            <Link to="/"><ArrowLeft className="mr-2 h-4 w-4" /> Volver al inicio</Link>
+            <Link to="/casos"><ArrowLeft className="mr-2 h-4 w-4" /> Volver a casos</Link>
           </Button>
         </div>
       </Layout>
@@ -61,10 +61,10 @@ const CasoDetalle = () => {
         className="max-w-4xl mx-auto px-4 py-12 md:py-20"
       >
         <Link
-          to="/"
+          to="/casos"
           className="inline-flex items-center text-sm text-muted-foreground hover:text-primary transition-colors mb-8"
         >
-          <ArrowLeft className="mr-1 h-4 w-4" /> Volver
+          <ArrowLeft className="mr-1 h-4 w-4" /> Volver a casos
         </Link>
 
         {caso.image_url && (
