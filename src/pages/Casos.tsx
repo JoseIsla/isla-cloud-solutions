@@ -6,10 +6,14 @@ import { motion } from "framer-motion";
 import { Trophy, ArrowRight } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import usePageMeta from "@/hooks/usePageMeta";
+import Pagination from "@/components/Pagination";
+
+const ITEMS_PER_PAGE = 9;
 
 const Casos = () => {
   const [cases, setCases] = useState<CaseFromAPI[]>([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
 
   usePageMeta({
     title: "Casos de Éxito",
@@ -23,6 +27,14 @@ const Casos = () => {
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
+
+  const totalPages = Math.ceil(cases.length / ITEMS_PER_PAGE);
+  const paginatedCases = cases.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
+
+  const handlePageChange = (p: number) => {
+    setPage(p);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
     <Layout>
@@ -46,7 +58,6 @@ const Casos = () => {
 
       <section className="py-24 bg-background">
         <div className="max-w-6xl mx-auto px-4">
-
           {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {[1, 2, 3].map((i) => (
@@ -67,52 +78,55 @@ const Casos = () => {
               <p className="text-muted-foreground">Próximamente publicaremos nuestros casos de éxito.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {cases.map((caso, i) => (
-                <motion.div
-                  key={caso.id}
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: i * 0.1 }}
-                >
-                  <Link
-                    to={`/casos/${caso.id}`}
-                    className="group block rounded-2xl border border-border bg-card overflow-hidden hover:border-primary/30 hover:shadow-lg transition-all duration-300"
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {paginatedCases.map((caso, i) => (
+                  <motion.div
+                    key={caso.id}
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: i * 0.1 }}
                   >
-                    {caso.image_url ? (
-                      <div className="aspect-video overflow-hidden bg-muted">
-                        <img
-                          src={caso.image_url}
-                          alt={caso.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                          loading="lazy"
-                        />
-                      </div>
-                    ) : (
-                      <div className="aspect-video bg-primary/5 flex items-center justify-center">
-                        <Trophy size={40} className="text-primary/30" />
-                      </div>
-                    )}
-                    <div className="p-6 space-y-3">
-                      <p className="text-xs font-medium text-primary uppercase tracking-wider">
-                        {caso.client_name}
-                      </p>
-                      <h2 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors line-clamp-2">
-                        {caso.title}
-                      </h2>
-                      {caso.excerpt && (
-                        <p className="text-sm text-muted-foreground line-clamp-3">
-                          {caso.excerpt}
-                        </p>
+                    <Link
+                      to={`/casos/${caso.id}`}
+                      className="group block rounded-2xl border border-border bg-card overflow-hidden hover:border-primary/30 hover:shadow-lg transition-all duration-300"
+                    >
+                      {caso.image_url ? (
+                        <div className="aspect-video overflow-hidden bg-muted">
+                          <img
+                            src={caso.image_url}
+                            alt={caso.title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            loading="lazy"
+                          />
+                        </div>
+                      ) : (
+                        <div className="aspect-video bg-primary/5 flex items-center justify-center">
+                          <Trophy size={40} className="text-primary/30" />
+                        </div>
                       )}
-                      <div className="flex items-center text-sm font-medium text-primary pt-2">
-                        Ver detalle <ArrowRight size={14} className="ml-1 group-hover:translate-x-1 transition-transform" />
+                      <div className="p-6 space-y-3">
+                        <p className="text-xs font-medium text-primary uppercase tracking-wider">
+                          {caso.client_name}
+                        </p>
+                        <h2 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors line-clamp-2">
+                          {caso.title}
+                        </h2>
+                        {caso.excerpt && (
+                          <p className="text-sm text-muted-foreground line-clamp-3">
+                            {caso.excerpt}
+                          </p>
+                        )}
+                        <div className="flex items-center text-sm font-medium text-primary pt-2">
+                          Ver detalle <ArrowRight size={14} className="ml-1 group-hover:translate-x-1 transition-transform" />
+                        </div>
                       </div>
-                    </div>
-                  </Link>
-                </motion.div>
-              ))}
-            </div>
+                    </Link>
+                  </motion.div>
+                ))}
+              </div>
+              <Pagination currentPage={page} totalPages={totalPages} onPageChange={handlePageChange} />
+            </>
           )}
         </div>
       </section>
