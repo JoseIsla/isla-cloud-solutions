@@ -12,8 +12,9 @@ const Casos = () => {
   const [loading, setLoading] = useState(true);
 
   usePageMeta({
-    title: "Casos de Éxito | Isla Cloud Solutions",
+    title: "Casos de Éxito",
     description: "Descubre cómo hemos ayudado a nuestros clientes a transformar sus negocios con soluciones cloud personalizadas.",
+    canonical: "/casos",
   });
 
   useEffect(() => {
@@ -25,24 +26,26 @@ const Casos = () => {
 
   return (
     <Layout>
-      <section className="py-16 md:py-24">
-        <div className="max-w-6xl mx-auto px-4">
+      <section className="bg-hero grid-pattern py-24">
+        <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-center mb-12"
+            className="max-w-2xl"
           >
-            <p className="text-sm font-medium text-primary uppercase tracking-wider mb-2">
-              Casos de éxito
-            </p>
-            <h1 className="text-3xl md:text-5xl font-bold text-foreground mb-4">
+            <span className="text-primary text-sm font-semibold uppercase tracking-wider">Casos de éxito</span>
+            <h1 className="text-4xl md:text-5xl font-heading font-bold text-hero-foreground mt-3 mb-6">
               Proyectos que hablan por nosotros
             </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-hero-foreground/70 text-lg">
               Conoce cómo hemos ayudado a empresas reales a alcanzar sus objetivos con tecnología cloud.
             </p>
           </motion.div>
+        </div>
+      </section>
+
+      <section className="py-24 bg-background">
+        <div className="max-w-6xl mx-auto px-4">
 
           {loading ? (
             <div className="flex items-center justify-center py-20">
