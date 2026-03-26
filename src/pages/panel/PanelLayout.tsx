@@ -22,7 +22,7 @@ const sidebarSections = [
   {
     label: 'Configuración Web',
     links: [
-      { label: 'Contenidos CMS', path: '/panel/contenidos', icon: Pencil },
+      { label: 'Contenidos Web', path: '/panel/contenidos', icon: Pencil },
     ],
   },
   {

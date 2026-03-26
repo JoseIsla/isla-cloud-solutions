@@ -276,7 +276,7 @@ const PanelContenidos = () => {
   return (
     <PanelLayout>
       <div className="mb-6">
-        <h2 className="font-heading font-semibold text-xl text-foreground">Contenidos CMS</h2>
+        <h2 className="font-heading font-semibold text-xl text-foreground">Contenidos Web</h2>
         <p className="text-muted-foreground text-sm mt-1">
           Todos los textos e imágenes de la web organizados por categoría.
         </p>
