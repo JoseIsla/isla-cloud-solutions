@@ -12,6 +12,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.islacloudsolut
 
 const PanelNoticias = () => {
   const { token } = useAuth();
+  const { confirm, ConfirmDialog } = useConfirmDialog();
   const [news, setNews] = useState<NewsFromAPI[]>([]);
   const [editing, setEditing] = useState<Partial<NewsFromAPI> | null>(null);
   const [isNew, setIsNew] = useState(false);
@@ -39,7 +40,7 @@ const PanelNoticias = () => {
   };
 
   const handleDelete = async (id: number) => {
-    if (!token || !confirm('¿Eliminar esta noticia?')) return;
+    if (!token || !(await confirm('¿Eliminar esta noticia?', 'Se eliminará permanentemente esta noticia.'))) return;
     try {
       await newsApi.delete(id, token);
       toast.success('Noticia eliminada');
@@ -175,6 +176,7 @@ const PanelNoticias = () => {
           )}
         </div>
       </div>
+      <ConfirmDialog />
     </PanelLayout>
   );
 };

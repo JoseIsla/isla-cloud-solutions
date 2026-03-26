@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 
 const PanelContactos = () => {
   const { token } = useAuth();
+  const { confirm, ConfirmDialog } = useConfirmDialog();
   const [contacts, setContacts] = useState<ContactFromAPI[]>([]);
   const [selected, setSelected] = useState<ContactFromAPI | null>(null);
 
@@ -24,7 +25,7 @@ const PanelContactos = () => {
   };
 
   const handleDelete = async (id: number) => {
-    if (!token || !confirm('¿Eliminar este contacto?')) return;
+    if (!token || !(await confirm('¿Eliminar este contacto?', 'Se eliminará permanentemente este mensaje de contacto.'))) return;
     try {
       await contactsApi.delete(id, token);
       toast.success('Contacto eliminado');
@@ -127,6 +128,7 @@ const PanelContactos = () => {
           </div>
         </div>
       </div>
+      <ConfirmDialog />
     </PanelLayout>
   );
 };

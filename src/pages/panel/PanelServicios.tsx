@@ -13,6 +13,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.islacloudsolut
 
 const PanelServicios = () => {
   const { token } = useAuth();
+  const { confirm, ConfirmDialog } = useConfirmDialog();
   const [services, setServices] = useState<ServiceFromAPI[]>([]);
   const [editing, setEditing] = useState<Partial<ServiceFromAPI> | null>(null);
   const [isNew, setIsNew] = useState(false);
@@ -53,7 +54,7 @@ const PanelServicios = () => {
   };
 
   const handleDelete = async (id: number) => {
-    if (!token || !confirm('¿Eliminar este servicio?')) return;
+    if (!token || !(await confirm('¿Eliminar este servicio?', 'Se eliminará permanentemente este servicio.'))) return;
     try {
       await servicesApi.delete(id, token);
       toast.success('Servicio eliminado');
@@ -199,6 +200,7 @@ const PanelServicios = () => {
           )}
         </div>
       </div>
+      <ConfirmDialog />
     </PanelLayout>
   );
 };

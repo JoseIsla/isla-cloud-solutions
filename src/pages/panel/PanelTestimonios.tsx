@@ -16,6 +16,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.islacloudsolut
 
 const PanelTestimonios = () => {
   const { token } = useAuth();
+  const { confirm, ConfirmDialog } = useConfirmDialog();
   const [testimonials, setTestimonials] = useState<TestimonialFromAPI[]>([]);
   const [editing, setEditing] = useState<Partial<TestimonialFromAPI> | null>(null);
   const [loading, setLoading] = useState(false);
@@ -60,7 +61,7 @@ const PanelTestimonios = () => {
   };
 
   const handleDelete = async (id: number) => {
-    if (!token || !confirm('¿Eliminar este testimonio?')) return;
+    if (!token || !(await confirm('¿Eliminar este testimonio?', 'Se eliminará permanentemente este testimonio.'))) return;
     try {
       await testimonialsApi.delete(id, token);
       toast.success('Testimonio eliminado');
@@ -197,6 +198,7 @@ const PanelTestimonios = () => {
           ))}
         </div>
       </div>
+      <ConfirmDialog />
     </PanelLayout>
   );
 };

@@ -16,6 +16,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.islacloudsolut
 
 const PanelCasos = () => {
   const { token } = useAuth();
+  const { confirm, ConfirmDialog } = useConfirmDialog();
   const [cases, setCases] = useState<CaseFromAPI[]>([]);
   const [editing, setEditing] = useState<Partial<CaseFromAPI> | null>(null);
   const [loading, setLoading] = useState(false);
@@ -48,7 +49,7 @@ const PanelCasos = () => {
   };
 
   const handleDelete = async (id: number) => {
-    if (!token || !confirm('¿Eliminar este caso de éxito?')) return;
+    if (!token || !(await confirm('¿Eliminar este caso de éxito?', 'Se eliminará permanentemente este caso de éxito.'))) return;
     try {
       await casesApi.delete(id, token);
       toast.success('Caso eliminado');
@@ -165,6 +166,7 @@ const PanelCasos = () => {
           ))}
         </div>
       </div>
+      <ConfirmDialog />
     </PanelLayout>
   );
 };

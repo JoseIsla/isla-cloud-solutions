@@ -12,6 +12,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.islacloudsolut
 
 const PanelClientes = () => {
   const { token } = useAuth();
+  const { confirm, ConfirmDialog } = useConfirmDialog();
   const [clients, setClients] = useState<ClientFromAPI[]>([]);
   const [editing, setEditing] = useState<Partial<ClientFromAPI> | null>(null);
   const [isNew, setIsNew] = useState(false);
@@ -52,7 +53,7 @@ const PanelClientes = () => {
   };
 
   const handleDelete = async (id: number) => {
-    if (!token || !confirm('¿Eliminar este cliente?')) return;
+    if (!token || !(await confirm('¿Eliminar este cliente?', 'Se eliminará permanentemente este cliente.'))) return;
     try {
       await clientsApi.delete(id, token);
       toast.success('Cliente eliminado');
@@ -174,6 +175,7 @@ const PanelClientes = () => {
           </div>
         )}
       </div>
+      <ConfirmDialog />
     </PanelLayout>
   );
 };
