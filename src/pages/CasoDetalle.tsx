@@ -16,10 +16,18 @@ const CasoDetalle = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
+  // Always call hooks unconditionally
   usePageMeta({
-    title: caso ? `${caso.title} | Isla Cloud Solutions` : "Caso de éxito",
+    title: caso?.title || "Caso de éxito",
     description: caso?.excerpt || "Descubre cómo ayudamos a nuestros clientes a alcanzar sus objetivos.",
+    canonical: id ? `/casos/${id}` : undefined,
   });
+
+  const breadcrumbs = useMemo(() => [
+    { name: 'Inicio', path: '/' },
+    { name: 'Casos de Éxito', path: '/casos' },
+    ...(caso ? [{ name: caso.title, path: `/casos/${id}` }] : []),
+  ], [caso?.title, id]);
 
   useEffect(() => {
     if (!id) return;
@@ -62,12 +70,6 @@ const CasoDetalle = () => {
       </Layout>
     );
   }
-
-  const breadcrumbs = useMemo(() => [
-    { name: 'Inicio', path: '/' },
-    { name: 'Casos de Éxito', path: '/casos' },
-    { name: caso.title, path: `/casos/${id}` },
-  ], [caso.title, id]);
 
   return (
     <Layout>

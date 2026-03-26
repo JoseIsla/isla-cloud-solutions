@@ -23,6 +23,46 @@ const BlogDetalle = () => {
       .finally(() => setLoading(false));
   }, [slug]);
 
+  // Build JSON-LD (safe even when post is null)
+  const articleJsonLd = useMemo(() => {
+    if (!post) return undefined;
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: post.title,
+      description: post.excerpt || `Lee ${post.title} en el blog de ${SITE_NAME}.`,
+      url: `${SITE_URL}/blog/${slug}`,
+      datePublished: post.published_at || post.created_at,
+      ...(post.image_url ? { image: post.image_url } : {}),
+      publisher: {
+        '@type': 'Organization',
+        name: SITE_NAME,
+        url: SITE_URL,
+      },
+      mainEntityOfPage: {
+        '@type': 'WebPage',
+        '@id': `${SITE_URL}/blog/${slug}`,
+      },
+    };
+  }, [post, slug]);
+
+  // Always call hooks unconditionally — before any early returns
+  usePageMeta({
+    title: post?.title || "Blog",
+    description: post?.excerpt || "Lee las últimas noticias en el blog de Isla Cloud Solutions.",
+    canonical: slug ? `/blog/${slug}` : undefined,
+    ogImage: post?.image_url || undefined,
+    type: post ? 'article' : undefined,
+    publishedTime: post?.published_at || post?.created_at || undefined,
+    jsonLd: articleJsonLd,
+  });
+
+  const breadcrumbs = useMemo(() => [
+    { name: 'Inicio', path: '/' },
+    { name: 'Blog', path: '/blog' },
+    ...(post ? [{ name: post.title, path: `/blog/${slug}` }] : []),
+  ], [post?.title, slug]);
+
   if (loading) {
     return (
       <Layout>
@@ -64,41 +104,6 @@ const BlogDetalle = () => {
       </Layout>
     );
   }
-
-  const articleJsonLd = useMemo(() => ({
-    '@context': 'https://schema.org',
-    '@type': 'Article',
-    headline: post.title,
-    description: post.excerpt || `Lee ${post.title} en el blog de ${SITE_NAME}.`,
-    url: `${SITE_URL}/blog/${slug}`,
-    datePublished: post.published_at || post.created_at,
-    ...(post.image_url ? { image: post.image_url } : {}),
-    publisher: {
-      '@type': 'Organization',
-      name: SITE_NAME,
-      url: SITE_URL,
-    },
-    mainEntityOfPage: {
-      '@type': 'WebPage',
-      '@id': `${SITE_URL}/blog/${slug}`,
-    },
-  }), [post, slug]);
-
-  usePageMeta({
-    title: post.title,
-    description: post.excerpt || `Lee ${post.title} en el blog de Isla Cloud Solutions.`,
-    canonical: `/blog/${slug}`,
-    ogImage: post.image_url || undefined,
-    type: 'article',
-    publishedTime: post.published_at || post.created_at,
-    jsonLd: articleJsonLd,
-  });
-
-  const breadcrumbs = useMemo(() => [
-    { name: 'Inicio', path: '/' },
-    { name: 'Blog', path: '/blog' },
-    { name: post.title, path: `/blog/${slug}` },
-  ], [post.title, slug]);
 
   return (
     <Layout>
