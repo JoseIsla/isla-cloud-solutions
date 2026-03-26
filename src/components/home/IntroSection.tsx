@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useCMSValue } from "@/hooks/useCMS";
+import { sanitizeHTML } from "@/lib/sanitize";
 
 const IntroSection = () => {
   const introText = useCMSValue(
@@ -17,7 +18,7 @@ const IntroSection = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
             className="text-lg md:text-xl lg:text-2xl xl:text-3xl font-heading font-medium leading-relaxed max-w-5xl mx-auto text-justify animated-gradient-text [&>p]:mb-0"
-            dangerouslySetInnerHTML={{ __html: introText }}
+            dangerouslySetInnerHTML={{ __html: sanitizeHTML(introText) }}
           />
         ) : (
           <motion.p

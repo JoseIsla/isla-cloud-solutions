@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useCMSValue } from '@/hooks/useCMS';
 import { faqsApi, type FAQFromAPI } from '@/lib/api';
+import { sanitizeHTML } from '@/lib/sanitize';
 import {
   Accordion,
   AccordionContent,
@@ -67,7 +68,7 @@ const FAQSection = () => {
                   {faq.question}
                 </AccordionTrigger>
                 <AccordionContent className="text-muted-foreground text-sm leading-relaxed pb-5">
-                  <div dangerouslySetInnerHTML={{ __html: faq.answer }} />
+                  <div dangerouslySetInnerHTML={{ __html: sanitizeHTML(faq.answer) }} />
                 </AccordionContent>
               </AccordionItem>
             ))}
