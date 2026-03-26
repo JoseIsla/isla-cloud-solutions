@@ -95,22 +95,24 @@ const ContactoPage = () => {
                     <input
                       type="text"
                       value={form.nombre}
-                      onChange={(e) => setForm({ ...form, nombre: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors"
+                      onChange={(e) => { setForm({ ...form, nombre: e.target.value }); setErrors((prev) => ({ ...prev, nombre: '' })); }}
+                      className={`w-full px-4 py-3 rounded-xl bg-card border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors ${errors.nombre ? 'border-destructive' : 'border-border'}`}
                       placeholder="Tu nombre"
                       maxLength={100}
                     />
+                    {errors.nombre && <p className="text-destructive text-xs mt-1">{errors.nombre}</p>}
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-foreground mb-2">Email *</label>
                     <input
                       type="email"
                       value={form.email}
-                      onChange={(e) => setForm({ ...form, email: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors"
+                      onChange={(e) => { setForm({ ...form, email: e.target.value }); setErrors((prev) => ({ ...prev, email: '' })); }}
+                      className={`w-full px-4 py-3 rounded-xl bg-card border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors ${errors.email ? 'border-destructive' : 'border-border'}`}
                       placeholder="tu@empresa.com"
                       maxLength={255}
                     />
+                    {errors.email && <p className="text-destructive text-xs mt-1">{errors.email}</p>}
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-foreground mb-2">Empresa</label>
@@ -139,12 +141,13 @@ const ContactoPage = () => {
                   <label className="block text-sm font-medium text-foreground mb-2">Mensaje *</label>
                   <textarea
                     value={form.mensaje}
-                    onChange={(e) => setForm({ ...form, mensaje: e.target.value })}
+                    onChange={(e) => { setForm({ ...form, mensaje: e.target.value }); setErrors((prev) => ({ ...prev, mensaje: '' })); }}
                     rows={5}
-                    className="w-full px-4 py-3 rounded-xl bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors resize-none"
+                    className={`w-full px-4 py-3 rounded-xl bg-card border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors resize-none ${errors.mensaje ? 'border-destructive' : 'border-border'}`}
                     placeholder="Cuéntanos sobre tu proyecto..."
                     maxLength={1000}
                   />
+                  {errors.mensaje && <p className="text-destructive text-xs mt-1">{errors.mensaje}</p>}
                 </div>
                 <Button variant="hero" size="lg" type="submit" disabled={loading}>
                   {loading ? "Enviando..." : "Enviar mensaje"} <Send size={18} />
