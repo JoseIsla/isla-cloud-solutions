@@ -41,10 +41,18 @@ const sidebarSections = [
 const allLinks = sidebarSections.flatMap(s => s.links);
 
 const PanelLayout = ({ children }: { children: React.ReactNode }) => {
-  const { user, logout } = useAuth();
+  const { user, logout, token } = useAuth();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    if (!token) return;
+    contactsApi.list(token).then((contacts) => {
+      setUnreadCount(contacts.filter((c: any) => !c.is_read).length);
+    }).catch(() => {});
+  }, [token, location.pathname]);
 
   const sidebarWidth = collapsed ? 'w-[72px]' : 'w-64';
   const mainMargin = collapsed ? 'lg:ml-[72px]' : 'lg:ml-64';
