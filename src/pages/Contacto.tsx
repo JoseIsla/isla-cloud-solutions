@@ -52,7 +52,7 @@ const ContactoPage = () => {
 
     setLoading(true);
     try {
-      await contactsApi.send(result.data);
+      await contactsApi.send(result.data as { nombre: string; email: string; empresa?: string; telefono?: string; mensaje: string });
       toast.success("Mensaje enviado correctamente. Nos pondremos en contacto contigo pronto.");
       setForm({ nombre: "", email: "", empresa: "", telefono: "", mensaje: "" });
     } catch {
