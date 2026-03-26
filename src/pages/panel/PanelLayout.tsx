@@ -149,7 +149,7 @@ const PanelLayout = ({ children }: { children: React.ReactNode }) => {
           <button onClick={() => setSidebarOpen(!sidebarOpen)} className="lg:hidden text-muted-foreground hover:text-foreground transition-colors">
             {sidebarOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-1">
             {currentPage && (
               <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${location.pathname === '/panel' ? 'bg-primary/10' : 'bg-muted'}`}>
                 <currentPage.icon size={16} className={location.pathname === '/panel' ? 'text-primary' : 'text-muted-foreground'} />
@@ -164,6 +164,7 @@ const PanelLayout = ({ children }: { children: React.ReactNode }) => {
               </p>
             </div>
           </div>
+          <PanelSearch />
         </header>
         <main className="p-4 md:p-6 lg:p-8 max-w-7xl">{children}</main>
       </div>
