@@ -17,6 +17,7 @@ import ContactoPage from "./pages/Contacto";
 import NotFound from "./pages/NotFound";
 import PoliticaPrivacidad from "./pages/PoliticaPrivacidad";
 import AvisoLegal from "./pages/AvisoLegal";
+import CasoDetalle from "./pages/CasoDetalle";
 import PanelLogin from "./pages/panel/PanelLogin";
 import PanelDashboard from "./pages/panel/PanelDashboard";
 import PanelServicios from "./pages/panel/PanelServicios";
