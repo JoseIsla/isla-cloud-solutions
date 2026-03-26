@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import usePageMeta from "@/hooks/usePageMeta";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { sanitizeHTML } from "@/lib/sanitize";
+import ShareButtons from "@/components/ShareButtons";
 
 const CasoDetalle = () => {
   const { id } = useParams<{ id: string }>();
@@ -119,6 +120,10 @@ const CasoDetalle = () => {
             dangerouslySetInnerHTML={{ __html: sanitizeHTML(caso.description) }}
           />
         )}
+
+        <div className="mt-10 pt-6 border-t border-border">
+          <ShareButtons path={`/casos/${id}`} title={caso.title} />
+        </div>
       </motion.article>
     </Layout>
   );
