@@ -7,6 +7,7 @@ import usePageMeta, { SITE_URL, SITE_NAME } from "@/hooks/usePageMeta";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { newsApi, type NewsFromAPI } from "@/lib/api";
 import { sanitizeHTML } from "@/lib/sanitize";
+import ShareButtons from "@/components/ShareButtons";
 
 const BlogDetalle = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -162,6 +163,9 @@ const BlogDetalle = () => {
               className="prose prose-lg max-w-none text-foreground prose-headings:font-heading prose-headings:text-foreground prose-p:text-muted-foreground prose-p:leading-relaxed prose-a:text-primary prose-strong:text-foreground prose-img:rounded-xl"
               dangerouslySetInnerHTML={{ __html: sanitizeHTML(post.content) }}
             />
+            <div className="mt-10 pt-6 border-t border-border">
+              <ShareButtons path={`/blog/${slug}`} title={post.title} />
+            </div>
           </motion.div>
         </div>
       </section>
