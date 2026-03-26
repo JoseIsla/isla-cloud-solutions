@@ -7,6 +7,15 @@ import usePageMeta from "@/hooks/usePageMeta";
 import { toast } from "sonner";
 import { contactsApi } from "@/lib/api";
 import { useCMSValue } from "@/hooks/useCMS";
+import { z } from "zod";
+
+const contactSchema = z.object({
+  nombre: z.string().trim().min(1, "El nombre es obligatorio").max(100, "Máximo 100 caracteres"),
+  email: z.string().trim().min(1, "El email es obligatorio").email("Introduce un email válido").max(255, "Máximo 255 caracteres"),
+  empresa: z.string().max(100, "Máximo 100 caracteres").optional().default(""),
+  telefono: z.string().max(20, "Máximo 20 caracteres").optional().default(""),
+  mensaje: z.string().trim().min(1, "El mensaje es obligatorio").max(1000, "Máximo 1000 caracteres"),
+});
 
 const ContactoPage = () => {
   usePageMeta({
@@ -24,15 +33,26 @@ const ContactoPage = () => {
   const [form, setForm] = useState({ nombre: "", email: "", empresa: "", telefono: "", mensaje: "" });
   const [loading, setLoading] = useState(false);
 
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.nombre.trim() || !form.email.trim() || !form.mensaje.trim()) {
-      toast.error("Por favor completa los campos obligatorios.");
+    setErrors({});
+
+    const result = contactSchema.safeParse(form);
+    if (!result.success) {
+      const fieldErrors: Record<string, string> = {};
+      result.error.errors.forEach((err) => {
+        if (err.path[0]) fieldErrors[err.path[0] as string] = err.message;
+      });
+      setErrors(fieldErrors);
+      toast.error("Revisa los campos marcados en rojo.");
       return;
     }
+
     setLoading(true);
     try {
-      await contactsApi.send(form);
+      await contactsApi.send(result.data);
       toast.success("Mensaje enviado correctamente. Nos pondremos en contacto contigo pronto.");
       setForm({ nombre: "", email: "", empresa: "", telefono: "", mensaje: "" });
     } catch {
