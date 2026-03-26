@@ -4,6 +4,7 @@ import { ArrowLeft, CheckCircle, Server, Shield, Cloud, Monitor, Globe, Smartpho
 import { Button } from "@/components/ui/button";
 import Layout from "@/components/Layout";
 import usePageMeta, { SITE_URL, SITE_NAME } from "@/hooks/usePageMeta";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { services as fallbackServices } from "@/data/services";
 import { serviceImages } from "@/data/serviceImages";
 import { servicesApi, type ServiceFromAPI } from "@/lib/api";
@@ -110,9 +111,15 @@ const ServicioDetalle = () => {
   const Icon = useApi ? (iconMap[iconName] || Server) : fallback!.icon;
   const imageUrl = useApi ? apiService!.image_url : serviceImages[fallback!.slug];
 
+  const breadcrumbs = useMemo(() => [
+    { name: 'Inicio', path: '/' },
+    { name: 'Servicios', path: '/servicios' },
+    { name: title, path: `/servicios/${slug}` },
+  ], [title, slug]);
+
   return (
     <Layout>
-      {/* Hero */}
+      <BreadcrumbJsonLd items={breadcrumbs} />
       <section className="relative bg-hero grid-pattern py-24 overflow-hidden">
         <div className="container mx-auto px-4 relative z-10">
           <Link to="/servicios" className="inline-flex items-center gap-2 text-primary text-sm mb-8 hover:gap-3 transition-all">

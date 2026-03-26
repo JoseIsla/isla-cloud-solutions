@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Calendar, ArrowLeft, Tag } from "lucide-react";
 import Layout from "@/components/Layout";
 import usePageMeta, { SITE_URL, SITE_NAME } from "@/hooks/usePageMeta";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { newsApi, type NewsFromAPI } from "@/lib/api";
 import { sanitizeHTML } from "@/lib/sanitize";
 
@@ -92,9 +93,15 @@ const BlogDetalle = () => {
     jsonLd: articleJsonLd,
   });
 
+  const breadcrumbs = useMemo(() => [
+    { name: 'Inicio', path: '/' },
+    { name: 'Blog', path: '/blog' },
+    { name: post.title, path: `/blog/${slug}` },
+  ], [post.title, slug]);
+
   return (
     <Layout>
-      {/* Hero */}
+      <BreadcrumbJsonLd items={breadcrumbs} />
       <section className="bg-hero grid-pattern py-24">
         <div className="container mx-auto px-4">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-3xl mx-auto">
