@@ -38,6 +38,7 @@ const usePageMeta = ({ title, description, canonical, ogImage, type = 'website',
     setMeta('property', 'og:description', desc);
     setMeta('property', 'og:image', image);
     setMeta('property', 'og:type', type);
+    setMeta('property', 'og:locale', 'es_ES');
     setMeta('name', 'twitter:title', fullTitle);
     setMeta('name', 'twitter:description', desc);
     setMeta('name', 'twitter:image', image);
