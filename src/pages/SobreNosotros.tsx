@@ -4,6 +4,7 @@ import Layout from "@/components/Layout";
 import usePageMeta from "@/hooks/usePageMeta";
 import CTASection from "@/components/home/CTASection";
 import { useCMSValue } from "@/hooks/useCMS";
+import { sanitizeHTML } from "@/lib/sanitize";
 
 const icons = [Shield, Clock, Award, Users];
 
@@ -50,7 +51,7 @@ const SobreNosotros = () => {
               <h2 className="text-3xl font-heading font-bold text-foreground mb-8">{useCMSValue('about_history_title', 'Nuestra historia')}</h2>
               <div
                 className="space-y-6 text-muted-foreground leading-relaxed prose prose-p:text-muted-foreground"
-                dangerouslySetInnerHTML={{ __html: history }}
+                dangerouslySetInnerHTML={{ __html: sanitizeHTML(history) }}
               />
             </motion.div>
           </div>
