@@ -8,7 +8,7 @@ const rateLimit = require('express-rate-limit');
 // Rate limiters
 const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 200,
+  max: 1000,
   standardHeaders: true,
   legacyHeaders: false,
   message: { error: 'Demasiadas solicitudes. Inténtalo de nuevo en unos minutos.' },
@@ -16,7 +16,7 @@ const globalLimiter = rateLimit({
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 10,
+  max: 30,
   standardHeaders: true,
   legacyHeaders: false,
   message: { error: 'Demasiados intentos de login. Espera 15 minutos.' },
@@ -24,7 +24,7 @@ const authLimiter = rateLimit({
 
 const contactLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hora
-  max: 5,
+  max: 10,
   standardHeaders: true,
   legacyHeaders: false,
   message: { error: 'Has enviado demasiados mensajes. Inténtalo más tarde.' },
