@@ -5,6 +5,7 @@ import PanelLayout from './PanelLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import RichEditor from '@/components/ui/rich-editor';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Plus, Edit, Trash2, Trophy, X, Upload } from 'lucide-react';
@@ -105,7 +106,7 @@ const PanelCasos = () => {
                 </div>
                 <div>
                   <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Descripción</label>
-                  <Textarea value={editing.description || ''} onChange={(e) => setEditing({ ...editing, description: e.target.value })} rows={4} />
+                  <RichEditor value={editing.description || ''} onChange={(html) => setEditing((prev) => prev ? { ...prev, description: html } : prev)} />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
