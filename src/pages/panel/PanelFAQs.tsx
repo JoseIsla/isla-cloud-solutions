@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useConfirmDialog } from '@/hooks/useConfirmDialog';
 import { useAuth } from '@/hooks/useAuth';
 import { faqsApi, type FAQFromAPI } from '@/lib/api';
 import PanelLayout from './PanelLayout';

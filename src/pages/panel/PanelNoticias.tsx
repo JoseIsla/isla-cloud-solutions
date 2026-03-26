@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
+import { useConfirmDialog } from '@/hooks/useConfirmDialog';
 import { useAuth } from '@/hooks/useAuth';
 import PanelLayout from './PanelLayout';
 import { newsApi, uploadImage, type NewsFromAPI } from '@/lib/api';
