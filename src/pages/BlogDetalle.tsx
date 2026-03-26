@@ -5,6 +5,7 @@ import { Calendar, ArrowLeft, Tag } from "lucide-react";
 import Layout from "@/components/Layout";
 import usePageMeta, { SITE_URL, SITE_NAME } from "@/hooks/usePageMeta";
 import { newsApi, type NewsFromAPI } from "@/lib/api";
+import { sanitizeHTML } from "@/lib/sanitize";
 
 const BlogDetalle = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -142,7 +143,7 @@ const BlogDetalle = () => {
           >
             <div
               className="prose prose-lg max-w-none text-foreground prose-headings:font-heading prose-headings:text-foreground prose-p:text-muted-foreground prose-p:leading-relaxed prose-a:text-primary prose-strong:text-foreground prose-img:rounded-xl"
-              dangerouslySetInnerHTML={{ __html: post.content }}
+              dangerouslySetInnerHTML={{ __html: sanitizeHTML(post.content) }}
             />
           </motion.div>
         </div>

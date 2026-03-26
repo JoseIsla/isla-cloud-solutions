@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import usePageMeta from "@/hooks/usePageMeta";
+import { sanitizeHTML } from "@/lib/sanitize";
 
 const CasoDetalle = () => {
   const { id } = useParams<{ id: string }>();
@@ -98,7 +99,7 @@ const CasoDetalle = () => {
         {caso.description && (
           <div
             className="mt-8 prose prose-lg max-w-none text-foreground/90"
-            dangerouslySetInnerHTML={{ __html: caso.description }}
+            dangerouslySetInnerHTML={{ __html: sanitizeHTML(caso.description) }}
           />
         )}
       </motion.article>

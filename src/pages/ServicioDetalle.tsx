@@ -8,6 +8,7 @@ import { services as fallbackServices } from "@/data/services";
 import { serviceImages } from "@/data/serviceImages";
 import { servicesApi, type ServiceFromAPI } from "@/lib/api";
 import { useEffect, useState, useMemo } from "react";
+import { sanitizeHTML } from "@/lib/sanitize";
 
 const iconMap: Record<string, LucideIcon> = {
   Server, Shield, Cloud, Monitor, Globe, Smartphone, Lock, Wrench, Database,
@@ -125,7 +126,7 @@ const ServicioDetalle = () => {
                 {useApi ? (
                   <div
                     className="text-muted-foreground leading-relaxed text-lg prose prose-lg max-w-none"
-                    dangerouslySetInnerHTML={{ __html: longDescription }}
+                    dangerouslySetInnerHTML={{ __html: sanitizeHTML(longDescription) }}
                   />
                 ) : (
                   <p className="text-muted-foreground leading-relaxed text-lg">{longDescription}</p>

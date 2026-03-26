@@ -3,6 +3,32 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const path = require('path');
+const rateLimit = require('express-rate-limit');
+
+// Rate limiters
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 200,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Demasiadas solicitudes. Inténtalo de nuevo en unos minutos.' },
+});
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Demasiados intentos de login. Espera 15 minutos.' },
+});
+
+const contactLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hora
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Has enviado demasiados mensajes. Inténtalo más tarde.' },
+});
 
 const authRoutes = require('./routes/auth');
 const servicesRoutes = require('./routes/services');
@@ -67,6 +93,9 @@ app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' },
 }));
 
+// Global rate limiter
+app.use('/api/', globalLimiter);
+
 // Body parsing
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
@@ -75,10 +104,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, process.env.UPLOAD_DIR || './uploads')));
 
 // Routes
-app.use('/api/auth', authRoutes);
+app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/services', servicesRoutes);
 app.use('/api/news', newsRoutes);
-app.use('/api/contacts', contactsRoutes);
+app.use('/api/contacts', contactLimiter, contactsRoutes);
 app.use('/api/contents', contentsRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/clients', clientsRoutes);
