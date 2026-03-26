@@ -15,24 +15,24 @@ const sidebarSections = [
     label: 'General',
     links: [
       { label: 'Dashboard', path: '/panel', icon: LayoutDashboard },
+      { label: 'Contactos', path: '/panel/contactos', icon: MessageSquare },
     ],
   },
   {
-    label: 'Contenido Web',
+    label: 'Gestión',
     links: [
-      { label: 'Textos del Landing', path: '/panel/contenidos', icon: Pencil },
       { label: 'Servicios', path: '/panel/servicios', icon: FileText },
-      { label: 'Clientes', path: '/panel/clientes', icon: Users },
       { label: 'Casos de Éxito', path: '/panel/casos', icon: Trophy },
+      { label: 'Noticias / Blog', path: '/panel/noticias', icon: Newspaper },
+      { label: 'Clientes', path: '/panel/clientes', icon: Users },
       { label: 'Testimonios', path: '/panel/testimonios', icon: MessageCircle },
       { label: 'FAQs', path: '/panel/faqs', icon: HelpCircle },
-      { label: 'Noticias / Blog', path: '/panel/noticias', icon: Newspaper },
     ],
   },
   {
-    label: 'Comunicación',
+    label: 'Configuración Web',
     links: [
-      { label: 'Contactos', path: '/panel/contactos', icon: MessageSquare },
+      { label: 'Contenidos CMS', path: '/panel/contenidos', icon: Pencil },
     ],
   },
 ];
