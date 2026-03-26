@@ -10,6 +10,7 @@ const staticRoutes = [
   { path: '/servicios', priority: '0.9', changefreq: 'weekly' },
   { path: '/sobre-nosotros', priority: '0.7', changefreq: 'monthly' },
   { path: '/blog', priority: '0.8', changefreq: 'daily' },
+  { path: '/casos', priority: '0.8', changefreq: 'weekly' },
   { path: '/contacto', priority: '0.7', changefreq: 'monthly' },
   { path: '/privacidad', priority: '0.3', changefreq: 'yearly' },
   { path: '/legal', priority: '0.3', changefreq: 'yearly' },
@@ -52,6 +53,14 @@ async function generate() {
     if (n.is_published && n.slug) {
       const lastmod = n.published_at ? n.published_at.split('T')[0] : today;
       urls.push(buildUrl(`/blog/${n.slug}`, '0.7', 'monthly', lastmod));
+    }
+  }
+
+  // Dynamic: cases
+  const cases = await fetchJSON(`${API_URL}/api/cases`);
+  for (const c of cases) {
+    if (c.is_active) {
+      urls.push(buildUrl(`/casos/${c.id}`, '0.7', 'monthly'));
     }
   }
 
