@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useConfirmDialog } from '@/hooks/useConfirmDialog';
 import { useAuth } from '@/hooks/useAuth';
 import { faqsApi, type FAQFromAPI } from '@/lib/api';
 import PanelLayout from './PanelLayout';
@@ -13,6 +14,7 @@ import { useDragReorder } from '@/hooks/useDragReorder';
 
 const PanelFAQs = () => {
   const { token } = useAuth();
+  const { confirm, ConfirmDialog } = useConfirmDialog();
   const [faqs, setFaqs] = useState<FAQFromAPI[]>([]);
   const [editing, setEditing] = useState<Partial<FAQFromAPI> | null>(null);
   const [loading, setLoading] = useState(false);
@@ -58,7 +60,7 @@ const PanelFAQs = () => {
   };
 
   const handleDelete = async (id: number) => {
-    if (!token || !confirm('¿Eliminar esta pregunta?')) return;
+    if (!token || !(await confirm('¿Eliminar esta pregunta?', 'Se eliminará permanentemente esta FAQ.'))) return;
     try {
       await faqsApi.delete(id, token);
       toast.success('FAQ eliminada');
@@ -156,6 +158,7 @@ const PanelFAQs = () => {
           ))}
         </div>
       </div>
+      <ConfirmDialog />
     </PanelLayout>
   );
 };

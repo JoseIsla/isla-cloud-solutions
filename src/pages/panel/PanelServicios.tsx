@@ -1,17 +1,17 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
+import { useConfirmDialog } from '@/hooks/useConfirmDialog';
 import { useAuth } from '@/hooks/useAuth';
 import PanelLayout from './PanelLayout';
-import { servicesApi, uploadImage, type ServiceFromAPI } from '@/lib/api';
+import { servicesApi, uploadImage, type ServiceFromAPI, API_BASE_URL } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Plus, Pencil, Trash2, X, Upload, GripVertical, FileText } from 'lucide-react';
 import { toast } from 'sonner';
 import RichEditor from '@/components/ui/rich-editor';
 import { useDragReorder } from '@/hooks/useDragReorder';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.islacloudsolutions.com';
-
 const PanelServicios = () => {
   const { token } = useAuth();
+  const { confirm, ConfirmDialog } = useConfirmDialog();
   const [services, setServices] = useState<ServiceFromAPI[]>([]);
   const [editing, setEditing] = useState<Partial<ServiceFromAPI> | null>(null);
   const [isNew, setIsNew] = useState(false);
@@ -52,7 +52,7 @@ const PanelServicios = () => {
   };
 
   const handleDelete = async (id: number) => {
-    if (!token || !confirm('¿Eliminar este servicio?')) return;
+    if (!token || !(await confirm('¿Eliminar este servicio?', 'Se eliminará permanentemente este servicio.'))) return;
     try {
       await servicesApi.delete(id, token);
       toast.success('Servicio eliminado');
@@ -198,6 +198,7 @@ const PanelServicios = () => {
           )}
         </div>
       </div>
+      <ConfirmDialog />
     </PanelLayout>
   );
 };

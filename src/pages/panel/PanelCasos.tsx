@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
+import { useConfirmDialog } from '@/hooks/useConfirmDialog';
 import { useAuth } from '@/hooks/useAuth';
-import { casesApi, uploadImage, type CaseFromAPI } from '@/lib/api';
+import { casesApi, uploadImage, type CaseFromAPI, API_BASE_URL } from '@/lib/api';
 import PanelLayout from './PanelLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,10 +12,9 @@ import { Label } from '@/components/ui/label';
 import { Plus, Edit, Trash2, Trophy, X, Upload } from 'lucide-react';
 import { toast } from 'sonner';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.islacloudsolutions.com';
-
 const PanelCasos = () => {
   const { token } = useAuth();
+  const { confirm, ConfirmDialog } = useConfirmDialog();
   const [cases, setCases] = useState<CaseFromAPI[]>([]);
   const [editing, setEditing] = useState<Partial<CaseFromAPI> | null>(null);
   const [loading, setLoading] = useState(false);
@@ -47,7 +47,7 @@ const PanelCasos = () => {
   };
 
   const handleDelete = async (id: number) => {
-    if (!token || !confirm('¿Eliminar este caso de éxito?')) return;
+    if (!token || !(await confirm('¿Eliminar este caso de éxito?', 'Se eliminará permanentemente este caso de éxito.'))) return;
     try {
       await casesApi.delete(id, token);
       toast.success('Caso eliminado');
@@ -164,6 +164,7 @@ const PanelCasos = () => {
           ))}
         </div>
       </div>
+      <ConfirmDialog />
     </PanelLayout>
   );
 };

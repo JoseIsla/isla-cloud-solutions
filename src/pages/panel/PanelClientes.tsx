@@ -1,16 +1,16 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
+import { useConfirmDialog } from '@/hooks/useConfirmDialog';
 import { useAuth } from '@/hooks/useAuth';
 import PanelLayout from './PanelLayout';
-import { clientsApi, uploadImage, type ClientFromAPI } from '@/lib/api';
+import { clientsApi, uploadImage, type ClientFromAPI, API_BASE_URL } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Plus, Pencil, Trash2, X, Upload, Building2, GripVertical } from 'lucide-react';
 import { toast } from 'sonner';
 import { useDragReorder } from '@/hooks/useDragReorder';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.islacloudsolutions.com';
-
 const PanelClientes = () => {
   const { token } = useAuth();
+  const { confirm, ConfirmDialog } = useConfirmDialog();
   const [clients, setClients] = useState<ClientFromAPI[]>([]);
   const [editing, setEditing] = useState<Partial<ClientFromAPI> | null>(null);
   const [isNew, setIsNew] = useState(false);
@@ -51,7 +51,7 @@ const PanelClientes = () => {
   };
 
   const handleDelete = async (id: number) => {
-    if (!token || !confirm('¿Eliminar este cliente?')) return;
+    if (!token || !(await confirm('¿Eliminar este cliente?', 'Se eliminará permanentemente este cliente.'))) return;
     try {
       await clientsApi.delete(id, token);
       toast.success('Cliente eliminado');
@@ -173,6 +173,7 @@ const PanelClientes = () => {
           </div>
         )}
       </div>
+      <ConfirmDialog />
     </PanelLayout>
   );
 };
