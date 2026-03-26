@@ -71,6 +71,7 @@ const AppRoutes = () => (
     <Route path="/contacto" element={<ContactoPage />} />
     <Route path="/privacidad" element={<PoliticaPrivacidad />} />
     <Route path="/legal" element={<AvisoLegal />} />
+    <Route path="/casos" element={<Casos />} />
     <Route path="/casos/:id" element={<CasoDetalle />} />
     
     {/* Admin Panel */}
