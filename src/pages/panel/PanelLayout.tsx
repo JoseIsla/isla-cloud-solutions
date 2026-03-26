@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
+import { contactsApi } from '@/lib/api';
 import { Link, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, FileText, Newspaper, MessageSquare,
