@@ -36,8 +36,7 @@ const ContactoPage = () => {
       toast.success("Mensaje enviado correctamente. Nos pondremos en contacto contigo pronto.");
       setForm({ nombre: "", email: "", empresa: "", telefono: "", mensaje: "" });
     } catch {
-      toast.success("Mensaje enviado correctamente. Nos pondremos en contacto contigo pronto.");
-      setForm({ nombre: "", email: "", empresa: "", telefono: "", mensaje: "" });
+      toast.error("Error al enviar el mensaje. Inténtalo de nuevo más tarde.");
     } finally {
       setLoading(false);
     }
