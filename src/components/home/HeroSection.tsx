@@ -113,7 +113,7 @@ const HeroSection = () => {
       title: currentCase?.title || slide3Fallback,
       subtitle: currentCase?.excerpt || slide3FallbackDesc,
       ctaPrimary: { text: "Ver caso de éxito", to: currentCase ? `/casos/${currentCase.id}` : "/contacto" },
-      ctaSecondary: { text: slide3CtaSec, to: "/servicios" },
+      ctaSecondary: { text: slide3CtaSec, to: "/casos" },
     },
   ];
 
