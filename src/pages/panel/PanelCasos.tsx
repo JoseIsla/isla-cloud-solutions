@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useConfirmDialog } from '@/hooks/useConfirmDialog';
 import { useAuth } from '@/hooks/useAuth';
 import { casesApi, uploadImage, type CaseFromAPI, API_BASE_URL } from '@/lib/api';
+import { useDragReorder } from '@/hooks/useDragReorder';
 import PanelLayout from './PanelLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,7 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import RichEditor from '@/components/ui/rich-editor';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { Plus, Edit, Trash2, Trophy, X, Upload } from 'lucide-react';
+import { Plus, Edit, Trash2, Trophy, X, Upload, GripVertical } from 'lucide-react';
 import { toast } from 'sonner';
 
 const PanelCasos = () => {
@@ -25,6 +26,27 @@ const PanelCasos = () => {
   };
 
   useEffect(fetchCases, [token]);
+
+  const handleReorder = async (reordered: CaseFromAPI[]) => {
+    if (!token) return;
+    try {
+      await Promise.all(
+        reordered.map((c) =>
+          casesApi.update(c.id, { ...c, sort_order: c.sort_order }, token)
+        )
+      );
+      toast.success('Orden actualizado');
+    } catch {
+      toast.error('Error actualizando orden');
+      fetchCases();
+    }
+  };
+
+  const { getDragProps, isDragOver } = useDragReorder({
+    items: cases,
+    setItems: setCases,
+    onReorder: handleReorder,
+  });
 
   const handleSave = async () => {
     if (!editing || !token) return;
@@ -140,8 +162,15 @@ const PanelCasos = () => {
               <p className="text-muted-foreground/60 text-xs mt-1">Aparecerán en el slider del hero</p>
             </div>
           )}
-          {cases.map((c) => (
-            <div key={c.id} className="flex items-center gap-4 p-4 rounded-xl bg-card border border-border hover:border-primary/15 transition-colors group">
+          {cases.map((c, idx) => (
+            <div
+              key={c.id}
+              {...getDragProps(idx)}
+              className={`flex items-center gap-4 p-4 rounded-xl bg-card border border-border hover:border-primary/15 transition-colors group cursor-grab active:cursor-grabbing ${
+                isDragOver(idx) ? 'border-primary/40 bg-primary/5' : ''
+              }`}
+            >
+              <GripVertical size={16} className="text-muted-foreground shrink-0" />
               {c.image_url ? (
                 <img src={c.image_url} alt="" className="w-10 h-10 rounded-lg object-cover shrink-0" />
               ) : (

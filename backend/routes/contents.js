@@ -30,12 +30,25 @@ router.put('/:key', authMiddleware, async (req, res) => {
     if (existing.length === 0) {
       await conn.query(
         'INSERT INTO contents (content_key, title, value, content_type) VALUES (?, ?, ?, ?)',
-        [req.params.key, title || req.params.key, value, content_type || 'text']
+        [req.params.key, title || req.params.key, value || '', content_type || 'text']
       );
     } else {
+      // Build dynamic update to avoid passing undefined params
+      const updates = ['value = ?'];
+      const params = [value || ''];
+      if (title !== undefined) {
+        updates.push('title = ?');
+        params.push(title);
+      }
+      if (content_type !== undefined) {
+        updates.push('content_type = ?');
+        params.push(content_type);
+      }
+      updates.push('updated_at = NOW()');
+      params.push(req.params.key);
       await conn.query(
-        'UPDATE contents SET value = ?, title = COALESCE(?, title), content_type = COALESCE(?, content_type), updated_at = NOW() WHERE content_key = ?',
-        [value, title, content_type, req.params.key]
+        `UPDATE contents SET ${updates.join(', ')} WHERE content_key = ?`,
+        params
       );
     }
     res.json({ message: 'Contenido actualizado' });
