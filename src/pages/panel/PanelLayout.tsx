@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
+import { contactsApi } from '@/lib/api';
 import { Link, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, FileText, Newspaper, MessageSquare,
@@ -40,10 +41,18 @@ const sidebarSections = [
 const allLinks = sidebarSections.flatMap(s => s.links);
 
 const PanelLayout = ({ children }: { children: React.ReactNode }) => {
-  const { user, logout } = useAuth();
+  const { user, logout, token } = useAuth();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    if (!token) return;
+    contactsApi.list(token).then((contacts) => {
+      setUnreadCount(contacts.filter((c: any) => !c.is_read).length);
+    }).catch(() => {});
+  }, [token, location.pathname]);
 
   const sidebarWidth = collapsed ? 'w-[72px]' : 'w-64';
   const mainMargin = collapsed ? 'lg:ml-[72px]' : 'lg:ml-64';
@@ -87,14 +96,19 @@ const PanelLayout = ({ children }: { children: React.ReactNode }) => {
                         to={link.path}
                         onClick={() => setSidebarOpen(false)}
                         title={collapsed ? link.label : undefined}
-                        className={`group flex items-center ${collapsed ? 'justify-center' : ''} gap-3 ${collapsed ? 'px-2' : 'px-3'} py-2 rounded-lg text-[13px] font-medium transition-all duration-150 ${
+                        className={`group relative flex items-center ${collapsed ? 'justify-center' : ''} gap-3 ${collapsed ? 'px-2' : 'px-3'} py-2 rounded-lg text-[13px] font-medium transition-all duration-150 ${
                           isActive
                             ? 'bg-primary/15 text-primary shadow-sm shadow-primary/5'
                             : 'text-white/50 hover:text-white/80 hover:bg-white/[0.04]'
                         }`}
                       >
                         <Icon size={collapsed ? 20 : 16} className={`shrink-0 ${isActive ? '' : 'group-hover:scale-105 transition-transform'}`} />
-                        {!collapsed && <span className="truncate">{link.label}</span>}
+                        {!collapsed && <span className="truncate flex-1">{link.label}</span>}
+                        {link.path === '/panel/contactos' && unreadCount > 0 && (
+                          <span className={`${collapsed ? 'absolute -top-1 -right-1' : ''} min-w-[18px] h-[18px] flex items-center justify-center rounded-full bg-red-500 text-white text-[10px] font-bold px-1 animate-pulse`}>
+                            {unreadCount}
+                          </span>
+                        )}
                       </Link>
                     );
                   })}
