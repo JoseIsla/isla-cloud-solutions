@@ -20,6 +20,12 @@ const sidebarSections = [
     ],
   },
   {
+    label: 'Configuración Web',
+    links: [
+      { label: 'Contenidos CMS', path: '/panel/contenidos', icon: Pencil },
+    ],
+  },
+  {
     label: 'Gestión',
     links: [
       { label: 'Servicios', path: '/panel/servicios', icon: FileText },
@@ -28,12 +34,6 @@ const sidebarSections = [
       { label: 'Clientes', path: '/panel/clientes', icon: Users },
       { label: 'Testimonios', path: '/panel/testimonios', icon: MessageCircle },
       { label: 'FAQs', path: '/panel/faqs', icon: HelpCircle },
-    ],
-  },
-  {
-    label: 'Configuración Web',
-    links: [
-      { label: 'Contenidos CMS', path: '/panel/contenidos', icon: Pencil },
     ],
   },
 ];
