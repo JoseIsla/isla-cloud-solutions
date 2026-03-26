@@ -13,8 +13,16 @@ const Layout = ({ children }: LayoutProps) => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar />
-      <main className={`flex-1 ${isHome ? "" : "pt-16 lg:pt-20"}`}>{children}</main>
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
+      >
+        Saltar al contenido principal
+      </a>
+      <header role="banner">
+        <Navbar />
+      </header>
+      <main id="main-content" role="main" className={`flex-1 ${isHome ? "" : "pt-16 lg:pt-20"}`}>{children}</main>
       <Footer />
     </div>
   );
