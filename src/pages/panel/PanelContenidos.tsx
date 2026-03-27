@@ -47,6 +47,7 @@ const sectionGroups: SectionGroup[] = [
     label: '🧭 Navegación',
     description: 'Gestiona etiquetas, visibilidad y orden de los enlaces del menú.',
     keys: ['nav_link1_label', 'nav_link2_label', 'nav_link3_label', 'nav_link4_label', 'nav_link5_label', 'nav_cta_text',
+           'nav_link1_path', 'nav_link2_path', 'nav_link3_path', 'nav_link4_path', 'nav_link5_path',
            'nav_link1_visible', 'nav_link2_visible', 'nav_link3_visible', 'nav_link4_visible', 'nav_link5_visible',
            'nav_link1_order', 'nav_link2_order', 'nav_link3_order', 'nav_link4_order', 'nav_link5_order'],
     customRenderer: true,
