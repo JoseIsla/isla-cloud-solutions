@@ -12,6 +12,7 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Plus, Edit, Trash2, Trophy, X, Upload, GripVertical } from 'lucide-react';
 import { toast } from 'sonner';
+import { StaggerList, StaggerItem } from '@/components/panel/StaggerList';
 
 const PanelCasos = () => {
   const { token } = useAuth();
