@@ -29,7 +29,22 @@ const PanelNoticias = () => {
   const [editing, setEditing] = useState<Partial<NewsFromAPI> | null>(null);
   const [isNew, setIsNew] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [catOpen, setCatOpen] = useState(false);
+  const catRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const existingCategories = useMemo(() =>
+    [...new Set(news.map(n => n.category).filter(Boolean))].sort()
+  , [news]);
+
+  // Close category dropdown on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (catRef.current && !catRef.current.contains(e.target as Node)) setCatOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
 
   // Auto-generate slug when title changes on new posts
   const updateField = (key: string, value: string) => {
