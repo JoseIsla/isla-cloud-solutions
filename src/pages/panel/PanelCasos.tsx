@@ -12,7 +12,7 @@ import RichEditor from '@/components/ui/rich-editor';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus, Edit, Trash2, Trophy, X, Upload, GripVertical, RefreshCw, Search, ChevronUp, ChevronDown, ChevronsUp, ChevronsDown } from 'lucide-react';
+import { Plus, Edit, Trash2, Trophy, X, Upload, GripVertical, RefreshCw, Search, ChevronUp, ChevronDown, ChevronsUp, ChevronsDown, HelpCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { StaggerList, StaggerItem } from '@/components/panel/StaggerList';
 import { usePanelPagination } from '@/hooks/usePanelPagination';
