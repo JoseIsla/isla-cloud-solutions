@@ -176,7 +176,7 @@ const HeroSection = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30" />
       </div>
 
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="container mx-auto px-4 relative z-10 pt-20 lg:pt-24">
         <div className="max-w-3xl">
           <AnimatePresence mode="wait">
             <motion.div
