@@ -219,7 +219,7 @@ const HeroSection = () => {
                 }}
               >
                 <motion.h1
-                  className="text-4xl md:text-5xl lg:text-[3.5rem] xl:text-6xl font-heading font-bold text-white leading-[1.1]"
+                  className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] xl:text-6xl font-heading font-bold text-white leading-[1.1]"
                   variants={{
                     hidden: { y: "100%" },
                     visible: { y: 0, transition: { duration: 0.4, ease: [0.25, 1, 0.5, 1] } },
