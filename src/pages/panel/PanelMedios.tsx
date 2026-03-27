@@ -449,12 +449,30 @@ const PanelMedios = () => {
         <DialogContent className="max-w-3xl p-0 overflow-hidden">
           {previewItem && (
             <div>
-              <div className="bg-muted flex items-center justify-center max-h-[70vh]">
+              <div className="bg-muted flex items-center justify-center max-h-[70vh] relative">
+                {/* Left arrow */}
+                {items.findIndex(i => i.id === previewItem.id) > 0 && (
+                  <button
+                    onClick={(e) => { e.stopPropagation(); navigatePreview(-1); }}
+                    className="absolute left-2 top-1/2 -translate-y-1/2 bg-background/80 hover:bg-background rounded-full p-2 shadow-lg transition-colors z-10"
+                  >
+                    <ChevronLeft size={24} className="text-foreground" />
+                  </button>
+                )}
                 <img
                   src={previewItem.url}
                   alt={previewItem.alt_text || previewItem.original_name}
                   className="max-w-full max-h-[70vh] object-contain"
                 />
+                {/* Right arrow */}
+                {items.findIndex(i => i.id === previewItem.id) < items.length - 1 && (
+                  <button
+                    onClick={(e) => { e.stopPropagation(); navigatePreview(1); }}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 bg-background/80 hover:bg-background rounded-full p-2 shadow-lg transition-colors z-10"
+                  >
+                    <ChevronRight size={24} className="text-foreground" />
+                  </button>
+                )}
               </div>
               <div className="p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                 <div className="min-w-0">
