@@ -101,8 +101,9 @@ const ContactoPage = () => {
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">Nombre *</label>
+                    <label htmlFor="contact-nombre" className="block text-sm font-medium text-foreground mb-2">Nombre *</label>
                     <input
+                      id="contact-nombre"
                       type="text"
                       value={form.nombre}
                       onChange={(e) => { setForm({ ...form, nombre: e.target.value }); setErrors((prev) => ({ ...prev, nombre: '' })); }}
@@ -113,8 +114,9 @@ const ContactoPage = () => {
                     {errors.nombre && <p className="text-destructive text-xs mt-1">{errors.nombre}</p>}
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">Email *</label>
+                    <label htmlFor="contact-email" className="block text-sm font-medium text-foreground mb-2">Email *</label>
                     <input
+                      id="contact-email"
                       type="email"
                       value={form.email}
                       onChange={(e) => { setForm({ ...form, email: e.target.value }); setErrors((prev) => ({ ...prev, email: '' })); }}
@@ -125,8 +127,9 @@ const ContactoPage = () => {
                     {errors.email && <p className="text-destructive text-xs mt-1">{errors.email}</p>}
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">Empresa</label>
+                    <label htmlFor="contact-empresa" className="block text-sm font-medium text-foreground mb-2">Empresa</label>
                     <input
+                      id="contact-empresa"
                       type="text"
                       value={form.empresa}
                       onChange={(e) => setForm({ ...form, empresa: e.target.value })}
@@ -136,8 +139,9 @@ const ContactoPage = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">Teléfono</label>
+                    <label htmlFor="contact-telefono" className="block text-sm font-medium text-foreground mb-2">Teléfono</label>
                     <input
+                      id="contact-telefono"
                       type="tel"
                       value={form.telefono}
                       onChange={(e) => setForm({ ...form, telefono: e.target.value })}
@@ -148,8 +152,9 @@ const ContactoPage = () => {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">Mensaje *</label>
+                  <label htmlFor="contact-mensaje" className="block text-sm font-medium text-foreground mb-2">Mensaje *</label>
                   <textarea
+                    id="contact-mensaje"
                     value={form.mensaje}
                     onChange={(e) => { setForm({ ...form, mensaje: e.target.value }); setErrors((prev) => ({ ...prev, mensaje: '' })); }}
                     rows={5}

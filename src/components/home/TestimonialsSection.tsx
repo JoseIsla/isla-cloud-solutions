@@ -74,12 +74,14 @@ const TestimonialsSection = () => {
               <button
                 onClick={() => goTo((current - 1 + testimonials.length) % testimonials.length)}
                 className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 lg:-translate-x-12 z-10 w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/30 transition-colors"
+                aria-label="Testimonio anterior"
               >
                 <ChevronLeft size={20} />
               </button>
               <button
                 onClick={() => goTo((current + 1) % testimonials.length)}
                 className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 lg:translate-x-12 z-10 w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/30 transition-colors"
+                aria-label="Testimonio siguiente"
               >
                 <ChevronRight size={20} />
               </button>
