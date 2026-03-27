@@ -1,16 +1,36 @@
 import { useState, useRef, useEffect, ImgHTMLAttributes } from "react";
 
 interface BlurImageProps extends Omit<ImgHTMLAttributes<HTMLImageElement>, "onLoad"> {
-  /** Tiny base64 or solid-color placeholder shown while loading */
+  /** Solid-color placeholder shown while loading */
   placeholderColor?: string;
   /** Extra wrapper classes */
   wrapperClassName?: string;
+  /** Explicit WebP source URL (auto-generated from src if omitted) */
+  webpSrc?: string;
+  /** Disable automatic WebP source generation */
+  noWebp?: boolean;
 }
 
 /**
- * Image component with blur-up placeholder effect.
- * Uses IntersectionObserver for true lazy loading and
- * a CSS blur transition for a smooth reveal.
+ * Generates a WebP URL variant from a JPG/PNG URL.
+ * Works for both local assets and remote URLs.
+ */
+const toWebpUrl = (url: string): string | null => {
+  if (!url) return null;
+  // Already webp — no fallback needed
+  if (/\.webp(\?|$)/i.test(url)) return null;
+  // Only convert known raster formats
+  if (/\.(jpe?g|png)(\?|$)/i.test(url)) {
+    return url.replace(/\.(jpe?g|png)/i, ".webp");
+  }
+  return null;
+};
+
+/**
+ * Image component with:
+ * - Blur-up placeholder effect
+ * - IntersectionObserver lazy loading
+ * - Automatic WebP with <picture> fallback for older browsers
  */
 const BlurImage = ({
   src,
@@ -18,18 +38,19 @@ const BlurImage = ({
   className = "",
   wrapperClassName = "",
   placeholderColor,
+  webpSrc,
+  noWebp = false,
   style,
   ...rest
 }: BlurImageProps) => {
   const [loaded, setLoaded] = useState(false);
   const [inView, setInView] = useState(false);
-  const imgRef = useRef<HTMLImageElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const el = imgRef.current;
+    const el = containerRef.current;
     if (!el) return;
 
-    // If IntersectionObserver not available, load immediately
     if (!("IntersectionObserver" in window)) {
       setInView(true);
       return;
@@ -42,31 +63,50 @@ const BlurImage = ({
           observer.disconnect();
         }
       },
-      { rootMargin: "200px" } // Start loading 200px before viewport
+      { rootMargin: "200px" }
     );
 
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
 
+  const resolvedSrc = inView ? src : undefined;
+  const resolvedWebp = !noWebp && inView ? (webpSrc || (src ? toWebpUrl(src) : null)) : null;
+
+  const imgClasses = `transition-all duration-700 ease-out ${
+    loaded ? "blur-0 scale-100 opacity-100" : "blur-md scale-105 opacity-0"
+  } ${className}`;
+
   return (
     <div
+      ref={containerRef}
       className={`overflow-hidden ${wrapperClassName}`}
       style={{
         backgroundColor: placeholderColor || "hsl(var(--muted))",
       }}
     >
-      <img
-        ref={imgRef}
-        src={inView ? src : undefined}
-        alt={alt}
-        className={`transition-all duration-700 ease-out ${
-          loaded ? "blur-0 scale-100 opacity-100" : "blur-md scale-105 opacity-0"
-        } ${className}`}
-        style={style}
-        onLoad={() => setLoaded(true)}
-        {...rest}
-      />
+      {resolvedWebp ? (
+        <picture>
+          <source srcSet={resolvedWebp} type="image/webp" />
+          <img
+            src={resolvedSrc}
+            alt={alt}
+            className={imgClasses}
+            style={style}
+            onLoad={() => setLoaded(true)}
+            {...rest}
+          />
+        </picture>
+      ) : (
+        <img
+          src={resolvedSrc}
+          alt={alt}
+          className={imgClasses}
+          style={style}
+          onLoad={() => setLoaded(true)}
+          {...rest}
+        />
+      )}
     </div>
   );
 };
