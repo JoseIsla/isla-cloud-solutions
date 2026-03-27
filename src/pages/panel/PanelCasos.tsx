@@ -154,7 +154,16 @@ const PanelCasos = () => {
                   </div>
                   <div>
                     <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Cliente</label>
-                    <Input value={editing.client_name || ''} onChange={(e) => setEditing({ ...editing, client_name: e.target.value })} />
+                    <Select value={editing.client_name || ''} onValueChange={(val) => setEditing({ ...editing, client_name: val })}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Seleccionar cliente" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {clients.filter(c => c.is_active).map(c => (
+                          <SelectItem key={c.id} value={c.name}>{c.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
                 <div>
