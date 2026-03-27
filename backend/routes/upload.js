@@ -55,6 +55,34 @@ const upload = multer({
   limits: { fileSize: 10 * 1024 * 1024 }, // 10MB (allow larger originals before resize)
 });
 
+/**
+ * Generate a WebP variant alongside the main image.
+ * Returns the WebP filename if successful, null otherwise.
+ */
+async function generateWebpVariant(filePath, quality = 80) {
+  if (!sharp) return null;
+
+  const ext = path.extname(filePath).toLowerCase();
+  // Skip SVGs and files already in WebP format
+  if (ext === '.svg' || ext === '.webp') return null;
+
+  try {
+    const baseName = path.basename(filePath, ext);
+    const dir = path.dirname(filePath);
+    const webpFilename = baseName + '.webp';
+    const webpPath = path.join(dir, webpFilename);
+
+    await sharp(filePath)
+      .webp({ quality, effort: 4 })
+      .toFile(webpPath);
+
+    return webpFilename;
+  } catch (e) {
+    console.error('Error generating WebP variant:', e.message);
+    return null;
+  }
+}
+
 // POST /api/upload (admin) — uploads file, resizes by category, and auto-registers in media library
 router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
   if (!req.file) {
@@ -89,7 +117,7 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
 
       const buffer = await pipeline.toBuffer();
 
-      const newFilename = path.basename(req.file.filename, ext) + newExt;
+      const newFilename = path.basename(req.file.filename, path.extname(req.file.filename)) + newExt;
       const newPath = path.join(path.dirname(filePath), newFilename);
       fs.writeFileSync(newPath, buffer);
 
@@ -99,11 +127,15 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
       }
 
       req.file.filename = newFilename;
+      req.file.path = newPath;
     } catch (e) {
       console.error('Error resizing image, keeping original:', e.message);
       // Keep original file on resize failure
     }
   }
+
+  // Generate WebP variant for content negotiation
+  const webpFilename = await generateWebpVariant(req.file.path);
 
   const url = `/uploads/${req.file.filename}`;
   const fullUrl = `${API_BASE}${url}`;
@@ -122,7 +154,11 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
     if (conn) conn.release();
   }
 
-  res.json({ url, filename: req.file.filename });
+  res.json({
+    url,
+    filename: req.file.filename,
+    webp: webpFilename ? `/uploads/${webpFilename}` : null,
+  });
 });
 
 module.exports = router;
