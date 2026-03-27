@@ -142,8 +142,8 @@ const PanelTestimonios = () => {
           />
         </div>
 
-        {editing && (
-          <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm overflow-y-auto flex items-start justify-center p-4 min-h-screen">
+        {editing && createPortal(
+          <div className="fixed inset-0 z-[9999] bg-black/40 backdrop-blur-sm overflow-y-auto flex items-start justify-center p-4 min-h-screen">
             <div className="bg-card rounded-2xl border border-border p-6 w-full max-w-lg shadow-2xl my-8">
               <div className="flex justify-between items-center mb-5">
                 <h3 className="font-heading font-semibold text-base">{editing.id ? 'Editar testimonio' : 'Nuevo testimonio'}</h3>
@@ -190,7 +190,7 @@ const PanelTestimonios = () => {
               </div>
             </div>
           </div>
-        )}
+        , document.body)}
 
         <StaggerList className="space-y-1">
           {testimonials.length === 0 && (
