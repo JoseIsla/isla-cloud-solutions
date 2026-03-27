@@ -81,7 +81,8 @@ const BlogPage = () => {
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
                       transition={{ delay: index * 0.08 }}
-                      className="group rounded-2xl bg-card border border-border overflow-hidden hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 h-full"
+                      whileHover={{ y: -6, boxShadow: "0 20px 40px -12px hsl(var(--primary) / 0.15)" }}
+                      className="group rounded-2xl bg-card border border-border overflow-hidden hover:border-primary/30 transition-colors duration-300 h-full"
                     >
                       {post.image_url ? (
                         <div className="h-48 overflow-hidden">
