@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { Plus, Edit, Trash2, MessageCircle, Star, X, GripVertical, Search, ChevronUp, ChevronDown } from 'lucide-react';
+import { Plus, Edit, Trash2, MessageCircle, Star, X, GripVertical, Search, ChevronUp, ChevronDown, ChevronsUp, ChevronsDown } from 'lucide-react';
 import { toast } from 'sonner';
 import { useDragReorder } from '@/hooks/useDragReorder';
 import { StaggerList, StaggerItem } from '@/components/panel/StaggerList';
@@ -48,6 +48,16 @@ const PanelTestimonios = () => {
     if (newIdx < 0 || newIdx >= testimonials.length) return;
     const reordered = [...testimonials];
     [reordered[idx], reordered[newIdx]] = [reordered[newIdx], reordered[idx]];
+    reordered.forEach((t, i) => (t.sort_order = i));
+    setTestimonials(reordered);
+    await handleReorder(reordered);
+  };
+
+  const moveToEdge = async (idx: number, target: 'first' | 'last') => {
+    if (idx === (target === 'first' ? 0 : testimonials.length - 1)) return;
+    const reordered = [...testimonials];
+    const [moved] = reordered.splice(idx, 1);
+    target === 'first' ? reordered.unshift(moved) : reordered.push(moved);
     reordered.forEach((t, i) => (t.sort_order = i));
     setTestimonials(reordered);
     await handleReorder(reordered);
@@ -219,9 +229,11 @@ const PanelTestimonios = () => {
                   <span className="text-[10px] bg-muted text-muted-foreground px-2 py-0.5 rounded font-medium shrink-0">Inactivo</span>
                 )}
                 {!filter && (
-                  <div className="flex flex-col shrink-0">
+                  <div className="flex items-center gap-0.5 shrink-0">
+                    <button onClick={() => moveToEdge(realIdx, 'first')} disabled={realIdx === 0} className="p-0.5 rounded hover:bg-muted disabled:opacity-20 text-muted-foreground" title="Mover al inicio"><ChevronsUp size={14} /></button>
                     <button onClick={() => moveItem(realIdx, -1)} disabled={realIdx === 0} className="p-0.5 rounded hover:bg-muted disabled:opacity-20 text-muted-foreground"><ChevronUp size={14} /></button>
                     <button onClick={() => moveItem(realIdx, 1)} disabled={realIdx === testimonials.length - 1} className="p-0.5 rounded hover:bg-muted disabled:opacity-20 text-muted-foreground"><ChevronDown size={14} /></button>
+                    <button onClick={() => moveToEdge(realIdx, 'last')} disabled={realIdx === testimonials.length - 1} className="p-0.5 rounded hover:bg-muted disabled:opacity-20 text-muted-foreground" title="Mover al final"><ChevronsDown size={14} /></button>
                   </div>
                 )}
                 <div className="flex gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
