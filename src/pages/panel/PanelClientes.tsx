@@ -180,11 +180,6 @@ const PanelClientes = () => {
                   <input type="text" value={editing.website_url ?? ''} onChange={(e) => setEditing({ ...editing, website_url: e.target.value })} placeholder="https://..." className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm" />
                 </div>
 
-                <div>
-                  <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Orden</label>
-                  <input type="number" value={editing.sort_order ?? 0} onChange={(e) => setEditing({ ...editing, sort_order: parseInt(e.target.value) || 0 })} className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm" />
-                </div>
-
                 <div className="flex gap-3 pt-2">
                   <Button onClick={handleSave}>Guardar</Button>
                   <Button variant="outline" onClick={() => setEditing(null)}>Cancelar</Button>
@@ -196,35 +191,52 @@ const PanelClientes = () => {
 
         {/* List */}
         <StaggerList className="space-y-1">
-          {clients.map((c, idx) => (
-            <StaggerItem
-              key={c.id}
-              {...getDragProps(idx)}
-              className={`flex items-center gap-3 p-3 rounded-xl bg-card border transition-all duration-150 group ${
-                isDragOver(idx) ? 'border-primary/40 shadow-md shadow-primary/5 scale-[1.01]' : 'border-border hover:border-primary/15'
-              }`}
-            >
-              <GripVertical size={14} className="text-muted-foreground/30 shrink-0 cursor-grab active:cursor-grabbing" />
-              {c.logo_url ? (
-                <img src={c.logo_url} alt={c.name} className="w-9 h-9 rounded-lg object-contain bg-muted/30 p-1 shrink-0" />
-              ) : (
-                <div className="w-9 h-9 rounded-lg bg-accent/50 flex items-center justify-center shrink-0">
-                  <Building2 size={14} className="text-primary" />
+          {paged.map((c) => {
+            const realIdx = clients.indexOf(c);
+            return (
+              <StaggerItem
+                key={c.id}
+                {...getDragProps(realIdx)}
+                className={`flex items-center gap-3 p-3 rounded-xl bg-card border transition-all duration-150 group ${
+                  isDragOver(realIdx) ? 'border-primary/40 shadow-md shadow-primary/5 scale-[1.01]' : 'border-border hover:border-primary/15'
+                }`}
+              >
+                <GripVertical size={14} className="text-muted-foreground/30 shrink-0 cursor-grab active:cursor-grabbing" />
+                {c.logo_url ? (
+                  <img src={c.logo_url} alt={c.name} className="w-9 h-9 rounded-lg object-contain bg-muted/30 p-1 shrink-0" />
+                ) : (
+                  <div className="w-9 h-9 rounded-lg bg-accent/50 flex items-center justify-center shrink-0">
+                    <Building2 size={14} className="text-primary" />
+                  </div>
+                )}
+                <span className="text-sm text-foreground truncate flex-1">{c.name}</span>
+                {!filter && (
+                  <div className="flex items-center gap-0.5 shrink-0">
+                    <button onClick={() => moveToEdge(realIdx, 'first')} disabled={realIdx === 0} className="p-0.5 rounded hover:bg-muted disabled:opacity-20 text-muted-foreground" title="Mover al inicio"><ChevronsUp size={14} /></button>
+                    <button onClick={() => moveItem(realIdx, -1)} disabled={realIdx === 0} className="p-0.5 rounded hover:bg-muted disabled:opacity-20 text-muted-foreground"><ChevronUp size={14} /></button>
+                    <button onClick={() => moveItem(realIdx, 1)} disabled={realIdx === clients.length - 1} className="p-0.5 rounded hover:bg-muted disabled:opacity-20 text-muted-foreground"><ChevronDown size={14} /></button>
+                    <button onClick={() => moveToEdge(realIdx, 'last')} disabled={realIdx === clients.length - 1} className="p-0.5 rounded hover:bg-muted disabled:opacity-20 text-muted-foreground" title="Mover al final"><ChevronsDown size={14} /></button>
+                  </div>
+                )}
+                <div className="flex gap-0.5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button onClick={() => { setEditing(c); setIsNew(false); }} className="p-1.5 rounded-lg hover:bg-primary/10 text-primary"><Pencil size={13} /></button>
+                  <button onClick={() => handleDelete(c.id)} className="p-1.5 rounded-lg hover:bg-destructive/10 text-destructive"><Trash2 size={13} /></button>
                 </div>
-              )}
-              <span className="text-sm text-foreground truncate flex-1">{c.name}</span>
-              <div className="flex gap-0.5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button onClick={() => { setEditing(c); setIsNew(false); }} className="p-1.5 rounded-lg hover:bg-primary/10 text-primary"><Pencil size={13} /></button>
-                <button onClick={() => handleDelete(c.id)} className="p-1.5 rounded-lg hover:bg-destructive/10 text-destructive"><Trash2 size={13} /></button>
-              </div>
-            </StaggerItem>
-          ))}
+              </StaggerItem>
+            );
+          })}
           {clients.length === 0 && (
             <div className="p-12 text-center text-muted-foreground text-sm rounded-xl border border-dashed border-border">
               No hay clientes registrados
             </div>
           )}
+          {clients.length > 0 && filtered.length === 0 && (
+            <div className="p-8 text-center text-muted-foreground text-sm rounded-xl border border-dashed border-border">
+              No se encontraron resultados para "{filter}"
+            </div>
+          )}
         </StaggerList>
+        <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
       </div>
       <ConfirmDialog />
     </PanelLayout>
