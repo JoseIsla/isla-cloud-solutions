@@ -53,6 +53,16 @@ const PanelFAQs = () => {
     await handleReorder(reordered);
   };
 
+  const moveToEdge = async (idx: number, target: 'first' | 'last') => {
+    if (idx === (target === 'first' ? 0 : faqs.length - 1)) return;
+    const reordered = [...faqs];
+    const [moved] = reordered.splice(idx, 1);
+    target === 'first' ? reordered.unshift(moved) : reordered.push(moved);
+    reordered.forEach((f, i) => (f.sort_order = i));
+    setFaqs(reordered);
+    await handleReorder(reordered);
+  };
+
   const filtered = faqs.filter(f =>
     !filter || f.question.toLowerCase().includes(filter.toLowerCase()) || f.answer.replace(/<[^>]*>/g, '').toLowerCase().includes(filter.toLowerCase())
   );
@@ -172,9 +182,11 @@ const PanelFAQs = () => {
                   <span className="text-[10px] bg-muted text-muted-foreground px-2 py-0.5 rounded font-medium shrink-0">Inactiva</span>
                 )}
                 {!filter && (
-                  <div className="flex flex-col shrink-0">
+                  <div className="flex items-center gap-0.5 shrink-0">
+                    <button onClick={() => moveToEdge(realIdx, 'first')} disabled={realIdx === 0} className="p-0.5 rounded hover:bg-muted disabled:opacity-20 text-muted-foreground" title="Mover al inicio"><ChevronsUp size={14} /></button>
                     <button onClick={() => moveItem(realIdx, -1)} disabled={realIdx === 0} className="p-0.5 rounded hover:bg-muted disabled:opacity-20 text-muted-foreground"><ChevronUp size={14} /></button>
                     <button onClick={() => moveItem(realIdx, 1)} disabled={realIdx === faqs.length - 1} className="p-0.5 rounded hover:bg-muted disabled:opacity-20 text-muted-foreground"><ChevronDown size={14} /></button>
+                    <button onClick={() => moveToEdge(realIdx, 'last')} disabled={realIdx === faqs.length - 1} className="p-0.5 rounded hover:bg-muted disabled:opacity-20 text-muted-foreground" title="Mover al final"><ChevronsDown size={14} /></button>
                   </div>
                 )}
                 <div className="flex gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
