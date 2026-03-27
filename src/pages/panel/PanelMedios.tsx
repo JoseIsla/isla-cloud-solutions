@@ -272,6 +272,10 @@ const PanelMedios = () => {
               <Button size="sm" onClick={handleBulkCategoryChange} disabled={!bulkCategory || bulkApplying}>
                 {bulkApplying ? 'Aplicando...' : 'Aplicar'}
               </Button>
+              <Button size="sm" variant="destructive" onClick={handleBulkDelete} disabled={bulkApplying}>
+                <Trash2 size={14} className="mr-1" />
+                Eliminar
+              </Button>
             </div>
           </div>
         )}
