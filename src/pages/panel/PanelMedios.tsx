@@ -344,7 +344,7 @@ const PanelMedios = () => {
                       ? 'border-primary ring-2 ring-primary/30'
                       : 'border-border hover:border-muted-foreground/30'
                   }`}
-                  onClick={() => toggleSelect(item.id)}
+                  onClick={() => selectionMode ? toggleSelect(item.id) : setPreviewItem(item)}
                 >
                   {/* Selection checkbox */}
                   <div className={`absolute top-2 left-2 z-10 transition-opacity ${
