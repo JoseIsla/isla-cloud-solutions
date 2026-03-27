@@ -101,8 +101,16 @@ app.use('/api/', globalLimiter);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-// Static uploads
-app.use('/uploads', express.static(path.join(__dirname, process.env.UPLOAD_DIR || './uploads')));
+// Static uploads — serve WebP variants automatically when browser supports it
+const webpMiddleware = require('./middleware/webp');
+const uploadsDir = path.join(__dirname, process.env.UPLOAD_DIR || './uploads');
+app.use('/uploads', webpMiddleware(uploadsDir), express.static(uploadsDir, {
+  maxAge: '365d',
+  immutable: true,
+  setHeaders: (res) => {
+    res.set('Vary', 'Accept');
+  },
+}));
 
 // Routes
 app.use('/api/auth', authLimiter, authRoutes);
