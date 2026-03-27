@@ -422,6 +422,41 @@ const PanelMedios = () => {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Preview dialog */}
+      <Dialog open={!!previewItem} onOpenChange={() => setPreviewItem(null)}>
+        <DialogContent className="max-w-3xl p-0 overflow-hidden">
+          {previewItem && (
+            <div>
+              <div className="bg-muted flex items-center justify-center max-h-[70vh]">
+                <img
+                  src={previewItem.url}
+                  alt={previewItem.alt_text || previewItem.original_name}
+                  className="max-w-full max-h-[70vh] object-contain"
+                />
+              </div>
+              <div className="p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="text-sm font-medium text-foreground truncate">{previewItem.original_name || 'Sin nombre'}</p>
+                  <span className="text-xs text-muted-foreground capitalize">{previewItem.category}</span>
+                </div>
+                <div className="flex gap-2 shrink-0">
+                  <Button size="sm" variant="outline" onClick={() => copyUrl(previewItem)}>
+                    {copied === previewItem.id ? <Check size={14} className="mr-1" /> : <Copy size={14} className="mr-1" />}
+                    Copiar URL
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => { setPreviewItem(null); setEditItem(previewItem); setEditCategory(previewItem.category); setEditAlt(previewItem.alt_text); }}>
+                    <ImageIcon size={14} className="mr-1" /> Editar
+                  </Button>
+                  <Button size="sm" variant="destructive" onClick={() => { setPreviewItem(null); handleDelete(previewItem.id); }}>
+                    <Trash2 size={14} className="mr-1" /> Eliminar
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </PanelLayout>
   );
 };
