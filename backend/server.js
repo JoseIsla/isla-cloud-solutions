@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const compression = require('compression');
 const cors = require('cors');
 const helmet = require('helmet');
 const path = require('path');
@@ -92,6 +93,16 @@ app.use(cors(corsOptions));
 // Security — after CORS so preflight responses aren't blocked
 app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' },
+}));
+
+// Compression — gzip/brotli for all responses > 1KB
+app.use(compression({
+  level: 6,
+  threshold: 1024,
+  filter: (req, res) => {
+    if (req.headers['x-no-compression']) return false;
+    return compression.filter(req, res);
+  },
 }));
 
 // Global rate limiter
