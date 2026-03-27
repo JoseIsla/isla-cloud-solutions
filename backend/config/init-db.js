@@ -340,6 +340,18 @@ async function initDB() {
     // Column already exists
   }
 
+  // Media library table
+  await conn.query(`
+    CREATE TABLE IF NOT EXISTS media (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      url VARCHAR(500) NOT NULL,
+      original_name VARCHAR(255) DEFAULT '',
+      category VARCHAR(100) DEFAULT 'general',
+      alt_text VARCHAR(500) DEFAULT '',
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
   console.log('✅ Base de datos inicializada correctamente');
   console.log('📧 Admin: admin@islacloudsolutions.com');
   console.log('🔑 Password: IslaCloud2024!');
