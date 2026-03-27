@@ -35,8 +35,35 @@ const PanelClientes = () => {
 
   const { getDragProps, isDragOver } = useDragReorder({ items: clients, setItems: setClients, onReorder: handleReorder });
 
+  const [filter, setFilter] = useState('');
+
   const load = () => { clientsApi.list().then(setClients).catch(() => {}); };
   useEffect(load, []);
+
+  const moveItem = async (idx: number, dir: -1 | 1) => {
+    const newIdx = idx + dir;
+    if (newIdx < 0 || newIdx >= clients.length) return;
+    const reordered = [...clients];
+    [reordered[idx], reordered[newIdx]] = [reordered[newIdx], reordered[idx]];
+    reordered.forEach((c, i) => (c.sort_order = i));
+    setClients(reordered);
+    await handleReorder(reordered);
+  };
+
+  const moveToEdge = async (idx: number, target: 'first' | 'last') => {
+    if (idx === (target === 'first' ? 0 : clients.length - 1)) return;
+    const reordered = [...clients];
+    const [moved] = reordered.splice(idx, 1);
+    target === 'first' ? reordered.unshift(moved) : reordered.push(moved);
+    reordered.forEach((c, i) => (c.sort_order = i));
+    setClients(reordered);
+    await handleReorder(reordered);
+  };
+
+  const filtered = clients.filter(c =>
+    !filter || c.name.toLowerCase().includes(filter.toLowerCase())
+  );
+  const { page, setPage, totalPages, paged } = usePanelPagination(filtered);
 
   const handleSave = async () => {
     if (!token || !editing) return;
