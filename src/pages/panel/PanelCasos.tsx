@@ -32,8 +32,13 @@ const PanelCasos = () => {
   const { token } = useAuth();
   const { confirm, ConfirmDialog } = useConfirmDialog();
   const [cases, setCases] = useState<CaseFromAPI[]>([]);
+  const [clients, setClients] = useState<ClientFromAPI[]>([]);
   const [editing, setEditing] = useState<Partial<CaseFromAPI> | null>(null);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    clientsApi.list().then(setClients).catch(() => {});
+  }, []);
 
   const fetchCases = () => {
     if (!token) return;
