@@ -25,7 +25,9 @@ const PanelMedios = () => {
   const [editCategory, setEditCategory] = useState('');
   const [editAlt, setEditAlt] = useState('');
   const [copied, setCopied] = useState<number | null>(null);
+  const [dragging, setDragging] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+  const dragCounter = useRef(0);
 
   const loadData = async () => {
     if (!token) return;
