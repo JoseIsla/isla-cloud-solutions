@@ -5,6 +5,7 @@ import PanelLayout from './PanelLayout';
 import { contactsApi, type ContactFromAPI } from '@/lib/api';
 import { Trash2, Mail, MailOpen, ArrowLeft, Clock } from 'lucide-react';
 import { toast } from 'sonner';
+import { StaggerList, StaggerItem } from '@/components/panel/StaggerList';
 
 const PanelContactos = () => {
   const { token } = useAuth();
@@ -53,34 +54,38 @@ const PanelContactos = () => {
           <div className="lg:col-span-2 rounded-xl bg-card border border-border overflow-hidden max-h-[70vh] overflow-y-auto">
             {contacts.length === 0 ? (
               <div className="p-12 text-center text-muted-foreground text-sm">No hay mensajes</div>
-            ) : contacts.map((c) => (
-              <button
-                key={c.id}
-                onClick={() => { setSelected(c); if (!c.is_read) markRead(c); }}
-                className={`w-full text-left p-4 border-b border-border/50 last:border-0 hover:bg-muted/30 transition-colors ${
-                  selected?.id === c.id ? 'bg-primary/[0.04]' : ''
-                } ${!c.is_read ? 'bg-primary/[0.02]' : ''}`}
-              >
-                <div className="flex items-center gap-2.5 mb-1">
-                  {c.is_read ? (
-                    <MailOpen size={14} className="text-muted-foreground/50 shrink-0" />
-                  ) : (
-                    <div className="relative shrink-0">
-                      <Mail size={14} className="text-primary" />
-                      <div className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-primary" />
+            ) : (
+              <StaggerList>
+                {contacts.map((c) => (
+                  <StaggerItem
+                    key={c.id}
+                    onClick={() => { setSelected(c); if (!c.is_read) markRead(c); }}
+                    className={`w-full text-left p-4 border-b border-border/50 last:border-0 hover:bg-muted/30 transition-colors cursor-pointer ${
+                      selected?.id === c.id ? 'bg-primary/[0.04]' : ''
+                    } ${!c.is_read ? 'bg-primary/[0.02]' : ''}`}
+                  >
+                    <div className="flex items-center gap-2.5 mb-1">
+                      {c.is_read ? (
+                        <MailOpen size={14} className="text-muted-foreground/50 shrink-0" />
+                      ) : (
+                        <div className="relative shrink-0">
+                          <Mail size={14} className="text-primary" />
+                          <div className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-primary" />
+                        </div>
+                      )}
+                      <span className={`text-sm font-medium truncate ${c.is_read ? 'text-foreground' : 'text-primary'}`}>
+                        {c.nombre}
+                      </span>
                     </div>
-                  )}
-                  <span className={`text-sm font-medium truncate ${c.is_read ? 'text-foreground' : 'text-primary'}`}>
-                    {c.nombre}
-                  </span>
-                </div>
-                <p className="text-xs text-muted-foreground truncate pl-6">{c.mensaje}</p>
-                <div className="flex items-center gap-1 text-[10px] text-muted-foreground/50 mt-1.5 pl-6">
-                  <Clock size={9} />
-                  {new Date(c.created_at).toLocaleDateString('es-ES')}
-                </div>
-              </button>
-            ))}
+                    <p className="text-xs text-muted-foreground truncate pl-6">{c.mensaje}</p>
+                    <div className="flex items-center gap-1 text-[10px] text-muted-foreground/50 mt-1.5 pl-6">
+                      <Clock size={9} />
+                      {new Date(c.created_at).toLocaleDateString('es-ES')}
+                    </div>
+                  </StaggerItem>
+                ))}
+              </StaggerList>
+            )}
           </div>
 
           {/* Detail */}

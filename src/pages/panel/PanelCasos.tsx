@@ -12,6 +12,7 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Plus, Edit, Trash2, Trophy, X, Upload, GripVertical } from 'lucide-react';
 import { toast } from 'sonner';
+import { StaggerList, StaggerItem } from '@/components/panel/StaggerList';
 
 const PanelCasos = () => {
   const { token } = useAuth();
@@ -168,7 +169,7 @@ const PanelCasos = () => {
           </div>
         )}
 
-        <div className="space-y-2">
+        <StaggerList className="space-y-2">
           {cases.length === 0 && (
             <div className="p-12 text-center rounded-xl border border-dashed border-border">
               <Trophy size={32} className="mx-auto mb-3 text-muted-foreground/20" />
@@ -177,7 +178,7 @@ const PanelCasos = () => {
             </div>
           )}
           {cases.map((c, idx) => (
-            <div
+            <StaggerItem
               key={c.id}
               {...getDragProps(idx)}
               className={`flex items-center gap-4 p-4 rounded-xl bg-card border border-border hover:border-primary/15 transition-colors group cursor-grab active:cursor-grabbing ${
@@ -203,9 +204,9 @@ const PanelCasos = () => {
                 <button onClick={() => setEditing(c)} className="p-2 rounded-lg hover:bg-primary/10 text-primary"><Edit size={15} /></button>
                 <button onClick={() => handleDelete(c.id)} className="p-2 rounded-lg hover:bg-destructive/10 text-destructive"><Trash2 size={15} /></button>
               </div>
-            </div>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerList>
       </div>
       <ConfirmDialog />
     </PanelLayout>

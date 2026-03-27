@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Plus, Pencil, Trash2, X, Upload, Building2, GripVertical } from 'lucide-react';
 import { toast } from 'sonner';
 import { useDragReorder } from '@/hooks/useDragReorder';
+import { StaggerList, StaggerItem } from '@/components/panel/StaggerList';
 
 const PanelClientes = () => {
   const { token } = useAuth();
@@ -142,9 +143,9 @@ const PanelClientes = () => {
         )}
 
         {/* List */}
-        <div className="space-y-1">
+        <StaggerList className="space-y-1">
           {clients.map((c, idx) => (
-            <div
+            <StaggerItem
               key={c.id}
               {...getDragProps(idx)}
               className={`flex items-center gap-3 p-3 rounded-xl bg-card border transition-all duration-150 group ${
@@ -164,14 +165,14 @@ const PanelClientes = () => {
                 <button onClick={() => { setEditing(c); setIsNew(false); }} className="p-1.5 rounded-lg hover:bg-primary/10 text-primary"><Pencil size={13} /></button>
                 <button onClick={() => handleDelete(c.id)} className="p-1.5 rounded-lg hover:bg-destructive/10 text-destructive"><Trash2 size={13} /></button>
               </div>
-            </div>
+            </StaggerItem>
           ))}
-        </div>
-        {clients.length === 0 && (
-          <div className="p-12 text-center text-muted-foreground text-sm rounded-xl border border-dashed border-border">
-            No hay clientes registrados
-          </div>
-        )}
+          {clients.length === 0 && (
+            <div className="p-12 text-center text-muted-foreground text-sm rounded-xl border border-dashed border-border">
+              No hay clientes registrados
+            </div>
+          )}
+        </StaggerList>
       </div>
       <ConfirmDialog />
     </PanelLayout>

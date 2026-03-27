@@ -8,6 +8,7 @@ import { Plus, Pencil, Trash2, X, Upload, GripVertical, FileText } from 'lucide-
 import { toast } from 'sonner';
 import RichEditor from '@/components/ui/rich-editor';
 import { useDragReorder } from '@/hooks/useDragReorder';
+import { StaggerList, StaggerItem } from '@/components/panel/StaggerList';
 
 const PanelServicios = () => {
   const { token } = useAuth();
@@ -164,9 +165,9 @@ const PanelServicios = () => {
         )}
 
         {/* List */}
-        <div className="space-y-1">
+        <StaggerList className="space-y-1">
           {services.map((s, idx) => (
-            <div
+            <StaggerItem
               key={s.id}
               {...getDragProps(idx)}
               className={`flex items-center gap-4 p-4 rounded-xl bg-card border transition-all duration-150 group ${
@@ -189,14 +190,14 @@ const PanelServicios = () => {
                 <button onClick={() => { setEditing(s); setIsNew(false); }} className="p-2 rounded-lg hover:bg-primary/10 text-primary"><Pencil size={15} /></button>
                 <button onClick={() => handleDelete(s.id)} className="p-2 rounded-lg hover:bg-destructive/10 text-destructive"><Trash2 size={15} /></button>
               </div>
-            </div>
+            </StaggerItem>
           ))}
           {services.length === 0 && (
             <div className="p-12 text-center text-muted-foreground text-sm rounded-xl border border-dashed border-border">
               No hay servicios registrados
             </div>
           )}
-        </div>
+        </StaggerList>
       </div>
       <ConfirmDialog />
     </PanelLayout>
