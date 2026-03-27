@@ -176,6 +176,8 @@ export interface NewsFromAPI {
   is_published: number;
   published_at: string;
   created_at: string;
+  meta_title: string;
+  meta_description: string;
 }
 
 export interface ContactFromAPI {
@@ -229,6 +231,8 @@ export interface CaseFromAPI {
   sort_order: number;
   is_active: number;
   created_at: string;
+  meta_title: string;
+  meta_description: string;
 }
 
 export interface FAQFromAPI {
