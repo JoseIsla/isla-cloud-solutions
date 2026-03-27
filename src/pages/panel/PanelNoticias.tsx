@@ -5,7 +5,7 @@ import { useAuth } from '@/hooks/useAuth';
 import PanelLayout from './PanelLayout';
 import { newsApi, uploadImage, type NewsFromAPI, API_BASE_URL } from '@/lib/api';
 import { Button } from '@/components/ui/button';
-import { Plus, Pencil, Trash2, X, Upload, Calendar, RefreshCw, Search, GripVertical, ChevronUp, ChevronDown, ChevronsUp, ChevronsDown } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Upload, Calendar, RefreshCw, Search, GripVertical, ChevronUp, ChevronDown, ChevronsUp, ChevronsDown, HelpCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import RichEditor from '@/components/ui/rich-editor';
 import { StaggerList, StaggerItem } from '@/components/panel/StaggerList';
