@@ -9,6 +9,8 @@ import { Plus, Pencil, Trash2, X, Upload, Building2, GripVertical, Search, Chevr
 import { toast } from 'sonner';
 import { useDragReorder } from '@/hooks/useDragReorder';
 import { StaggerList, StaggerItem } from '@/components/panel/StaggerList';
+import { usePanelPagination } from '@/hooks/usePanelPagination';
+import Pagination from '@/components/Pagination';
 
 const PanelClientes = () => {
   const { token } = useAuth();
