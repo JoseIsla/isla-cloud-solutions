@@ -5,13 +5,38 @@ import { useAuth } from '@/hooks/useAuth';
 import PanelLayout from './PanelLayout';
 import { servicesApi, uploadImage, type ServiceFromAPI, API_BASE_URL } from '@/lib/api';
 import { Button } from '@/components/ui/button';
-import { Plus, Pencil, Trash2, X, Upload, GripVertical, FileText, Search, ChevronUp, ChevronDown, ChevronsUp, ChevronsDown } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Upload, GripVertical, FileText, Search, ChevronUp, ChevronDown, ChevronsUp, ChevronsDown, HelpCircle,
+  Server, Shield, Cloud, Monitor, Globe, Smartphone, Lock, Wrench, Database, Cpu, HardDrive, Wifi, Mail, Settings, Code, BarChart3, Users, Zap, Eye, type LucideIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import RichEditor from '@/components/ui/rich-editor';
 import { useDragReorder } from '@/hooks/useDragReorder';
 import { StaggerList, StaggerItem } from '@/components/panel/StaggerList';
 import { usePanelPagination } from '@/hooks/usePanelPagination';
 import Pagination from '@/components/Pagination';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+
+const ICON_OPTIONS: { value: string; label: string; Icon: LucideIcon }[] = [
+  { value: 'Server', label: 'Servidor', Icon: Server },
+  { value: 'Shield', label: 'Seguridad', Icon: Shield },
+  { value: 'Cloud', label: 'Cloud', Icon: Cloud },
+  { value: 'Monitor', label: 'Monitor', Icon: Monitor },
+  { value: 'Globe', label: 'Web', Icon: Globe },
+  { value: 'Smartphone', label: 'Móvil', Icon: Smartphone },
+  { value: 'Lock', label: 'Candado', Icon: Lock },
+  { value: 'Wrench', label: 'Herramienta', Icon: Wrench },
+  { value: 'Database', label: 'Base de datos', Icon: Database },
+  { value: 'Cpu', label: 'Procesador', Icon: Cpu },
+  { value: 'HardDrive', label: 'Disco duro', Icon: HardDrive },
+  { value: 'Wifi', label: 'Red / WiFi', Icon: Wifi },
+  { value: 'Mail', label: 'Correo', Icon: Mail },
+  { value: 'Settings', label: 'Configuración', Icon: Settings },
+  { value: 'Code', label: 'Código', Icon: Code },
+  { value: 'BarChart3', label: 'Estadísticas', Icon: BarChart3 },
+  { value: 'Users', label: 'Usuarios', Icon: Users },
+  { value: 'Zap', label: 'Rendimiento', Icon: Zap },
+  { value: 'Eye', label: 'Monitorización', Icon: Eye },
+];
 
 const PanelServicios = () => {
   const { token } = useAuth();
