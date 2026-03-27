@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import Layout from "@/components/Layout";
 import usePageMeta from "@/hooks/usePageMeta";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 
 const PoliticaPrivacidad = () => {
   usePageMeta({
@@ -11,6 +12,7 @@ const PoliticaPrivacidad = () => {
 
   return (
     <Layout>
+      <BreadcrumbJsonLd items={[{ name: 'Inicio', path: '/' }, { name: 'Política de Privacidad', path: '/privacidad' }]} />
       <section className="bg-hero grid-pattern py-24">
         <div className="container mx-auto px-4">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-2xl">
