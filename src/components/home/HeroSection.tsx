@@ -4,8 +4,8 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import defaultHeroBg from "@/assets/hero-bg.webp";
-import defaultHeroBlogBg from "@/assets/hero-blog-bg.jpg";
-import defaultHeroCasesBg from "@/assets/hero-cases-bg.jpg";
+import defaultHeroBlogBg from "@/assets/hero-blog-bg.webp";
+import defaultHeroCasesBg from "@/assets/hero-cases-bg.webp";
 import { useCMSValue } from "@/hooks/useCMS";
 import { newsApi, casesApi, type NewsFromAPI, type CaseFromAPI } from "@/lib/api";
 
