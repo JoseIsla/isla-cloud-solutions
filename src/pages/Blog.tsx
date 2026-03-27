@@ -1,11 +1,12 @@
 import { motion } from "framer-motion";
 import { Calendar } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
 import ParallaxHero from "@/components/ParallaxHero";
 import { Skeleton } from "@/components/ui/skeleton";
-import usePageMeta from "@/hooks/usePageMeta";
+import usePageMeta, { SITE_URL, SITE_NAME } from "@/hooks/usePageMeta";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { newsApi, type NewsFromAPI } from "@/lib/api";
 import { useCMSValue } from "@/hooks/useCMS";
 import Pagination from "@/components/Pagination";
@@ -13,10 +14,36 @@ import Pagination from "@/components/Pagination";
 const ITEMS_PER_PAGE = 9;
 
 const BlogPage = () => {
+  const [posts, setPosts] = useState<NewsFromAPI[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+
+  const blogJsonLd = useMemo(() => {
+    if (posts.length === 0) return undefined;
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      name: `Blog | ${SITE_NAME}`,
+      url: `${SITE_URL}/blog`,
+      description: 'Noticias, artículos y novedades sobre tecnología, cloud, seguridad IT y transformación digital.',
+      mainEntity: {
+        '@type': 'ItemList',
+        numberOfItems: posts.length,
+        itemListElement: posts.slice(0, 10).map((p, i) => ({
+          '@type': 'ListItem',
+          position: i + 1,
+          url: `${SITE_URL}/blog/${p.slug}`,
+          name: p.title,
+        })),
+      },
+    };
+  }, [posts]);
+
   usePageMeta({
     title: 'Blog',
     description: 'Noticias, artículos y novedades sobre tecnología, cloud, seguridad IT y transformación digital de Isla Cloud Solutions.',
     canonical: '/blog',
+    jsonLd: blogJsonLd,
   });
 
   const [posts, setPosts] = useState<NewsFromAPI[]>([]);

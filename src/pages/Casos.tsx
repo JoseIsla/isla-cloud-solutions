@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
 import ParallaxHero from "@/components/ParallaxHero";
@@ -6,7 +6,8 @@ import { casesApi, CaseFromAPI } from "@/lib/api";
 import { motion } from "framer-motion";
 import { Trophy, ArrowRight } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import usePageMeta from "@/hooks/usePageMeta";
+import usePageMeta, { SITE_URL, SITE_NAME } from "@/hooks/usePageMeta";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import Pagination from "@/components/Pagination";
 
 const ITEMS_PER_PAGE = 9;
@@ -16,10 +17,32 @@ const Casos = () => {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
 
+  const casosJsonLd = useMemo(() => {
+    if (cases.length === 0) return undefined;
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      name: `Casos de Éxito | ${SITE_NAME}`,
+      url: `${SITE_URL}/casos`,
+      description: 'Descubre cómo hemos ayudado a nuestros clientes a transformar sus negocios.',
+      mainEntity: {
+        '@type': 'ItemList',
+        numberOfItems: cases.length,
+        itemListElement: cases.slice(0, 10).map((c, i) => ({
+          '@type': 'ListItem',
+          position: i + 1,
+          url: `${SITE_URL}/casos/${c.id}`,
+          name: c.title,
+        })),
+      },
+    };
+  }, [cases]);
+
   usePageMeta({
     title: "Casos de Éxito",
     description: "Descubre cómo hemos ayudado a nuestros clientes a transformar sus negocios con soluciones cloud personalizadas.",
     canonical: "/casos",
+    jsonLd: casosJsonLd,
   });
 
   useEffect(() => {

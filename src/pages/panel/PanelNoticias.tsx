@@ -8,6 +8,19 @@ import { Plus, Pencil, Trash2, X, Upload, Calendar } from 'lucide-react';
 import { toast } from 'sonner';
 import RichEditor from '@/components/ui/rich-editor';
 
+const generateSlug = (text: string) =>
+  text
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 80);
+
+const stripHtmlToExcerpt = (html: string, maxLen = 155) => {
+  const text = html.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+  return text.length > maxLen ? text.slice(0, maxLen) + '…' : text;
+};
+
 const PanelNoticias = () => {
   const { token } = useAuth();
   const { confirm, ConfirmDialog } = useConfirmDialog();
@@ -16,6 +29,23 @@ const PanelNoticias = () => {
   const [isNew, setIsNew] = useState(false);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Auto-generate slug when title changes on new posts
+  const updateField = (key: string, value: string) => {
+    setEditing(prev => {
+      if (!prev) return prev;
+      const updated = { ...prev, [key]: value };
+      // Auto-slug from title for new posts (or if slug was auto-generated)
+      if (key === 'title' && (isNew || !prev.slug || prev.slug === generateSlug(prev.title || ''))) {
+        updated.slug = generateSlug(value);
+      }
+      // Auto-excerpt from content if excerpt is empty
+      if (key === 'content' && !prev.excerpt) {
+        updated.excerpt = stripHtmlToExcerpt(value);
+      }
+      return updated;
+    });
+  };
 
   const load = () => { if (token) newsApi.list(token).then(setNews).catch(() => {}); };
   useEffect(load, [token]);
@@ -97,7 +127,7 @@ const PanelNoticias = () => {
                       <input
                         type="text"
                         value={(editing as any)[key] ?? ''}
-                        onChange={(e) => setEditing({ ...editing, [key]: e.target.value })}
+                        onChange={(e) => updateField(key, e.target.value)}
                         className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm"
                       />
                     </div>
@@ -122,11 +152,11 @@ const PanelNoticias = () => {
 
                 <div>
                   <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Extracto</label>
-                  <textarea value={editing.excerpt ?? ''} onChange={(e) => setEditing({ ...editing, excerpt: e.target.value })} rows={2} className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm resize-none" />
+                  <textarea value={editing.excerpt ?? ''} onChange={(e) => updateField('excerpt', e.target.value)} rows={2} placeholder="Se genera automáticamente del contenido si lo dejas vacío" className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm resize-none" />
                 </div>
                 <div>
                   <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Contenido</label>
-                  <RichEditor value={editing.content ?? ''} onChange={(html) => setEditing({ ...editing, content: html })} />
+                  <RichEditor value={editing.content ?? ''} onChange={(html) => updateField('content', html)} />
                 </div>
                 <label className="flex items-center gap-3 cursor-pointer p-3 rounded-lg bg-background border border-border">
                   <input type="checkbox" checked={editing.is_published === 1} onChange={(e) => setEditing({ ...editing, is_published: e.target.checked ? 1 : 0 })} className="w-4 h-4 rounded border-border text-primary focus:ring-primary" />
