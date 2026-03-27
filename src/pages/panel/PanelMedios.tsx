@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Upload, Trash2, Search, Image as ImageIcon, Copy, Check, CloudUpload } from 'lucide-react';
+import { Upload, Trash2, Search, Image as ImageIcon, Copy, Check, CloudUpload, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
 import Pagination from '@/components/Pagination';
 import { usePanelPagination } from '@/hooks/usePanelPagination';
@@ -20,6 +20,7 @@ const PanelMedios = () => {
   const [filterCategory, setFilterCategory] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [uploading, setUploading] = useState(false);
+  const [syncing, setSyncing] = useState(false);
   const [uploadCategory, setUploadCategory] = useState('general');
   const [editItem, setEditItem] = useState<MediaFromAPI | null>(null);
   const [editCategory, setEditCategory] = useState('');
