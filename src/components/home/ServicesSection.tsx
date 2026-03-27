@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import BlurImage from "@/components/BlurImage";
 import { useEffect, useRef, useState } from "react";
 import { services as fallbackServices } from "@/data/services";
 import { servicesApi, type ServiceFromAPI } from "@/lib/api";
@@ -126,11 +127,12 @@ const ServicesSection = () => {
 
       <div className="relative z-10 min-h-screen overflow-hidden">
         <div className="absolute inset-0">
-            <img
+            <BlurImage
               src={servicesBg}
               alt=""
-              loading="lazy"
               className="h-full w-full object-cover"
+              wrapperClassName="h-full w-full"
+              placeholderColor="#0a1628"
             />
             <div className="services-image-overlay absolute inset-0" />
             <div className="services-image-vignette absolute inset-0" />

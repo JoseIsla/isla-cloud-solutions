@@ -9,6 +9,7 @@ import usePageMeta, { SITE_URL, SITE_NAME } from "@/hooks/usePageMeta";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { sanitizeHTML } from "@/lib/sanitize";
 import ShareButtons from "@/components/ShareButtons";
+import BlurImage from "@/components/BlurImage";
 
 const stripHtml = (html: string) => html.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
 
@@ -117,14 +118,13 @@ const CasoDetalle = () => {
         </Link>
 
         {caso.image_url && (
-          <div className="rounded-2xl overflow-hidden mb-8 aspect-video bg-muted">
-            <img
-              src={caso.image_url}
-              alt={caso.title}
-              className="w-full h-full object-cover"
-              loading="lazy"
-            />
-          </div>
+          <BlurImage
+            src={caso.image_url}
+            alt={caso.title}
+            className="w-full h-full object-cover"
+            wrapperClassName="rounded-2xl overflow-hidden mb-8 aspect-video"
+            placeholderColor="#0a1628"
+          />
         )}
 
         <div className="space-y-4">
