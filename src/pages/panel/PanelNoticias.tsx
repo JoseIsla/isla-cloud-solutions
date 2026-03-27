@@ -12,6 +12,7 @@ import { StaggerList, StaggerItem } from '@/components/panel/StaggerList';
 import { usePanelPagination } from '@/hooks/usePanelPagination';
 import Pagination from '@/components/Pagination';
 import { useDragReorder } from '@/hooks/useDragReorder';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const generateSlug = (text: string) =>
   text

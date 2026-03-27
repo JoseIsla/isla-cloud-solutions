@@ -17,6 +17,7 @@ import { toast } from 'sonner';
 import { StaggerList, StaggerItem } from '@/components/panel/StaggerList';
 import { usePanelPagination } from '@/hooks/usePanelPagination';
 import Pagination from '@/components/Pagination';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const generateSlug = (text: string) =>
   text
