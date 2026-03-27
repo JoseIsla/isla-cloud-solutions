@@ -55,6 +55,8 @@ const BlogDetalle = () => {
     type: post ? 'article' : undefined,
     publishedTime: post?.published_at || post?.created_at || undefined,
     jsonLd: articleJsonLd,
+    noindex: !!post?.noindex,
+    nofollow: !!post?.nofollow,
   });
 
   const breadcrumbs = useMemo(() => [
