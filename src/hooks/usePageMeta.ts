@@ -21,7 +21,7 @@ const usePageMeta = ({ title, description, canonical, ogImage, type = 'website',
     const fullTitle = title === SITE_NAME ? title : `${title} | ${SITE_NAME}`;
     const desc = description || DEFAULT_DESCRIPTION;
     const url = canonical ? `${SITE_URL}${canonical}` : undefined;
-    const image = ogImage || `${SITE_URL}/og-image.jpg`;
+    const image = ogImage || `${SITE_URL}/og-image.png`;
 
     document.title = fullTitle;
 
