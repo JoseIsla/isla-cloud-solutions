@@ -119,13 +119,17 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <AuthProvider>
-          <CMSProvider>
-            <ScrollToTop />
-            <AppRoutes />
-            <CookieBanner />
-          </CMSProvider>
-        </AuthProvider>
+        <LazyMotion features={domAnimation} strict>
+          <AuthProvider>
+            <CMSProvider>
+              <ScrollToTop />
+              <AppRoutes />
+              <Suspense fallback={null}>
+                <CookieBanner />
+              </Suspense>
+            </CMSProvider>
+          </AuthProvider>
+        </LazyMotion>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
