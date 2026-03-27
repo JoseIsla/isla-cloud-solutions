@@ -48,6 +48,8 @@ const CasoDetalle = () => {
     ogImage: caso?.image_url || undefined,
     type: caso ? 'article' : undefined,
     jsonLd: caseJsonLd,
+    noindex: !!caso?.noindex,
+    nofollow: !!caso?.nofollow,
   });
 
   const breadcrumbs = useMemo(() => [

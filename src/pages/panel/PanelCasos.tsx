@@ -10,9 +10,22 @@ import { Textarea } from '@/components/ui/textarea';
 import RichEditor from '@/components/ui/rich-editor';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { Plus, Edit, Trash2, Trophy, X, Upload, GripVertical } from 'lucide-react';
+import { Plus, Edit, Trash2, Trophy, X, Upload, GripVertical, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
 import { StaggerList, StaggerItem } from '@/components/panel/StaggerList';
+
+const generateSlug = (text: string) =>
+  text
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 80);
+
+const stripHtmlToExcerpt = (html: string, maxLen = 155) => {
+  const text = html.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+  return text.length > maxLen ? text.slice(0, maxLen) + '…' : text;
+};
 
 const PanelCasos = () => {
   const { token } = useAuth();
@@ -100,7 +113,7 @@ const PanelCasos = () => {
             <h2 className="text-xl font-heading font-bold text-foreground">Casos de Éxito</h2>
             <p className="text-muted-foreground text-sm mt-0.5">{cases.length} casos registrados</p>
           </div>
-          <Button size="sm" onClick={() => setEditing({ title: '', client_name: '', excerpt: '', description: '', is_active: 1, sort_order: 0 })}>
+          <Button size="sm" onClick={() => setEditing({ title: '', slug: '', client_name: '', excerpt: '', description: '', is_active: 1, sort_order: 0, meta_title: '', meta_description: '', noindex: 0, nofollow: 0 })}>
             <Plus size={16} /> Nuevo caso
           </Button>
         </div>
@@ -116,7 +129,22 @@ const PanelCasos = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Título</label>
-                    <Input value={editing.title || ''} onChange={(e) => setEditing({ ...editing, title: e.target.value })} />
+                    <Input value={editing.title || ''} onChange={(e) => {
+                      const title = e.target.value;
+                      setEditing(prev => {
+                        if (!prev) return prev;
+                        const updated = { ...prev, title };
+                        // Auto-slug
+                        if (!prev.id || !prev.slug || prev.slug === generateSlug(prev.title || '')) {
+                          updated.slug = generateSlug(title);
+                        }
+                        // Auto meta_title
+                        if (!prev.meta_title || prev.meta_title === prev.title) {
+                          updated.meta_title = title;
+                        }
+                        return updated;
+                      });
+                    }} />
                   </div>
                   <div>
                     <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Cliente</label>
@@ -142,18 +170,56 @@ const PanelCasos = () => {
                     <Input type="number" value={editing.sort_order || 0} onChange={(e) => setEditing({ ...editing, sort_order: parseInt(e.target.value) })} />
                   </div>
                 </div>
-                {/* SEO personalizado */}
+                {/* SEO Parameters */}
                 <div className="border border-border rounded-xl p-4 space-y-3 bg-muted/30">
-                  <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">🔍 SEO personalizado <span className="normal-case font-normal">(opcional)</span></p>
+                  <div className="flex items-center justify-between">
+                    <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">🔍 Parámetros SEO</p>
+                    <button
+                      type="button"
+                      onClick={() => setEditing(prev => prev ? {
+                        ...prev,
+                        slug: generateSlug(prev.title || ''),
+                        meta_title: prev.title || '',
+                        meta_description: stripHtmlToExcerpt(prev.description || '', 155),
+                      } : prev)}
+                      className="text-[10px] text-primary hover:text-primary/80 flex items-center gap-1 font-medium"
+                    >
+                      <RefreshCw size={11} /> Regenerar todo
+                    </button>
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">URL Amigable *</label>
+                    <div className="flex gap-2">
+                      <Input value={editing.slug || ''} onChange={(e) => setEditing({ ...editing, slug: e.target.value })} placeholder="/mi-caso-de-exito" className="flex-1" />
+                      <button type="button" onClick={() => setEditing({ ...editing, slug: generateSlug(editing.title || '') })} className="p-2.5 rounded-lg border border-border hover:bg-primary/10 text-primary shrink-0" title="Regenerar desde título">
+                        <RefreshCw size={14} />
+                      </button>
+                    </div>
+                  </div>
                   <div>
                     <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Meta título</label>
-                    <Input value={editing.meta_title || ''} onChange={(e) => setEditing({ ...editing, meta_title: e.target.value })} placeholder={editing.title || 'Se usa el título del caso'} maxLength={70} />
+                    <div className="flex gap-2">
+                      <Input value={editing.meta_title || ''} onChange={(e) => setEditing({ ...editing, meta_title: e.target.value })} placeholder={editing.title || 'Se usa el título del caso'} maxLength={70} className="flex-1" />
+                      <button type="button" onClick={() => setEditing({ ...editing, meta_title: editing.title || '' })} className="p-2.5 rounded-lg border border-border hover:bg-primary/10 text-primary shrink-0" title="Regenerar desde título">
+                        <RefreshCw size={14} />
+                      </button>
+                    </div>
                     <p className="text-[10px] text-muted-foreground mt-1">{(editing.meta_title || '').length}/70 caracteres</p>
                   </div>
                   <div>
                     <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Meta descripción</label>
-                    <Textarea value={editing.meta_description || ''} onChange={(e) => setEditing({ ...editing, meta_description: e.target.value })} rows={2} placeholder={editing.excerpt || 'Se usa el resumen automáticamente'} maxLength={160} />
+                    <Textarea value={editing.meta_description || ''} onChange={(e) => setEditing({ ...editing, meta_description: e.target.value })} rows={2} placeholder={editing.excerpt || 'Se genera del contenido automáticamente'} maxLength={160} />
                     <p className="text-[10px] text-muted-foreground mt-1">{(editing.meta_description || '').length}/160 caracteres</p>
+                  </div>
+                  <div className="flex gap-6 pt-1">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input type="checkbox" checked={!!editing.noindex} onChange={(e) => setEditing({ ...editing, noindex: e.target.checked ? 1 : 0 })} className="w-3.5 h-3.5 rounded border-border text-primary focus:ring-primary" />
+                      <span className="text-xs text-foreground">NoIndex</span>
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input type="checkbox" checked={!!editing.nofollow} onChange={(e) => setEditing({ ...editing, nofollow: e.target.checked ? 1 : 0 })} className="w-3.5 h-3.5 rounded border-border text-primary focus:ring-primary" />
+                      <span className="text-xs text-foreground">NoFollow</span>
+                    </label>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 p-3 rounded-lg bg-background border border-border">

@@ -178,6 +178,8 @@ export interface NewsFromAPI {
   created_at: string;
   meta_title: string;
   meta_description: string;
+  noindex: number;
+  nofollow: number;
 }
 
 export interface ContactFromAPI {
@@ -224,6 +226,7 @@ export interface TestimonialFromAPI {
 export interface CaseFromAPI {
   id: number;
   title: string;
+  slug: string;
   client_name: string;
   excerpt: string;
   description: string;
@@ -233,6 +236,8 @@ export interface CaseFromAPI {
   created_at: string;
   meta_title: string;
   meta_description: string;
+  noindex: number;
+  nofollow: number;
 }
 
 export interface FAQFromAPI {

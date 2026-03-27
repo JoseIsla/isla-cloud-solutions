@@ -12,9 +12,11 @@ interface PageMetaOptions {
   type?: 'website' | 'article';
   publishedTime?: string;
   jsonLd?: Record<string, unknown>;
+  noindex?: boolean;
+  nofollow?: boolean;
 }
 
-const usePageMeta = ({ title, description, canonical, ogImage, type = 'website', publishedTime, jsonLd }: PageMetaOptions) => {
+const usePageMeta = ({ title, description, canonical, ogImage, type = 'website', publishedTime, jsonLd, noindex, nofollow }: PageMetaOptions) => {
   useEffect(() => {
     const fullTitle = title === SITE_NAME ? title : `${title} | ${SITE_NAME}`;
     const desc = description || DEFAULT_DESCRIPTION;
@@ -60,6 +62,17 @@ const usePageMeta = ({ title, description, canonical, ogImage, type = 'website',
       setMeta('property', 'article:published_time', publishedTime);
     }
 
+    // Robots meta (noindex / nofollow)
+    const robotsDirectives: string[] = [];
+    if (noindex) robotsDirectives.push('noindex');
+    if (nofollow) robotsDirectives.push('nofollow');
+    if (robotsDirectives.length > 0) {
+      setMeta('name', 'robots', robotsDirectives.join(', '));
+    } else {
+      const robotsEl = document.querySelector('meta[name="robots"]');
+      if (robotsEl) robotsEl.remove();
+    }
+
     // JSON-LD structured data
     let scriptEl: HTMLScriptElement | null = null;
     if (jsonLd) {
@@ -75,7 +88,7 @@ const usePageMeta = ({ title, description, canonical, ogImage, type = 'website',
         scriptEl.parentNode.removeChild(scriptEl);
       }
     };
-  }, [title, description, canonical, ogImage, type, publishedTime, jsonLd]);
+  }, [title, description, canonical, ogImage, type, publishedTime, jsonLd, noindex, nofollow]);
 };
 
 export default usePageMeta;
