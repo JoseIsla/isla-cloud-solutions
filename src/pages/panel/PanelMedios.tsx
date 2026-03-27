@@ -177,6 +177,10 @@ const PanelMedios = () => {
               <Upload size={14} className="mr-1" />
               {uploading ? 'Subiendo...' : 'Subir imagen'}
             </Button>
+            <Button size="sm" variant="outline" onClick={handleSync} disabled={syncing}>
+              <RefreshCw size={14} className={`mr-1 ${syncing ? 'animate-spin' : ''}`} />
+              {syncing ? 'Sincronizando...' : 'Sincronizar'}
+            </Button>
           </div>
         </div>
 
