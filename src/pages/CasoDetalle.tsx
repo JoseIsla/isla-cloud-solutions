@@ -5,10 +5,12 @@ import { casesApi, CaseFromAPI } from "@/lib/api";
 import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import usePageMeta from "@/hooks/usePageMeta";
+import usePageMeta, { SITE_URL, SITE_NAME } from "@/hooks/usePageMeta";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { sanitizeHTML } from "@/lib/sanitize";
 import ShareButtons from "@/components/ShareButtons";
+
+const stripHtml = (html: string) => html.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
 
 const CasoDetalle = () => {
   const { id } = useParams<{ id: string }>();
@@ -16,11 +18,36 @@ const CasoDetalle = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  // Always call hooks unconditionally
+  const autoDescription = useMemo(() => {
+    if (!caso) return "Descubre cómo ayudamos a nuestros clientes a alcanzar sus objetivos.";
+    if (caso.excerpt) return caso.excerpt;
+    if (caso.description) return stripHtml(caso.description).slice(0, 155) + '…';
+    return `Caso de éxito: ${caso.title} - ${caso.client_name}. Descubre cómo Isla Cloud Solutions ayudó a alcanzar sus objetivos.`;
+  }, [caso]);
+
+  const caseJsonLd = useMemo(() => {
+    if (!caso) return undefined;
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: caso.title,
+      description: autoDescription,
+      url: `${SITE_URL}/casos/${id}`,
+      datePublished: caso.created_at,
+      ...(caso.image_url ? { image: caso.image_url } : {}),
+      author: { '@type': 'Organization', name: SITE_NAME, url: SITE_URL },
+      publisher: { '@type': 'Organization', name: SITE_NAME, url: SITE_URL },
+      mainEntityOfPage: { '@type': 'WebPage', '@id': `${SITE_URL}/casos/${id}` },
+    };
+  }, [caso, id, autoDescription]);
+
   usePageMeta({
     title: caso?.title || "Caso de éxito",
-    description: caso?.excerpt || "Descubre cómo ayudamos a nuestros clientes a alcanzar sus objetivos.",
+    description: autoDescription,
     canonical: id ? `/casos/${id}` : undefined,
+    ogImage: caso?.image_url || undefined,
+    type: caso ? 'article' : undefined,
+    jsonLd: caseJsonLd,
   });
 
   const breadcrumbs = useMemo(() => [
