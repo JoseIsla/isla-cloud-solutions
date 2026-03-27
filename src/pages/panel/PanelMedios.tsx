@@ -268,9 +268,12 @@ const PanelMedios = () => {
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 p-3 rounded-xl bg-primary/5 border border-primary/20">
             <div className="flex items-center gap-2">
               <CheckSquare size={16} className="text-primary" />
-              <span className="text-sm font-medium text-foreground">{selected.size} seleccionada(s)</span>
+              <span className="text-sm font-medium text-foreground">{selected.size} de {items.length} seleccionada(s)</span>
               <Button size="sm" variant="ghost" className="h-7 px-2 text-xs" onClick={selectAllOnPage}>
-                Seleccionar toda la página
+                {paged.every(i => selected.has(i.id)) ? 'Deseleccionar página' : 'Seleccionar página'}
+              </Button>
+              <Button size="sm" variant="ghost" className="h-7 px-2 text-xs" onClick={selectAll}>
+                {selected.size === items.length ? 'Deseleccionar todo' : `Seleccionar todo (${items.length})`}
               </Button>
               <Button size="sm" variant="ghost" className="h-7 px-2 text-xs text-muted-foreground" onClick={clearSelection}>
                 <X size={12} className="mr-1" /> Cancelar
