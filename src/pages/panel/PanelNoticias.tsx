@@ -4,7 +4,7 @@ import { useAuth } from '@/hooks/useAuth';
 import PanelLayout from './PanelLayout';
 import { newsApi, uploadImage, type NewsFromAPI, API_BASE_URL } from '@/lib/api';
 import { Button } from '@/components/ui/button';
-import { Plus, Pencil, Trash2, X, Upload, Calendar } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Upload, Calendar, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
 import RichEditor from '@/components/ui/rich-editor';
 import { StaggerList, StaggerItem } from '@/components/panel/StaggerList';
@@ -44,7 +44,27 @@ const PanelNoticias = () => {
       if (key === 'content' && !prev.excerpt) {
         updated.excerpt = stripHtmlToExcerpt(value);
       }
+      // Auto meta_title if empty or was auto-generated
+      if (key === 'title' && (!prev.meta_title || prev.meta_title === prev.title)) {
+        updated.meta_title = value;
+      }
+      // Auto meta_description from content if empty
+      if (key === 'content' && (!prev.meta_description || prev.meta_description === stripHtmlToExcerpt(prev.content || '', 155))) {
+        updated.meta_description = stripHtmlToExcerpt(value, 155);
+      }
       return updated;
+    });
+  };
+
+  const regenerateSeoFields = () => {
+    setEditing(prev => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        slug: generateSlug(prev.title || ''),
+        meta_title: prev.title || '',
+        meta_description: stripHtmlToExcerpt(prev.content || '', 155),
+      };
     });
   };
 
@@ -156,18 +176,52 @@ const PanelNoticias = () => {
                   <textarea value={editing.excerpt ?? ''} onChange={(e) => updateField('excerpt', e.target.value)} rows={2} placeholder="Se genera automáticamente del contenido si lo dejas vacío" className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm resize-none" />
                 </div>
 
-                {/* SEO personalizado */}
+                {/* SEO Parameters */}
                 <div className="border border-border rounded-xl p-4 space-y-3 bg-muted/30">
-                  <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">🔍 SEO personalizado <span className="normal-case font-normal">(opcional)</span></p>
+                  <div className="flex items-center justify-between">
+                    <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">🔍 Parámetros SEO</p>
+                    <button
+                      type="button"
+                      onClick={regenerateSeoFields}
+                      className="text-[10px] text-primary hover:text-primary/80 flex items-center gap-1 font-medium"
+                      title="Regenerar todos los campos SEO automáticamente"
+                    >
+                      <RefreshCw size={11} /> Regenerar todo
+                    </button>
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">URL Amigable *</label>
+                    <div className="flex gap-2">
+                      <input type="text" value={editing.slug ?? ''} onChange={(e) => setEditing({ ...editing, slug: e.target.value })} placeholder="/mi-articulo" className="flex-1 px-3 py-2.5 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm" />
+                      <button type="button" onClick={() => setEditing({ ...editing, slug: generateSlug(editing.title || '') })} className="p-2.5 rounded-lg border border-border hover:bg-primary/10 text-primary shrink-0" title="Regenerar desde título">
+                        <RefreshCw size={14} />
+                      </button>
+                    </div>
+                  </div>
                   <div>
                     <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Meta título</label>
-                    <input type="text" value={editing.meta_title ?? ''} onChange={(e) => setEditing({ ...editing, meta_title: e.target.value })} placeholder={editing.title || 'Se usa el título del artículo'} className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm" maxLength={70} />
+                    <div className="flex gap-2">
+                      <input type="text" value={editing.meta_title ?? ''} onChange={(e) => setEditing({ ...editing, meta_title: e.target.value })} placeholder={editing.title || 'Se usa el título del artículo'} className="flex-1 px-3 py-2.5 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm" maxLength={70} />
+                      <button type="button" onClick={() => setEditing({ ...editing, meta_title: editing.title || '' })} className="p-2.5 rounded-lg border border-border hover:bg-primary/10 text-primary shrink-0" title="Regenerar desde título">
+                        <RefreshCw size={14} />
+                      </button>
+                    </div>
                     <p className="text-[10px] text-muted-foreground mt-1">{(editing.meta_title || '').length}/70 caracteres</p>
                   </div>
                   <div>
                     <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Meta descripción</label>
-                    <textarea value={editing.meta_description ?? ''} onChange={(e) => setEditing({ ...editing, meta_description: e.target.value })} rows={2} placeholder={editing.excerpt || 'Se usa el extracto automáticamente'} className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm resize-none" maxLength={160} />
+                    <textarea value={editing.meta_description ?? ''} onChange={(e) => setEditing({ ...editing, meta_description: e.target.value })} rows={2} placeholder={editing.excerpt || 'Se genera del contenido automáticamente'} className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm resize-none" maxLength={160} />
                     <p className="text-[10px] text-muted-foreground mt-1">{(editing.meta_description || '').length}/160 caracteres</p>
+                  </div>
+                  <div className="flex gap-6 pt-1">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input type="checkbox" checked={!!editing.noindex} onChange={(e) => setEditing({ ...editing, noindex: e.target.checked ? 1 : 0 })} className="w-3.5 h-3.5 rounded border-border text-primary focus:ring-primary" />
+                      <span className="text-xs text-foreground">NoIndex</span>
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input type="checkbox" checked={!!editing.nofollow} onChange={(e) => setEditing({ ...editing, nofollow: e.target.checked ? 1 : 0 })} className="w-3.5 h-3.5 rounded border-border text-primary focus:ring-primary" />
+                      <span className="text-xs text-foreground">NoFollow</span>
+                    </label>
                   </div>
                 </div>
                 <div>
