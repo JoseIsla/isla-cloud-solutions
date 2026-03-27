@@ -46,7 +46,25 @@ const PanelMedios = () => {
   };
 
   const selectAllOnPage = () => {
-    setSelected(new Set(paged.map(i => i.id)));
+    const allPageIds = paged.map(i => i.id);
+    const allSelected = allPageIds.every(id => selected.has(id));
+    if (allSelected) {
+      setSelected(prev => {
+        const next = new Set(prev);
+        allPageIds.forEach(id => next.delete(id));
+        return next;
+      });
+    } else {
+      setSelected(prev => new Set([...prev, ...allPageIds]));
+    }
+  };
+
+  const selectAll = () => {
+    if (selected.size === items.length) {
+      clearSelection();
+    } else {
+      setSelected(new Set(items.map(i => i.id)));
+    }
   };
 
   const clearSelection = () => {
