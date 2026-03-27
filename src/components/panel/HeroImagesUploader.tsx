@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { useAuth } from '@/hooks/useAuth';
+import MediaPicker from '@/components/panel/MediaPicker';
 import { uploadImage, contentsApi, type ContentFromAPI } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Upload, Trash2 } from 'lucide-react';
