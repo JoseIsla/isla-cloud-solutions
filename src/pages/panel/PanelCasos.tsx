@@ -141,6 +141,20 @@ const PanelCasos = () => {
                     <Input type="number" value={editing.sort_order || 0} onChange={(e) => setEditing({ ...editing, sort_order: parseInt(e.target.value) })} />
                   </div>
                 </div>
+                {/* SEO personalizado */}
+                <div className="border border-border rounded-xl p-4 space-y-3 bg-muted/30">
+                  <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">🔍 SEO personalizado <span className="normal-case font-normal">(opcional)</span></p>
+                  <div>
+                    <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Meta título</label>
+                    <Input value={editing.meta_title || ''} onChange={(e) => setEditing({ ...editing, meta_title: e.target.value })} placeholder={editing.title || 'Se usa el título del caso'} maxLength={70} />
+                    <p className="text-[10px] text-muted-foreground mt-1">{(editing.meta_title || '').length}/70 caracteres</p>
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Meta descripción</label>
+                    <Textarea value={editing.meta_description || ''} onChange={(e) => setEditing({ ...editing, meta_description: e.target.value })} rows={2} placeholder={editing.excerpt || 'Se usa el resumen automáticamente'} maxLength={160} />
+                    <p className="text-[10px] text-muted-foreground mt-1">{(editing.meta_description || '').length}/160 caracteres</p>
+                  </div>
+                </div>
                 <div className="flex items-center gap-3 p-3 rounded-lg bg-background border border-border">
                   <Switch checked={!!editing.is_active} onCheckedChange={(checked) => setEditing({ ...editing, is_active: checked ? 1 : 0 })} />
                   <Label className="text-sm">Activo</Label>

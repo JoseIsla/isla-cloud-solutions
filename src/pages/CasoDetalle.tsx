@@ -42,8 +42,8 @@ const CasoDetalle = () => {
   }, [caso, id, autoDescription]);
 
   usePageMeta({
-    title: caso?.title || "Caso de éxito",
-    description: autoDescription,
+    title: caso?.meta_title || caso?.title || "Caso de éxito",
+    description: caso?.meta_description || autoDescription,
     canonical: id ? `/casos/${id}` : undefined,
     ogImage: caso?.image_url || undefined,
     type: caso ? 'article' : undefined,
