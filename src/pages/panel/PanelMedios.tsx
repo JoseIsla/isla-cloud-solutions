@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Upload, Trash2, Search, Image as ImageIcon, Copy, Check } from 'lucide-react';
 import { toast } from 'sonner';
-import { Pagination } from '@/components/Pagination';
+import Pagination from '@/components/Pagination';
 import { usePanelPagination } from '@/hooks/usePanelPagination';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'https://api.islacloudsolutions.com';
