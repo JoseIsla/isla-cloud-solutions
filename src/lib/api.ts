@@ -163,6 +163,8 @@ export const mediaApi = {
     apiRequest('/api/media/' + id, { method: 'PUT', body: data, token }),
   delete: (id: number, token: string) =>
     apiRequest('/api/media/' + id, { method: 'DELETE', token }),
+  sync: (token: string) =>
+    apiRequest<{ message: string; inserted: number; total: number }>('/api/media/sync', { method: 'POST', token }),
 };
 
 // Upload

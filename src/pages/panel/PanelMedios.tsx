@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Upload, Trash2, Search, Image as ImageIcon, Copy, Check, CloudUpload } from 'lucide-react';
+import { Upload, Trash2, Search, Image as ImageIcon, Copy, Check, CloudUpload, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
 import Pagination from '@/components/Pagination';
 import { usePanelPagination } from '@/hooks/usePanelPagination';
@@ -20,6 +20,7 @@ const PanelMedios = () => {
   const [filterCategory, setFilterCategory] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [uploading, setUploading] = useState(false);
+  const [syncing, setSyncing] = useState(false);
   const [uploadCategory, setUploadCategory] = useState('general');
   const [editItem, setEditItem] = useState<MediaFromAPI | null>(null);
   const [editCategory, setEditCategory] = useState('');
@@ -84,6 +85,20 @@ const PanelMedios = () => {
     navigator.clipboard.writeText(item.url);
     setCopied(item.id);
     setTimeout(() => setCopied(null), 2000);
+  };
+
+  const handleSync = async () => {
+    if (!token) return;
+    setSyncing(true);
+    try {
+      const result = await mediaApi.sync(token);
+      toast.success(result.message);
+      loadData();
+    } catch (e: any) {
+      toast.error(e.message || 'Error sincronizando');
+    } finally {
+      setSyncing(false);
+    }
   };
 
   const handleDragEnter = useCallback((e: React.DragEvent) => {
@@ -161,6 +176,10 @@ const PanelMedios = () => {
             <Button size="sm" onClick={() => fileRef.current?.click()} disabled={uploading}>
               <Upload size={14} className="mr-1" />
               {uploading ? 'Subiendo...' : 'Subir imagen'}
+            </Button>
+            <Button size="sm" variant="outline" onClick={handleSync} disabled={syncing}>
+              <RefreshCw size={14} className={`mr-1 ${syncing ? 'animate-spin' : ''}`} />
+              {syncing ? 'Sincronizando...' : 'Sincronizar'}
             </Button>
           </div>
         </div>

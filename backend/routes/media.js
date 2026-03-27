@@ -109,4 +109,61 @@ router.delete('/:id', authMiddleware, async (req, res) => {
   }
 });
 
+// POST /api/media/sync (admin) - scan all tables for image URLs and register in media
+router.post('/sync', authMiddleware, async (req, res) => {
+  let conn;
+  try {
+    conn = await pool.getConnection();
+
+    // Gather all image URLs from every table that has them
+    const sources = [
+      { query: 'SELECT image_url AS url, title AS name FROM services WHERE image_url IS NOT NULL AND image_url != \'\'', category: 'servicios' },
+      { query: 'SELECT image_url AS url, title AS name FROM news WHERE image_url IS NOT NULL AND image_url != \'\'', category: 'noticias' },
+      { query: 'SELECT logo_url AS url, name FROM clients WHERE logo_url IS NOT NULL AND logo_url != \'\'', category: 'clientes' },
+      { query: 'SELECT image_url AS url, title AS name FROM success_cases WHERE image_url IS NOT NULL AND image_url != \'\'', category: 'casos' },
+      { query: 'SELECT avatar_url AS url, author_name AS name FROM testimonials WHERE avatar_url IS NOT NULL AND avatar_url != \'\'', category: 'testimonios' },
+    ];
+
+    // Also grab CMS content values that look like image URLs
+    const cmsRows = await conn.query(
+      "SELECT value AS url, title AS name FROM contents WHERE (content_key LIKE '%logo%' OR content_key LIKE '%bg%' OR content_key LIKE '%image%') AND value IS NOT NULL AND value != '' AND (value LIKE '%.jpg' OR value LIKE '%.png' OR value LIKE '%.webp' OR value LIKE '%.gif' OR value LIKE '%.svg' OR value LIKE '%/uploads/%')"
+    );
+
+    let inserted = 0;
+    const allUrls = [];
+
+    for (const src of sources) {
+      const rows = await conn.query(src.query);
+      for (const row of rows) {
+        allUrls.push({ url: row.url, name: row.name || '', category: src.category });
+      }
+    }
+
+    for (const row of cmsRows) {
+      allUrls.push({ url: row.url, name: row.name || '', category: 'fondos' });
+    }
+
+    for (const item of allUrls) {
+      // Check if already exists in media table
+      const existing = await conn.query('SELECT id FROM media WHERE url = ?', [item.url]);
+      if (existing.length === 0) {
+        // Extract original filename from URL
+        const originalName = item.name || item.url.split('/').pop() || '';
+        await conn.query(
+          'INSERT INTO media (url, original_name, category, alt_text) VALUES (?, ?, ?, ?)',
+          [item.url, originalName, item.category, item.name]
+        );
+        inserted++;
+      }
+    }
+
+    res.json({ message: `Sincronización completada: ${inserted} imagen(es) añadida(s)`, inserted, total: allUrls.length });
+  } catch (err) {
+    console.error('Error syncing media:', err.message);
+    res.status(500).json({ error: 'Error del servidor' });
+  } finally {
+    if (conn) conn.release();
+  }
+});
+
 module.exports = router;
