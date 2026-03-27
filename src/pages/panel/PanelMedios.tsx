@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { mediaApi, uploadImage, type MediaFromAPI } from '@/lib/api';
 import PanelLayout from './PanelLayout';
@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Upload, Trash2, Search, Image as ImageIcon, Copy, Check } from 'lucide-react';
+import { Upload, Trash2, Search, Image as ImageIcon, Copy, Check, CloudUpload } from 'lucide-react';
 import { toast } from 'sonner';
 import Pagination from '@/components/Pagination';
 import { usePanelPagination } from '@/hooks/usePanelPagination';
@@ -25,7 +25,9 @@ const PanelMedios = () => {
   const [editCategory, setEditCategory] = useState('');
   const [editAlt, setEditAlt] = useState('');
   const [copied, setCopied] = useState<number | null>(null);
+  const [dragging, setDragging] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+  const dragCounter = useRef(0);
 
   const loadData = async () => {
     if (!token) return;
@@ -84,12 +86,54 @@ const PanelMedios = () => {
     setTimeout(() => setCopied(null), 2000);
   };
 
+  const handleDragEnter = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dragCounter.current++;
+    if (e.dataTransfer.types.includes('Files')) setDragging(true);
+  }, []);
+
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dragCounter.current--;
+    if (dragCounter.current === 0) setDragging(false);
+  }, []);
+
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  }, []);
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragging(false);
+    dragCounter.current = 0;
+    const files = e.dataTransfer.files;
+    if (files.length > 0) handleUpload(files);
+  }, [token]);
+
   const filtered = items;
   const { page, setPage, totalPages, paged } = usePanelPagination(filtered, 20);
 
   return (
     <PanelLayout>
-      <div className="space-y-6">
+      <div
+        className="space-y-6 relative"
+        onDragEnter={handleDragEnter}
+        onDragLeave={handleDragLeave}
+        onDragOver={handleDragOver}
+        onDrop={handleDrop}
+      >
+        {/* Drop overlay */}
+        {dragging && (
+          <div className="absolute inset-0 z-50 bg-primary/10 border-2 border-dashed border-primary rounded-2xl flex flex-col items-center justify-center pointer-events-none">
+            <CloudUpload size={48} className="text-primary mb-3 animate-bounce" />
+            <p className="text-primary font-semibold text-lg">Suelta las imágenes aquí</p>
+            <p className="text-primary/70 text-sm">Se subirán a la categoría "{uploadCategory}"</p>
+          </div>
+        )}
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
           <div>
             <h2 className="text-xl font-heading font-bold text-foreground">Galería de Medios</h2>
