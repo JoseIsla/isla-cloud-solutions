@@ -23,7 +23,17 @@ const Layout = ({ children }: LayoutProps) => {
       <header role="banner">
         <Navbar />
       </header>
-      <main id="main-content" role="main" className={`flex-1 ${isHome ? "" : "pt-16 lg:pt-20"}`}>{children}</main>
+      <motion.main
+        key={location.pathname}
+        id="main-content"
+        role="main"
+        className={`flex-1 ${isHome ? "" : "pt-16 lg:pt-20"}`}
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
+      >
+        {children}
+      </motion.main>
       <Footer />
     </div>
   );
