@@ -47,7 +47,7 @@ const MediaPicker = ({ open, onClose, onSelect, defaultCategory }: MediaPickerPr
     if (!token) return;
     setUploading(true);
     try {
-      const { url } = await uploadImage(file, token);
+      const { url } = await uploadImage(file, token, defaultCategory || 'general');
       const fullUrl = url.startsWith('http') ? url : `${API_BASE}${url}`;
       toast.success('Imagen subida');
       load();
