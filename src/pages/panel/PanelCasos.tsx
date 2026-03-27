@@ -249,7 +249,7 @@ const PanelCasos = () => {
                     </button>
                   </div>
                   <div>
-                    <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">URL Amigable *</label>
+                    <label className="flex items-center gap-1.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">URL Amigable * <TooltipProvider delayDuration={200}><Tooltip><TooltipTrigger asChild><HelpCircle size={13} className="text-muted-foreground/60 cursor-help" /></TooltipTrigger><TooltipContent side="top" className="max-w-[240px] text-xs"><p>URL amigable para SEO. Se genera automáticamente desde el título. Usa solo letras minúsculas, números y guiones.</p></TooltipContent></Tooltip></TooltipProvider></label>
                     <div className="flex gap-2">
                       <Input value={editing.slug || ''} onChange={(e) => setEditing({ ...editing, slug: e.target.value })} placeholder="/mi-caso-de-exito" className="flex-1" />
                       <button type="button" onClick={() => setEditing({ ...editing, slug: generateSlug(editing.title || '') })} className="p-2.5 rounded-lg border border-border hover:bg-primary/10 text-primary shrink-0" title="Regenerar desde título">
