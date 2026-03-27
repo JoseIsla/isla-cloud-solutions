@@ -152,6 +152,7 @@ const PanelClientes = () => {
 
                 <div>
                   <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Logo</label>
+                  <p className="text-[10px] text-muted-foreground/70 mb-1.5">Recomendado: 280×80px, PNG con fondo transparente.</p>
                   {editing.logo_url && (
                     <div className="mb-2 p-3 rounded-lg bg-muted/30 border border-border flex items-center gap-3">
                       <img src={editing.logo_url} alt="" className="h-8 max-w-[100px] object-contain" />

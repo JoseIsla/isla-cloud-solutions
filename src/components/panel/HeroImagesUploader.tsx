@@ -15,9 +15,9 @@ interface HeroImagesUploaderProps {
 }
 
 const imageFields = [
-  { key: 'hero_bg_slide1', label: 'Fondo Slide 1 (Principal)', desc: 'Imagen de fondo del primer slide del Hero.' },
-  { key: 'hero_bg_slide2', label: 'Fondo Slide 2 (Blog)', desc: 'Imagen de fondo del segundo slide (Blog/Noticias).' },
-  { key: 'hero_bg_slide3', label: 'Fondo Slide 3 (Casos de éxito)', desc: 'Imagen de fondo del tercer slide (Casos de éxito).' },
+  { key: 'hero_bg_slide1', label: 'Fondo Slide 1 (Principal)', desc: 'Imagen de fondo del primer slide. Recomendado: 1920×1080px (16:9).' },
+  { key: 'hero_bg_slide2', label: 'Fondo Slide 2 (Blog)', desc: 'Imagen de fondo del segundo slide. Recomendado: 1920×1080px (16:9).' },
+  { key: 'hero_bg_slide3', label: 'Fondo Slide 3 (Casos de éxito)', desc: 'Imagen de fondo del tercer slide. Recomendado: 1920×1080px (16:9).' },
 ];
 
 const HeroImagesUploader = ({ contents, editValues, setEditValues }: HeroImagesUploaderProps) => {

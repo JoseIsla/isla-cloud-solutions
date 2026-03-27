@@ -15,8 +15,8 @@ interface LogoUploaderProps {
 }
 
 const logoFields = [
-  { key: 'site_logo_navbar', label: 'Logo del Navbar', desc: 'Se muestra en la barra de navegación superior.' },
-  { key: 'site_logo_footer', label: 'Logo del Footer', desc: 'Se muestra en el pie de página.' },
+  { key: 'site_logo_navbar', label: 'Logo del Navbar', desc: 'Se muestra en la barra de navegación. Recomendado: 200×60px, PNG con fondo transparente.' },
+  { key: 'site_logo_footer', label: 'Logo del Footer', desc: 'Se muestra en el pie de página. Recomendado: 200×60px, PNG con fondo transparente.' },
 ];
 
 const LogoUploader = ({ contents, editValues, setEditValues }: LogoUploaderProps) => {
