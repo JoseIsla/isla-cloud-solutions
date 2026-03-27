@@ -29,7 +29,7 @@ const LogoUploader = ({ contents, editValues, setEditValues }: LogoUploaderProps
     if (!token) return;
     setUploading(key);
     try {
-      const { url } = await uploadImage(file, token);
+      const { url } = await uploadImage(file, token, 'logos');
       const fullUrl = url.startsWith('http') ? url : `${API_BASE}${url}`;
       setEditValues(prev => ({ ...prev, [key]: fullUrl }));
       await contentsApi.update(key, fullUrl, token, logoFields.find(f => f.key === key)?.label);

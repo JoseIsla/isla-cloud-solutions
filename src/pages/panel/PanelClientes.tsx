@@ -99,7 +99,7 @@ const PanelClientes = () => {
     if (!file || !token) return;
     setUploading(true);
     try {
-      const result = await uploadImage(file, token);
+      const result = await uploadImage(file, token, 'clientes');
       const fullUrl = result.url.startsWith('http') ? result.url : `${API_BASE_URL}${result.url}`;
       setEditing(prev => prev ? { ...prev, logo_url: fullUrl } : prev);
       toast.success('Logo subido');

@@ -134,7 +134,7 @@ const PanelCasos = () => {
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.[0] || !token) return;
     try {
-      const result = await uploadImage(e.target.files[0], token);
+      const result = await uploadImage(e.target.files[0], token, 'casos');
       const fullUrl = result.url.startsWith('http') ? result.url : `${API_BASE_URL}${result.url}`;
       setEditing((prev) => prev ? { ...prev, image_url: fullUrl } : prev);
       toast.success('Imagen subida');
