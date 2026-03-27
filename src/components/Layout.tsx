@@ -36,6 +36,7 @@ const Layout = ({ children }: LayoutProps) => {
         {children}
       </motion.main>
       <Footer />
+      <OrganizationJsonLd />
     </div>
   );
 };
