@@ -277,7 +277,7 @@ const PanelServicios = () => {
               </div>
             </div>
           </div>
-        )}
+        , document.body)}
 
         {/* List */}
         <StaggerList className="space-y-1">
