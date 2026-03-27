@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef, useMemo, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { useConfirmDialog } from '@/hooks/useConfirmDialog';
 import MediaPicker from '@/components/panel/MediaPicker';
 import { useAuth } from '@/hooks/useAuth';
