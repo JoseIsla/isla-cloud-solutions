@@ -48,8 +48,8 @@ const BlogDetalle = () => {
 
   // Always call hooks unconditionally — before any early returns
   usePageMeta({
-    title: post?.title || "Blog",
-    description: post?.excerpt || "Lee las últimas noticias en el blog de Isla Cloud Solutions.",
+    title: post?.meta_title || post?.title || "Blog",
+    description: post?.meta_description || post?.excerpt || "Lee las últimas noticias en el blog de Isla Cloud Solutions.",
     canonical: slug ? `/blog/${slug}` : undefined,
     ogImage: post?.image_url || undefined,
     type: post ? 'article' : undefined,

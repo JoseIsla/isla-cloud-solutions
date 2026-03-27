@@ -52,11 +52,11 @@ router.post('/', authMiddleware, [
 
   let conn;
   try {
-    const { title, client_name, excerpt, description, image_url, sort_order, is_active } = req.body;
+    const { title, client_name, excerpt, description, image_url, sort_order, is_active, meta_title, meta_description } = req.body;
     conn = await pool.getConnection();
     const result = await conn.query(
-      'INSERT INTO success_cases (title, client_name, excerpt, description, image_url, sort_order, is_active) VALUES (?, ?, ?, ?, ?, ?, ?)',
-      [title, client_name, excerpt || '', description || '', image_url || '', sort_order || 0, is_active !== undefined ? (is_active ? 1 : 0) : 1]
+      'INSERT INTO success_cases (title, client_name, excerpt, description, image_url, sort_order, is_active, meta_title, meta_description) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [title, client_name, excerpt || '', description || '', image_url || '', sort_order || 0, is_active !== undefined ? (is_active ? 1 : 0) : 1, meta_title || '', meta_description || '']
     );
     res.status(201).json({ id: Number(result.insertId), message: 'Caso de éxito creado' });
   } catch (err) {
@@ -71,11 +71,11 @@ router.post('/', authMiddleware, [
 router.put('/:id', authMiddleware, async (req, res) => {
   let conn;
   try {
-    const { title, client_name, excerpt, description, image_url, sort_order, is_active } = req.body;
+    const { title, client_name, excerpt, description, image_url, sort_order, is_active, meta_title, meta_description } = req.body;
     conn = await pool.getConnection();
     await conn.query(
-      'UPDATE success_cases SET title=?, client_name=?, excerpt=?, description=?, image_url=?, sort_order=?, is_active=? WHERE id=?',
-      [title, client_name, excerpt, description, image_url, sort_order || 0, is_active ? 1 : 0, req.params.id]
+      'UPDATE success_cases SET title=?, client_name=?, excerpt=?, description=?, image_url=?, sort_order=?, is_active=?, meta_title=?, meta_description=? WHERE id=?',
+      [title, client_name, excerpt, description, image_url, sort_order || 0, is_active ? 1 : 0, meta_title || '', meta_description || '', req.params.id]
     );
     res.json({ message: 'Caso de éxito actualizado' });
   } catch (err) {

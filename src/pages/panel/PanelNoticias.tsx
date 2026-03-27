@@ -154,6 +154,21 @@ const PanelNoticias = () => {
                   <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Extracto</label>
                   <textarea value={editing.excerpt ?? ''} onChange={(e) => updateField('excerpt', e.target.value)} rows={2} placeholder="Se genera automáticamente del contenido si lo dejas vacío" className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm resize-none" />
                 </div>
+
+                {/* SEO personalizado */}
+                <div className="border border-border rounded-xl p-4 space-y-3 bg-muted/30">
+                  <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">🔍 SEO personalizado <span className="normal-case font-normal">(opcional)</span></p>
+                  <div>
+                    <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Meta título</label>
+                    <input type="text" value={editing.meta_title ?? ''} onChange={(e) => setEditing({ ...editing, meta_title: e.target.value })} placeholder={editing.title || 'Se usa el título del artículo'} className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm" maxLength={70} />
+                    <p className="text-[10px] text-muted-foreground mt-1">{(editing.meta_title || '').length}/70 caracteres</p>
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Meta descripción</label>
+                    <textarea value={editing.meta_description ?? ''} onChange={(e) => setEditing({ ...editing, meta_description: e.target.value })} rows={2} placeholder={editing.excerpt || 'Se usa el extracto automáticamente'} className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm resize-none" maxLength={160} />
+                    <p className="text-[10px] text-muted-foreground mt-1">{(editing.meta_description || '').length}/160 caracteres</p>
+                  </div>
+                </div>
                 <div>
                   <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Contenido</label>
                   <RichEditor value={editing.content ?? ''} onChange={(html) => updateField('content', html)} />
