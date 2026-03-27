@@ -1,7 +1,7 @@
 require('dotenv').config();
 const mariadb = require('mariadb');
-const bcrypt = require('bcryptjs');
 
+const SEED = process.argv.includes('--seed');
 async function initDB() {
   const conn = await mariadb.createConnection({
     host: process.env.DB_HOST || 'localhost',
