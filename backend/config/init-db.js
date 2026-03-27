@@ -1,7 +1,7 @@
 require('dotenv').config();
 const mariadb = require('mariadb');
-const bcrypt = require('bcryptjs');
 
+const SEED = process.argv.includes('--seed');
 async function initDB() {
   const conn = await mariadb.createConnection({
     host: process.env.DB_HOST || 'localhost',
@@ -150,195 +150,168 @@ async function initDB() {
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     )
   `);
-  const hashedPassword = await bcrypt.hash('IslaCloud2024!', 12);
-  await conn.query(`
-    INSERT IGNORE INTO users (email, password, name, role)
-    VALUES ('admin@islacloudsolutions.com', ?, 'Administrador', 'admin')
-  `, [hashedPassword]);
-
-  // Insert default contents for all landing sections
-  const defaultContents = [
-    // Hero
-    ['hero_title', 'Título del Hero', 'Soluciones Cloud y Tecnología para Empresas', 'text'],
-    ['hero_subtitle', 'Subtítulo del Hero', 'Más de 20 años siendo el socio tecnológico de empresas que necesitan un departamento IT profesional, cercano y disponible 24x7.', 'text'],
-    ['hero_cta_primary', 'Botón principal Hero', 'Solicita información', 'text'],
-    ['hero_cta_secondary', 'Botón secundario Hero', 'Nuestros servicios', 'text'],
-    // Services section
-    ['services_section_label', 'Etiqueta sección servicios', 'Servicios', 'text'],
-    ['services_section_title', 'Título sección servicios', 'Soluciones tecnológicas integrales', 'text'],
-    ['services_section_subtitle', 'Subtítulo sección servicios', 'Cubrimos todas las necesidades IT de tu empresa con servicios profesionales y soporte continuo.', 'text'],
-    // Why us
-    ['whyus_section_title', 'Título sección por qué elegirnos', '¿Por qué Isla Cloud?', 'text'],
-    ['whyus_reason_1_title', 'Razón 1 título', '+20 años de experiencia', 'text'],
-    ['whyus_reason_1_desc', 'Razón 1 descripción', 'Más de dos décadas resolviendo retos tecnológicos empresariales.', 'text'],
-    ['whyus_reason_2_title', 'Razón 2 título', 'Soporte 24x7', 'text'],
-    ['whyus_reason_2_desc', 'Razón 2 descripción', 'Equipo técnico disponible las 24 horas, los 7 días de la semana.', 'text'],
-    ['whyus_reason_3_title', 'Razón 3 título', 'Seguridad garantizada', 'text'],
-    ['whyus_reason_3_desc', 'Razón 3 descripción', 'Protocolos de seguridad avanzados y cumplimiento RGPD.', 'text'],
-    ['whyus_reason_4_title', 'Razón 4 título', 'SLA garantizado', 'text'],
-    ['whyus_reason_4_desc', 'Razón 4 descripción', 'Acuerdos de nivel de servicio con tiempos de respuesta comprometidos.', 'text'],
-    // Clients section
-    ['clients_section_label', 'Etiqueta sección clientes', 'Clientes', 'text'],
-    ['clients_section_title', 'Título sección clientes', 'Empresas que confían en nosotros', 'text'],
-    ['clients_section_subtitle', 'Subtítulo sección clientes', 'Más de 60 empresas e instituciones de todos los sectores', 'text'],
-    // CTA section
-    ['cta_title', 'Título CTA', '¿Listo para impulsar tu empresa?', 'text'],
-    ['cta_subtitle', 'Subtítulo CTA', 'Contacta con nosotros y descubre cómo podemos ayudarte a optimizar tu infraestructura tecnológica.', 'text'],
-    ['cta_button', 'Botón CTA', 'Contactar ahora', 'text'],
-    // About page
-    ['about_title', 'Título Sobre Nosotros', 'Más de 20 años creando soluciones tecnológicas', 'text'],
-    ['about_subtitle', 'Subtítulo Sobre Nosotros', 'Somos un equipo de profesionales apasionados por la tecnología, dedicados a ser el socio tecnológico que tu empresa necesita.', 'text'],
-    ['about_history', 'Historia', '<p>Isla Cloud Solutions nació con la misión de proporcionar servicios tecnológicos de primer nivel a empresas que necesitan un socio de confianza para gestionar su infraestructura IT.</p><p>Con más de 20 años de experiencia en el sector, nuestro equipo de ingenieros y técnicos especializados ha gestionado la infraestructura de empresas de todos los sectores, desde instituciones culturales de prestigio internacional hasta empresas de innovación tecnológica.</p><p>Nuestro compromiso es claro: ser el departamento IT que tu empresa necesita, con la profesionalidad y la cercanía de un equipo que trabaja integrado en tu organización.</p>', 'html'],
-    // Contact page
-    ['contact_title', 'Título Contacto', 'Hablemos de tu proyecto', 'text'],
-    ['contact_subtitle', 'Subtítulo Contacto', 'Cuéntanos qué necesitas y te asesoramos sin compromiso.', 'text'],
-    // Counters
-    ['counter_projects', 'Contador: Proyectos (valor)', '298', 'text'],
-    ['counter_projects_label', 'Contador: Proyectos (etiqueta)', 'Proyectos', 'text'],
-    ['counter_maintenance', 'Contador: Mantenimientos (valor)', '315', 'text'],
-    ['counter_maintenance_label', 'Contador: Mantenimientos (etiqueta)', 'Mantenimientos', 'text'],
-    ['counter_clients', 'Contador: Clientes (valor)', '169', 'text'],
-    ['counter_clients_label', 'Contador: Clientes (etiqueta)', 'Clientes', 'text'],
-    ['counter_systems', 'Contador: Sistemas (valor)', '167', 'text'],
-    ['counter_systems_label', 'Contador: Sistemas (etiqueta)', 'Sistemas administrados', 'text'],
-    // Footer
-    ['footer_description', 'Descripción footer', 'Soluciones Cloud y tecnología IT para empresas. Más de 20 años de experiencia como tu socio tecnológico.', 'text'],
-    // Hero background images
-    ['hero_bg_slide1', 'Hero: Fondo Slide 1', '', 'text'],
-    ['hero_bg_slide2', 'Hero: Fondo Slide 2', '', 'text'],
-    ['hero_bg_slide3', 'Hero: Fondo Slide 3', '', 'text'],
-    // Hero tabs & slides
-    ['hero_badge', 'Badge del Hero', 'Soluciones IT Profesionales', 'text'],
-    ['hero_tab1_label', 'Hero Tab 1', 'Infraestructura', 'text'],
-    ['hero_tab2_label', 'Hero Tab 2', 'Cloud', 'text'],
-    ['hero_tab3_label', 'Hero Tab 3', 'Seguridad', 'text'],
-    ['hero_slide2_title', 'Hero Slide 2 Título', 'Cloud Computing Empresarial', 'text'],
-    ['hero_slide2_subtitle', 'Hero Slide 2 Subtítulo', 'Migra tu infraestructura a la nube con seguridad y rendimiento garantizado.', 'text'],
-    ['hero_slide2_cta', 'Hero Slide 2 Botón principal', 'Migrar a la nube', 'text'],
-    ['hero_slide2_cta_secondary', 'Hero Slide 2 Botón secundario', 'Ver soluciones cloud', 'text'],
-    ['hero_slide3_title', 'Hero Slide 3 Título', 'Ciberseguridad Avanzada', 'text'],
-    ['hero_slide3_subtitle', 'Hero Slide 3 Subtítulo', 'Protege tu empresa con soluciones de seguridad de última generación.', 'text'],
-    ['hero_slide3_cta', 'Hero Slide 3 Botón principal', 'Proteger mi empresa', 'text'],
-    ['hero_slide3_cta_secondary', 'Hero Slide 3 Botón secundario', 'Ver servicios de seguridad', 'text'],
-    // Trust badge
-    ['trust_section_label', 'Trust Sección Etiqueta', 'Confianza', 'text'],
-    ['trust_section_title', 'Trust Sección Título', 'Verificados por plataformas independientes', 'text'],
-    ['trust_section_subtitle', 'Trust Sección Subtítulo', 'Nuestra reputación está respaldada por reseñas reales de clientes en plataformas de confianza.', 'text'],
-    ['trust_badge_name', 'Trust Badge Nombre', 'TrustLocal', 'text'],
-    ['trust_badge_score', 'Trust Badge Puntuación', '9,0', 'text'],
-    ['trust_badge_max_score', 'Trust Badge Puntuación máxima', '10', 'text'],
-    ['trust_badge_reviews', 'Trust Badge Reseñas', '10', 'text'],
-    ['trust_badge_url', 'Trust Badge URL', 'https://trustlocal.es/madrid/parla/diseno-web/isla-cloud-solutions/', 'text'],
-    ['trust_badge_stars', 'Trust Badge Estrellas', '4.5', 'text'],
-    ['trust_badge_description', 'Trust Badge Descripción', 'Diseñadores web en Parla', 'text'],
-    // CTA cards
-    ['cta_card1_title', 'CTA Tarjeta 1 Título', '¿Necesitas ayuda?', 'text'],
-    ['cta_card1_desc', 'CTA Tarjeta 1 Descripción', 'Llama a nuestro equipo y te ayudaremos.', 'text'],
-    ['cta_card2_title', 'CTA Tarjeta 2 Título', 'Enfoque proactivo', 'text'],
-    ['cta_card2_desc', 'CTA Tarjeta 2 Descripción', 'Precios flexibles y adaptados. Solo pagas por lo que necesitas, cuando lo necesitas.', 'text'],
-    // WhyUs extra
-    ['whyus_section_label', 'WhyUs Sección Etiqueta', '¿Por qué elegirnos?', 'text'],
-    ['whyus_section_subtitle', 'WhyUs Sección Subtítulo', 'Razones por las que más de 60 empresas confían en Isla Cloud.', 'text'],
-    // Intro
-    ['intro_text', 'Texto de introducción', '<p>Somos tu socio tecnológico. Gestionamos, protegemos y optimizamos toda tu infraestructura IT para que tú te centres en hacer crecer tu negocio.</p>', 'html'],
-    // Contact data
-    ['contact_phone', 'Teléfono de contacto', '+34 910 000 000', 'text'],
-    ['contact_email', 'Email de contacto', 'info@islacloudsolutions.com', 'text'],
-    ['contact_address', 'Dirección', 'Madrid, España', 'text'],
-    // Footer
-    ['footer_services_title', 'Footer: Título Servicios', 'Servicios', 'text'],
-    ['footer_company_title', 'Footer: Título Empresa', 'Empresa', 'text'],
-    ['footer_contact_title', 'Footer: Título Contacto', 'Contacto', 'text'],
-    ['footer_company_link1', 'Footer: Enlace Empresa 1', 'Sobre Nosotros', 'text'],
-    ['footer_company_link2', 'Footer: Enlace Empresa 2', 'Noticias', 'text'],
-    ['footer_company_link3', 'Footer: Enlace Empresa 3', 'Contacto', 'text'],
-    ['footer_legal_link1', 'Footer: Enlace Legal 1', 'Política de Privacidad', 'text'],
-    ['footer_legal_link2', 'Footer: Enlace Legal 2', 'Aviso Legal', 'text'],
-    ['footer_copyright', 'Footer: Copyright', '© {year} Isla Cloud Solutions. Todos los derechos reservados.', 'text'],
-    // Services page
-    ['services_page_title', 'Título página Servicios', 'Soluciones IT completas para tu negocio', 'text'],
-    ['services_page_subtitle', 'Subtítulo página Servicios', 'Descubre todos nuestros servicios tecnológicos diseñados para impulsar la productividad y seguridad de tu empresa.', 'text'],
-    // Blog page
-    ['blog_page_title', 'Título página Blog', 'Noticias y actualidad IT', 'text'],
-    ['blog_page_subtitle', 'Subtítulo página Blog', 'Mantente al día con las últimas noticias del sector tecnológico y novedades de Isla Cloud Solutions.', 'text'],
-    // About page extras
-    ['about_history_title', 'Título sección Historia', 'Nuestra historia', 'text'],
-    ['about_values_title', 'Título sección Valores', 'Nuestros valores', 'text'],
-    // Navigation
-    ['nav_link1_label', 'Nav: Enlace 1', 'Inicio', 'text'],
-    ['nav_link2_label', 'Nav: Enlace 2', 'Servicios', 'text'],
-    ['nav_link3_label', 'Nav: Enlace 3', 'Sobre Nosotros', 'text'],
-    ['nav_link4_label', 'Nav: Enlace 4', 'Blog', 'text'],
-    ['nav_link5_label', 'Nav: Enlace 5', 'Contacto', 'text'],
-    ['nav_cta_text', 'Nav: Botón CTA', 'Solicitar Consulta', 'text'],
-    // Navigation visibility
-    ['nav_link1_visible', 'Nav: Enlace 1 Visible', 'true', 'text'],
-    ['nav_link2_visible', 'Nav: Enlace 2 Visible', 'true', 'text'],
-    ['nav_link3_visible', 'Nav: Enlace 3 Visible', 'true', 'text'],
-    ['nav_link4_visible', 'Nav: Enlace 4 Visible', 'true', 'text'],
-    ['nav_link5_visible', 'Nav: Enlace 5 Visible', 'true', 'text'],
-    // Navigation order
-    ['nav_link1_order', 'Nav: Enlace 1 Orden', '1', 'text'],
-    ['nav_link2_order', 'Nav: Enlace 2 Orden', '2', 'text'],
-    ['nav_link3_order', 'Nav: Enlace 3 Orden', '3', 'text'],
-    ['nav_link4_order', 'Nav: Enlace 4 Orden', '4', 'text'],
-    ['nav_link5_order', 'Nav: Enlace 5 Orden', '5', 'text'],
-    // Logos
-    ['site_logo_navbar', 'Logo Navbar', '', 'text'],
-    ['site_logo_footer', 'Logo Footer', '', 'text'],
-    // Social media
-    ['social_linkedin', 'Red Social: LinkedIn', '', 'text'],
-    ['social_twitter', 'Red Social: Twitter/X', '', 'text'],
-    ['social_facebook', 'Red Social: Facebook', '', 'text'],
-    ['social_instagram', 'Red Social: Instagram', '', 'text'],
-    ['social_youtube', 'Red Social: YouTube', '', 'text'],
-    ['social_github', 'Red Social: GitHub', '', 'text'],
-    // Testimonials section
-    ['testimonials_section_label', 'Testimonios: Etiqueta', 'Testimonios', 'text'],
-    ['testimonials_section_title', 'Testimonios: Título', 'Lo que dicen nuestros clientes', 'text'],
-    ['testimonials_section_subtitle', 'Testimonios: Subtítulo', 'La satisfacción de nuestros clientes es nuestra mejor carta de presentación.', 'text'],
-    // FAQ section
-    ['faq_section_label', 'FAQ: Etiqueta', 'FAQ', 'text'],
-    ['faq_section_title', 'FAQ: Título', 'Preguntas frecuentes', 'text'],
-    ['faq_section_subtitle', 'FAQ: Subtítulo', 'Resolvemos las dudas más habituales sobre nuestros servicios.', 'text'],
-  ];
-
-  for (const [key, title, value, type] of defaultContents) {
+  // ── Seed data (solo con --seed) ──
+  if (SEED) {
+    const bcrypt = require('bcryptjs');
+    const hashedPassword = await bcrypt.hash('IslaCloud2024!', 12);
     await conn.query(`
-      INSERT IGNORE INTO contents (content_key, title, value, content_type) VALUES (?, ?, ?, ?)
-    `, [key, title, value, type || 'text']);
+      INSERT IGNORE INTO users (email, password, name, role)
+      VALUES ('admin@islacloudsolutions.com', ?, 'Administrador', 'admin')
+    `, [hashedPassword]);
+
+    const defaultContents = [
+      ['hero_title', 'Título del Hero', 'Soluciones Cloud y Tecnología para Empresas', 'text'],
+      ['hero_subtitle', 'Subtítulo del Hero', 'Más de 20 años siendo el socio tecnológico de empresas que necesitan un departamento IT profesional, cercano y disponible 24x7.', 'text'],
+      ['hero_cta_primary', 'Botón principal Hero', 'Solicita información', 'text'],
+      ['hero_cta_secondary', 'Botón secundario Hero', 'Nuestros servicios', 'text'],
+      ['services_section_label', 'Etiqueta sección servicios', 'Servicios', 'text'],
+      ['services_section_title', 'Título sección servicios', 'Soluciones tecnológicas integrales', 'text'],
+      ['services_section_subtitle', 'Subtítulo sección servicios', 'Cubrimos todas las necesidades IT de tu empresa con servicios profesionales y soporte continuo.', 'text'],
+      ['whyus_section_title', 'Título sección por qué elegirnos', '¿Por qué Isla Cloud?', 'text'],
+      ['whyus_reason_1_title', 'Razón 1 título', '+20 años de experiencia', 'text'],
+      ['whyus_reason_1_desc', 'Razón 1 descripción', 'Más de dos décadas resolviendo retos tecnológicos empresariales.', 'text'],
+      ['whyus_reason_2_title', 'Razón 2 título', 'Soporte 24x7', 'text'],
+      ['whyus_reason_2_desc', 'Razón 2 descripción', 'Equipo técnico disponible las 24 horas, los 7 días de la semana.', 'text'],
+      ['whyus_reason_3_title', 'Razón 3 título', 'Seguridad garantizada', 'text'],
+      ['whyus_reason_3_desc', 'Razón 3 descripción', 'Protocolos de seguridad avanzados y cumplimiento RGPD.', 'text'],
+      ['whyus_reason_4_title', 'Razón 4 título', 'SLA garantizado', 'text'],
+      ['whyus_reason_4_desc', 'Razón 4 descripción', 'Acuerdos de nivel de servicio con tiempos de respuesta comprometidos.', 'text'],
+      ['clients_section_label', 'Etiqueta sección clientes', 'Clientes', 'text'],
+      ['clients_section_title', 'Título sección clientes', 'Empresas que confían en nosotros', 'text'],
+      ['clients_section_subtitle', 'Subtítulo sección clientes', 'Más de 60 empresas e instituciones de todos los sectores', 'text'],
+      ['cta_title', 'Título CTA', '¿Listo para impulsar tu empresa?', 'text'],
+      ['cta_subtitle', 'Subtítulo CTA', 'Contacta con nosotros y descubre cómo podemos ayudarte a optimizar tu infraestructura tecnológica.', 'text'],
+      ['cta_button', 'Botón CTA', 'Contactar ahora', 'text'],
+      ['about_title', 'Título Sobre Nosotros', 'Más de 20 años creando soluciones tecnológicas', 'text'],
+      ['about_subtitle', 'Subtítulo Sobre Nosotros', 'Somos un equipo de profesionales apasionados por la tecnología, dedicados a ser el socio tecnológico que tu empresa necesita.', 'text'],
+      ['about_history', 'Historia', '<p>Isla Cloud Solutions nació con la misión de proporcionar servicios tecnológicos de primer nivel a empresas que necesitan un socio de confianza para gestionar su infraestructura IT.</p>', 'html'],
+      ['contact_title', 'Título Contacto', 'Hablemos de tu proyecto', 'text'],
+      ['contact_subtitle', 'Subtítulo Contacto', 'Cuéntanos qué necesitas y te asesoramos sin compromiso.', 'text'],
+      ['counter_projects', 'Contador: Proyectos (valor)', '298', 'text'],
+      ['counter_projects_label', 'Contador: Proyectos (etiqueta)', 'Proyectos', 'text'],
+      ['counter_maintenance', 'Contador: Mantenimientos (valor)', '315', 'text'],
+      ['counter_maintenance_label', 'Contador: Mantenimientos (etiqueta)', 'Mantenimientos', 'text'],
+      ['counter_clients', 'Contador: Clientes (valor)', '169', 'text'],
+      ['counter_clients_label', 'Contador: Clientes (etiqueta)', 'Clientes', 'text'],
+      ['counter_systems', 'Contador: Sistemas (valor)', '167', 'text'],
+      ['counter_systems_label', 'Contador: Sistemas (etiqueta)', 'Sistemas administrados', 'text'],
+      ['footer_description', 'Descripción footer', 'Soluciones Cloud y tecnología IT para empresas. Más de 20 años de experiencia como tu socio tecnológico.', 'text'],
+      ['hero_bg_slide1', 'Hero: Fondo Slide 1', '', 'text'],
+      ['hero_bg_slide2', 'Hero: Fondo Slide 2', '', 'text'],
+      ['hero_bg_slide3', 'Hero: Fondo Slide 3', '', 'text'],
+      ['hero_badge', 'Badge del Hero', 'Soluciones IT Profesionales', 'text'],
+      ['hero_tab1_label', 'Hero Tab 1', 'Infraestructura', 'text'],
+      ['hero_tab2_label', 'Hero Tab 2', 'Cloud', 'text'],
+      ['hero_tab3_label', 'Hero Tab 3', 'Seguridad', 'text'],
+      ['hero_slide2_title', 'Hero Slide 2 Título', 'Cloud Computing Empresarial', 'text'],
+      ['hero_slide2_subtitle', 'Hero Slide 2 Subtítulo', 'Migra tu infraestructura a la nube con seguridad y rendimiento garantizado.', 'text'],
+      ['hero_slide2_cta', 'Hero Slide 2 Botón principal', 'Migrar a la nube', 'text'],
+      ['hero_slide2_cta_secondary', 'Hero Slide 2 Botón secundario', 'Ver soluciones cloud', 'text'],
+      ['hero_slide3_title', 'Hero Slide 3 Título', 'Ciberseguridad Avanzada', 'text'],
+      ['hero_slide3_subtitle', 'Hero Slide 3 Subtítulo', 'Protege tu empresa con soluciones de seguridad de última generación.', 'text'],
+      ['hero_slide3_cta', 'Hero Slide 3 Botón principal', 'Proteger mi empresa', 'text'],
+      ['hero_slide3_cta_secondary', 'Hero Slide 3 Botón secundario', 'Ver servicios de seguridad', 'text'],
+      ['trust_section_label', 'Trust Sección Etiqueta', 'Confianza', 'text'],
+      ['trust_section_title', 'Trust Sección Título', 'Verificados por plataformas independientes', 'text'],
+      ['trust_section_subtitle', 'Trust Sección Subtítulo', 'Nuestra reputación está respaldada por reseñas reales de clientes en plataformas de confianza.', 'text'],
+      ['trust_badge_name', 'Trust Badge Nombre', 'TrustLocal', 'text'],
+      ['trust_badge_score', 'Trust Badge Puntuación', '9,0', 'text'],
+      ['trust_badge_max_score', 'Trust Badge Puntuación máxima', '10', 'text'],
+      ['trust_badge_reviews', 'Trust Badge Reseñas', '10', 'text'],
+      ['trust_badge_url', 'Trust Badge URL', 'https://trustlocal.es/madrid/parla/diseno-web/isla-cloud-solutions/', 'text'],
+      ['trust_badge_stars', 'Trust Badge Estrellas', '4.5', 'text'],
+      ['trust_badge_description', 'Trust Badge Descripción', 'Diseñadores web en Parla', 'text'],
+      ['cta_card1_title', 'CTA Tarjeta 1 Título', '¿Necesitas ayuda?', 'text'],
+      ['cta_card1_desc', 'CTA Tarjeta 1 Descripción', 'Llama a nuestro equipo y te ayudaremos.', 'text'],
+      ['cta_card2_title', 'CTA Tarjeta 2 Título', 'Enfoque proactivo', 'text'],
+      ['cta_card2_desc', 'CTA Tarjeta 2 Descripción', 'Precios flexibles y adaptados. Solo pagas por lo que necesitas, cuando lo necesitas.', 'text'],
+      ['whyus_section_label', 'WhyUs Sección Etiqueta', '¿Por qué elegirnos?', 'text'],
+      ['whyus_section_subtitle', 'WhyUs Sección Subtítulo', 'Razones por las que más de 60 empresas confían en Isla Cloud.', 'text'],
+      ['intro_text', 'Texto de introducción', '<p>Somos tu socio tecnológico. Gestionamos, protegemos y optimizamos toda tu infraestructura IT para que tú te centres en hacer crecer tu negocio.</p>', 'html'],
+      ['contact_phone', 'Teléfono de contacto', '+34 910 000 000', 'text'],
+      ['contact_email', 'Email de contacto', 'info@islacloudsolutions.com', 'text'],
+      ['contact_address', 'Dirección', 'Madrid, España', 'text'],
+      ['footer_services_title', 'Footer: Título Servicios', 'Servicios', 'text'],
+      ['footer_company_title', 'Footer: Título Empresa', 'Empresa', 'text'],
+      ['footer_contact_title', 'Footer: Título Contacto', 'Contacto', 'text'],
+      ['footer_company_link1', 'Footer: Enlace Empresa 1', 'Sobre Nosotros', 'text'],
+      ['footer_company_link2', 'Footer: Enlace Empresa 2', 'Noticias', 'text'],
+      ['footer_company_link3', 'Footer: Enlace Empresa 3', 'Contacto', 'text'],
+      ['footer_legal_link1', 'Footer: Enlace Legal 1', 'Política de Privacidad', 'text'],
+      ['footer_legal_link2', 'Footer: Enlace Legal 2', 'Aviso Legal', 'text'],
+      ['footer_copyright', 'Footer: Copyright', '© {year} Isla Cloud Solutions. Todos los derechos reservados.', 'text'],
+      ['services_page_title', 'Título página Servicios', 'Soluciones IT completas para tu negocio', 'text'],
+      ['services_page_subtitle', 'Subtítulo página Servicios', 'Descubre todos nuestros servicios tecnológicos diseñados para impulsar la productividad y seguridad de tu empresa.', 'text'],
+      ['blog_page_title', 'Título página Blog', 'Noticias y actualidad IT', 'text'],
+      ['blog_page_subtitle', 'Subtítulo página Blog', 'Mantente al día con las últimas noticias del sector tecnológico y novedades de Isla Cloud Solutions.', 'text'],
+      ['about_history_title', 'Título sección Historia', 'Nuestra historia', 'text'],
+      ['about_values_title', 'Título sección Valores', 'Nuestros valores', 'text'],
+      ['nav_link1_label', 'Nav: Enlace 1', 'Inicio', 'text'],
+      ['nav_link2_label', 'Nav: Enlace 2', 'Servicios', 'text'],
+      ['nav_link3_label', 'Nav: Enlace 3', 'Sobre Nosotros', 'text'],
+      ['nav_link4_label', 'Nav: Enlace 4', 'Blog', 'text'],
+      ['nav_link5_label', 'Nav: Enlace 5', 'Contacto', 'text'],
+      ['nav_cta_text', 'Nav: Botón CTA', 'Solicitar Consulta', 'text'],
+      ['nav_link1_visible', 'Nav: Enlace 1 Visible', 'true', 'text'],
+      ['nav_link2_visible', 'Nav: Enlace 2 Visible', 'true', 'text'],
+      ['nav_link3_visible', 'Nav: Enlace 3 Visible', 'true', 'text'],
+      ['nav_link4_visible', 'Nav: Enlace 4 Visible', 'true', 'text'],
+      ['nav_link5_visible', 'Nav: Enlace 5 Visible', 'true', 'text'],
+      ['nav_link1_order', 'Nav: Enlace 1 Orden', '1', 'text'],
+      ['nav_link2_order', 'Nav: Enlace 2 Orden', '2', 'text'],
+      ['nav_link3_order', 'Nav: Enlace 3 Orden', '3', 'text'],
+      ['nav_link4_order', 'Nav: Enlace 4 Orden', '4', 'text'],
+      ['nav_link5_order', 'Nav: Enlace 5 Orden', '5', 'text'],
+      ['site_logo_navbar', 'Logo Navbar', '', 'text'],
+      ['site_logo_footer', 'Logo Footer', '', 'text'],
+      ['social_linkedin', 'Red Social: LinkedIn', '', 'text'],
+      ['social_twitter', 'Red Social: Twitter/X', '', 'text'],
+      ['social_facebook', 'Red Social: Facebook', '', 'text'],
+      ['social_instagram', 'Red Social: Instagram', '', 'text'],
+      ['social_youtube', 'Red Social: YouTube', '', 'text'],
+      ['social_github', 'Red Social: GitHub', '', 'text'],
+      ['testimonials_section_label', 'Testimonios: Etiqueta', 'Testimonios', 'text'],
+      ['testimonials_section_title', 'Testimonios: Título', 'Lo que dicen nuestros clientes', 'text'],
+      ['testimonials_section_subtitle', 'Testimonios: Subtítulo', 'La satisfacción de nuestros clientes es nuestra mejor carta de presentación.', 'text'],
+      ['faq_section_label', 'FAQ: Etiqueta', 'FAQ', 'text'],
+      ['faq_section_title', 'FAQ: Título', 'Preguntas frecuentes', 'text'],
+      ['faq_section_subtitle', 'FAQ: Subtítulo', 'Resolvemos las dudas más habituales sobre nuestros servicios.', 'text'],
+    ];
+
+    for (const [key, title, value, type] of defaultContents) {
+      await conn.query(`INSERT IGNORE INTO contents (content_key, title, value, content_type) VALUES (?, ?, ?, ?)`, [key, title, value, type || 'text']);
+    }
+
+    const defaultClients = [
+      'Fundación Amigos Museo del Prado', 'Fundación Museo Reina Sofía', 'American Friends of Prado Museum',
+      'Enredart Comunicación', 'ACE', 'WWF España', 'Gasnam', 'Fran Silvestre Arquitectos',
+      'GSTI Research Center', 'AGAMFEC', 'Alpeclima', 'Alhambra', 'Raúl García Studio',
+      'Pelayo Seguros', 'QDP', 'PRV', 'EuroCinema Van', 'Arquiobras', 'Asteco', 'Irtecon',
+      'Recuperaciones Cruz', 'Cofares', 'Bikubo', 'Cauchos Brunete', 'Farline', 'Soroban',
+      'Creaciones Carfi', 'Boutique Triángulo', 'Russafa', 'Merkasano', 'Legal Compliance',
+      'Clínicas Dr. Nasimi', 'Nagrela', 'Quercus', 'EJA', 'FAE', 'Linneo',
+      'Comunidad de Madrid', 'Serrano63', 'Turismo Rural', 'Consultavet', 'Bold', 'Quadam',
+      'Alberto Corazón', 'OCJMJ', 'Santos Benbunan Arquitectos', 'Movedesign', 'AICEP',
+      'Corporación Alba', 'COAM', 'Unión Interprofesional', 'Fundación Carpio Pérez',
+      'Guggenheim Bilbao', 'Hepkra', 'Meatzaldeko Behargintza', 'Hierro Pérez Abogados',
+      'Reconstruct Reformas', 'Repuestos Torrejón', 'Meraki Rehabilitación', 'Mundooasis',
+      'Colegio CFI Gabriel Pérez Cárcel',
+    ];
+
+    for (let i = 0; i < defaultClients.length; i++) {
+      await conn.query(`INSERT IGNORE INTO clients (name, sort_order) VALUES (?, ?)`, [defaultClients[i], i]);
+    }
+
+    console.log('📧 Admin: admin@islacloudsolutions.com');
+    console.log('🔑 Password: IslaCloud2024!');
+    console.log('⚠️  Cambia la contraseña tras el primer login');
   }
 
-  // Insert default clients
-  const defaultClients = [
-    'Fundación Amigos Museo del Prado', 'Fundación Museo Reina Sofía', 'American Friends of Prado Museum',
-    'Enredart Comunicación', 'ACE', 'WWF España', 'Gasnam', 'Fran Silvestre Arquitectos',
-    'GSTI Research Center', 'AGAMFEC', 'Alpeclima', 'Alhambra', 'Raúl García Studio',
-    'Pelayo Seguros', 'QDP', 'PRV', 'EuroCinema Van', 'Arquiobras', 'Asteco', 'Irtecon',
-    'Recuperaciones Cruz', 'Cofares', 'Bikubo', 'Cauchos Brunete', 'Farline', 'Soroban',
-    'Creaciones Carfi', 'Boutique Triángulo', 'Russafa', 'Merkasano', 'Legal Compliance',
-    'Clínicas Dr. Nasimi', 'Nagrela', 'Quercus', 'EJA', 'FAE', 'Linneo',
-    'Comunidad de Madrid', 'Serrano63', 'Turismo Rural', 'Consultavet', 'Bold', 'Quadam',
-    'Alberto Corazón', 'OCJMJ', 'Santos Benbunan Arquitectos', 'Movedesign', 'AICEP',
-    'Corporación Alba', 'COAM', 'Unión Interprofesional', 'Fundación Carpio Pérez',
-    'Guggenheim Bilbao', 'Hepkra', 'Meatzaldeko Behargintza', 'Hierro Pérez Abogados',
-    'Reconstruct Reformas', 'Repuestos Torrejón', 'Meraki Rehabilitación', 'Mundooasis',
-    'Colegio CFI Gabriel Pérez Cárcel',
-  ];
-
-  for (let i = 0; i < defaultClients.length; i++) {
-    await conn.query(`
-      INSERT IGNORE INTO clients (name, sort_order) VALUES (?, ?)
-    `, [defaultClients[i], i]);
-  }
-
-  // Migrations: add sort_order to news if missing
+  // ── Migrations (siempre se ejecutan) ──
   try {
     await conn.query('ALTER TABLE news ADD COLUMN sort_order INT DEFAULT 0 AFTER is_published');
-    console.log('✅ Columna sort_order añadida a news');
-  } catch (e) {
-    // Column already exists
-  }
+    console.log('  ✅ Columna sort_order añadida a news');
+  } catch (e) { /* ya existe */ }
 
   // Media library table
   await conn.query(`
@@ -352,10 +325,7 @@ async function initDB() {
     )
   `);
 
-  console.log('✅ Base de datos inicializada correctamente');
-  console.log('📧 Admin: admin@islacloudsolutions.com');
-  console.log('🔑 Password: IslaCloud2024!');
-  console.log('⚠️  Cambia la contraseña tras el primer login');
+  console.log('✅ Base de datos actualizada correctamente');
 
   await conn.end();
 }
