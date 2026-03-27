@@ -8,6 +8,8 @@ import { Plus, Pencil, Trash2, X, Upload, Calendar, RefreshCw, Search } from 'lu
 import { toast } from 'sonner';
 import RichEditor from '@/components/ui/rich-editor';
 import { StaggerList, StaggerItem } from '@/components/panel/StaggerList';
+import { usePanelPagination } from '@/hooks/usePanelPagination';
+import Pagination from '@/components/Pagination';
 
 const generateSlug = (text: string) =>
   text

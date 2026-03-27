@@ -14,6 +14,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Plus, Edit, Trash2, Trophy, X, Upload, GripVertical, RefreshCw, Search, ChevronUp, ChevronDown } from 'lucide-react';
 import { toast } from 'sonner';
 import { StaggerList, StaggerItem } from '@/components/panel/StaggerList';
+import { usePanelPagination } from '@/hooks/usePanelPagination';
+import Pagination from '@/components/Pagination';
 
 const generateSlug = (text: string) =>
   text
