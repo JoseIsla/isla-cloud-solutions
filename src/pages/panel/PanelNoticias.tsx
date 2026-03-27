@@ -138,21 +138,30 @@ const PanelNoticias = () => {
               </div>
               <div className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {[
-                    { key: 'title', label: 'Título' },
-                    { key: 'slug', label: 'Slug' },
-                    { key: 'category', label: 'Categoría' },
-                  ].map(({ key, label }) => (
-                    <div key={key}>
-                      <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">{label}</label>
-                      <input
-                        type="text"
-                        value={(editing as any)[key] ?? ''}
-                        onChange={(e) => updateField(key, e.target.value)}
-                        className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm"
-                      />
-                    </div>
-                  ))}
+                  <div>
+                    <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Título</label>
+                    <input type="text" value={editing.title ?? ''} onChange={(e) => updateField('title', e.target.value)} className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Slug</label>
+                    <input type="text" value={editing.slug ?? ''} onChange={(e) => updateField('slug', e.target.value)} className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Categoría</label>
+                    <input
+                      type="text"
+                      list="category-options"
+                      value={editing.category ?? ''}
+                      onChange={(e) => updateField('category', e.target.value)}
+                      placeholder="Seleccionar o escribir nueva..."
+                      className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm"
+                    />
+                    <datalist id="category-options">
+                      {[...new Set(news.map(n => n.category).filter(Boolean))].sort().map(cat => (
+                        <option key={cat} value={cat} />
+                      ))}
+                    </datalist>
+                  </div>
                 </div>
 
                 <div>
