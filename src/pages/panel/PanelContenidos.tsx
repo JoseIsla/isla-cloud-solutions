@@ -110,16 +110,6 @@ const sectionGroups: SectionGroup[] = [
   },
   {
     tab: 'secciones',
-    label: '🛡️ Confianza / TrustLocal',
-    description: 'Sección de verificación y badge de confianza.',
-    keys: [
-      'trust_section_label', 'trust_section_title', 'trust_section_subtitle',
-      'trust_badge_name', 'trust_badge_score', 'trust_badge_max_score',
-      'trust_badge_reviews', 'trust_badge_url', 'trust_badge_stars', 'trust_badge_description',
-    ],
-  },
-  {
-    tab: 'secciones',
     label: '💬 Testimonios (Textos)',
     description: 'Etiqueta, título y subtítulo de la sección de testimonios.',
     keys: ['testimonials_section_label', 'testimonials_section_title', 'testimonials_section_subtitle'],
