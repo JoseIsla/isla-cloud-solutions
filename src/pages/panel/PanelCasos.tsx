@@ -218,6 +218,7 @@ const PanelCasos = () => {
                 </div>
                 <div>
                   <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Imagen</label>
+                  <p className="text-[10px] text-muted-foreground/70 mb-1.5">Recomendado: 1200×675px (16:9). Se recortará automáticamente.</p>
                   <div className="flex items-center gap-2">
                     <Input type="file" accept="image/*" onChange={handleImageUpload} className="flex-1" />
                     <Button type="button" variant="outline" size="sm" onClick={() => setMediaPicker(true)}>

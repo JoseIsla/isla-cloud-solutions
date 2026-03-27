@@ -171,6 +171,7 @@ const PanelTestimonios = () => {
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Avatar</label>
+                    <p className="text-[10px] text-muted-foreground/70 mb-1">200×200px, cuadrada.</p>
                     <Input type="file" accept="image/*" onChange={handleAvatarUpload} />
                     {editing.avatar_url && <img src={editing.avatar_url} alt="" className="h-8 w-8 mt-1.5 rounded-full object-cover" />}
                   </div>

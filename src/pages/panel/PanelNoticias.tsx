@@ -252,6 +252,7 @@ const PanelNoticias = () => {
 
                 <div>
                   <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Imagen</label>
+                  <p className="text-[10px] text-muted-foreground/70 mb-1.5">Recomendado: 1200×675px (16:9). Se recortará automáticamente.</p>
                   {editing.image_url && (
                     <div className="mb-2 rounded-lg overflow-hidden border border-border inline-block">
                       <img src={editing.image_url} alt="" className="h-20 object-cover" />
