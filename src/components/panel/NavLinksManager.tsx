@@ -9,9 +9,11 @@ import { toast } from 'sonner';
 interface NavLink {
   index: number;
   labelKey: string;
+  pathKey: string;
   visibleKey: string;
   orderKey: string;
   label: string;
+  path: string;
   visible: boolean;
   order: number;
   defaultPath: string;
@@ -41,9 +43,11 @@ const NavLinksManager = ({ contents, editValues, setEditValues }: Props) => {
   const links: NavLink[] = defaultLinks.map(d => ({
     index: d.index,
     labelKey: `nav_link${d.index}_label`,
+    pathKey: `nav_link${d.index}_path`,
     visibleKey: `nav_link${d.index}_visible`,
     orderKey: `nav_link${d.index}_order`,
     label: editValues[`nav_link${d.index}_label`] || d.defaultLabel,
+    path: editValues[`nav_link${d.index}_path`] || d.defaultPath,
     visible: (editValues[`nav_link${d.index}_visible`] ?? 'true') !== 'false',
     order: parseInt(editValues[`nav_link${d.index}_order`] || String(d.index)) || d.index,
     defaultPath: d.defaultPath,
@@ -56,6 +60,10 @@ const NavLinksManager = ({ contents, editValues, setEditValues }: Props) => {
 
   const handleLabelChange = (link: NavLink, newLabel: string) => {
     setEditValues({ ...editValues, [link.labelKey]: newLabel });
+  };
+
+  const handlePathChange = (link: NavLink, newPath: string) => {
+    setEditValues({ ...editValues, [link.pathKey]: newPath });
   };
 
   const handleDragStart = useCallback((idx: number, e: React.DragEvent) => {
@@ -75,7 +83,6 @@ const NavLinksManager = ({ contents, editValues, setEditValues }: Props) => {
       return;
     }
 
-    // Reorder: swap the order values
     const sorted = [...links];
     const [moved] = sorted.splice(dragIdx, 1);
     sorted.splice(overIdx, 0, moved);
@@ -103,6 +110,7 @@ const NavLinksManager = ({ contents, editValues, setEditValues }: Props) => {
       for (const link of links) {
         promises.push(
           contentsApi.update(link.labelKey, editValues[link.labelKey] || '', token, contents[link.labelKey]?.title),
+          contentsApi.update(link.pathKey, editValues[link.pathKey] || link.defaultPath, token, `Enlace ${link.index} - Ruta`),
           contentsApi.update(link.visibleKey, editValues[link.visibleKey] ?? 'true', token, contents[link.visibleKey]?.title),
           contentsApi.update(link.orderKey, editValues[link.orderKey] ?? String(link.index), token, contents[link.orderKey]?.title),
         );
@@ -140,11 +148,15 @@ const NavLinksManager = ({ contents, editValues, setEditValues }: Props) => {
               <input
                 value={editValues[link.labelKey] || ''}
                 onChange={(e) => handleLabelChange(link, e.target.value)}
-                className="px-3 py-1.5 rounded-lg bg-card border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 w-full sm:w-40"
+                placeholder="Etiqueta"
+                className="px-3 py-1.5 rounded-lg bg-card border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 w-full sm:w-36"
               />
-              <span className="text-xs text-muted-foreground font-mono truncate">
-                {link.defaultPath}
-              </span>
+              <input
+                value={editValues[link.pathKey] || link.defaultPath}
+                onChange={(e) => handlePathChange(link, e.target.value)}
+                placeholder="/ruta"
+                className="px-3 py-1.5 rounded-lg bg-card border border-border text-muted-foreground text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary/30 w-full sm:w-44"
+              />
             </div>
 
             <Switch
