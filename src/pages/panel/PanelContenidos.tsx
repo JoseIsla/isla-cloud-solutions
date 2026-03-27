@@ -155,6 +155,13 @@ const sectionGroups: SectionGroup[] = [
       'footer_description', 'footer_services_title', 'footer_company_title', 'footer_contact_title',
       'footer_company_link1', 'footer_company_link2', 'footer_company_link3',
       'footer_legal_link1', 'footer_legal_link2', 'footer_copyright',
+    ],
+  },
+  {
+    tab: 'footer',
+    label: '🌐 Redes Sociales',
+    description: 'URLs de los perfiles sociales. Deja en blanco para ocultar el icono en la web.',
+    keys: [
       'social_linkedin', 'social_twitter', 'social_facebook',
       'social_instagram', 'social_youtube', 'social_github',
     ],
