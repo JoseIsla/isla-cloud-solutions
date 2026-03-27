@@ -3,23 +3,18 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Server, Shield, Cloud, Monitor, Globe, Smartphone, Lock, Wrench, Database, type LucideIcon } from "lucide-react";
 import Layout from "@/components/Layout";
 import ParallaxHero from "@/components/ParallaxHero";
-import usePageMeta from "@/hooks/usePageMeta";
+import usePageMeta, { SITE_URL, SITE_NAME } from "@/hooks/usePageMeta";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { services as fallbackServices } from "@/data/services";
 import { servicesApi, type ServiceFromAPI } from "@/lib/api";
 import { useCMSValue } from "@/hooks/useCMS";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 
 const iconMap: Record<string, LucideIcon> = {
   Server, Shield, Cloud, Monitor, Globe, Smartphone, Lock, Wrench, Database,
 };
 
 const ServiciosPage = () => {
-  usePageMeta({
-    title: 'Servicios IT',
-    description: 'Hosting, cloud servers, desarrollo web, consultoría IT, mantenimiento informático y más. Soluciones tecnológicas a medida para tu empresa.',
-    canonical: '/servicios',
-  });
-
   const [apiServices, setApiServices] = useState<ServiceFromAPI[] | null>(null);
 
   useEffect(() => {
@@ -30,8 +25,33 @@ const ServiciosPage = () => {
 
   const useApi = apiServices && apiServices.length > 0;
 
+  const serviciosJsonLd = useMemo(() => {
+    const items = useApi
+      ? apiServices!.map((s, i) => ({ '@type': 'ListItem' as const, position: i + 1, url: `${SITE_URL}/servicios/${s.slug}`, name: s.title }))
+      : fallbackServices.map((s, i) => ({ '@type': 'ListItem' as const, position: i + 1, url: `${SITE_URL}/servicios/${s.slug}`, name: s.title }));
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      name: `Servicios IT | ${SITE_NAME}`,
+      url: `${SITE_URL}/servicios`,
+      description: 'Hosting, cloud servers, desarrollo web, consultoría IT, mantenimiento informático y más.',
+      mainEntity: {
+        '@type': 'ItemList',
+        numberOfItems: items.length,
+        itemListElement: items,
+      },
+    };
+  }, [useApi, apiServices]);
+
+  usePageMeta({
+    title: 'Servicios IT',
+    description: 'Hosting, cloud servers, desarrollo web, consultoría IT, mantenimiento informático y más. Soluciones tecnológicas a medida para tu empresa.',
+    canonical: '/servicios',
+    jsonLd: serviciosJsonLd,
+  });
   return (
     <Layout>
+      <BreadcrumbJsonLd items={[{ name: 'Inicio', path: '/' }, { name: 'Servicios', path: '/servicios' }]} />
       {/* Hero */}
       <ParallaxHero>
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-2xl">
