@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { Plus, Edit, Trash2, MessageCircle, Star, X, GripVertical } from 'lucide-react';
+import { Plus, Edit, Trash2, MessageCircle, Star, X, GripVertical, Search, ChevronUp, ChevronDown } from 'lucide-react';
 import { toast } from 'sonner';
 import { useDragReorder } from '@/hooks/useDragReorder';
 import { StaggerList, StaggerItem } from '@/components/panel/StaggerList';
@@ -19,6 +19,7 @@ const PanelTestimonios = () => {
   const [testimonials, setTestimonials] = useState<TestimonialFromAPI[]>([]);
   const [editing, setEditing] = useState<Partial<TestimonialFromAPI> | null>(null);
   const [loading, setLoading] = useState(false);
+  const [filter, setFilter] = useState('');
 
   const handleReorder = useCallback(async (reordered: TestimonialFromAPI[]) => {
     if (!token) return;
@@ -32,12 +33,27 @@ const PanelTestimonios = () => {
   }, [token]);
 
   const { getDragProps, isDragOver } = useDragReorder({ items: testimonials, setItems: setTestimonials, onReorder: handleReorder });
+
   const fetchData = () => {
     if (!token) return;
     testimonialsApi.listAll(token).then(setTestimonials).catch(() => toast.error('Error cargando testimonios'));
   };
 
   useEffect(fetchData, [token]);
+
+  const moveItem = async (idx: number, dir: -1 | 1) => {
+    const newIdx = idx + dir;
+    if (newIdx < 0 || newIdx >= testimonials.length) return;
+    const reordered = [...testimonials];
+    [reordered[idx], reordered[newIdx]] = [reordered[newIdx], reordered[idx]];
+    reordered.forEach((t, i) => (t.sort_order = i));
+    setTestimonials(reordered);
+    await handleReorder(reordered);
+  };
+
+  const filtered = testimonials.filter(t =>
+    !filter || t.author_name.toLowerCase().includes(filter.toLowerCase()) || t.author_company.toLowerCase().includes(filter.toLowerCase()) || t.quote.toLowerCase().includes(filter.toLowerCase())
+  );
 
   const handleSave = async () => {
     if (!editing || !token) return;
@@ -93,11 +109,23 @@ const PanelTestimonios = () => {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-xl font-heading font-bold text-foreground">Testimonios</h2>
-            <p className="text-muted-foreground text-sm mt-0.5">{testimonials.length} testimonios · <span className="text-muted-foreground/60">Arrastra para reordenar</span></p>
+            <p className="text-muted-foreground text-sm mt-0.5">{testimonials.length} testimonios</p>
           </div>
-          <Button size="sm" onClick={() => setEditing({ author_name: '', author_role: '', author_company: '', quote: '', rating: 5, is_active: 1, sort_order: 0 })}>
+          <Button size="sm" onClick={() => setEditing({ author_name: '', author_role: '', author_company: '', quote: '', rating: 5, is_active: 1, sort_order: testimonials.length })}>
             <Plus size={16} /> Nuevo
           </Button>
+        </div>
+
+        {/* Filter */}
+        <div className="relative">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <input
+            type="text"
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            placeholder="Buscar por nombre, empresa o contenido..."
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm"
+          />
         </div>
 
         {editing && (
@@ -126,7 +154,7 @@ const PanelTestimonios = () => {
                     <Input value={editing.author_company || ''} onChange={(e) => setEditing({ ...editing, author_company: e.target.value })} />
                   </div>
                 </div>
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Avatar</label>
                     <Input type="file" accept="image/*" onChange={handleAvatarUpload} />
@@ -135,10 +163,6 @@ const PanelTestimonios = () => {
                   <div>
                     <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Puntuación</label>
                     <Input type="number" min={1} max={5} value={editing.rating || 5} onChange={(e) => setEditing({ ...editing, rating: parseInt(e.target.value) || 5 })} />
-                  </div>
-                  <div>
-                    <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Orden</label>
-                    <Input type="number" value={editing.sort_order || 0} onChange={(e) => setEditing({ ...editing, sort_order: parseInt(e.target.value) })} />
                   </div>
                 </div>
                 <div className="flex items-center gap-3 p-3 rounded-lg bg-background border border-border">
@@ -162,39 +186,53 @@ const PanelTestimonios = () => {
               <p className="text-muted-foreground/60 text-xs mt-1">Aparecerán en el landing entre Clientes y Confianza</p>
             </div>
           )}
-          {testimonials.map((t, idx) => (
-            <StaggerItem
-              key={t.id}
-              {...getDragProps(idx)}
-              className={`flex items-center gap-4 p-4 rounded-xl bg-card border transition-all duration-150 group ${
-                isDragOver(idx) ? 'border-primary/40 shadow-md shadow-primary/5 scale-[1.01]' : 'border-border hover:border-primary/15'
-              }`}
-            >
-              <GripVertical size={16} className="text-muted-foreground/30 shrink-0 cursor-grab active:cursor-grabbing" />
-              {t.avatar_url ? (
-                <img src={t.avatar_url} alt="" className="w-10 h-10 rounded-full object-cover shrink-0" />
-              ) : (
-                <div className="w-10 h-10 rounded-full bg-accent/50 flex items-center justify-center text-primary font-bold text-sm shrink-0">
-                  {t.author_name.charAt(0).toUpperCase()}
+          {filtered.map((t) => {
+            const realIdx = testimonials.indexOf(t);
+            return (
+              <StaggerItem
+                key={t.id}
+                {...getDragProps(realIdx)}
+                className={`flex items-center gap-3 p-4 rounded-xl bg-card border transition-all duration-150 group ${
+                  isDragOver(realIdx) ? 'border-primary/40 shadow-md shadow-primary/5 scale-[1.01]' : 'border-border hover:border-primary/15'
+                }`}
+              >
+                <GripVertical size={16} className="text-muted-foreground/30 shrink-0 cursor-grab active:cursor-grabbing" />
+                {t.avatar_url ? (
+                  <img src={t.avatar_url} alt="" className="w-10 h-10 rounded-full object-cover shrink-0" />
+                ) : (
+                  <div className="w-10 h-10 rounded-full bg-accent/50 flex items-center justify-center text-primary font-bold text-sm shrink-0">
+                    {t.author_name.charAt(0).toUpperCase()}
+                  </div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm text-foreground truncate italic">"{t.quote.slice(0, 70)}{t.quote.length > 70 ? '...' : ''}"</p>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <span className="text-xs font-medium text-foreground">{t.author_name}</span>
+                    {t.author_company && <span className="text-xs text-muted-foreground">· {t.author_company}</span>}
+                    <div className="flex gap-0.5 ml-1">{renderStars(t.rating)}</div>
+                  </div>
                 </div>
-              )}
-              <div className="flex-1 min-w-0">
-                <p className="text-sm text-foreground truncate italic">"{t.quote.slice(0, 70)}{t.quote.length > 70 ? '...' : ''}"</p>
-                <div className="flex items-center gap-2 mt-0.5">
-                  <span className="text-xs font-medium text-foreground">{t.author_name}</span>
-                  {t.author_company && <span className="text-xs text-muted-foreground">· {t.author_company}</span>}
-                  <div className="flex gap-0.5 ml-1">{renderStars(t.rating)}</div>
+                {!t.is_active && (
+                  <span className="text-[10px] bg-muted text-muted-foreground px-2 py-0.5 rounded font-medium shrink-0">Inactivo</span>
+                )}
+                {!filter && (
+                  <div className="flex flex-col shrink-0">
+                    <button onClick={() => moveItem(realIdx, -1)} disabled={realIdx === 0} className="p-0.5 rounded hover:bg-muted disabled:opacity-20 text-muted-foreground"><ChevronUp size={14} /></button>
+                    <button onClick={() => moveItem(realIdx, 1)} disabled={realIdx === testimonials.length - 1} className="p-0.5 rounded hover:bg-muted disabled:opacity-20 text-muted-foreground"><ChevronDown size={14} /></button>
+                  </div>
+                )}
+                <div className="flex gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button onClick={() => setEditing(t)} className="p-2 rounded-lg hover:bg-primary/10 text-primary"><Edit size={15} /></button>
+                  <button onClick={() => handleDelete(t.id)} className="p-2 rounded-lg hover:bg-destructive/10 text-destructive"><Trash2 size={15} /></button>
                 </div>
-              </div>
-              {!t.is_active && (
-                <span className="text-[10px] bg-muted text-muted-foreground px-2 py-0.5 rounded font-medium shrink-0">Inactivo</span>
-              )}
-              <div className="flex gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button onClick={() => setEditing(t)} className="p-2 rounded-lg hover:bg-primary/10 text-primary"><Edit size={15} /></button>
-                <button onClick={() => handleDelete(t.id)} className="p-2 rounded-lg hover:bg-destructive/10 text-destructive"><Trash2 size={15} /></button>
-              </div>
-            </StaggerItem>
-          ))}
+              </StaggerItem>
+            );
+          })}
+          {testimonials.length > 0 && filtered.length === 0 && (
+            <div className="p-8 text-center text-muted-foreground text-sm rounded-xl border border-dashed border-border">
+              No se encontraron resultados para "{filter}"
+            </div>
+          )}
         </StaggerList>
       </div>
       <ConfirmDialog />

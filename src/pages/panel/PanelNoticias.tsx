@@ -4,7 +4,7 @@ import { useAuth } from '@/hooks/useAuth';
 import PanelLayout from './PanelLayout';
 import { newsApi, uploadImage, type NewsFromAPI, API_BASE_URL } from '@/lib/api';
 import { Button } from '@/components/ui/button';
-import { Plus, Pencil, Trash2, X, Upload, Calendar, RefreshCw } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Upload, Calendar, RefreshCw, Search } from 'lucide-react';
 import { toast } from 'sonner';
 import RichEditor from '@/components/ui/rich-editor';
 import { StaggerList, StaggerItem } from '@/components/panel/StaggerList';
@@ -30,6 +30,7 @@ const PanelNoticias = () => {
   const [isNew, setIsNew] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [catOpen, setCatOpen] = useState(false);
+  const [filter, setFilter] = useState('');
   const catRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -37,7 +38,6 @@ const PanelNoticias = () => {
     [...new Set(news.map(n => n.category).filter(Boolean))].sort()
   , [news]);
 
-  // Close category dropdown on outside click
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (catRef.current && !catRef.current.contains(e.target as Node)) setCatOpen(false);
@@ -46,24 +46,19 @@ const PanelNoticias = () => {
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
-  // Auto-generate slug when title changes on new posts
   const updateField = (key: string, value: string) => {
     setEditing(prev => {
       if (!prev) return prev;
       const updated = { ...prev, [key]: value };
-      // Auto-slug from title for new posts (or if slug was auto-generated)
       if (key === 'title' && (isNew || !prev.slug || prev.slug === generateSlug(prev.title || ''))) {
         updated.slug = generateSlug(value);
       }
-      // Auto-excerpt from content if excerpt is empty
       if (key === 'content' && !prev.excerpt) {
         updated.excerpt = stripHtmlToExcerpt(value);
       }
-      // Auto meta_title if empty or was auto-generated
       if (key === 'title' && (!prev.meta_title || prev.meta_title === prev.title)) {
         updated.meta_title = value;
       }
-      // Auto meta_description from content if empty
       if (key === 'content' && (!prev.meta_description || prev.meta_description === stripHtmlToExcerpt(prev.content || '', 155))) {
         updated.meta_description = stripHtmlToExcerpt(value, 155);
       }
@@ -85,6 +80,10 @@ const PanelNoticias = () => {
 
   const load = () => { if (token) newsApi.list(token).then(setNews).catch(() => {}); };
   useEffect(load, [token]);
+
+  const filtered = news.filter(n =>
+    !filter || n.title.toLowerCase().includes(filter.toLowerCase()) || (n.category || '').toLowerCase().includes(filter.toLowerCase())
+  );
 
   const handleSave = async () => {
     if (!token || !editing) return;
@@ -142,6 +141,18 @@ const PanelNoticias = () => {
           <Button size="sm" onClick={() => { setEditing({ title: '', slug: '', excerpt: '', content: '', image_url: '', category: '', is_published: 0 }); setIsNew(true); }}>
             <Plus size={16} /> Nueva noticia
           </Button>
+        </div>
+
+        {/* Filter */}
+        <div className="relative">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <input
+            type="text"
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            placeholder="Buscar por título o categoría..."
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm"
+          />
         </div>
 
         {editing && (
@@ -277,7 +288,7 @@ const PanelNoticias = () => {
         )}
 
         <StaggerList className="space-y-2">
-          {news.map((n) => (
+          {filtered.map((n) => (
             <StaggerItem key={n.id} className="flex items-center gap-4 p-4 rounded-xl bg-card border border-border hover:border-primary/15 transition-colors group">
               {n.image_url ? (
                 <img src={n.image_url} alt="" className="w-12 h-10 rounded-lg object-cover shrink-0" />
@@ -305,6 +316,11 @@ const PanelNoticias = () => {
           {news.length === 0 && (
             <div className="p-12 text-center text-muted-foreground text-sm rounded-xl border border-dashed border-border">
               No hay noticias publicadas
+            </div>
+          )}
+          {news.length > 0 && filtered.length === 0 && (
+            <div className="p-8 text-center text-muted-foreground text-sm rounded-xl border border-dashed border-border">
+              No se encontraron resultados para "{filter}"
             </div>
           )}
         </StaggerList>
