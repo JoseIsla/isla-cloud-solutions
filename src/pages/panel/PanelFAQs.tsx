@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { Plus, Edit, Trash2, HelpCircle, X, GripVertical } from 'lucide-react';
+import { Plus, Edit, Trash2, HelpCircle, X, GripVertical, Search, ChevronUp, ChevronDown } from 'lucide-react';
 import { toast } from 'sonner';
 import RichEditor from '@/components/ui/rich-editor';
 import { useDragReorder } from '@/hooks/useDragReorder';
@@ -19,6 +19,7 @@ const PanelFAQs = () => {
   const [faqs, setFaqs] = useState<FAQFromAPI[]>([]);
   const [editing, setEditing] = useState<Partial<FAQFromAPI> | null>(null);
   const [loading, setLoading] = useState(false);
+  const [filter, setFilter] = useState('');
 
   const handleReorder = useCallback(async (reordered: FAQFromAPI[]) => {
     if (!token) return;
@@ -39,6 +40,20 @@ const PanelFAQs = () => {
   };
 
   useEffect(fetchData, [token]);
+
+  const moveItem = async (idx: number, dir: -1 | 1) => {
+    const newIdx = idx + dir;
+    if (newIdx < 0 || newIdx >= faqs.length) return;
+    const reordered = [...faqs];
+    [reordered[idx], reordered[newIdx]] = [reordered[newIdx], reordered[idx]];
+    reordered.forEach((f, i) => (f.sort_order = i));
+    setFaqs(reordered);
+    await handleReorder(reordered);
+  };
+
+  const filtered = faqs.filter(f =>
+    !filter || f.question.toLowerCase().includes(filter.toLowerCase()) || f.answer.replace(/<[^>]*>/g, '').toLowerCase().includes(filter.toLowerCase())
+  );
 
   const handleSave = async () => {
     if (!editing || !token) return;
@@ -71,20 +86,29 @@ const PanelFAQs = () => {
     }
   };
 
-
   return (
     <PanelLayout>
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-xl font-heading font-bold text-foreground">Preguntas Frecuentes</h2>
-            <p className="text-muted-foreground text-sm mt-0.5">
-              {faqs.length} preguntas · <span className="text-muted-foreground/60">Arrastra para reordenar</span>
-            </p>
+            <p className="text-muted-foreground text-sm mt-0.5">{faqs.length} preguntas</p>
           </div>
           <Button size="sm" onClick={() => setEditing({ question: '', answer: '', sort_order: faqs.length, is_active: 1 })}>
             <Plus size={16} /> Nueva
           </Button>
+        </div>
+
+        {/* Filter */}
+        <div className="relative">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <input
+            type="text"
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            placeholder="Buscar preguntas..."
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm"
+          />
         </div>
 
         {editing && (
@@ -103,17 +127,9 @@ const PanelFAQs = () => {
                   <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Respuesta</label>
                   <RichEditor value={editing.answer || ''} onChange={(html) => setEditing({ ...editing, answer: html })} />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Orden</label>
-                    <Input type="number" value={editing.sort_order || 0} onChange={(e) => setEditing({ ...editing, sort_order: parseInt(e.target.value) })} />
-                  </div>
-                  <div className="flex items-end">
-                    <div className="flex items-center gap-3 p-3 rounded-lg bg-background border border-border w-full">
-                      <Switch checked={!!editing.is_active} onCheckedChange={(checked) => setEditing({ ...editing, is_active: checked ? 1 : 0 })} />
-                      <Label className="text-sm">Activa</Label>
-                    </div>
-                  </div>
+                <div className="flex items-center gap-3 p-3 rounded-lg bg-background border border-border">
+                  <Switch checked={!!editing.is_active} onCheckedChange={(checked) => setEditing({ ...editing, is_active: checked ? 1 : 0 })} />
+                  <Label className="text-sm">Activa</Label>
                 </div>
                 <div className="flex gap-3 pt-2">
                   <Button onClick={handleSave} disabled={loading}>{loading ? 'Guardando...' : 'Guardar'}</Button>
@@ -132,31 +148,45 @@ const PanelFAQs = () => {
               <p className="text-muted-foreground/60 text-xs mt-1">Aparecerán en el landing antes del CTA</p>
             </div>
           )}
-          {faqs.map((f, idx) => (
-            <StaggerItem
-              key={f.id}
-              {...getDragProps(idx)}
-              className={`flex items-center gap-3 p-4 rounded-xl bg-card border transition-all duration-150 group ${
-                isDragOver(idx) ? 'border-primary/40 shadow-md shadow-primary/5 scale-[1.01]' : 'border-border hover:border-primary/15'
-              }`}
-            >
-              <GripVertical size={16} className="text-muted-foreground/30 shrink-0 cursor-grab active:cursor-grabbing" />
-              <div className="w-9 h-9 rounded-lg bg-accent/50 flex items-center justify-center shrink-0">
-                <HelpCircle size={16} className="text-primary" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-foreground truncate">{f.question}</p>
-                <p className="text-xs text-muted-foreground truncate mt-0.5" dangerouslySetInnerHTML={{ __html: f.answer.replace(/<[^>]*>/g, '').slice(0, 80) }} />
-              </div>
-              {!f.is_active && (
-                <span className="text-[10px] bg-muted text-muted-foreground px-2 py-0.5 rounded font-medium shrink-0">Inactiva</span>
-              )}
-              <div className="flex gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button onClick={() => setEditing(f)} className="p-2 rounded-lg hover:bg-primary/10 text-primary"><Edit size={15} /></button>
-                <button onClick={() => handleDelete(f.id)} className="p-2 rounded-lg hover:bg-destructive/10 text-destructive"><Trash2 size={15} /></button>
-              </div>
-            </StaggerItem>
-          ))}
+          {filtered.map((f) => {
+            const realIdx = faqs.indexOf(f);
+            return (
+              <StaggerItem
+                key={f.id}
+                {...getDragProps(realIdx)}
+                className={`flex items-center gap-3 p-4 rounded-xl bg-card border transition-all duration-150 group ${
+                  isDragOver(realIdx) ? 'border-primary/40 shadow-md shadow-primary/5 scale-[1.01]' : 'border-border hover:border-primary/15'
+                }`}
+              >
+                <GripVertical size={16} className="text-muted-foreground/30 shrink-0 cursor-grab active:cursor-grabbing" />
+                <div className="w-9 h-9 rounded-lg bg-accent/50 flex items-center justify-center shrink-0">
+                  <HelpCircle size={16} className="text-primary" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-foreground truncate">{f.question}</p>
+                  <p className="text-xs text-muted-foreground truncate mt-0.5" dangerouslySetInnerHTML={{ __html: f.answer.replace(/<[^>]*>/g, '').slice(0, 80) }} />
+                </div>
+                {!f.is_active && (
+                  <span className="text-[10px] bg-muted text-muted-foreground px-2 py-0.5 rounded font-medium shrink-0">Inactiva</span>
+                )}
+                {!filter && (
+                  <div className="flex flex-col shrink-0">
+                    <button onClick={() => moveItem(realIdx, -1)} disabled={realIdx === 0} className="p-0.5 rounded hover:bg-muted disabled:opacity-20 text-muted-foreground"><ChevronUp size={14} /></button>
+                    <button onClick={() => moveItem(realIdx, 1)} disabled={realIdx === faqs.length - 1} className="p-0.5 rounded hover:bg-muted disabled:opacity-20 text-muted-foreground"><ChevronDown size={14} /></button>
+                  </div>
+                )}
+                <div className="flex gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button onClick={() => setEditing(f)} className="p-2 rounded-lg hover:bg-primary/10 text-primary"><Edit size={15} /></button>
+                  <button onClick={() => handleDelete(f.id)} className="p-2 rounded-lg hover:bg-destructive/10 text-destructive"><Trash2 size={15} /></button>
+                </div>
+              </StaggerItem>
+            );
+          })}
+          {faqs.length > 0 && filtered.length === 0 && (
+            <div className="p-8 text-center text-muted-foreground text-sm rounded-xl border border-dashed border-border">
+              No se encontraron resultados para "{filter}"
+            </div>
+          )}
         </StaggerList>
       </div>
       <ConfirmDialog />

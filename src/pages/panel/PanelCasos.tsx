@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useConfirmDialog } from '@/hooks/useConfirmDialog';
 import { useAuth } from '@/hooks/useAuth';
 import { casesApi, clientsApi, uploadImage, type CaseFromAPI, type ClientFromAPI, API_BASE_URL } from '@/lib/api';
@@ -11,7 +11,7 @@ import RichEditor from '@/components/ui/rich-editor';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus, Edit, Trash2, Trophy, X, Upload, GripVertical, RefreshCw } from 'lucide-react';
+import { Plus, Edit, Trash2, Trophy, X, Upload, GripVertical, RefreshCw, Search, ChevronUp, ChevronDown } from 'lucide-react';
 import { toast } from 'sonner';
 import { StaggerList, StaggerItem } from '@/components/panel/StaggerList';
 
@@ -35,6 +35,7 @@ const PanelCasos = () => {
   const [clients, setClients] = useState<ClientFromAPI[]>([]);
   const [editing, setEditing] = useState<Partial<CaseFromAPI> | null>(null);
   const [loading, setLoading] = useState(false);
+  const [filter, setFilter] = useState('');
 
   useEffect(() => {
     clientsApi.list().then(setClients).catch(() => {});
@@ -47,12 +48,12 @@ const PanelCasos = () => {
 
   useEffect(fetchCases, [token]);
 
-  const handleReorder = async (reordered: CaseFromAPI[]) => {
+  const handleReorder = useCallback(async (reordered: CaseFromAPI[]) => {
     if (!token) return;
     try {
       await Promise.all(
-        reordered.map((c) =>
-          casesApi.update(c.id, { ...c, sort_order: c.sort_order }, token)
+        reordered.map((c, i) =>
+          casesApi.update(c.id, { ...c, sort_order: i }, token)
         )
       );
       toast.success('Orden actualizado');
@@ -60,13 +61,27 @@ const PanelCasos = () => {
       toast.error('Error actualizando orden');
       fetchCases();
     }
-  };
+  }, [token]);
 
   const { getDragProps, isDragOver } = useDragReorder({
     items: cases,
     setItems: setCases,
     onReorder: handleReorder,
   });
+
+  const moveItem = async (idx: number, dir: -1 | 1) => {
+    const newIdx = idx + dir;
+    if (newIdx < 0 || newIdx >= cases.length) return;
+    const reordered = [...cases];
+    [reordered[idx], reordered[newIdx]] = [reordered[newIdx], reordered[idx]];
+    reordered.forEach((c, i) => (c.sort_order = i));
+    setCases(reordered);
+    await handleReorder(reordered);
+  };
+
+  const filtered = cases.filter(c =>
+    !filter || c.title.toLowerCase().includes(filter.toLowerCase()) || c.client_name.toLowerCase().includes(filter.toLowerCase())
+  );
 
   const handleSave = async () => {
     if (!editing || !token) return;
@@ -119,9 +134,21 @@ const PanelCasos = () => {
             <h2 className="text-xl font-heading font-bold text-foreground">Casos de Éxito</h2>
             <p className="text-muted-foreground text-sm mt-0.5">{cases.length} casos registrados</p>
           </div>
-          <Button size="sm" onClick={() => setEditing({ title: '', slug: '', client_name: '', excerpt: '', description: '', is_active: 1, sort_order: 0, meta_title: '', meta_description: '', noindex: 0, nofollow: 0 })}>
+          <Button size="sm" onClick={() => setEditing({ title: '', slug: '', client_name: '', excerpt: '', description: '', is_active: 1, sort_order: cases.length, meta_title: '', meta_description: '', noindex: 0, nofollow: 0 })}>
             <Plus size={16} /> Nuevo caso
           </Button>
+        </div>
+
+        {/* Filter */}
+        <div className="relative">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <input
+            type="text"
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            placeholder="Buscar por título o cliente..."
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm"
+          />
         </div>
 
         {editing && (
@@ -140,11 +167,9 @@ const PanelCasos = () => {
                       setEditing(prev => {
                         if (!prev) return prev;
                         const updated = { ...prev, title };
-                        // Auto-slug
                         if (!prev.id || !prev.slug || prev.slug === generateSlug(prev.title || '')) {
                           updated.slug = generateSlug(title);
                         }
-                        // Auto meta_title
                         if (!prev.meta_title || prev.meta_title === prev.title) {
                           updated.meta_title = title;
                         }
@@ -174,16 +199,10 @@ const PanelCasos = () => {
                   <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Descripción</label>
                   <RichEditor value={editing.description || ''} onChange={(html) => setEditing((prev) => prev ? { ...prev, description: html } : prev)} />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Imagen</label>
-                    <Input type="file" accept="image/*" onChange={handleImageUpload} />
-                    {editing.image_url && <img src={editing.image_url} alt="" className="h-12 mt-2 rounded-lg object-cover" />}
-                  </div>
-                  <div>
-                    <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Orden</label>
-                    <Input type="number" value={editing.sort_order || 0} onChange={(e) => setEditing({ ...editing, sort_order: parseInt(e.target.value) })} />
-                  </div>
+                <div>
+                  <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Imagen</label>
+                  <Input type="file" accept="image/*" onChange={handleImageUpload} />
+                  {editing.image_url && <img src={editing.image_url} alt="" className="h-12 mt-2 rounded-lg object-cover" />}
                 </div>
                 {/* SEO Parameters */}
                 <div className="border border-border rounded-xl p-4 space-y-3 bg-muted/30">
@@ -258,35 +277,49 @@ const PanelCasos = () => {
               <p className="text-muted-foreground/60 text-xs mt-1">Aparecerán en el slider del hero</p>
             </div>
           )}
-          {cases.map((c, idx) => (
-            <StaggerItem
-              key={c.id}
-              {...getDragProps(idx)}
-              className={`flex items-center gap-4 p-4 rounded-xl bg-card border border-border hover:border-primary/15 transition-colors group cursor-grab active:cursor-grabbing ${
-                isDragOver(idx) ? 'border-primary/40 bg-primary/5' : ''
-              }`}
-            >
-              <GripVertical size={16} className="text-muted-foreground shrink-0" />
-              {c.image_url ? (
-                <img src={c.image_url} alt="" className="w-10 h-10 rounded-lg object-cover shrink-0" />
-              ) : (
-                <div className="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center shrink-0">
-                  <Trophy size={16} className="text-amber-500" />
+          {filtered.map((c) => {
+            const realIdx = cases.indexOf(c);
+            return (
+              <StaggerItem
+                key={c.id}
+                {...getDragProps(realIdx)}
+                className={`flex items-center gap-3 p-4 rounded-xl bg-card border border-border hover:border-primary/15 transition-colors group cursor-grab active:cursor-grabbing ${
+                  isDragOver(realIdx) ? 'border-primary/40 bg-primary/5' : ''
+                }`}
+              >
+                <GripVertical size={16} className="text-muted-foreground shrink-0" />
+                {c.image_url ? (
+                  <img src={c.image_url} alt="" className="w-10 h-10 rounded-lg object-cover shrink-0" />
+                ) : (
+                  <div className="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center shrink-0">
+                    <Trophy size={16} className="text-amber-500" />
+                  </div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-foreground truncate">{c.title}</p>
+                  <p className="text-xs text-muted-foreground">{c.client_name}</p>
                 </div>
-              )}
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-foreground truncate">{c.title}</p>
-                <p className="text-xs text-muted-foreground">{c.client_name}</p>
-              </div>
-              {!c.is_active && (
-                <span className="text-[10px] bg-muted text-muted-foreground px-2 py-0.5 rounded font-medium shrink-0">Inactivo</span>
-              )}
-              <div className="flex gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button onClick={() => setEditing(c)} className="p-2 rounded-lg hover:bg-primary/10 text-primary"><Edit size={15} /></button>
-                <button onClick={() => handleDelete(c.id)} className="p-2 rounded-lg hover:bg-destructive/10 text-destructive"><Trash2 size={15} /></button>
-              </div>
-            </StaggerItem>
-          ))}
+                {!c.is_active && (
+                  <span className="text-[10px] bg-muted text-muted-foreground px-2 py-0.5 rounded font-medium shrink-0">Inactivo</span>
+                )}
+                {!filter && (
+                  <div className="flex flex-col shrink-0">
+                    <button onClick={() => moveItem(realIdx, -1)} disabled={realIdx === 0} className="p-0.5 rounded hover:bg-muted disabled:opacity-20 text-muted-foreground"><ChevronUp size={14} /></button>
+                    <button onClick={() => moveItem(realIdx, 1)} disabled={realIdx === cases.length - 1} className="p-0.5 rounded hover:bg-muted disabled:opacity-20 text-muted-foreground"><ChevronDown size={14} /></button>
+                  </div>
+                )}
+                <div className="flex gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button onClick={() => setEditing(c)} className="p-2 rounded-lg hover:bg-primary/10 text-primary"><Edit size={15} /></button>
+                  <button onClick={() => handleDelete(c.id)} className="p-2 rounded-lg hover:bg-destructive/10 text-destructive"><Trash2 size={15} /></button>
+                </div>
+              </StaggerItem>
+            );
+          })}
+          {cases.length > 0 && filtered.length === 0 && (
+            <div className="p-8 text-center text-muted-foreground text-sm rounded-xl border border-dashed border-border">
+              No se encontraron resultados para "{filter}"
+            </div>
+          )}
         </StaggerList>
       </div>
       <ConfirmDialog />

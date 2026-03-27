@@ -4,7 +4,7 @@ import { useAuth } from '@/hooks/useAuth';
 import PanelLayout from './PanelLayout';
 import { servicesApi, uploadImage, type ServiceFromAPI, API_BASE_URL } from '@/lib/api';
 import { Button } from '@/components/ui/button';
-import { Plus, Pencil, Trash2, X, Upload, GripVertical, FileText } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Upload, GripVertical, FileText, Search, ChevronUp, ChevronDown } from 'lucide-react';
 import { toast } from 'sonner';
 import RichEditor from '@/components/ui/rich-editor';
 import { useDragReorder } from '@/hooks/useDragReorder';
@@ -17,6 +17,7 @@ const PanelServicios = () => {
   const [editing, setEditing] = useState<Partial<ServiceFromAPI> | null>(null);
   const [isNew, setIsNew] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [filter, setFilter] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleReorder = useCallback(async (reordered: ServiceFromAPI[]) => {
@@ -34,6 +35,20 @@ const PanelServicios = () => {
 
   const load = () => { servicesApi.list().then(setServices).catch(() => {}); };
   useEffect(load, []);
+
+  const moveItem = async (idx: number, dir: -1 | 1) => {
+    const newIdx = idx + dir;
+    if (newIdx < 0 || newIdx >= services.length) return;
+    const reordered = [...services];
+    [reordered[idx], reordered[newIdx]] = [reordered[newIdx], reordered[idx]];
+    reordered.forEach((s, i) => (s.sort_order = i));
+    setServices(reordered);
+    await handleReorder(reordered);
+  };
+
+  const filtered = services.filter(s =>
+    !filter || s.title.toLowerCase().includes(filter.toLowerCase()) || s.slug.toLowerCase().includes(filter.toLowerCase())
+  );
 
   const handleSave = async () => {
     if (!token || !editing) return;
@@ -86,11 +101,23 @@ const PanelServicios = () => {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-xl font-heading font-bold text-foreground">Servicios</h2>
-            <p className="text-muted-foreground text-sm mt-0.5">{services.length} servicios · <span className="text-muted-foreground/60">Arrastra para reordenar</span></p>
+            <p className="text-muted-foreground text-sm mt-0.5">{services.length} servicios</p>
           </div>
-          <Button size="sm" onClick={() => { setEditing({ slug: '', title: '', short_title: '', description: '', long_description: '', icon: 'Server', features: [], image_url: '', sort_order: 0 }); setIsNew(true); }}>
+          <Button size="sm" onClick={() => { setEditing({ slug: '', title: '', short_title: '', description: '', long_description: '', icon: 'Server', features: [], image_url: '', sort_order: services.length }); setIsNew(true); }}>
             <Plus size={16} /> Nuevo
           </Button>
+        </div>
+
+        {/* Filter */}
+        <div className="relative">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <input
+            type="text"
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            placeholder="Buscar servicios..."
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm"
+          />
         </div>
 
         {/* Modal */}
@@ -166,35 +193,49 @@ const PanelServicios = () => {
 
         {/* List */}
         <StaggerList className="space-y-1">
-          {services.map((s, idx) => (
-            <StaggerItem
-              key={s.id}
-              {...getDragProps(idx)}
-              className={`flex items-center gap-4 p-4 rounded-xl bg-card border transition-all duration-150 group ${
-                isDragOver(idx) ? 'border-primary/40 shadow-md shadow-primary/5 scale-[1.01]' : 'border-border hover:border-primary/15'
-              }`}
-            >
-              <GripVertical size={16} className="text-muted-foreground/30 shrink-0 cursor-grab active:cursor-grabbing" />
-              {s.image_url ? (
-                <img src={s.image_url} alt="" className="w-10 h-10 rounded-lg object-cover shrink-0" />
-              ) : (
-                <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center shrink-0">
-                  <FileText size={16} className="text-muted-foreground" />
+          {filtered.map((s, idx) => {
+            const realIdx = services.indexOf(s);
+            return (
+              <StaggerItem
+                key={s.id}
+                {...getDragProps(realIdx)}
+                className={`flex items-center gap-3 p-4 rounded-xl bg-card border transition-all duration-150 group ${
+                  isDragOver(realIdx) ? 'border-primary/40 shadow-md shadow-primary/5 scale-[1.01]' : 'border-border hover:border-primary/15'
+                }`}
+              >
+                <GripVertical size={16} className="text-muted-foreground/30 shrink-0 cursor-grab active:cursor-grabbing" />
+                {s.image_url ? (
+                  <img src={s.image_url} alt="" className="w-10 h-10 rounded-lg object-cover shrink-0" />
+                ) : (
+                  <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center shrink-0">
+                    <FileText size={16} className="text-muted-foreground" />
+                  </div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-foreground truncate">{s.title}</p>
+                  <p className="text-xs text-muted-foreground truncate">{s.slug}</p>
                 </div>
-              )}
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-foreground truncate">{s.title}</p>
-                <p className="text-xs text-muted-foreground truncate">{s.slug}</p>
-              </div>
-              <div className="flex gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button onClick={() => { setEditing(s); setIsNew(false); }} className="p-2 rounded-lg hover:bg-primary/10 text-primary"><Pencil size={15} /></button>
-                <button onClick={() => handleDelete(s.id)} className="p-2 rounded-lg hover:bg-destructive/10 text-destructive"><Trash2 size={15} /></button>
-              </div>
-            </StaggerItem>
-          ))}
+                {!filter && (
+                  <div className="flex flex-col shrink-0">
+                    <button onClick={() => moveItem(realIdx, -1)} disabled={realIdx === 0} className="p-0.5 rounded hover:bg-muted disabled:opacity-20 text-muted-foreground"><ChevronUp size={14} /></button>
+                    <button onClick={() => moveItem(realIdx, 1)} disabled={realIdx === services.length - 1} className="p-0.5 rounded hover:bg-muted disabled:opacity-20 text-muted-foreground"><ChevronDown size={14} /></button>
+                  </div>
+                )}
+                <div className="flex gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button onClick={() => { setEditing(s); setIsNew(false); }} className="p-2 rounded-lg hover:bg-primary/10 text-primary"><Pencil size={15} /></button>
+                  <button onClick={() => handleDelete(s.id)} className="p-2 rounded-lg hover:bg-destructive/10 text-destructive"><Trash2 size={15} /></button>
+                </div>
+              </StaggerItem>
+            );
+          })}
           {services.length === 0 && (
             <div className="p-12 text-center text-muted-foreground text-sm rounded-xl border border-dashed border-border">
               No hay servicios registrados
+            </div>
+          )}
+          {services.length > 0 && filtered.length === 0 && (
+            <div className="p-8 text-center text-muted-foreground text-sm rounded-xl border border-dashed border-border">
+              No se encontraron resultados para "{filter}"
             </div>
           )}
         </StaggerList>
