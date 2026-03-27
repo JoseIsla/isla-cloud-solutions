@@ -24,6 +24,7 @@ const CTASection = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
           >
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-white leading-tight">
               {title.split(' ').map((word, i) => {
@@ -43,31 +44,33 @@ const CTASection = () => {
             </Button>
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="grid grid-cols-1 sm:grid-cols-2 gap-4"
-          >
-            <div className="p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
-              <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center mb-4">
-                <Phone size={22} className="text-primary" />
-              </div>
-              <h3 className="text-white font-heading font-bold mb-2">{card1Title}</h3>
-              <p className="text-white/50 text-sm mb-3">{card1Desc}</p>
-              <a href={`tel:${phone.replace(/\s/g, '')}`} className="text-primary text-sm font-semibold hover:underline">
-                {phone}
-              </a>
-            </div>
-            <div className="p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
-              <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center mb-4">
-                <Settings size={22} className="text-primary" />
-              </div>
-              <h3 className="text-white font-heading font-bold mb-2">{card2Title}</h3>
-              <p className="text-white/50 text-sm">{card2Desc}</p>
-            </div>
-          </motion.div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {[
+              { icon: Phone, title: card1Title, desc: card1Desc, extra: (
+                <a href={`tel:${phone.replace(/\s/g, '')}`} className="text-primary text-sm font-semibold hover:underline">
+                  {phone}
+                </a>
+              )},
+              { icon: Settings, title: card2Title, desc: card2Desc },
+            ].map((card, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 25 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2 + i * 0.15, duration: 0.5 }}
+                whileHover={{ y: -5, transition: { duration: 0.25 } }}
+                className="p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm hover:bg-white/[0.08] hover:border-white/20 transition-colors duration-300"
+              >
+                <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center mb-4">
+                  <card.icon size={22} className="text-primary" />
+                </div>
+                <h3 className="text-white font-heading font-bold mb-2">{card.title}</h3>
+                <p className="text-white/50 text-sm mb-3">{card.desc}</p>
+                {card.extra}
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

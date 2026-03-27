@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
+import { motion } from 'framer-motion';
 import PanelLayout from './PanelLayout';
 import { contactsApi, newsApi, servicesApi, clientsApi, casesApi, testimonialsApi, faqsApi, type ContactFromAPI } from '@/lib/api';
 import {
@@ -7,6 +8,17 @@ import {
   ArrowUpRight, Pencil, TrendingUp, AlertCircle, HelpCircle, Clock,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+
+const stagger = {
+  container: {
+    hidden: {},
+    visible: { transition: { staggerChildren: 0.06 } },
+  },
+  item: {
+    hidden: { opacity: 0, y: 16 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: "easeOut" as const } },
+  },
+};
 
 const PanelDashboard = () => {
   const { token, user } = useAuth();
@@ -68,36 +80,43 @@ const PanelDashboard = () => {
   const StatCard = ({ card, large }: { card: { label: string; value: number; icon: any; href: string; color: string; badge?: number }, large?: boolean }) => {
     const Icon = card.icon;
     return (
-      <Link
-        to={card.href}
-        className="group relative p-5 rounded-2xl bg-card border border-border hover:border-primary/20 hover:shadow-lg hover:shadow-primary/[0.04] transition-all duration-300"
-      >
-        <div className="flex items-start justify-between mb-4">
-          <div className={`w-10 h-10 rounded-xl ${card.color} flex items-center justify-center`}>
-            <Icon size={20} />
+      <motion.div variants={stagger.item}>
+        <Link
+          to={card.href}
+          className="group relative p-5 rounded-2xl bg-card border border-border hover:border-primary/20 hover:shadow-lg hover:shadow-primary/[0.04] hover:-translate-y-0.5 transition-all duration-300 block"
+        >
+          <div className="flex items-start justify-between mb-4">
+            <div className={`w-10 h-10 rounded-xl ${card.color} flex items-center justify-center`}>
+              <Icon size={20} />
+            </div>
+            {card.badge && (
+              <span className="px-2 py-0.5 rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold animate-pulse">
+                {card.badge} nuevo{card.badge > 1 ? 's' : ''}
+              </span>
+            )}
           </div>
-          {card.badge && (
-            <span className="px-2 py-0.5 rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold animate-pulse">
-              {card.badge} nuevo{card.badge > 1 ? 's' : ''}
-            </span>
-          )}
-        </div>
-        <p className={`${large ? 'text-3xl' : 'text-2xl'} font-heading font-bold text-foreground ${loading ? 'animate-pulse' : ''}`}>
-          {loading ? '—' : card.value}
-        </p>
-        <p className="text-xs text-muted-foreground mt-1 font-medium">
-          {card.label}
-        </p>
-        <ArrowUpRight size={14} className="absolute top-4 right-4 text-muted-foreground/20 group-hover:text-primary transition-colors" />
-      </Link>
+          <p className={`${large ? 'text-3xl' : 'text-2xl'} font-heading font-bold text-foreground ${loading ? 'animate-pulse' : ''}`}>
+            {loading ? '—' : card.value}
+          </p>
+          <p className="text-xs text-muted-foreground mt-1 font-medium">
+            {card.label}
+          </p>
+          <ArrowUpRight size={14} className="absolute top-4 right-4 text-muted-foreground/20 group-hover:text-primary transition-colors" />
+        </Link>
+      </motion.div>
     );
   };
 
   return (
     <PanelLayout>
-      <div className="space-y-8">
+      <motion.div
+        variants={stagger.container}
+        initial="hidden"
+        animate="visible"
+        className="space-y-8"
+      >
         {/* Welcome banner */}
-        <div className="relative overflow-hidden rounded-2xl bg-[hsl(var(--navy))] p-6 md:p-8">
+        <motion.div variants={stagger.item} className="relative overflow-hidden rounded-2xl bg-[hsl(var(--navy))] p-6 md:p-8">
           <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-accent/10" />
           <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
           <div className="relative z-10">
@@ -110,81 +129,84 @@ const PanelDashboard = () => {
               {now.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
             </p>
           </div>
-        </div>
+        </motion.div>
 
         {/* Unread alert */}
         {stats.unread > 0 && (
-          <Link
-            to="/panel/contactos"
-            className="flex items-center gap-3 p-4 rounded-xl bg-destructive/5 border border-destructive/15 hover:bg-destructive/10 transition-colors"
-          >
-            <div className="w-9 h-9 rounded-lg bg-destructive/15 flex items-center justify-center shrink-0">
-              <AlertCircle size={18} className="text-destructive" />
-            </div>
-            <div className="flex-1">
-              <p className="text-sm font-medium text-foreground">
-                {stats.unread} {stats.unread === 1 ? 'mensaje sin leer' : 'mensajes sin leer'}
-              </p>
-              <p className="text-xs text-muted-foreground">Revisa los formularios de contacto pendientes</p>
-            </div>
-            <ArrowUpRight size={16} className="text-destructive shrink-0" />
-          </Link>
+          <motion.div variants={stagger.item}>
+            <Link
+              to="/panel/contactos"
+              className="flex items-center gap-3 p-4 rounded-xl bg-destructive/5 border border-destructive/15 hover:bg-destructive/10 transition-colors"
+            >
+              <div className="w-9 h-9 rounded-lg bg-destructive/15 flex items-center justify-center shrink-0">
+                <AlertCircle size={18} className="text-destructive" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-medium text-foreground">
+                  {stats.unread} {stats.unread === 1 ? 'mensaje sin leer' : 'mensajes sin leer'}
+                </p>
+                <p className="text-xs text-muted-foreground">Revisa los formularios de contacto pendientes</p>
+              </div>
+              <ArrowUpRight size={16} className="text-destructive shrink-0" />
+            </Link>
+          </motion.div>
         )}
 
         {/* Primary stats */}
-        <div>
+        <motion.div variants={stagger.item}>
           <h3 className="text-[11px] font-bold uppercase tracking-[0.15em] text-muted-foreground/60 mb-3 px-1">
             Métricas principales
           </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <motion.div variants={stagger.container} initial="hidden" animate="visible" className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {primaryStats.map((card) => (
               <StatCard key={card.label} card={card} large />
             ))}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
         {/* Secondary stats */}
-        <div>
+        <motion.div variants={stagger.item}>
           <h3 className="text-[11px] font-bold uppercase tracking-[0.15em] text-muted-foreground/60 mb-3 px-1">
             Contenido web
           </h3>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <motion.div variants={stagger.container} initial="hidden" animate="visible" className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {secondaryStats.map((card) => (
               <StatCard key={card.label} card={card} />
             ))}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
         {/* Quick actions */}
-        <div>
+        <motion.div variants={stagger.item}>
           <h3 className="text-[11px] font-bold uppercase tracking-[0.15em] text-muted-foreground/60 mb-3 px-1">
             Accesos rápidos
           </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <motion.div variants={stagger.container} initial="hidden" animate="visible" className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {quickActions.map((item) => {
               const Icon = item.icon;
               return (
-                <Link
-                  key={item.to}
-                  to={item.to}
-                  className="group flex items-center gap-4 p-4 rounded-xl bg-card border border-border hover:border-primary/20 hover:shadow-sm transition-all duration-200"
-                >
-                  <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center shrink-0 group-hover:bg-primary/10 transition-colors">
-                    <Icon size={18} className="text-muted-foreground group-hover:text-primary transition-colors" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">{item.label}</p>
-                    <p className="text-xs text-muted-foreground truncate">{item.desc}</p>
-                  </div>
-                  <ArrowUpRight size={14} className="text-muted-foreground/20 group-hover:text-primary transition-colors shrink-0" />
-                </Link>
+                <motion.div key={item.to} variants={stagger.item}>
+                  <Link
+                    to={item.to}
+                    className="group flex items-center gap-4 p-4 rounded-xl bg-card border border-border hover:border-primary/20 hover:shadow-sm hover:-translate-y-0.5 transition-all duration-200 block"
+                  >
+                    <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center shrink-0 group-hover:bg-primary/10 transition-colors">
+                      <Icon size={18} className="text-muted-foreground group-hover:text-primary transition-colors" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">{item.label}</p>
+                      <p className="text-xs text-muted-foreground truncate">{item.desc}</p>
+                    </div>
+                    <ArrowUpRight size={14} className="text-muted-foreground/20 group-hover:text-primary transition-colors shrink-0" />
+                  </Link>
+                </motion.div>
               );
             })}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
         {/* Tip card */}
-        <div className="p-5 rounded-2xl bg-card border border-border">
+        <motion.div variants={stagger.item} className="p-5 rounded-2xl bg-card border border-border">
           <div className="flex items-start gap-3">
             <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
               <TrendingUp size={18} className="text-primary" />
@@ -198,8 +220,8 @@ const PanelDashboard = () => {
               </p>
             </div>
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </PanelLayout>
   );
 };
