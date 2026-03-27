@@ -29,9 +29,46 @@ const ServicioDetalle = () => {
       .catch(() => { setApiError(true); setLoading(false); });
   }, [slug]);
 
-  // Fallback to hardcoded if API fails
   const fallback = fallbackServices.find((s) => s.slug === slug);
   const useApi = apiService && !apiError;
+
+  // Normalize data before hooks so hooks always run
+  const title = useApi ? apiService!.title : (fallback?.title ?? '');
+  const description = useApi ? apiService!.description : (fallback?.description ?? '');
+  const longDescription = useApi ? apiService!.long_description : (fallback?.longDescription ?? '');
+  const features = useApi ? (apiService!.features || []) : (fallback?.features ?? []);
+  const iconName = useApi ? apiService!.icon : '';
+  const Icon = useApi ? (iconMap[iconName] || Server) : (fallback?.icon ?? Server);
+  const imageUrl = useApi ? apiService!.image_url : (fallback ? serviceImages[fallback.slug] : '');
+
+  const serviceJsonLd = useMemo(() => ({
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: title,
+    description,
+    provider: {
+      '@type': 'Organization',
+      name: SITE_NAME,
+      url: SITE_URL,
+    },
+    url: `${SITE_URL}/servicios/${slug}`,
+    ...(useApi && apiService!.image_url ? { image: apiService!.image_url } : {}),
+    areaServed: { '@type': 'Country', name: 'España' },
+  }), [title, description, slug, useApi, apiService]);
+
+  usePageMeta({
+    title: title || 'Servicio',
+    description: description || '',
+    canonical: `/servicios/${slug}`,
+    ogImage: useApi ? apiService!.image_url : undefined,
+    jsonLd: serviceJsonLd,
+  });
+
+  const breadcrumbs = useMemo(() => [
+    { name: 'Inicio', path: '/' },
+    { name: 'Servicios', path: '/servicios' },
+    { name: title || 'Servicio', path: `/servicios/${slug}` },
+  ], [title, slug]);
 
   if (loading) {
     return (
@@ -80,44 +117,6 @@ const ServicioDetalle = () => {
     );
   }
 
-  // Normalize data
-  const title = useApi ? apiService!.title : fallback!.title;
-  const description = useApi ? apiService!.description : fallback!.description;
-
-  const serviceJsonLd = useMemo(() => ({
-    '@context': 'https://schema.org',
-    '@type': 'Service',
-    name: title,
-    description,
-    provider: {
-      '@type': 'Organization',
-      name: SITE_NAME,
-      url: SITE_URL,
-    },
-    url: `${SITE_URL}/servicios/${slug}`,
-    ...(useApi && apiService!.image_url ? { image: apiService!.image_url } : {}),
-    areaServed: { '@type': 'Country', name: 'España' },
-  }), [title, description, slug, useApi, apiService]);
-
-  usePageMeta({
-    title,
-    description,
-    canonical: `/servicios/${slug}`,
-    ogImage: useApi ? apiService!.image_url : undefined,
-    jsonLd: serviceJsonLd,
-  });
-  const longDescription = useApi ? apiService!.long_description : fallback!.longDescription;
-  const features = useApi ? (apiService!.features || []) : fallback!.features;
-  const iconName = useApi ? apiService!.icon : '';
-  const Icon = useApi ? (iconMap[iconName] || Server) : fallback!.icon;
-  const imageUrl = useApi ? apiService!.image_url : serviceImages[fallback!.slug];
-
-  const breadcrumbs = useMemo(() => [
-    { name: 'Inicio', path: '/' },
-    { name: 'Servicios', path: '/servicios' },
-    { name: title, path: `/servicios/${slug}` },
-  ], [title, slug]);
-
   return (
     <Layout>
       <BreadcrumbJsonLd items={breadcrumbs} />
@@ -138,7 +137,6 @@ const ServicioDetalle = () => {
         </div>
       </section>
 
-      {/* Content */}
       <section className="py-24 bg-background">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
