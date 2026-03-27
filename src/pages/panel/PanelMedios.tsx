@@ -87,6 +87,20 @@ const PanelMedios = () => {
     setTimeout(() => setCopied(null), 2000);
   };
 
+  const handleSync = async () => {
+    if (!token) return;
+    setSyncing(true);
+    try {
+      const result = await mediaApi.sync(token);
+      toast.success(result.message);
+      loadData();
+    } catch (e: any) {
+      toast.error(e.message || 'Error sincronizando');
+    } finally {
+      setSyncing(false);
+    }
+  };
+
   const handleDragEnter = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
