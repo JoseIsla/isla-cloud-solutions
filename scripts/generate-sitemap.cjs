@@ -47,7 +47,8 @@ async function generate() {
   const services = await fetchJSON(`${API_URL}/api/services`);
   for (const s of services) {
     if (s.is_active && s.slug) {
-      urls.push(buildUrl(`/servicios/${s.slug}`, '0.8', 'monthly'));
+      const lastmod = s.updated_at ? s.updated_at.split('T')[0] : today;
+      urls.push(buildUrl(`/servicios/${s.slug}`, '0.8', 'monthly', lastmod));
     }
   }
 
@@ -55,7 +56,7 @@ async function generate() {
   const news = await fetchJSON(`${API_URL}/api/news`);
   for (const n of news) {
     if (n.is_published && n.slug && !n.noindex) {
-      const lastmod = n.published_at ? n.published_at.split('T')[0] : today;
+      const lastmod = n.updated_at ? n.updated_at.split('T')[0] : (n.published_at ? n.published_at.split('T')[0] : today);
       urls.push(buildUrl(`/blog/${n.slug}`, '0.7', 'monthly', lastmod));
     }
   }
@@ -64,8 +65,8 @@ async function generate() {
   const cases = await fetchJSON(`${API_URL}/api/cases`);
   for (const c of cases) {
     if (c.is_active && !c.noindex) {
-      const lastmod = c.created_at ? c.created_at.split('T')[0] : today;
-      urls.push(buildUrl(`/casos/${c.id}`, '0.7', 'monthly', lastmod));
+      const lastmod = c.updated_at ? c.updated_at.split('T')[0] : (c.created_at ? c.created_at.split('T')[0] : today);
+      urls.push(buildUrl(`/casos/${c.slug || c.id}`, '0.7', 'monthly', lastmod));
     }
   }
 
