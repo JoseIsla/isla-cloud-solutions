@@ -13,8 +13,9 @@ const TestimonialsSection = lazy(() => import("@/components/home/TestimonialsSec
 const FAQSection = lazy(() => import("@/components/home/FAQSection"));
 const CTASection = lazy(() => import("@/components/home/CTASection"));
 
-const SectionFallback = () => (
-  <div className="py-20 flex items-center justify-center">
+/** Skeleton fallback that reserves the approximate height of each section */
+const SectionFallback = ({ minH = "py-20" }: { minH?: string }) => (
+  <div className={`${minH} flex items-center justify-center`}>
     <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
   </div>
 );
@@ -49,25 +50,25 @@ const Index = () => {
     <Layout>
       <HeroSection />
       <IntroSection />
-      <Suspense fallback={<SectionFallback />}>
+      <Suspense fallback={<SectionFallback minH="min-h-screen" />}>
         <ServicesSection />
       </Suspense>
-      <Suspense fallback={<SectionFallback />}>
+      <Suspense fallback={<SectionFallback minH="min-h-[600px]" />}>
         <WhyUsSection />
       </Suspense>
-      <Suspense fallback={<SectionFallback />}>
+      <Suspense fallback={<SectionFallback minH="min-h-[300px]" />}>
         <CountersSection />
       </Suspense>
-      <Suspense fallback={<SectionFallback />}>
+      <Suspense fallback={<SectionFallback minH="min-h-[400px]" />}>
         <ClientsSection />
       </Suspense>
-      <Suspense fallback={<SectionFallback />}>
+      <Suspense fallback={<SectionFallback minH="min-h-[500px]" />}>
         <TestimonialsSection />
       </Suspense>
-      <Suspense fallback={<SectionFallback />}>
+      <Suspense fallback={<SectionFallback minH="min-h-[600px]" />}>
         <FAQSection />
       </Suspense>
-      <Suspense fallback={<SectionFallback />}>
+      <Suspense fallback={<SectionFallback minH="min-h-[400px]" />}>
         <CTASection />
       </Suspense>
     </Layout>
