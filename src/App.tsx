@@ -69,13 +69,13 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return (
     <AnimatePresence mode="wait">
       {!user ? (
-        <motion.div key="login" {...pageTransition}>
+        <m.div key="login" {...pageTransition}>
           <PanelLogin />
-        </motion.div>
+        </m.div>
       ) : (
-        <motion.div key="panel" {...pageTransition}>
+        <m.div key="panel" {...pageTransition}>
           {children}
-        </motion.div>
+        </m.div>
       )}
     </AnimatePresence>
   );
