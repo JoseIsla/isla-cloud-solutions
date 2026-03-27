@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { Plus, Edit, Trash2, MessageCircle, Star, X, GripVertical, Search, ChevronUp, ChevronDown } from 'lucide-react';
+import { Plus, Edit, Trash2, MessageCircle, Star, X, GripVertical, Search, ChevronUp, ChevronDown, ChevronsUp, ChevronsDown } from 'lucide-react';
 import { toast } from 'sonner';
 import { useDragReorder } from '@/hooks/useDragReorder';
 import { StaggerList, StaggerItem } from '@/components/panel/StaggerList';

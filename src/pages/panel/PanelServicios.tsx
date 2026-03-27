@@ -4,7 +4,7 @@ import { useAuth } from '@/hooks/useAuth';
 import PanelLayout from './PanelLayout';
 import { servicesApi, uploadImage, type ServiceFromAPI, API_BASE_URL } from '@/lib/api';
 import { Button } from '@/components/ui/button';
-import { Plus, Pencil, Trash2, X, Upload, GripVertical, FileText, Search, ChevronUp, ChevronDown } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Upload, GripVertical, FileText, Search, ChevronUp, ChevronDown, ChevronsUp, ChevronsDown } from 'lucide-react';
 import { toast } from 'sonner';
 import RichEditor from '@/components/ui/rich-editor';
 import { useDragReorder } from '@/hooks/useDragReorder';
@@ -43,6 +43,16 @@ const PanelServicios = () => {
     if (newIdx < 0 || newIdx >= services.length) return;
     const reordered = [...services];
     [reordered[idx], reordered[newIdx]] = [reordered[newIdx], reordered[idx]];
+    reordered.forEach((s, i) => (s.sort_order = i));
+    setServices(reordered);
+    await handleReorder(reordered);
+  };
+
+  const moveToEdge = async (idx: number, target: 'first' | 'last') => {
+    if (idx === (target === 'first' ? 0 : services.length - 1)) return;
+    const reordered = [...services];
+    const [moved] = reordered.splice(idx, 1);
+    target === 'first' ? reordered.unshift(moved) : reordered.push(moved);
     reordered.forEach((s, i) => (s.sort_order = i));
     setServices(reordered);
     await handleReorder(reordered);
@@ -219,9 +229,11 @@ const PanelServicios = () => {
                   <p className="text-xs text-muted-foreground truncate">{s.slug}</p>
                 </div>
                 {!filter && (
-                  <div className="flex flex-col shrink-0">
+                  <div className="flex items-center gap-0.5 shrink-0">
+                    <button onClick={() => moveToEdge(realIdx, 'first')} disabled={realIdx === 0} className="p-0.5 rounded hover:bg-muted disabled:opacity-20 text-muted-foreground" title="Mover al inicio"><ChevronsUp size={14} /></button>
                     <button onClick={() => moveItem(realIdx, -1)} disabled={realIdx === 0} className="p-0.5 rounded hover:bg-muted disabled:opacity-20 text-muted-foreground"><ChevronUp size={14} /></button>
                     <button onClick={() => moveItem(realIdx, 1)} disabled={realIdx === services.length - 1} className="p-0.5 rounded hover:bg-muted disabled:opacity-20 text-muted-foreground"><ChevronDown size={14} /></button>
+                    <button onClick={() => moveToEdge(realIdx, 'last')} disabled={realIdx === services.length - 1} className="p-0.5 rounded hover:bg-muted disabled:opacity-20 text-muted-foreground" title="Mover al final"><ChevronsDown size={14} /></button>
                   </div>
                 )}
                 <div className="flex gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">

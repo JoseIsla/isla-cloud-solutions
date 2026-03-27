@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { Plus, Edit, Trash2, HelpCircle, X, GripVertical, Search, ChevronUp, ChevronDown } from 'lucide-react';
+import { Plus, Edit, Trash2, HelpCircle, X, GripVertical, Search, ChevronUp, ChevronDown, ChevronsUp, ChevronsDown } from 'lucide-react';
 import { toast } from 'sonner';
 import RichEditor from '@/components/ui/rich-editor';
 import { useDragReorder } from '@/hooks/useDragReorder';
