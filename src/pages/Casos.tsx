@@ -55,16 +55,29 @@ const Casos = () => {
         <div className="max-w-6xl mx-auto px-4">
           {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="rounded-2xl border border-border bg-card overflow-hidden">
-                  <Skeleton className="aspect-video w-full" />
-                  <div className="p-6 space-y-3">
-                    <Skeleton className="h-3 w-24" />
-                    <Skeleton className="h-5 w-3/4" />
-                    <Skeleton className="h-4 w-full" />
-                    <Skeleton className="h-4 w-1/2" />
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.08 }}
+                  className="rounded-2xl border border-border bg-card overflow-hidden"
+                >
+                  <div className="relative aspect-video overflow-hidden">
+                    <Skeleton className="absolute inset-0 h-full w-full rounded-none" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-[shimmer_1.5s_infinite]" />
                   </div>
-                </div>
+                  <div className="p-6 space-y-4">
+                    <Skeleton className="h-3 w-20 rounded-full" />
+                    <Skeleton className="h-5 w-3/4" />
+                    <div className="space-y-2">
+                      <Skeleton className="h-3 w-full" />
+                      <Skeleton className="h-3 w-full" />
+                      <Skeleton className="h-3 w-2/3" />
+                    </div>
+                    <Skeleton className="h-4 w-24 mt-2" />
+                  </div>
+                </motion.div>
               ))}
             </div>
           ) : cases.length === 0 ? (
