@@ -49,17 +49,6 @@ const ServiciosPage = () => {
     canonical: '/servicios',
     jsonLd: serviciosJsonLd,
   });
-
-  const [apiServices, setApiServices] = useState<ServiceFromAPI[] | null>(null);
-
-  useEffect(() => {
-    servicesApi.list()
-      .then(setApiServices)
-      .catch(() => setApiServices(null));
-  }, []);
-
-  const useApi = apiServices && apiServices.length > 0;
-
   return (
     <Layout>
       {/* Hero */}
