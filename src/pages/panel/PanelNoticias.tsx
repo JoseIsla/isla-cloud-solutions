@@ -5,13 +5,14 @@ import { useAuth } from '@/hooks/useAuth';
 import PanelLayout from './PanelLayout';
 import { newsApi, uploadImage, type NewsFromAPI, API_BASE_URL } from '@/lib/api';
 import { Button } from '@/components/ui/button';
-import { Plus, Pencil, Trash2, X, Upload, Calendar, RefreshCw, Search, GripVertical, ChevronUp, ChevronDown, ChevronsUp, ChevronsDown } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Upload, Calendar, RefreshCw, Search, GripVertical, ChevronUp, ChevronDown, ChevronsUp, ChevronsDown, HelpCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import RichEditor from '@/components/ui/rich-editor';
 import { StaggerList, StaggerItem } from '@/components/panel/StaggerList';
 import { usePanelPagination } from '@/hooks/usePanelPagination';
 import Pagination from '@/components/Pagination';
 import { useDragReorder } from '@/hooks/useDragReorder';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const generateSlug = (text: string) =>
   text
@@ -216,7 +217,7 @@ const PanelNoticias = () => {
                     <input type="text" value={editing.title ?? ''} onChange={(e) => updateField('title', e.target.value)} className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm" />
                   </div>
                   <div>
-                    <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Slug</label>
+                    <label className="flex items-center gap-1.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Slug <TooltipProvider delayDuration={200}><Tooltip><TooltipTrigger asChild><HelpCircle size={13} className="text-muted-foreground/60 cursor-help" /></TooltipTrigger><TooltipContent side="top" className="max-w-[240px] text-xs"><p>El slug es la parte de la URL que identifica este artículo. Ej: <strong>mi-articulo</strong> genera la ruta <strong>/blog/mi-articulo</strong>. Usa solo letras minúsculas, números y guiones.</p></TooltipContent></Tooltip></TooltipProvider></label>
                     <input type="text" value={editing.slug ?? ''} onChange={(e) => updateField('slug', e.target.value)} className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm" />
                   </div>
                   <div ref={catRef} className="relative">
@@ -292,7 +293,7 @@ const PanelNoticias = () => {
                     </button>
                   </div>
                   <div>
-                    <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">URL Amigable *</label>
+                    <label className="flex items-center gap-1.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">URL Amigable * <TooltipProvider delayDuration={200}><Tooltip><TooltipTrigger asChild><HelpCircle size={13} className="text-muted-foreground/60 cursor-help" /></TooltipTrigger><TooltipContent side="top" className="max-w-[240px] text-xs"><p>URL amigable para SEO. Se genera automáticamente desde el título. Usa solo letras minúsculas, números y guiones.</p></TooltipContent></Tooltip></TooltipProvider></label>
                     <div className="flex gap-2">
                       <input type="text" value={editing.slug ?? ''} onChange={(e) => setEditing({ ...editing, slug: e.target.value })} placeholder="/mi-articulo" className="flex-1 px-3 py-2.5 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm" />
                       <button type="button" onClick={() => setEditing({ ...editing, slug: generateSlug(editing.title || '') })} className="p-2.5 rounded-lg border border-border hover:bg-primary/10 text-primary shrink-0" title="Regenerar desde título">
