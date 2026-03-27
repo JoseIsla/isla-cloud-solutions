@@ -147,6 +147,24 @@ export const faqsApi = {
     apiRequest('/api/faqs/' + id, { method: 'DELETE', token }),
 };
 
+// Media
+export const mediaApi = {
+  list: (token: string, params?: { category?: string; search?: string }) => {
+    const query = new URLSearchParams();
+    if (params?.category) query.set('category', params.category);
+    if (params?.search) query.set('search', params.search);
+    const qs = query.toString();
+    return apiRequest<MediaFromAPI[]>(`/api/media${qs ? '?' + qs : ''}`, { token });
+  },
+  categories: (token: string) => apiRequest<string[]>('/api/media/categories', { token }),
+  create: (data: Partial<MediaFromAPI>, token: string) =>
+    apiRequest<{ id: number; url: string }>('/api/media', { method: 'POST', body: data, token }),
+  update: (id: number, data: Partial<MediaFromAPI>, token: string) =>
+    apiRequest('/api/media/' + id, { method: 'PUT', body: data, token }),
+  delete: (id: number, token: string) =>
+    apiRequest('/api/media/' + id, { method: 'DELETE', token }),
+};
+
 // Upload
 export { uploadImage };
 
@@ -247,5 +265,14 @@ export interface FAQFromAPI {
   answer: string;
   sort_order: number;
   is_active: number;
+  created_at: string;
+}
+
+export interface MediaFromAPI {
+  id: number;
+  url: string;
+  original_name: string;
+  category: string;
+  alt_text: string;
   created_at: string;
 }

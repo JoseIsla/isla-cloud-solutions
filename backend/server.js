@@ -40,6 +40,7 @@ const clientsRoutes = require('./routes/clients');
 const casesRoutes = require('./routes/cases');
 const faqsRoutes = require('./routes/faqs');
 const testimonialsRoutes = require('./routes/testimonials');
+const mediaRoutes = require('./routes/media');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -114,6 +115,7 @@ app.use('/api/clients', clientsRoutes);
 app.use('/api/cases', casesRoutes);
 app.use('/api/testimonials', testimonialsRoutes);
 app.use('/api/faqs', faqsRoutes);
+app.use('/api/media', mediaRoutes);
 
 // Health check — detailed diagnostics
 app.get('/api/health', async (req, res) => {
