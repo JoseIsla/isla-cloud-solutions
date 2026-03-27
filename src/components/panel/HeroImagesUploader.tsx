@@ -30,7 +30,7 @@ const HeroImagesUploader = ({ contents, editValues, setEditValues }: HeroImagesU
     if (!token) return;
     setUploading(key);
     try {
-      const { url } = await uploadImage(file, token);
+      const { url } = await uploadImage(file, token, 'fondos');
       const fullUrl = url.startsWith('http') ? url : `${API_BASE}${url}`;
       setEditValues(prev => ({ ...prev, [key]: fullUrl }));
       await contentsApi.update(key, fullUrl, token, imageFields.find(f => f.key === key)?.label);

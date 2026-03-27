@@ -124,7 +124,7 @@ const PanelServicios = () => {
     if (!file || !token) return;
     setUploading(true);
     try {
-      const result = await uploadImage(file, token);
+      const result = await uploadImage(file, token, 'servicios');
       const fullUrl = result.url.startsWith('http') ? result.url : `${API_BASE_URL}${result.url}`;
       setEditing(prev => prev ? { ...prev, image_url: fullUrl } : prev);
       toast.success('Imagen subida');

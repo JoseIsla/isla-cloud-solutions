@@ -103,7 +103,7 @@ const PanelTestimonios = () => {
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.[0] || !token) return;
     try {
-      const result = await uploadImage(e.target.files[0], token);
+      const result = await uploadImage(e.target.files[0], token, 'testimonios');
       const fullUrl = result.url.startsWith('http') ? result.url : `${API_BASE_URL}${result.url}`;
       setEditing((prev) => prev ? { ...prev, avatar_url: fullUrl } : prev);
       toast.success('Imagen subida');

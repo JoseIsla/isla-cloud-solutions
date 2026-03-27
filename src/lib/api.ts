@@ -32,9 +32,10 @@ async function apiRequest<T>(endpoint: string, options: RequestOptions = {}): Pr
 }
 
 // Upload image (multipart)
-async function uploadImage(file: File, token: string): Promise<{ url: string; filename: string }> {
+async function uploadImage(file: File, token: string, category?: string): Promise<{ url: string; filename: string }> {
   const formData = new FormData();
   formData.append('image', file);
+  if (category) formData.append('category', category);
 
   const res = await fetch(`${API_BASE_URL}/api/upload`, {
     method: 'POST',

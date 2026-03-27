@@ -127,7 +127,7 @@ const PanelMedios = () => {
     setUploading(true);
     try {
       for (const file of Array.from(files)) {
-        await uploadImage(file, token);
+        await uploadImage(file, token, filterCategory || 'general');
       }
       toast.success(`${files.length} imagen(es) subida(s)`);
       loadData();
