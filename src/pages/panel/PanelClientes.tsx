@@ -118,9 +118,21 @@ const PanelClientes = () => {
             <h2 className="text-xl font-heading font-bold text-foreground">Clientes</h2>
             <p className="text-muted-foreground text-sm mt-0.5">{clients.length} clientes · <span className="text-muted-foreground/60">Arrastra para reordenar</span></p>
           </div>
-          <Button size="sm" onClick={() => { setEditing({ name: '', logo_url: '', website_url: '', sort_order: 0 }); setIsNew(true); }}>
+          <Button size="sm" onClick={() => { setEditing({ name: '', logo_url: '', website_url: '', sort_order: clients.length }); setIsNew(true); }}>
             <Plus size={16} /> Nuevo
           </Button>
+        </div>
+
+        {/* Filter */}
+        <div className="relative">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <input
+            type="text"
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            placeholder="Buscar clientes..."
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm"
+          />
         </div>
 
         {/* Modal */}
