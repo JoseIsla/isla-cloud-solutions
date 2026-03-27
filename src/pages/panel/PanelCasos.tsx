@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useConfirmDialog } from '@/hooks/useConfirmDialog';
 import { useAuth } from '@/hooks/useAuth';
-import { casesApi, uploadImage, type CaseFromAPI, API_BASE_URL } from '@/lib/api';
+import { casesApi, clientsApi, uploadImage, type CaseFromAPI, type ClientFromAPI, API_BASE_URL } from '@/lib/api';
 import { useDragReorder } from '@/hooks/useDragReorder';
 import PanelLayout from './PanelLayout';
 import { Button } from '@/components/ui/button';
@@ -10,6 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import RichEditor from '@/components/ui/rich-editor';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Plus, Edit, Trash2, Trophy, X, Upload, GripVertical, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
 import { StaggerList, StaggerItem } from '@/components/panel/StaggerList';
@@ -31,8 +32,13 @@ const PanelCasos = () => {
   const { token } = useAuth();
   const { confirm, ConfirmDialog } = useConfirmDialog();
   const [cases, setCases] = useState<CaseFromAPI[]>([]);
+  const [clients, setClients] = useState<ClientFromAPI[]>([]);
   const [editing, setEditing] = useState<Partial<CaseFromAPI> | null>(null);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    clientsApi.list().then(setClients).catch(() => {});
+  }, []);
 
   const fetchCases = () => {
     if (!token) return;
@@ -148,7 +154,16 @@ const PanelCasos = () => {
                   </div>
                   <div>
                     <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Cliente</label>
-                    <Input value={editing.client_name || ''} onChange={(e) => setEditing({ ...editing, client_name: e.target.value })} />
+                    <Select value={editing.client_name || ''} onValueChange={(val) => setEditing({ ...editing, client_name: val })}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Seleccionar cliente" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {clients.filter(c => c.is_active).map(c => (
+                          <SelectItem key={c.id} value={c.name}>{c.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
                 <div>
