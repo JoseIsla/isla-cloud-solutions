@@ -112,18 +112,21 @@ app.use('/uploads', webpMiddleware(uploadsDir), express.static(uploadsDir, {
   },
 }));
 
+// Cache middleware for public API routes
+const cacheControl = require('./middleware/cache');
+
 // Routes
 app.use('/api/auth', authLimiter, authRoutes);
-app.use('/api/services', servicesRoutes);
-app.use('/api/news', newsRoutes);
-app.use('/api/contacts', contactLimiter, contactsRoutes);
-app.use('/api/contents', contentsRoutes);
-app.use('/api/upload', uploadRoutes);
-app.use('/api/clients', clientsRoutes);
-app.use('/api/cases', casesRoutes);
-app.use('/api/testimonials', testimonialsRoutes);
-app.use('/api/faqs', faqsRoutes);
-app.use('/api/media', mediaRoutes);
+app.use('/api/services', cacheControl({ maxAge: 300, swr: 600 }), servicesRoutes);
+app.use('/api/news', cacheControl({ maxAge: 120, swr: 300 }), newsRoutes);
+app.use('/api/contacts', contactLimiter, cacheControl({ isPrivate: true }), contactsRoutes);
+app.use('/api/contents', cacheControl({ maxAge: 300, swr: 600 }), contentsRoutes);
+app.use('/api/upload', cacheControl({ isPrivate: true }), uploadRoutes);
+app.use('/api/clients', cacheControl({ maxAge: 600, swr: 1200 }), clientsRoutes);
+app.use('/api/cases', cacheControl({ maxAge: 300, swr: 600 }), casesRoutes);
+app.use('/api/testimonials', cacheControl({ maxAge: 600, swr: 1200 }), testimonialsRoutes);
+app.use('/api/faqs', cacheControl({ maxAge: 600, swr: 1200 }), faqsRoutes);
+app.use('/api/media', cacheControl({ maxAge: 300, swr: 600 }), mediaRoutes);
 
 // Health check — detailed diagnostics
 app.get('/api/health', async (req, res) => {
