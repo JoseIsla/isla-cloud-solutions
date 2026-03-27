@@ -37,6 +37,27 @@ const PanelMedios = () => {
 
   const selectionMode = selected.size > 0;
 
+  // Preview navigation
+  const navigatePreview = useCallback((direction: 1 | -1) => {
+    if (!previewItem) return;
+    const idx = items.findIndex(i => i.id === previewItem.id);
+    if (idx === -1) return;
+    const nextIdx = idx + direction;
+    if (nextIdx >= 0 && nextIdx < items.length) {
+      setPreviewItem(items[nextIdx]);
+    }
+  }, [previewItem, items]);
+
+  useEffect(() => {
+    if (!previewItem) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') { e.preventDefault(); navigatePreview(-1); }
+      if (e.key === 'ArrowRight') { e.preventDefault(); navigatePreview(1); }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [previewItem, navigatePreview]);
+
   const toggleSelect = (id: number) => {
     setSelected(prev => {
       const next = new Set(prev);
