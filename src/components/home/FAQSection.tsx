@@ -50,19 +50,19 @@ const FAQSection = () => {
           </p>
         </motion.div>
 
-        {/* Accordion */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.15 }}
-        >
-          <Accordion type="single" collapsible className="space-y-3">
-            {faqs.map((faq, i) => (
+        {/* Accordion with stagger */}
+        <Accordion type="single" collapsible className="space-y-3">
+          {faqs.map((faq, i) => (
+            <motion.div
+              key={faq.id}
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.07, duration: 0.4 }}
+            >
               <AccordionItem
-                key={faq.id}
                 value={`faq-${faq.id}`}
-                className="border border-border rounded-xl px-5 data-[state=open]:bg-muted/30 transition-colors"
+                className="border border-border rounded-xl px-5 data-[state=open]:bg-muted/30 hover:border-primary/15 transition-colors"
               >
                 <AccordionTrigger className="text-left text-[15px] font-medium text-foreground hover:no-underline py-5">
                   {faq.question}
@@ -71,9 +71,9 @@ const FAQSection = () => {
                   <div dangerouslySetInnerHTML={{ __html: sanitizeHTML(faq.answer) }} />
                 </AccordionContent>
               </AccordionItem>
-            ))}
-          </Accordion>
-        </motion.div>
+            </motion.div>
+          ))}
+        </Accordion>
       </div>
     </section>
   );

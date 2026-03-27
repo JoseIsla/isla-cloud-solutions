@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { contactsApi } from '@/lib/api';
 import { Link, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard, FileText, Newspaper, MessageSquare,
   LogOut, Menu, X, Users, Trophy, Globe, Pencil, MessageCircle,
@@ -39,6 +40,13 @@ const sidebarSections = [
 ];
 
 const allLinks = sidebarSections.flatMap(s => s.links);
+
+const pageTransition = {
+  initial: { opacity: 0, y: 8 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -8 },
+  transition: { duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] },
+};
 
 const PanelLayout = ({ children }: { children: React.ReactNode }) => {
   const { user, logout, token } = useAuth();
@@ -180,7 +188,15 @@ const PanelLayout = ({ children }: { children: React.ReactNode }) => {
           </div>
           <PanelSearch />
         </header>
-        <main className="p-4 md:p-6 lg:p-8 max-w-7xl">{children}</main>
+        <AnimatePresence mode="wait">
+          <motion.main
+            key={location.pathname}
+            {...pageTransition}
+            className="p-4 md:p-6 lg:p-8 max-w-7xl"
+          >
+            {children}
+          </motion.main>
+        </AnimatePresence>
       </div>
     </div>
   );

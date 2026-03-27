@@ -1,8 +1,17 @@
 import { motion } from "framer-motion";
-import { Clock, Headphones, Shield, Award, CheckCircle } from "lucide-react";
+import { Clock, Headphones, Shield, Award } from "lucide-react";
 import { useCMSValue } from "@/hooks/useCMS";
 
 const icons = [Clock, Headphones, Shield, Award];
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: i * 0.12, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] },
+  }),
+};
 
 const WhyUsSection = () => {
   const sectionLabel = useCMSValue('whyus_section_label', '¿Por qué elegirnos?');
@@ -45,11 +54,13 @@ const WhyUsSection = () => {
               return (
                 <motion.div
                   key={index}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
+                  custom={index}
+                  variants={cardVariants}
+                  initial="hidden"
+                  whileInView="visible"
                   viewport={{ once: true }}
-                  transition={{ delay: index * 0.1, duration: 0.5 }}
-                  className="p-6 rounded-2xl bg-card border border-border hover:border-primary/20 hover:shadow-lg transition-all duration-300"
+                  whileHover={{ y: -6, transition: { duration: 0.25, ease: "easeOut" } }}
+                  className="p-6 rounded-2xl bg-card border border-border hover:border-primary/20 hover:shadow-xl hover:shadow-primary/[0.06] transition-[border-color,box-shadow] duration-300 cursor-default"
                 >
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
                     <Icon size={24} className="text-primary" />
