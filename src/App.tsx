@@ -6,8 +6,10 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { CMSProvider } from "@/hooks/useCMS";
-import { AnimatePresence, motion } from "framer-motion";
-import CookieBanner from "@/components/CookieBanner";
+import { LazyMotion, domAnimation, AnimatePresence, m } from "framer-motion";
+
+// Lazy load CookieBanner — not needed for initial render
+const CookieBanner = lazy(() => import("@/components/CookieBanner"));
 import ScrollToTop from "@/components/ScrollToTop";
 
 // Eager: landing page (critical path)
@@ -61,19 +63,19 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, isLoading } = useAuth();
   if (isLoading) return (
     <div className="min-h-screen bg-hero flex items-center justify-center">
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-hero-foreground">Cargando...</motion.div>
+      <m.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-hero-foreground">Cargando...</m.div>
     </div>
   );
   return (
     <AnimatePresence mode="wait">
       {!user ? (
-        <motion.div key="login" {...pageTransition}>
+        <m.div key="login" {...pageTransition}>
           <PanelLogin />
-        </motion.div>
+        </m.div>
       ) : (
-        <motion.div key="panel" {...pageTransition}>
+        <m.div key="panel" {...pageTransition}>
           {children}
-        </motion.div>
+        </m.div>
       )}
     </AnimatePresence>
   );
@@ -117,13 +119,17 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <AuthProvider>
-          <CMSProvider>
-            <ScrollToTop />
-            <AppRoutes />
-            <CookieBanner />
-          </CMSProvider>
-        </AuthProvider>
+        <LazyMotion features={domAnimation} strict>
+          <AuthProvider>
+            <CMSProvider>
+              <ScrollToTop />
+              <AppRoutes />
+              <Suspense fallback={null}>
+                <CookieBanner />
+              </Suspense>
+            </CMSProvider>
+          </AuthProvider>
+        </LazyMotion>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
