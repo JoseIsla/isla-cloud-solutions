@@ -22,6 +22,7 @@ const logoFields = [
 const LogoUploader = ({ contents, editValues, setEditValues }: LogoUploaderProps) => {
   const { token } = useAuth();
   const [uploading, setUploading] = useState<string | null>(null);
+  const [mediaPickerKey, setMediaPickerKey] = useState<string | null>(null);
   const fileRefs = useRef<Record<string, HTMLInputElement | null>>({});
 
   const handleUpload = async (key: string, file: File) => {
@@ -94,6 +95,9 @@ const LogoUploader = ({ contents, editValues, setEditValues }: LogoUploaderProps
                 <Upload size={14} className="mr-1" />
                 {uploading === key ? 'Subiendo...' : currentUrl ? 'Cambiar logo' : 'Subir logo'}
               </Button>
+              <Button variant="outline" size="sm" onClick={() => setMediaPickerKey(key)}>
+                🖼️ Galería
+              </Button>
               {currentUrl && (
                 <Button variant="ghost" size="sm" onClick={() => handleClear(key)}>
                   <Trash2 size={14} className="mr-1" /> Usar por defecto
@@ -103,6 +107,18 @@ const LogoUploader = ({ contents, editValues, setEditValues }: LogoUploaderProps
           </div>
         );
       })}
+
+      <MediaPicker
+        open={!!mediaPickerKey}
+        onClose={() => setMediaPickerKey(null)}
+        onSelect={async (url) => {
+          if (!mediaPickerKey || !token) return;
+          setEditValues(prev => ({ ...prev, [mediaPickerKey]: url }));
+          await contentsApi.update(mediaPickerKey, url, token, logoFields.find(f => f.key === mediaPickerKey)?.label);
+          toast.success('Logo actualizado desde galería');
+        }}
+        defaultCategory="logos"
+      />
     </div>
   );
 };

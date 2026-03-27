@@ -23,6 +23,7 @@ const imageFields = [
 const HeroImagesUploader = ({ contents, editValues, setEditValues }: HeroImagesUploaderProps) => {
   const { token } = useAuth();
   const [uploading, setUploading] = useState<string | null>(null);
+  const [mediaPickerKey, setMediaPickerKey] = useState<string | null>(null);
   const fileRefs = useRef<Record<string, HTMLInputElement | null>>({});
 
   const handleUpload = async (key: string, file: File) => {
@@ -90,6 +91,9 @@ const HeroImagesUploader = ({ contents, editValues, setEditValues }: HeroImagesU
                 <Upload size={14} className="mr-1" />
                 {uploading === key ? 'Subiendo...' : currentUrl ? 'Cambiar imagen' : 'Subir imagen'}
               </Button>
+              <Button variant="outline" size="sm" onClick={() => setMediaPickerKey(key)}>
+                🖼️ Galería
+              </Button>
               {currentUrl && (
                 <Button variant="ghost" size="sm" onClick={() => handleClear(key)}>
                   <Trash2 size={14} className="mr-1" /> Usar por defecto
@@ -99,6 +103,18 @@ const HeroImagesUploader = ({ contents, editValues, setEditValues }: HeroImagesU
           </div>
         );
       })}
+
+      <MediaPicker
+        open={!!mediaPickerKey}
+        onClose={() => setMediaPickerKey(null)}
+        onSelect={async (url) => {
+          if (!mediaPickerKey || !token) return;
+          setEditValues(prev => ({ ...prev, [mediaPickerKey]: url }));
+          await contentsApi.update(mediaPickerKey, url, token, imageFields.find(f => f.key === mediaPickerKey)?.label);
+          toast.success('Imagen actualizada desde galería');
+        }}
+        defaultCategory="fondos"
+      />
     </div>
   );
 };
