@@ -50,25 +50,25 @@ const Index = () => {
     <Layout>
       <HeroSection />
       <IntroSection />
-      <Suspense fallback={<SectionFallback />}>
+      <Suspense fallback={<SectionFallback minH="min-h-screen" />}>
         <ServicesSection />
       </Suspense>
-      <Suspense fallback={<SectionFallback />}>
+      <Suspense fallback={<SectionFallback minH="min-h-[600px]" />}>
         <WhyUsSection />
       </Suspense>
-      <Suspense fallback={<SectionFallback />}>
+      <Suspense fallback={<SectionFallback minH="min-h-[300px]" />}>
         <CountersSection />
       </Suspense>
-      <Suspense fallback={<SectionFallback />}>
+      <Suspense fallback={<SectionFallback minH="min-h-[400px]" />}>
         <ClientsSection />
       </Suspense>
-      <Suspense fallback={<SectionFallback />}>
+      <Suspense fallback={<SectionFallback minH="min-h-[500px]" />}>
         <TestimonialsSection />
       </Suspense>
-      <Suspense fallback={<SectionFallback />}>
+      <Suspense fallback={<SectionFallback minH="min-h-[600px]" />}>
         <FAQSection />
       </Suspense>
-      <Suspense fallback={<SectionFallback />}>
+      <Suspense fallback={<SectionFallback minH="min-h-[400px]" />}>
         <CTASection />
       </Suspense>
     </Layout>
