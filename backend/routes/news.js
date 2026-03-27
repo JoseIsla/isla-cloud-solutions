@@ -52,12 +52,12 @@ router.post('/', authMiddleware, [
 
   let conn;
   try {
-    const { title, slug, excerpt, content, image_url, category, is_published, meta_title, meta_description } = req.body;
+    const { title, slug, excerpt, content, image_url, category, is_published, meta_title, meta_description, noindex, nofollow } = req.body;
     const publishedAt = is_published ? new Date() : null;
     conn = await pool.getConnection();
     const result = await conn.query(
-      'INSERT INTO news (title, slug, excerpt, content, image_url, category, is_published, published_at, meta_title, meta_description) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-      [title, slug, excerpt || '', content || '', image_url || '', category || '', is_published ? 1 : 0, publishedAt, meta_title || '', meta_description || '']
+      'INSERT INTO news (title, slug, excerpt, content, image_url, category, is_published, published_at, meta_title, meta_description, noindex, nofollow) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [title, slug, excerpt || '', content || '', image_url || '', category || '', is_published ? 1 : 0, publishedAt, meta_title || '', meta_description || '', noindex ? 1 : 0, nofollow ? 1 : 0]
     );
     res.status(201).json({ id: Number(result.insertId), message: 'Noticia creada' });
   } catch (err) {
@@ -72,7 +72,7 @@ router.post('/', authMiddleware, [
 router.put('/:id', authMiddleware, async (req, res) => {
   let conn;
   try {
-    const { title, slug, excerpt, content, image_url, category, is_published, meta_title, meta_description } = req.body;
+    const { title, slug, excerpt, content, image_url, category, is_published, meta_title, meta_description, noindex, nofollow } = req.body;
     conn = await pool.getConnection();
     
     let publishedAt = null;
@@ -82,8 +82,8 @@ router.put('/:id', authMiddleware, async (req, res) => {
     }
 
     await conn.query(
-      'UPDATE news SET title=?, slug=?, excerpt=?, content=?, image_url=?, category=?, is_published=?, published_at=?, meta_title=?, meta_description=? WHERE id=?',
-      [title, slug, excerpt, content, image_url, category, is_published ? 1 : 0, publishedAt, meta_title || '', meta_description || '', req.params.id]
+      'UPDATE news SET title=?, slug=?, excerpt=?, content=?, image_url=?, category=?, is_published=?, published_at=?, meta_title=?, meta_description=?, noindex=?, nofollow=? WHERE id=?',
+      [title, slug, excerpt, content, image_url, category, is_published ? 1 : 0, publishedAt, meta_title || '', meta_description || '', noindex ? 1 : 0, nofollow ? 1 : 0, req.params.id]
     );
     res.json({ message: 'Noticia actualizada' });
   } catch (err) {
