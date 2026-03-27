@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Upload, Trash2, Search, Image as ImageIcon, Copy, Check, CloudUpload, RefreshCw, CheckSquare, X } from 'lucide-react';
+import { Upload, Trash2, Search, Image as ImageIcon, Copy, Check, CloudUpload, RefreshCw, CheckSquare, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
 import Pagination from '@/components/Pagination';
 import { usePanelPagination } from '@/hooks/usePanelPagination';
