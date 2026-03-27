@@ -27,9 +27,13 @@ async function fetchJSON(url) {
   }
 }
 
+function escapeXml(str) {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+}
+
 function buildUrl(loc, priority, changefreq, lastmod) {
   return `  <url>
-    <loc>${SITE_URL}${loc}</loc>
+    <loc>${escapeXml(SITE_URL + loc)}</loc>
     <lastmod>${lastmod || today}</lastmod>
     <changefreq>${changefreq}</changefreq>
     <priority>${priority}</priority>
@@ -39,7 +43,7 @@ function buildUrl(loc, priority, changefreq, lastmod) {
 async function generate() {
   const urls = staticRoutes.map((r) => buildUrl(r.path, r.priority, r.changefreq));
 
-  // Dynamic: services
+  // Dynamic: services (only active)
   const services = await fetchJSON(`${API_URL}/api/services`);
   for (const s of services) {
     if (s.is_active && s.slug) {
@@ -47,20 +51,21 @@ async function generate() {
     }
   }
 
-  // Dynamic: blog posts
+  // Dynamic: blog posts (only published, exclude noindex)
   const news = await fetchJSON(`${API_URL}/api/news`);
   for (const n of news) {
-    if (n.is_published && n.slug) {
+    if (n.is_published && n.slug && !n.noindex) {
       const lastmod = n.published_at ? n.published_at.split('T')[0] : today;
       urls.push(buildUrl(`/blog/${n.slug}`, '0.7', 'monthly', lastmod));
     }
   }
 
-  // Dynamic: cases
+  // Dynamic: cases (only active, exclude noindex)
   const cases = await fetchJSON(`${API_URL}/api/cases`);
   for (const c of cases) {
-    if (c.is_active) {
-      urls.push(buildUrl(`/casos/${c.id}`, '0.7', 'monthly'));
+    if (c.is_active && !c.noindex) {
+      const lastmod = c.created_at ? c.created_at.split('T')[0] : today;
+      urls.push(buildUrl(`/casos/${c.id}`, '0.7', 'monthly', lastmod));
     }
   }
 
