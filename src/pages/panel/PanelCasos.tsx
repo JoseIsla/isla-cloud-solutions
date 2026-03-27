@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useConfirmDialog } from '@/hooks/useConfirmDialog';
 import { useAuth } from '@/hooks/useAuth';
-import { casesApi, uploadImage, type CaseFromAPI, API_BASE_URL } from '@/lib/api';
+import { casesApi, clientsApi, uploadImage, type CaseFromAPI, type ClientFromAPI, API_BASE_URL } from '@/lib/api';
 import { useDragReorder } from '@/hooks/useDragReorder';
 import PanelLayout from './PanelLayout';
 import { Button } from '@/components/ui/button';
@@ -10,6 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import RichEditor from '@/components/ui/rich-editor';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Plus, Edit, Trash2, Trophy, X, Upload, GripVertical, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
 import { StaggerList, StaggerItem } from '@/components/panel/StaggerList';
