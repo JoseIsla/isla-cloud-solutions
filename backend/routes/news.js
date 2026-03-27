@@ -13,9 +13,9 @@ router.get('/', async (req, res) => {
     const isAdmin = req.headers.authorization;
     let rows;
     if (isAdmin) {
-      rows = await conn.query('SELECT * FROM news ORDER BY created_at DESC');
+      rows = await conn.query('SELECT * FROM news ORDER BY sort_order ASC, created_at DESC');
     } else {
-      rows = await conn.query('SELECT * FROM news WHERE is_published = 1 ORDER BY published_at DESC');
+      rows = await conn.query('SELECT * FROM news WHERE is_published = 1 ORDER BY sort_order ASC, published_at DESC');
     }
     res.json(rows);
   } catch (err) {
@@ -52,12 +52,12 @@ router.post('/', authMiddleware, [
 
   let conn;
   try {
-    const { title, slug, excerpt, content, image_url, category, is_published, meta_title, meta_description, noindex, nofollow } = req.body;
+    const { title, slug, excerpt, content, image_url, category, is_published, sort_order, meta_title, meta_description, noindex, nofollow } = req.body;
     const publishedAt = is_published ? new Date() : null;
     conn = await pool.getConnection();
     const result = await conn.query(
-      'INSERT INTO news (title, slug, excerpt, content, image_url, category, is_published, published_at, meta_title, meta_description, noindex, nofollow) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-      [title, slug, excerpt || '', content || '', image_url || '', category || '', is_published ? 1 : 0, publishedAt, meta_title || '', meta_description || '', noindex ? 1 : 0, nofollow ? 1 : 0]
+      'INSERT INTO news (title, slug, excerpt, content, image_url, category, is_published, sort_order, published_at, meta_title, meta_description, noindex, nofollow) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [title, slug, excerpt || '', content || '', image_url || '', category || '', is_published ? 1 : 0, sort_order || 0, publishedAt, meta_title || '', meta_description || '', noindex ? 1 : 0, nofollow ? 1 : 0]
     );
     res.status(201).json({ id: Number(result.insertId), message: 'Noticia creada' });
   } catch (err) {
@@ -72,7 +72,7 @@ router.post('/', authMiddleware, [
 router.put('/:id', authMiddleware, async (req, res) => {
   let conn;
   try {
-    const { title, slug, excerpt, content, image_url, category, is_published, meta_title, meta_description, noindex, nofollow } = req.body;
+    const { title, slug, excerpt, content, image_url, category, is_published, sort_order, meta_title, meta_description, noindex, nofollow } = req.body;
     conn = await pool.getConnection();
     
     let publishedAt = null;
@@ -82,8 +82,8 @@ router.put('/:id', authMiddleware, async (req, res) => {
     }
 
     await conn.query(
-      'UPDATE news SET title=?, slug=?, excerpt=?, content=?, image_url=?, category=?, is_published=?, published_at=?, meta_title=?, meta_description=?, noindex=?, nofollow=? WHERE id=?',
-      [title, slug, excerpt, content, image_url, category, is_published ? 1 : 0, publishedAt, meta_title || '', meta_description || '', noindex ? 1 : 0, nofollow ? 1 : 0, req.params.id]
+      'UPDATE news SET title=?, slug=?, excerpt=?, content=?, image_url=?, category=?, is_published=?, sort_order=?, published_at=?, meta_title=?, meta_description=?, noindex=?, nofollow=? WHERE id=?',
+      [title, slug, excerpt, content, image_url, category, is_published ? 1 : 0, sort_order || 0, publishedAt, meta_title || '', meta_description || '', noindex ? 1 : 0, nofollow ? 1 : 0, req.params.id]
     );
     res.json({ message: 'Noticia actualizada' });
   } catch (err) {

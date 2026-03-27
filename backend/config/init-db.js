@@ -58,6 +58,7 @@ async function initDB() {
       image_url VARCHAR(500),
       category VARCHAR(100),
       is_published TINYINT(1) DEFAULT 0,
+      sort_order INT DEFAULT 0,
       published_at TIMESTAMP NULL,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -329,6 +330,14 @@ async function initDB() {
     await conn.query(`
       INSERT IGNORE INTO clients (name, sort_order) VALUES (?, ?)
     `, [defaultClients[i], i]);
+  }
+
+  // Migrations: add sort_order to news if missing
+  try {
+    await conn.query('ALTER TABLE news ADD COLUMN sort_order INT DEFAULT 0 AFTER is_published');
+    console.log('✅ Columna sort_order añadida a news');
+  } catch (e) {
+    // Column already exists
   }
 
   console.log('✅ Base de datos inicializada correctamente');

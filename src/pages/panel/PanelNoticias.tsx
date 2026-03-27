@@ -1,15 +1,16 @@
-import { useEffect, useState, useRef, useMemo } from 'react';
+import { useEffect, useState, useRef, useMemo, useCallback } from 'react';
 import { useConfirmDialog } from '@/hooks/useConfirmDialog';
 import { useAuth } from '@/hooks/useAuth';
 import PanelLayout from './PanelLayout';
 import { newsApi, uploadImage, type NewsFromAPI, API_BASE_URL } from '@/lib/api';
 import { Button } from '@/components/ui/button';
-import { Plus, Pencil, Trash2, X, Upload, Calendar, RefreshCw, Search } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Upload, Calendar, RefreshCw, Search, GripVertical, ChevronUp, ChevronDown, ChevronsUp, ChevronsDown } from 'lucide-react';
 import { toast } from 'sonner';
 import RichEditor from '@/components/ui/rich-editor';
 import { StaggerList, StaggerItem } from '@/components/panel/StaggerList';
 import { usePanelPagination } from '@/hooks/usePanelPagination';
 import Pagination from '@/components/Pagination';
+import { useDragReorder } from '@/hooks/useDragReorder';
 
 const generateSlug = (text: string) =>
   text
@@ -82,6 +83,47 @@ const PanelNoticias = () => {
 
   const load = () => { if (token) newsApi.list(token).then(setNews).catch(() => {}); };
   useEffect(load, [token]);
+
+  const handleReorder = useCallback(async (reordered: NewsFromAPI[]) => {
+    if (!token) return;
+    try {
+      await Promise.all(
+        reordered.map((n, i) =>
+          newsApi.update(n.id, { ...n, sort_order: i }, token)
+        )
+      );
+      toast.success('Orden actualizado');
+    } catch {
+      toast.error('Error actualizando orden');
+      load();
+    }
+  }, [token]);
+
+  const { getDragProps, isDragOver } = useDragReorder({
+    items: news,
+    setItems: setNews,
+    onReorder: handleReorder,
+  });
+
+  const moveItem = async (idx: number, dir: -1 | 1) => {
+    const newIdx = idx + dir;
+    if (newIdx < 0 || newIdx >= news.length) return;
+    const reordered = [...news];
+    [reordered[idx], reordered[newIdx]] = [reordered[newIdx], reordered[idx]];
+    reordered.forEach((n, i) => (n.sort_order = i));
+    setNews(reordered);
+    await handleReorder(reordered);
+  };
+
+  const moveToEdge = async (idx: number, target: 'first' | 'last') => {
+    if (idx === (target === 'first' ? 0 : news.length - 1)) return;
+    const reordered = [...news];
+    const [moved] = reordered.splice(idx, 1);
+    target === 'first' ? reordered.unshift(moved) : reordered.push(moved);
+    reordered.forEach((n, i) => (n.sort_order = i));
+    setNews(reordered);
+    await handleReorder(reordered);
+  };
 
   const filtered = news.filter(n =>
     !filter || n.title.toLowerCase().includes(filter.toLowerCase()) || (n.category || '').toLowerCase().includes(filter.toLowerCase())
@@ -291,31 +333,49 @@ const PanelNoticias = () => {
         )}
 
         <StaggerList className="space-y-2">
-          {paged.map((n) => (
-            <StaggerItem key={n.id} className="flex items-center gap-4 p-4 rounded-xl bg-card border border-border hover:border-primary/15 transition-colors group">
-              {n.image_url ? (
-                <img src={n.image_url} alt="" className="w-12 h-10 rounded-lg object-cover shrink-0" />
-              ) : (
-                <div className="w-12 h-10 rounded-lg bg-primary/5 flex items-center justify-center shrink-0 text-primary/30 font-heading font-bold text-sm">IC</div>
-              )}
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-foreground truncate">{n.title}</p>
-                <div className="flex items-center gap-2 mt-0.5">
-                  {n.category && <span className="text-[10px] font-semibold uppercase tracking-wider text-primary bg-primary/10 px-1.5 py-0.5 rounded">{n.category}</span>}
-                  <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ${n.is_published ? 'bg-emerald-500/10 text-emerald-500' : 'bg-muted text-muted-foreground'}`}>
-                    {n.is_published ? 'Publicada' : 'Borrador'}
-                  </span>
-                  <span className="text-xs text-muted-foreground flex items-center gap-1">
-                    <Calendar size={10} /> {new Date(n.created_at).toLocaleDateString('es-ES')}
-                  </span>
+          {paged.map((n) => {
+            const realIdx = news.indexOf(n);
+            return (
+              <StaggerItem
+                key={n.id}
+                {...getDragProps(realIdx)}
+                className={`flex items-center gap-4 p-4 rounded-xl bg-card border transition-all duration-150 group cursor-grab active:cursor-grabbing ${
+                  isDragOver(realIdx) ? 'border-primary/40 shadow-md shadow-primary/5 scale-[1.01]' : 'border-border hover:border-primary/15'
+                }`}
+              >
+                <GripVertical size={16} className="text-muted-foreground/30 shrink-0" />
+                {n.image_url ? (
+                  <img src={n.image_url} alt="" className="w-12 h-10 rounded-lg object-cover shrink-0" />
+                ) : (
+                  <div className="w-12 h-10 rounded-lg bg-primary/5 flex items-center justify-center shrink-0 text-primary/30 font-heading font-bold text-sm">IC</div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-foreground truncate">{n.title}</p>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    {n.category && <span className="text-[10px] font-semibold uppercase tracking-wider text-primary bg-primary/10 px-1.5 py-0.5 rounded">{n.category}</span>}
+                    <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ${n.is_published ? 'bg-emerald-500/10 text-emerald-500' : 'bg-muted text-muted-foreground'}`}>
+                      {n.is_published ? 'Publicada' : 'Borrador'}
+                    </span>
+                    <span className="text-xs text-muted-foreground flex items-center gap-1">
+                      <Calendar size={10} /> {new Date(n.created_at).toLocaleDateString('es-ES')}
+                    </span>
+                  </div>
                 </div>
-              </div>
-              <div className="flex gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button onClick={() => { setEditing(n); setIsNew(false); }} className="p-2 rounded-lg hover:bg-primary/10 text-primary"><Pencil size={15} /></button>
-                <button onClick={() => handleDelete(n.id)} className="p-2 rounded-lg hover:bg-destructive/10 text-destructive"><Trash2 size={15} /></button>
-              </div>
-            </StaggerItem>
-          ))}
+                {!filter && (
+                  <div className="flex items-center gap-0.5 shrink-0">
+                    <button onClick={() => moveToEdge(realIdx, 'first')} disabled={realIdx === 0} className="p-0.5 rounded hover:bg-muted disabled:opacity-20 text-muted-foreground" title="Mover al inicio"><ChevronsUp size={14} /></button>
+                    <button onClick={() => moveItem(realIdx, -1)} disabled={realIdx === 0} className="p-0.5 rounded hover:bg-muted disabled:opacity-20 text-muted-foreground"><ChevronUp size={14} /></button>
+                    <button onClick={() => moveItem(realIdx, 1)} disabled={realIdx === news.length - 1} className="p-0.5 rounded hover:bg-muted disabled:opacity-20 text-muted-foreground"><ChevronDown size={14} /></button>
+                    <button onClick={() => moveToEdge(realIdx, 'last')} disabled={realIdx === news.length - 1} className="p-0.5 rounded hover:bg-muted disabled:opacity-20 text-muted-foreground" title="Mover al final"><ChevronsDown size={14} /></button>
+                  </div>
+                )}
+                <div className="flex gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button onClick={() => { setEditing(n); setIsNew(false); }} className="p-2 rounded-lg hover:bg-primary/10 text-primary"><Pencil size={15} /></button>
+                  <button onClick={() => handleDelete(n.id)} className="p-2 rounded-lg hover:bg-destructive/10 text-destructive"><Trash2 size={15} /></button>
+                </div>
+              </StaggerItem>
+            );
+          })}
           {news.length === 0 && (
             <div className="p-12 text-center text-muted-foreground text-sm rounded-xl border border-dashed border-border">
               No hay noticias publicadas
