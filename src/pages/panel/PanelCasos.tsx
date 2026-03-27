@@ -84,6 +84,7 @@ const PanelCasos = () => {
   const filtered = cases.filter(c =>
     !filter || c.title.toLowerCase().includes(filter.toLowerCase()) || c.client_name.toLowerCase().includes(filter.toLowerCase())
   );
+  const { page, setPage, totalPages, paged } = usePanelPagination(filtered);
 
   const handleSave = async () => {
     if (!editing || !token) return;
@@ -279,7 +280,7 @@ const PanelCasos = () => {
               <p className="text-muted-foreground/60 text-xs mt-1">Aparecerán en el slider del hero</p>
             </div>
           )}
-          {filtered.map((c) => {
+          {paged.map((c) => {
             const realIdx = cases.indexOf(c);
             return (
               <StaggerItem
@@ -323,6 +324,7 @@ const PanelCasos = () => {
             </div>
           )}
         </StaggerList>
+        <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
       </div>
       <ConfirmDialog />
     </PanelLayout>

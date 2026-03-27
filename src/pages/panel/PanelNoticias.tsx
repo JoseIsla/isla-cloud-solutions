@@ -86,6 +86,7 @@ const PanelNoticias = () => {
   const filtered = news.filter(n =>
     !filter || n.title.toLowerCase().includes(filter.toLowerCase()) || (n.category || '').toLowerCase().includes(filter.toLowerCase())
   );
+  const { page, setPage, totalPages, paged } = usePanelPagination(filtered);
 
   const handleSave = async () => {
     if (!token || !editing) return;
@@ -290,7 +291,7 @@ const PanelNoticias = () => {
         )}
 
         <StaggerList className="space-y-2">
-          {filtered.map((n) => (
+          {paged.map((n) => (
             <StaggerItem key={n.id} className="flex items-center gap-4 p-4 rounded-xl bg-card border border-border hover:border-primary/15 transition-colors group">
               {n.image_url ? (
                 <img src={n.image_url} alt="" className="w-12 h-10 rounded-lg object-cover shrink-0" />
@@ -326,6 +327,7 @@ const PanelNoticias = () => {
             </div>
           )}
         </StaggerList>
+        <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
       </div>
       <ConfirmDialog />
     </PanelLayout>
