@@ -9,6 +9,8 @@ import { toast } from 'sonner';
 import RichEditor from '@/components/ui/rich-editor';
 import { useDragReorder } from '@/hooks/useDragReorder';
 import { StaggerList, StaggerItem } from '@/components/panel/StaggerList';
+import { usePanelPagination } from '@/hooks/usePanelPagination';
+import Pagination from '@/components/Pagination';
 
 const PanelServicios = () => {
   const { token } = useAuth();
@@ -49,6 +51,7 @@ const PanelServicios = () => {
   const filtered = services.filter(s =>
     !filter || s.title.toLowerCase().includes(filter.toLowerCase()) || s.slug.toLowerCase().includes(filter.toLowerCase())
   );
+  const { page, setPage, totalPages, paged } = usePanelPagination(filtered);
 
   const handleSave = async () => {
     if (!token || !editing) return;
@@ -193,7 +196,7 @@ const PanelServicios = () => {
 
         {/* List */}
         <StaggerList className="space-y-1">
-          {filtered.map((s, idx) => {
+          {paged.map((s, idx) => {
             const realIdx = services.indexOf(s);
             return (
               <StaggerItem
@@ -239,6 +242,7 @@ const PanelServicios = () => {
             </div>
           )}
         </StaggerList>
+        <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
       </div>
       <ConfirmDialog />
     </PanelLayout>

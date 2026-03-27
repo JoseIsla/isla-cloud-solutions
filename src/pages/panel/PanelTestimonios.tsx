@@ -12,6 +12,8 @@ import { Plus, Edit, Trash2, MessageCircle, Star, X, GripVertical, Search, Chevr
 import { toast } from 'sonner';
 import { useDragReorder } from '@/hooks/useDragReorder';
 import { StaggerList, StaggerItem } from '@/components/panel/StaggerList';
+import { usePanelPagination } from '@/hooks/usePanelPagination';
+import Pagination from '@/components/Pagination';
 
 const PanelTestimonios = () => {
   const { token } = useAuth();
@@ -54,6 +56,7 @@ const PanelTestimonios = () => {
   const filtered = testimonials.filter(t =>
     !filter || t.author_name.toLowerCase().includes(filter.toLowerCase()) || t.author_company.toLowerCase().includes(filter.toLowerCase()) || t.quote.toLowerCase().includes(filter.toLowerCase())
   );
+  const { page, setPage, totalPages, paged } = usePanelPagination(filtered);
 
   const handleSave = async () => {
     if (!editing || !token) return;
@@ -186,7 +189,7 @@ const PanelTestimonios = () => {
               <p className="text-muted-foreground/60 text-xs mt-1">Aparecerán en el landing entre Clientes y Confianza</p>
             </div>
           )}
-          {filtered.map((t) => {
+          {paged.map((t) => {
             const realIdx = testimonials.indexOf(t);
             return (
               <StaggerItem
@@ -234,6 +237,7 @@ const PanelTestimonios = () => {
             </div>
           )}
         </StaggerList>
+        <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
       </div>
       <ConfirmDialog />
     </PanelLayout>

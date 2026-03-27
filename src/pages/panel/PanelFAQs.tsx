@@ -12,6 +12,8 @@ import { toast } from 'sonner';
 import RichEditor from '@/components/ui/rich-editor';
 import { useDragReorder } from '@/hooks/useDragReorder';
 import { StaggerList, StaggerItem } from '@/components/panel/StaggerList';
+import { usePanelPagination } from '@/hooks/usePanelPagination';
+import Pagination from '@/components/Pagination';
 
 const PanelFAQs = () => {
   const { token } = useAuth();
@@ -54,7 +56,7 @@ const PanelFAQs = () => {
   const filtered = faqs.filter(f =>
     !filter || f.question.toLowerCase().includes(filter.toLowerCase()) || f.answer.replace(/<[^>]*>/g, '').toLowerCase().includes(filter.toLowerCase())
   );
-
+  const { page, setPage, totalPages, paged } = usePanelPagination(filtered);
   const handleSave = async () => {
     if (!editing || !token) return;
     setLoading(true);
@@ -148,7 +150,7 @@ const PanelFAQs = () => {
               <p className="text-muted-foreground/60 text-xs mt-1">Aparecerán en el landing antes del CTA</p>
             </div>
           )}
-          {filtered.map((f) => {
+          {paged.map((f) => {
             const realIdx = faqs.indexOf(f);
             return (
               <StaggerItem
@@ -188,6 +190,7 @@ const PanelFAQs = () => {
             </div>
           )}
         </StaggerList>
+        <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
       </div>
       <ConfirmDialog />
     </PanelLayout>
