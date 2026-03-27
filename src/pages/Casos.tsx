@@ -81,10 +81,12 @@ const Casos = () => {
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4, delay: i * 0.1 }}
+                    whileHover={{ y: -6, boxShadow: "0 20px 40px -12px hsl(var(--primary) / 0.15)" }}
+                    className="rounded-2xl"
                   >
                     <Link
                       to={`/casos/${caso.id}`}
-                      className="group block rounded-2xl border border-border bg-card overflow-hidden hover:border-primary/30 hover:shadow-lg transition-all duration-300"
+                      className="group block rounded-2xl border border-border bg-card overflow-hidden hover:border-primary/30 transition-colors duration-300"
                     >
                       {caso.image_url ? (
                         <div className="aspect-video overflow-hidden bg-muted">
