@@ -54,7 +54,24 @@ const PanelMedios = () => {
     setBulkCategory('');
   };
 
-  const handleBulkCategoryChange = async () => {
+  const handleBulkDelete = async () => {
+    if (!token || selected.size === 0) return;
+    if (!confirm(`¿Eliminar ${selected.size} imagen(es) seleccionada(s)?`)) return;
+    setBulkApplying(true);
+    try {
+      await Promise.all(
+        Array.from(selected).map(id => mediaApi.delete(id, token))
+      );
+      toast.success(`${selected.size} imagen(es) eliminada(s)`);
+      clearSelection();
+      loadData();
+    } catch (e: any) {
+      toast.error(e.message || 'Error eliminando imágenes');
+    } finally {
+      setBulkApplying(false);
+    }
+  };
+
     if (!token || !bulkCategory || selected.size === 0) return;
     setBulkApplying(true);
     try {
