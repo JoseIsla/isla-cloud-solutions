@@ -162,30 +162,68 @@ const PanelServicios = () => {
 
         {/* Modal */}
         {editing && (
-          <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm overflow-y-auto p-4">
-            <div className="bg-card rounded-2xl border border-border p-6 w-full max-w-2xl shadow-2xl mx-auto my-8">
+          <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm overflow-y-auto flex items-start justify-center p-4 min-h-screen">
+            <div className="bg-card rounded-2xl border border-border p-6 w-full max-w-2xl shadow-2xl my-8">
               <div className="flex justify-between items-center mb-5">
                 <h3 className="font-heading font-semibold text-base">{isNew ? 'Nuevo servicio' : 'Editar servicio'}</h3>
                 <button onClick={() => setEditing(null)} className="w-8 h-8 rounded-lg hover:bg-muted flex items-center justify-center"><X size={18} className="text-muted-foreground" /></button>
               </div>
               <div className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {[
-                    { key: 'title', label: 'Título' },
-                    { key: 'short_title', label: 'Título corto' },
-                    { key: 'slug', label: 'Slug (URL)' },
-                    { key: 'icon', label: 'Icono' },
-                  ].map(({ key, label }) => (
-                    <div key={key}>
-                      <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">{label}</label>
-                      <input
-                        type="text"
-                        value={(editing as any)[key] ?? ''}
-                        onChange={(e) => setEditing({ ...editing, [key]: e.target.value })}
-                        className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm"
-                      />
-                    </div>
-                  ))}
+                  <div>
+                    <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Título</label>
+                    <input type="text" value={editing.title ?? ''} onChange={(e) => setEditing({ ...editing, title: e.target.value })} className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Título corto</label>
+                    <input type="text" value={editing.short_title ?? ''} onChange={(e) => setEditing({ ...editing, short_title: e.target.value })} className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm" />
+                  </div>
+                  <div>
+                    <label className="flex items-center gap-1.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">
+                      Slug (URL)
+                      <TooltipProvider delayDuration={200}>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <HelpCircle size={13} className="text-muted-foreground/60 cursor-help" />
+                          </TooltipTrigger>
+                          <TooltipContent side="top" className="max-w-[240px] text-xs">
+                            <p>El slug es la parte de la URL que identifica este servicio. Ej: <strong>administracion-it</strong> genera la ruta <strong>/servicios/administracion-it</strong>. Usa solo letras minúsculas, números y guiones.</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </label>
+                    <input type="text" value={editing.slug ?? ''} onChange={(e) => setEditing({ ...editing, slug: e.target.value })} className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Icono</label>
+                    <Select value={editing.icon || 'Server'} onValueChange={(v) => setEditing({ ...editing, icon: v })}>
+                      <SelectTrigger className="w-full h-[42px] text-sm">
+                        <SelectValue>
+                          {(() => {
+                            const selected = ICON_OPTIONS.find(o => o.value === (editing.icon || 'Server'));
+                            if (!selected) return 'Seleccionar';
+                            return (
+                              <span className="flex items-center gap-2">
+                                <selected.Icon size={16} className="text-primary" />
+                                {selected.label}
+                              </span>
+                            );
+                          })()}
+                        </SelectValue>
+                      </SelectTrigger>
+                      <SelectContent className="max-h-[280px]">
+                        {ICON_OPTIONS.map(({ value, label, Icon: OptIcon }) => (
+                          <SelectItem key={value} value={value} className="text-sm">
+                            <span className="flex items-center gap-2.5">
+                              <OptIcon size={16} className="text-primary shrink-0" />
+                              <span>{label}</span>
+                              <span className="text-[10px] text-muted-foreground ml-auto">({value})</span>
+                            </span>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
 
                 <div>
