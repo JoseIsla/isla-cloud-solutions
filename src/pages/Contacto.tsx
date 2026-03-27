@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Layout from "@/components/Layout";
 import ParallaxHero from "@/components/ParallaxHero";
-import usePageMeta from "@/hooks/usePageMeta";
+import usePageMeta, { SITE_URL, SITE_NAME } from "@/hooks/usePageMeta";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { toast } from "sonner";
 import { contactsApi } from "@/lib/api";
 import { useCMSValue } from "@/hooks/useCMS";
@@ -19,10 +20,19 @@ const contactSchema = z.object({
 });
 
 const ContactoPage = () => {
+  const contactJsonLd = useMemo(() => ({
+    '@context': 'https://schema.org',
+    '@type': 'ContactPage',
+    name: `Contacto | ${SITE_NAME}`,
+    url: `${SITE_URL}/contacto`,
+    description: 'Contacta con Isla Cloud Solutions. Cuéntanos tu proyecto y te asesoramos sin compromiso.',
+  }), []);
+
   usePageMeta({
     title: 'Contacto',
     description: 'Contacta con Isla Cloud Solutions. Cuéntanos tu proyecto y te asesoramos sin compromiso.',
     canonical: '/contacto',
+    jsonLd: contactJsonLd,
   });
 
   const title = useCMSValue('contact_title', 'Hablemos de tu proyecto');

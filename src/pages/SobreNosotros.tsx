@@ -1,8 +1,10 @@
+import { useMemo } from "react";
 import { motion } from "framer-motion";
 import { Shield, Clock, Award, Users } from "lucide-react";
 import Layout from "@/components/Layout";
 import ParallaxHero from "@/components/ParallaxHero";
-import usePageMeta from "@/hooks/usePageMeta";
+import usePageMeta, { SITE_URL, SITE_NAME } from "@/hooks/usePageMeta";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import CTASection from "@/components/home/CTASection";
 import { useCMSValue } from "@/hooks/useCMS";
 import { sanitizeHTML } from "@/lib/sanitize";
@@ -10,10 +12,25 @@ import { sanitizeHTML } from "@/lib/sanitize";
 const icons = [Shield, Clock, Award, Users];
 
 const SobreNosotros = () => {
+  const aboutJsonLd = useMemo(() => ({
+    '@context': 'https://schema.org',
+    '@type': 'AboutPage',
+    name: `Sobre Nosotros | ${SITE_NAME}`,
+    url: `${SITE_URL}/sobre-nosotros`,
+    description: 'Más de 20 años creando soluciones tecnológicas. Conoce al equipo de Isla Cloud Solutions.',
+    mainEntity: {
+      '@type': 'Organization',
+      name: SITE_NAME,
+      url: SITE_URL,
+      foundingDate: '2004',
+    },
+  }), []);
+
   usePageMeta({
     title: 'Sobre Nosotros',
     description: 'Más de 20 años creando soluciones tecnológicas. Conoce al equipo de Isla Cloud Solutions.',
     canonical: '/sobre-nosotros',
+    jsonLd: aboutJsonLd,
   });
 
   const title = useCMSValue('about_title', 'Más de 20 años creando soluciones tecnológicas');
@@ -29,6 +46,7 @@ const SobreNosotros = () => {
 
   return (
     <Layout>
+      <BreadcrumbJsonLd items={[{ name: 'Inicio', path: '/' }, { name: 'Sobre Nosotros', path: '/sobre-nosotros' }]} />
       {/* Hero */}
       <ParallaxHero>
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-2xl">

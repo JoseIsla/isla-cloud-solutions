@@ -12,6 +12,7 @@ const NotFound = () => {
   usePageMeta({
     title: "Página no encontrada",
     description: "La página que buscas no existe o ha sido movida.",
+    noindex: true,
   });
 
   useEffect(() => {
