@@ -79,8 +79,8 @@ const PanelNoticias = () => {
         </div>
 
         {editing && (
-          <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="bg-card rounded-2xl border border-border p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl">
+          <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm overflow-y-auto p-4">
+            <div className="bg-card rounded-2xl border border-border p-6 w-full max-w-2xl shadow-2xl mx-auto my-8">
               <div className="flex justify-between items-center mb-5">
                 <h3 className="font-heading font-semibold text-base">{isNew ? 'Nueva noticia' : 'Editar noticia'}</h3>
                 <button onClick={() => setEditing(null)} className="w-8 h-8 rounded-lg hover:bg-muted flex items-center justify-center"><X size={18} className="text-muted-foreground" /></button>
