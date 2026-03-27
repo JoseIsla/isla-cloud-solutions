@@ -6,12 +6,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Upload, Trash2, Search, Image as ImageIcon, Copy, Check, CloudUpload, RefreshCw } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Upload, Trash2, Search, Image as ImageIcon, Copy, Check, CloudUpload, RefreshCw, CheckSquare, X } from 'lucide-react';
 import { toast } from 'sonner';
 import Pagination from '@/components/Pagination';
 import { usePanelPagination } from '@/hooks/usePanelPagination';
-
-const API_BASE = import.meta.env.VITE_API_URL || 'https://api.islacloudsolutions.com';
 
 const PanelMedios = () => {
   const { token } = useAuth();
@@ -29,6 +28,50 @@ const PanelMedios = () => {
   const [dragging, setDragging] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const dragCounter = useRef(0);
+
+  // Bulk selection
+  const [selected, setSelected] = useState<Set<number>>(new Set());
+  const [bulkCategory, setBulkCategory] = useState('');
+  const [bulkApplying, setBulkApplying] = useState(false);
+
+  const selectionMode = selected.size > 0;
+
+  const toggleSelect = (id: number) => {
+    setSelected(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const selectAllOnPage = () => {
+    setSelected(new Set(paged.map(i => i.id)));
+  };
+
+  const clearSelection = () => {
+    setSelected(new Set());
+    setBulkCategory('');
+  };
+
+  const handleBulkCategoryChange = async () => {
+    if (!token || !bulkCategory || selected.size === 0) return;
+    setBulkApplying(true);
+    try {
+      await Promise.all(
+        Array.from(selected).map(id =>
+          mediaApi.update(id, { category: bulkCategory }, token)
+        )
+      );
+      toast.success(`Categoría actualizada en ${selected.size} imagen(es)`);
+      clearSelection();
+      loadData();
+    } catch (e: any) {
+      toast.error(e.message || 'Error actualizando categorías');
+    } finally {
+      setBulkApplying(false);
+    }
+  };
 
   const loadData = async () => {
     if (!token) return;
@@ -154,7 +197,7 @@ const PanelMedios = () => {
             <h2 className="text-xl font-heading font-bold text-foreground">Galería de Medios</h2>
             <p className="text-sm text-muted-foreground">{items.length} archivos</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             <input
               ref={fileRef}
               type="file"
@@ -183,6 +226,37 @@ const PanelMedios = () => {
             </Button>
           </div>
         </div>
+
+        {/* Bulk selection bar */}
+        {selectionMode && (
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 p-3 rounded-xl bg-primary/5 border border-primary/20">
+            <div className="flex items-center gap-2">
+              <CheckSquare size={16} className="text-primary" />
+              <span className="text-sm font-medium text-foreground">{selected.size} seleccionada(s)</span>
+              <Button size="sm" variant="ghost" className="h-7 px-2 text-xs" onClick={selectAllOnPage}>
+                Seleccionar toda la página
+              </Button>
+              <Button size="sm" variant="ghost" className="h-7 px-2 text-xs text-muted-foreground" onClick={clearSelection}>
+                <X size={12} className="mr-1" /> Cancelar
+              </Button>
+            </div>
+            <div className="flex items-center gap-2 sm:ml-auto">
+              <Select value={bulkCategory} onValueChange={setBulkCategory}>
+                <SelectTrigger className="w-[160px] h-9 text-xs">
+                  <SelectValue placeholder="Mover a categoría..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map(c => (
+                    <SelectItem key={c} value={c} className="text-xs capitalize">{c}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Button size="sm" onClick={handleBulkCategoryChange} disabled={!bulkCategory || bulkApplying}>
+                {bulkApplying ? 'Aplicando...' : 'Aplicar'}
+              </Button>
+            </div>
+          </div>
+        )}
 
         {/* Filters */}
         <div className="flex flex-col sm:flex-row gap-3">
@@ -216,34 +290,59 @@ const PanelMedios = () => {
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {paged.map(item => (
-              <div key={item.id} className="group relative rounded-xl border border-border bg-card overflow-hidden">
-                <div className="aspect-square bg-muted flex items-center justify-center">
-                  <img
-                    src={item.url}
-                    alt={item.alt_text || item.original_name}
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                  />
+            {paged.map(item => {
+              const isSelected = selected.has(item.id);
+              return (
+                <div
+                  key={item.id}
+                  className={`group relative rounded-xl border bg-card overflow-hidden cursor-pointer transition-all ${
+                    isSelected
+                      ? 'border-primary ring-2 ring-primary/30'
+                      : 'border-border hover:border-muted-foreground/30'
+                  }`}
+                  onClick={() => toggleSelect(item.id)}
+                >
+                  {/* Selection checkbox */}
+                  <div className={`absolute top-2 left-2 z-10 transition-opacity ${
+                    selectionMode || isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                  }`}>
+                    <Checkbox
+                      checked={isSelected}
+                      onCheckedChange={() => toggleSelect(item.id)}
+                      onClick={(e) => e.stopPropagation()}
+                      className="h-5 w-5 border-2 bg-background/80 backdrop-blur-sm"
+                    />
+                  </div>
+
+                  <div className="aspect-square bg-muted flex items-center justify-center">
+                    <img
+                      src={item.url}
+                      alt={item.alt_text || item.original_name}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div className="p-2">
+                    <p className="text-xs text-foreground truncate font-medium">{item.original_name || 'Sin nombre'}</p>
+                    <span className="inline-block mt-1 text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground capitalize">{item.category}</span>
+                  </div>
+                  {/* Hover actions - only when not in selection mode */}
+                  {!selectionMode && (
+                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                      <Button size="icon" variant="secondary" className="h-8 w-8" onClick={(e) => { e.stopPropagation(); copyUrl(item); }} title="Copiar URL">
+                        {copied === item.id ? <Check size={14} /> : <Copy size={14} />}
+                      </Button>
+                      <Button size="icon" variant="secondary" className="h-8 w-8" onClick={(e) => { e.stopPropagation(); setEditItem(item); setEditCategory(item.category); setEditAlt(item.alt_text); }} title="Editar">
+                        <ImageIcon size={14} />
+                      </Button>
+                      <Button size="icon" variant="destructive" className="h-8 w-8" onClick={(e) => { e.stopPropagation(); handleDelete(item.id); }} title="Eliminar">
+                        <Trash2 size={14} />
+                      </Button>
+                    </div>
+                  )}
                 </div>
-                <div className="p-2">
-                  <p className="text-xs text-foreground truncate font-medium">{item.original_name || 'Sin nombre'}</p>
-                  <span className="inline-block mt-1 text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground capitalize">{item.category}</span>
-                </div>
-                {/* Hover actions */}
-                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                  <Button size="icon" variant="secondary" className="h-8 w-8" onClick={() => copyUrl(item)} title="Copiar URL">
-                    {copied === item.id ? <Check size={14} /> : <Copy size={14} />}
-                  </Button>
-                  <Button size="icon" variant="secondary" className="h-8 w-8" onClick={() => { setEditItem(item); setEditCategory(item.category); setEditAlt(item.alt_text); }} title="Editar">
-                    <ImageIcon size={14} />
-                  </Button>
-                  <Button size="icon" variant="destructive" className="h-8 w-8" onClick={() => handleDelete(item.id)} title="Eliminar">
-                    <Trash2 size={14} />
-                  </Button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 
