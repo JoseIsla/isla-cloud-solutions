@@ -473,6 +473,10 @@ const PanelMedios = () => {
                     <ChevronRight size={24} className="text-foreground" />
                   </button>
                 )}
+                {/* Position counter */}
+                <span className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-background/80 text-foreground text-xs font-medium px-2.5 py-1 rounded-full shadow z-10">
+                  {items.findIndex(i => i.id === previewItem.id) + 1} / {items.length}
+                </span>
               </div>
               <div className="p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                 <div className="min-w-0">
