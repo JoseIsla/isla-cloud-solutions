@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Shield, Clock, Award, Users } from "lucide-react";
 import Layout from "@/components/Layout";
+import ParallaxHero from "@/components/ParallaxHero";
 import usePageMeta from "@/hooks/usePageMeta";
 import CTASection from "@/components/home/CTASection";
 import { useCMSValue } from "@/hooks/useCMS";
@@ -29,19 +30,17 @@ const SobreNosotros = () => {
   return (
     <Layout>
       {/* Hero */}
-      <section className="bg-hero grid-pattern py-24">
-        <div className="container mx-auto px-4">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-2xl">
-            <span className="text-primary text-sm font-semibold uppercase tracking-wider">Sobre Nosotros</span>
-            <h1 className="text-4xl md:text-5xl font-heading font-bold text-hero-foreground mt-3 mb-6">
-              {title}
-            </h1>
-            <p className="text-hero-foreground/70 text-lg">
-              {subtitle}
-            </p>
-          </motion.div>
-        </div>
-      </section>
+      <ParallaxHero>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-2xl">
+          <span className="text-primary text-sm font-semibold uppercase tracking-wider">Sobre Nosotros</span>
+          <h1 className="text-4xl md:text-5xl font-heading font-bold text-hero-foreground mt-3 mb-6">
+            {title}
+          </h1>
+          <p className="text-hero-foreground/70 text-lg">
+            {subtitle}
+          </p>
+        </motion.div>
+      </ParallaxHero>
 
       {/* Story */}
       <section className="py-24 bg-background">

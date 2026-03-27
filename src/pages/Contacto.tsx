@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Layout from "@/components/Layout";
+import ParallaxHero from "@/components/ParallaxHero";
 import usePageMeta from "@/hooks/usePageMeta";
 import { toast } from "sonner";
 import { contactsApi } from "@/lib/api";
@@ -64,19 +65,17 @@ const ContactoPage = () => {
 
   return (
     <Layout>
-      <section className="bg-hero grid-pattern py-24">
-        <div className="container mx-auto px-4">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-2xl">
-            <span className="text-primary text-sm font-semibold uppercase tracking-wider">Contacto</span>
-            <h1 className="text-4xl md:text-5xl font-heading font-bold text-hero-foreground mt-3 mb-6">
-              {title}
-            </h1>
-            <p className="text-hero-foreground/70 text-lg">
-              {subtitle}
-            </p>
-          </motion.div>
-        </div>
-      </section>
+      <ParallaxHero>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-2xl">
+          <span className="text-primary text-sm font-semibold uppercase tracking-wider">Contacto</span>
+          <h1 className="text-4xl md:text-5xl font-heading font-bold text-hero-foreground mt-3 mb-6">
+            {title}
+          </h1>
+          <p className="text-hero-foreground/70 text-lg">
+            {subtitle}
+          </p>
+        </motion.div>
+      </ParallaxHero>
 
       <section className="py-24 bg-background">
         <div className="container mx-auto px-4">
