@@ -48,7 +48,7 @@ const Navbar = () => {
 
   const navLinks = useMemo(
     () => allLinks.filter(l => l.visible).sort((a, b) => a.order - b.order),
-    [nav1, nav2, nav3, nav4, nav5, nav6, vis1, vis2, vis3, vis4, vis5, vis6, ord1, ord2, ord3, ord4, ord5, ord6]
+    [nav1, nav2, nav3, nav4, nav5, nav6, path1, path2, path3, path4, path5, path6, vis1, vis2, vis3, vis4, vis5, vis6, ord1, ord2, ord3, ord4, ord5, ord6]
   );
 
   const [isOpen, setIsOpen] = useState(false);
