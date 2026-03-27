@@ -58,6 +58,7 @@ async function initDB() {
       image_url VARCHAR(500),
       category VARCHAR(100),
       is_published TINYINT(1) DEFAULT 0,
+      sort_order INT DEFAULT 0,
       published_at TIMESTAMP NULL,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP

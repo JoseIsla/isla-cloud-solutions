@@ -176,6 +176,7 @@ export interface NewsFromAPI {
   is_published: number;
   published_at: string;
   created_at: string;
+  sort_order: number;
   meta_title: string;
   meta_description: string;
   noindex: number;
