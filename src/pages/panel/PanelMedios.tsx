@@ -33,6 +33,7 @@ const PanelMedios = () => {
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const [bulkCategory, setBulkCategory] = useState('');
   const [bulkApplying, setBulkApplying] = useState(false);
+  const [previewItem, setPreviewItem] = useState<MediaFromAPI | null>(null);
 
   const selectionMode = selected.size > 0;
 
