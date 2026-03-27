@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
+import ParallaxHero from "@/components/ParallaxHero";
 import { casesApi, CaseFromAPI } from "@/lib/api";
 import { motion } from "framer-motion";
 import { Trophy, ArrowRight } from "lucide-react";
@@ -38,23 +39,17 @@ const Casos = () => {
 
   return (
     <Layout>
-      <section className="bg-hero grid-pattern py-24">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="max-w-2xl"
-          >
-            <span className="text-primary text-sm font-semibold uppercase tracking-wider">Casos de éxito</span>
-            <h1 className="text-4xl md:text-5xl font-heading font-bold text-hero-foreground mt-3 mb-6">
-              Proyectos que hablan por nosotros
-            </h1>
-            <p className="text-hero-foreground/70 text-lg">
-              Conoce cómo hemos ayudado a empresas reales a alcanzar sus objetivos con tecnología cloud.
-            </p>
-          </motion.div>
-        </div>
-      </section>
+      <ParallaxHero>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-2xl">
+          <span className="text-primary text-sm font-semibold uppercase tracking-wider">Casos de éxito</span>
+          <h1 className="text-4xl md:text-5xl font-heading font-bold text-hero-foreground mt-3 mb-6">
+            Proyectos que hablan por nosotros
+          </h1>
+          <p className="text-hero-foreground/70 text-lg">
+            Conoce cómo hemos ayudado a empresas reales a alcanzar sus objetivos con tecnología cloud.
+          </p>
+        </motion.div>
+      </ParallaxHero>
 
       <section className="py-24 bg-background">
         <div className="max-w-6xl mx-auto px-4">

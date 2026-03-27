@@ -3,6 +3,7 @@ import { Calendar } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
+import ParallaxHero from "@/components/ParallaxHero";
 import usePageMeta from "@/hooks/usePageMeta";
 import { newsApi, type NewsFromAPI } from "@/lib/api";
 import { useCMSValue } from "@/hooks/useCMS";
@@ -38,19 +39,17 @@ const BlogPage = () => {
 
   return (
     <Layout>
-      <section className="bg-hero grid-pattern py-24">
-        <div className="container mx-auto px-4">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-2xl">
-            <span className="text-primary text-sm font-semibold uppercase tracking-wider">Blog</span>
-            <h1 className="text-4xl md:text-5xl font-heading font-bold text-hero-foreground mt-3 mb-6">
-              {useCMSValue('blog_page_title', 'Noticias y actualidad IT')}
-            </h1>
-            <p className="text-hero-foreground/70 text-lg">
-              {useCMSValue('blog_page_subtitle', 'Mantente al día con las últimas noticias del sector tecnológico y novedades de Isla Cloud Solutions.')}
-            </p>
-          </motion.div>
-        </div>
-      </section>
+      <ParallaxHero>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-2xl">
+          <span className="text-primary text-sm font-semibold uppercase tracking-wider">Blog</span>
+          <h1 className="text-4xl md:text-5xl font-heading font-bold text-hero-foreground mt-3 mb-6">
+            {useCMSValue('blog_page_title', 'Noticias y actualidad IT')}
+          </h1>
+          <p className="text-hero-foreground/70 text-lg">
+            {useCMSValue('blog_page_subtitle', 'Mantente al día con las últimas noticias del sector tecnológico y novedades de Isla Cloud Solutions.')}
+          </p>
+        </motion.div>
+      </ParallaxHero>
 
       <section className="py-24 bg-background">
         <div className="container mx-auto px-4">
