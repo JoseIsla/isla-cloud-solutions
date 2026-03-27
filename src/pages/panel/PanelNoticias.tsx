@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef, useMemo, useCallback } from 'react';
 import { useConfirmDialog } from '@/hooks/useConfirmDialog';
+import MediaPicker from '@/components/panel/MediaPicker';
 import { useAuth } from '@/hooks/useAuth';
 import PanelLayout from './PanelLayout';
 import { newsApi, uploadImage, type NewsFromAPI, API_BASE_URL } from '@/lib/api';
@@ -34,6 +35,7 @@ const PanelNoticias = () => {
   const [uploading, setUploading] = useState(false);
   const [catOpen, setCatOpen] = useState(false);
   const [filter, setFilter] = useState('');
+  const [mediaPicker, setMediaPicker] = useState(false);
   const catRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -258,8 +260,17 @@ const PanelNoticias = () => {
                     <Button type="button" variant="outline" size="sm" onClick={() => fileInputRef.current?.click()} disabled={uploading}>
                       <Upload size={14} /> {uploading ? 'Subiendo...' : 'Subir'}
                     </Button>
+                    <Button type="button" variant="outline" size="sm" onClick={() => setMediaPicker(true)}>
+                      Galería
+                    </Button>
                     <input type="text" value={editing.image_url ?? ''} onChange={(e) => setEditing({ ...editing, image_url: e.target.value })} placeholder="o pega URL..." className="flex-1 px-3 py-2 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm" />
                   </div>
+                  <MediaPicker
+                    open={mediaPicker}
+                    onClose={() => setMediaPicker(false)}
+                    onSelect={(url) => setEditing(prev => prev ? { ...prev, image_url: url } : prev)}
+                    defaultCategory="noticias"
+                  />
                 </div>
 
                 <div>

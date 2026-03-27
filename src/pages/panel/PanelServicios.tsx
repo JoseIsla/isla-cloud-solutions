@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { useConfirmDialog } from '@/hooks/useConfirmDialog';
+import MediaPicker from '@/components/panel/MediaPicker';
 import { useAuth } from '@/hooks/useAuth';
 import PanelLayout from './PanelLayout';
 import { servicesApi, uploadImage, type ServiceFromAPI, API_BASE_URL } from '@/lib/api';
@@ -20,6 +21,7 @@ const PanelServicios = () => {
   const [isNew, setIsNew] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [filter, setFilter] = useState('');
+  const [mediaPicker, setMediaPicker] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleReorder = useCallback(async (reordered: ServiceFromAPI[]) => {
@@ -173,6 +175,9 @@ const PanelServicios = () => {
                     <Button type="button" variant="outline" size="sm" onClick={() => fileInputRef.current?.click()} disabled={uploading}>
                       <Upload size={14} /> {uploading ? 'Subiendo...' : 'Subir'}
                     </Button>
+                    <Button type="button" variant="outline" size="sm" onClick={() => setMediaPicker(true)}>
+                      Galería
+                    </Button>
                     <input
                       type="text"
                       value={editing.image_url ?? ''}
@@ -181,6 +186,12 @@ const PanelServicios = () => {
                       className="flex-1 px-3 py-2 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm"
                     />
                   </div>
+                  <MediaPicker
+                    open={mediaPicker}
+                    onClose={() => setMediaPicker(false)}
+                    onSelect={(url) => setEditing(prev => prev ? { ...prev, image_url: url } : prev)}
+                    defaultCategory="servicios"
+                  />
                 </div>
 
                 <div>

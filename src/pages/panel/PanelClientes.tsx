@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { useConfirmDialog } from '@/hooks/useConfirmDialog';
+import MediaPicker from '@/components/panel/MediaPicker';
 import { useAuth } from '@/hooks/useAuth';
 import PanelLayout from './PanelLayout';
 import { clientsApi, uploadImage, type ClientFromAPI, API_BASE_URL } from '@/lib/api';
@@ -16,6 +17,7 @@ const PanelClientes = () => {
   const [editing, setEditing] = useState<Partial<ClientFromAPI> | null>(null);
   const [isNew, setIsNew] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [mediaPicker, setMediaPicker] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleReorder = useCallback(async (reordered: ClientFromAPI[]) => {
@@ -119,8 +121,17 @@ const PanelClientes = () => {
                     <Button type="button" variant="outline" size="sm" onClick={() => fileInputRef.current?.click()} disabled={uploading}>
                       <Upload size={14} /> {uploading ? 'Subiendo...' : 'Subir'}
                     </Button>
+                    <Button type="button" variant="outline" size="sm" onClick={() => setMediaPicker(true)}>
+                      Galería
+                    </Button>
                     <input type="text" value={editing.logo_url ?? ''} onChange={(e) => setEditing({ ...editing, logo_url: e.target.value })} placeholder="o pega URL..." className="flex-1 px-3 py-2 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm" />
                   </div>
+                  <MediaPicker
+                    open={mediaPicker}
+                    onClose={() => setMediaPicker(false)}
+                    onSelect={(url) => setEditing(prev => prev ? { ...prev, logo_url: url } : prev)}
+                    defaultCategory="clientes"
+                  />
                 </div>
 
                 <div>

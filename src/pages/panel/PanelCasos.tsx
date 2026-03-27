@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useConfirmDialog } from '@/hooks/useConfirmDialog';
+import MediaPicker from '@/components/panel/MediaPicker';
 import { useAuth } from '@/hooks/useAuth';
 import { casesApi, clientsApi, uploadImage, type CaseFromAPI, type ClientFromAPI, API_BASE_URL } from '@/lib/api';
 import { useDragReorder } from '@/hooks/useDragReorder';
@@ -38,6 +39,7 @@ const PanelCasos = () => {
   const [editing, setEditing] = useState<Partial<CaseFromAPI> | null>(null);
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState('');
+  const [mediaPicker, setMediaPicker] = useState(false);
 
   useEffect(() => {
     clientsApi.list().then(setClients).catch(() => {});
@@ -214,8 +216,19 @@ const PanelCasos = () => {
                 </div>
                 <div>
                   <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Imagen</label>
-                  <Input type="file" accept="image/*" onChange={handleImageUpload} />
+                  <div className="flex items-center gap-2">
+                    <Input type="file" accept="image/*" onChange={handleImageUpload} className="flex-1" />
+                    <Button type="button" variant="outline" size="sm" onClick={() => setMediaPicker(true)}>
+                      Galería
+                    </Button>
+                  </div>
                   {editing.image_url && <img src={editing.image_url} alt="" className="h-12 mt-2 rounded-lg object-cover" />}
+                  <MediaPicker
+                    open={mediaPicker}
+                    onClose={() => setMediaPicker(false)}
+                    onSelect={(url) => setEditing(prev => prev ? { ...prev, image_url: url } : prev)}
+                    defaultCategory="casos"
+                  />
                 </div>
                 {/* SEO Parameters */}
                 <div className="border border-border rounded-xl p-4 space-y-3 bg-muted/30">
