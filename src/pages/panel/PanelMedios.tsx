@@ -72,6 +72,7 @@ const PanelMedios = () => {
     }
   };
 
+  const handleBulkCategoryChange = async () => {
     if (!token || !bulkCategory || selected.size === 0) return;
     setBulkApplying(true);
     try {
