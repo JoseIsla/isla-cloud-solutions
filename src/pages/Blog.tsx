@@ -46,9 +46,6 @@ const BlogPage = () => {
     jsonLd: blogJsonLd,
   });
 
-  const [posts, setPosts] = useState<NewsFromAPI[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(1);
 
   useEffect(() => {
     newsApi.list()
