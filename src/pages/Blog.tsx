@@ -64,6 +64,7 @@ const BlogPage = () => {
 
   return (
     <Layout>
+      <BreadcrumbJsonLd items={[{ name: 'Inicio', path: '/' }, { name: 'Blog', path: '/blog' }]} />
       <ParallaxHero>
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-2xl">
           <span className="text-primary text-sm font-semibold uppercase tracking-wider">Blog</span>
