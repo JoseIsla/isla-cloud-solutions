@@ -118,15 +118,13 @@ const CasoDetalle = () => {
         </Link>
 
         {caso.image_url && (
-          <div className="rounded-2xl overflow-hidden mb-8 aspect-video bg-muted">
-            <BlurImage
-              src={caso.image_url}
-              alt={caso.title}
-              className="w-full h-full object-cover"
-              wrapperClassName="rounded-2xl overflow-hidden mb-8 aspect-video"
-              placeholderColor="#0a1628"
-            />
-          </div>
+          <BlurImage
+            src={caso.image_url}
+            alt={caso.title}
+            className="w-full h-full object-cover"
+            wrapperClassName="rounded-2xl overflow-hidden mb-8 aspect-video"
+            placeholderColor="#0a1628"
+          />
         )}
 
         <div className="space-y-4">
