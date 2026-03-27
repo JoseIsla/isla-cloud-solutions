@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import BlurImage from "@/components/BlurImage";
 import { useEffect, useState, useRef } from "react";
 import { Quote, Star, ChevronLeft, ChevronRight } from "lucide-react";
 import { useCMSValue } from "@/hooks/useCMS";
@@ -109,10 +110,13 @@ const TestimonialsSection = () => {
 
             <div className="flex items-center justify-center gap-4">
               {t.avatar_url ? (
-                <img
+                <BlurImage
                   src={t.avatar_url}
                   alt={t.author_name}
                   className="w-12 h-12 rounded-full object-cover border-2 border-primary/20"
+                  wrapperClassName="w-12 h-12 rounded-full"
+                  width={48}
+                  height={48}
                 />
               ) : (
                 <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-lg">

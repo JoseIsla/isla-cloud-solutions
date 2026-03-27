@@ -1,4 +1,5 @@
 import { useParams, Link } from "react-router-dom";
+import BlurImage from "@/components/BlurImage";
 import { motion } from "framer-motion";
 import { ArrowLeft, CheckCircle, Server, Shield, Cloud, Monitor, Globe, Smartphone, Lock, Wrench, Database, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -144,11 +145,11 @@ const ServicioDetalle = () => {
             <div className="lg:col-span-2 space-y-10">
               {imageUrl && (
                 <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-                  <img
+                  <BlurImage
                     src={imageUrl}
                     alt={title}
                     className="w-full rounded-2xl object-cover aspect-video shadow-lg"
-                    loading="lazy"
+                    wrapperClassName="w-full rounded-2xl overflow-hidden aspect-video"
                   />
                 </motion.div>
               )}
