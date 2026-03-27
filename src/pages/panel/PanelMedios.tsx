@@ -115,7 +115,7 @@ const PanelMedios = () => {
   }, [token]);
 
   const filtered = items;
-  const { page, setPage, totalPages, paged } = usePanelPagination(filtered, 20);
+  const { page, setPage, totalPages, paged } = usePanelPagination(filtered, 40);
 
   return (
     <PanelLayout>
