@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import OrganizationJsonLd from "./OrganizationJsonLd";
 
 interface LayoutProps {
   children: ReactNode;
