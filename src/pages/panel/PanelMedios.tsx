@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Upload, Trash2, Search, Image as ImageIcon, Copy, Check, CloudUpload, RefreshCw, CheckSquare, X } from 'lucide-react';
+import { Upload, Trash2, Search, Image as ImageIcon, Copy, Check, CloudUpload, RefreshCw, CheckSquare, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
 import Pagination from '@/components/Pagination';
 import { usePanelPagination } from '@/hooks/usePanelPagination';
@@ -36,6 +36,27 @@ const PanelMedios = () => {
   const [previewItem, setPreviewItem] = useState<MediaFromAPI | null>(null);
 
   const selectionMode = selected.size > 0;
+
+  // Preview navigation
+  const navigatePreview = useCallback((direction: 1 | -1) => {
+    if (!previewItem) return;
+    const idx = items.findIndex(i => i.id === previewItem.id);
+    if (idx === -1) return;
+    const nextIdx = idx + direction;
+    if (nextIdx >= 0 && nextIdx < items.length) {
+      setPreviewItem(items[nextIdx]);
+    }
+  }, [previewItem, items]);
+
+  useEffect(() => {
+    if (!previewItem) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') { e.preventDefault(); navigatePreview(-1); }
+      if (e.key === 'ArrowRight') { e.preventDefault(); navigatePreview(1); }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [previewItem, navigatePreview]);
 
   const toggleSelect = (id: number) => {
     setSelected(prev => {
@@ -428,12 +449,30 @@ const PanelMedios = () => {
         <DialogContent className="max-w-3xl p-0 overflow-hidden">
           {previewItem && (
             <div>
-              <div className="bg-muted flex items-center justify-center max-h-[70vh]">
+              <div className="bg-muted flex items-center justify-center max-h-[70vh] relative">
+                {/* Left arrow */}
+                {items.findIndex(i => i.id === previewItem.id) > 0 && (
+                  <button
+                    onClick={(e) => { e.stopPropagation(); navigatePreview(-1); }}
+                    className="absolute left-2 top-1/2 -translate-y-1/2 bg-background/80 hover:bg-background rounded-full p-2 shadow-lg transition-colors z-10"
+                  >
+                    <ChevronLeft size={24} className="text-foreground" />
+                  </button>
+                )}
                 <img
                   src={previewItem.url}
                   alt={previewItem.alt_text || previewItem.original_name}
                   className="max-w-full max-h-[70vh] object-contain"
                 />
+                {/* Right arrow */}
+                {items.findIndex(i => i.id === previewItem.id) < items.length - 1 && (
+                  <button
+                    onClick={(e) => { e.stopPropagation(); navigatePreview(1); }}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 bg-background/80 hover:bg-background rounded-full p-2 shadow-lg transition-colors z-10"
+                  >
+                    <ChevronRight size={24} className="text-foreground" />
+                  </button>
+                )}
               </div>
               <div className="p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                 <div className="min-w-0">
