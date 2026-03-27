@@ -69,16 +69,27 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
   if (sharp && ext !== '.svg') {
     try {
       const preset = SIZE_PRESETS[category] || SIZE_PRESETS.general;
-      const buffer = await sharp(filePath)
+      const isPng = ext === '.png';
+
+      let pipeline = sharp(filePath)
         .resize(preset.width, preset.height, {
           fit: 'inside',          // Scale down to fit, never upscale beyond original
           withoutEnlargement: true,
-        })
-        .jpeg({ quality: 85, mozjpeg: true })
-        .toBuffer();
+        });
 
-      // Rename to .jpg since we convert
-      const newFilename = path.basename(req.file.filename, ext) + '.jpg';
+      let newExt;
+      if (isPng) {
+        // Preserve transparency for PNGs (logos, icons)
+        pipeline = pipeline.png({ quality: 85, compressionLevel: 9 });
+        newExt = '.png';
+      } else {
+        pipeline = pipeline.jpeg({ quality: 85, mozjpeg: true });
+        newExt = '.jpg';
+      }
+
+      const buffer = await pipeline.toBuffer();
+
+      const newFilename = path.basename(req.file.filename, ext) + newExt;
       const newPath = path.join(path.dirname(filePath), newFilename);
       fs.writeFileSync(newPath, buffer);
 
