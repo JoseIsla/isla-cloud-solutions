@@ -198,7 +198,7 @@ const PanelTestimonios = () => {
             <div className="p-12 text-center rounded-xl border border-dashed border-border">
               <MessageCircle size={32} className="mx-auto mb-3 text-muted-foreground/20" />
               <p className="text-muted-foreground text-sm">No hay testimonios</p>
-              <p className="text-muted-foreground/60 text-xs mt-1">Aparecerán en el landing entre Clientes y Confianza</p>
+              <p className="text-muted-foreground/60 text-xs mt-1">Aparecerán en la sección de testimonios del landing</p>
             </div>
           )}
           {paged.map((t) => {
