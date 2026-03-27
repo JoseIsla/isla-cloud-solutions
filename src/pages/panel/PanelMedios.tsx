@@ -33,6 +33,7 @@ const PanelMedios = () => {
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const [bulkCategory, setBulkCategory] = useState('');
   const [bulkApplying, setBulkApplying] = useState(false);
+  const [previewItem, setPreviewItem] = useState<MediaFromAPI | null>(null);
 
   const selectionMode = selected.size > 0;
 
@@ -343,7 +344,7 @@ const PanelMedios = () => {
                       ? 'border-primary ring-2 ring-primary/30'
                       : 'border-border hover:border-muted-foreground/30'
                   }`}
-                  onClick={() => toggleSelect(item.id)}
+                  onClick={() => selectionMode ? toggleSelect(item.id) : setPreviewItem(item)}
                 >
                   {/* Selection checkbox */}
                   <div className={`absolute top-2 left-2 z-10 transition-opacity ${
@@ -417,6 +418,41 @@ const PanelMedios = () => {
                 <Input value={editAlt} onChange={(e) => setEditAlt(e.target.value)} className="h-9 text-sm" />
               </div>
               <Button onClick={handleEdit} className="w-full">Guardar cambios</Button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Preview dialog */}
+      <Dialog open={!!previewItem} onOpenChange={() => setPreviewItem(null)}>
+        <DialogContent className="max-w-3xl p-0 overflow-hidden">
+          {previewItem && (
+            <div>
+              <div className="bg-muted flex items-center justify-center max-h-[70vh]">
+                <img
+                  src={previewItem.url}
+                  alt={previewItem.alt_text || previewItem.original_name}
+                  className="max-w-full max-h-[70vh] object-contain"
+                />
+              </div>
+              <div className="p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="text-sm font-medium text-foreground truncate">{previewItem.original_name || 'Sin nombre'}</p>
+                  <span className="text-xs text-muted-foreground capitalize">{previewItem.category}</span>
+                </div>
+                <div className="flex gap-2 shrink-0">
+                  <Button size="sm" variant="outline" onClick={() => copyUrl(previewItem)}>
+                    {copied === previewItem.id ? <Check size={14} className="mr-1" /> : <Copy size={14} className="mr-1" />}
+                    Copiar URL
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => { setPreviewItem(null); setEditItem(previewItem); setEditCategory(previewItem.category); setEditAlt(previewItem.alt_text); }}>
+                    <ImageIcon size={14} className="mr-1" /> Editar
+                  </Button>
+                  <Button size="sm" variant="destructive" onClick={() => { setPreviewItem(null); handleDelete(previewItem.id); }}>
+                    <Trash2 size={14} className="mr-1" /> Eliminar
+                  </Button>
+                </div>
+              </div>
             </div>
           )}
         </DialogContent>
