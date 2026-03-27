@@ -29,7 +29,7 @@ const MarqueeRow = ({
             className="flex-shrink-0 flex items-center justify-center px-8 py-5 rounded-xl bg-card border border-border hover:border-primary/20 transition-all duration-300 h-20 min-w-[200px]"
           >
             {client.logo_url ? (
-              <img src={client.logo_url} alt={client.name} className="h-8 max-w-[140px] object-contain" />
+              <img src={client.logo_url} alt={client.name} className="h-8 max-w-[140px] object-contain" loading="lazy" />
             ) : (
               <span className="text-muted-foreground text-sm font-medium text-center leading-tight whitespace-nowrap">
                 {client.name}
