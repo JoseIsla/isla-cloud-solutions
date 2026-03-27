@@ -63,7 +63,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, isLoading } = useAuth();
   if (isLoading) return (
     <div className="min-h-screen bg-hero flex items-center justify-center">
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-hero-foreground">Cargando...</motion.div>
+      <m.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-hero-foreground">Cargando...</m.div>
     </div>
   );
   return (
