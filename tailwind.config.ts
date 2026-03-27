@@ -100,6 +100,10 @@ export default {
           "0%": { transform: "translateX(-50%)" },
           "100%": { transform: "translateX(0)" },
         },
+        "ripple": {
+          "0%": { transform: "scale(0)", opacity: "0.6" },
+          "100%": { transform: "scale(4)", opacity: "0" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -108,6 +112,7 @@ export default {
         "pulse-glow": "pulse-glow 3s ease-in-out infinite",
         "marquee": "marquee linear infinite",
         "marquee-reverse": "marquee-reverse linear infinite",
+        "ripple": "ripple 0.6s linear forwards",
       },
     },
   },
