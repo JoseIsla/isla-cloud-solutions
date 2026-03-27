@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-import defaultHeroBg from "@/assets/hero-bg.jpg";
+import defaultHeroBg from "@/assets/hero-bg.webp";
 import defaultHeroBlogBg from "@/assets/hero-blog-bg.jpg";
 import defaultHeroCasesBg from "@/assets/hero-cases-bg.jpg";
 import { useCMSValue } from "@/hooks/useCMS";

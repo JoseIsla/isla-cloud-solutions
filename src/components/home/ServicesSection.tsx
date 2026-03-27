@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { services as fallbackServices } from "@/data/services";
 import { servicesApi, type ServiceFromAPI } from "@/lib/api";
 import { useCMSValue } from "@/hooks/useCMS";
-import servicesBg from "@/assets/services-bg.jpg";
+import servicesBg from "@/assets/services-bg.webp";
 import {
   Server,
   Shield,
