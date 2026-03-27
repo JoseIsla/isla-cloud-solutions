@@ -6,8 +6,10 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { CMSProvider } from "@/hooks/useCMS";
-import { AnimatePresence, motion } from "framer-motion";
-import CookieBanner from "@/components/CookieBanner";
+import { LazyMotion, domAnimation, AnimatePresence, m } from "framer-motion";
+
+// Lazy load CookieBanner — not needed for initial render
+const CookieBanner = lazy(() => import("@/components/CookieBanner"));
 import ScrollToTop from "@/components/ScrollToTop";
 
 // Eager: landing page (critical path)
