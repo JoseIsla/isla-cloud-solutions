@@ -46,7 +46,25 @@ const PanelMedios = () => {
   };
 
   const selectAllOnPage = () => {
-    setSelected(new Set(paged.map(i => i.id)));
+    const allPageIds = paged.map(i => i.id);
+    const allSelected = allPageIds.every(id => selected.has(id));
+    if (allSelected) {
+      setSelected(prev => {
+        const next = new Set(prev);
+        allPageIds.forEach(id => next.delete(id));
+        return next;
+      });
+    } else {
+      setSelected(prev => new Set([...prev, ...allPageIds]));
+    }
+  };
+
+  const selectAll = () => {
+    if (selected.size === items.length) {
+      clearSelection();
+    } else {
+      setSelected(new Set(items.map(i => i.id)));
+    }
   };
 
   const clearSelection = () => {
@@ -250,9 +268,12 @@ const PanelMedios = () => {
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 p-3 rounded-xl bg-primary/5 border border-primary/20">
             <div className="flex items-center gap-2">
               <CheckSquare size={16} className="text-primary" />
-              <span className="text-sm font-medium text-foreground">{selected.size} seleccionada(s)</span>
+              <span className="text-sm font-medium text-foreground">{selected.size} de {items.length} seleccionada(s)</span>
               <Button size="sm" variant="ghost" className="h-7 px-2 text-xs" onClick={selectAllOnPage}>
-                Seleccionar toda la página
+                {paged.every(i => selected.has(i.id)) ? 'Deseleccionar página' : 'Seleccionar página'}
+              </Button>
+              <Button size="sm" variant="ghost" className="h-7 px-2 text-xs" onClick={selectAll}>
+                {selected.size === items.length ? 'Deseleccionar todo' : `Seleccionar todo (${items.length})`}
               </Button>
               <Button size="sm" variant="ghost" className="h-7 px-2 text-xs text-muted-foreground" onClick={clearSelection}>
                 <X size={12} className="mr-1" /> Cancelar
