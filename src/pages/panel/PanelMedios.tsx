@@ -86,12 +86,54 @@ const PanelMedios = () => {
     setTimeout(() => setCopied(null), 2000);
   };
 
+  const handleDragEnter = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dragCounter.current++;
+    if (e.dataTransfer.types.includes('Files')) setDragging(true);
+  }, []);
+
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dragCounter.current--;
+    if (dragCounter.current === 0) setDragging(false);
+  }, []);
+
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  }, []);
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragging(false);
+    dragCounter.current = 0;
+    const files = e.dataTransfer.files;
+    if (files.length > 0) handleUpload(files);
+  }, [token]);
+
   const filtered = items;
   const { page, setPage, totalPages, paged } = usePanelPagination(filtered, 20);
 
   return (
     <PanelLayout>
-      <div className="space-y-6">
+      <div
+        className="space-y-6 relative"
+        onDragEnter={handleDragEnter}
+        onDragLeave={handleDragLeave}
+        onDragOver={handleDragOver}
+        onDrop={handleDrop}
+      >
+        {/* Drop overlay */}
+        {dragging && (
+          <div className="absolute inset-0 z-50 bg-primary/10 border-2 border-dashed border-primary rounded-2xl flex flex-col items-center justify-center pointer-events-none">
+            <CloudUpload size={48} className="text-primary mb-3 animate-bounce" />
+            <p className="text-primary font-semibold text-lg">Suelta las imágenes aquí</p>
+            <p className="text-primary/70 text-sm">Se subirán a la categoría "{uploadCategory}"</p>
+          </div>
+        )}
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
           <div>
             <h2 className="text-xl font-heading font-bold text-foreground">Galería de Medios</h2>
