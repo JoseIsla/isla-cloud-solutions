@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard, FileText, Newspaper, MessageSquare,
   LogOut, Menu, X, Users, Trophy, Globe, Pencil, MessageCircle,
-  ChevronLeft, HelpCircle,
+  ChevronLeft, HelpCircle, ImageIcon,
 } from 'lucide-react';
 import PanelSearch from '@/components/panel/PanelSearch';
 import logotipoBlanco from '@/assets/logos/logotipo-blanco-small.png';
@@ -24,6 +24,7 @@ const sidebarSections = [
     label: 'Configuración Web',
     links: [
       { label: 'Contenidos Web', path: '/panel/contenidos', icon: Pencil },
+      { label: 'Galería de Medios', path: '/panel/medios', icon: ImageIcon },
     ],
   },
   {
