@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label';
 import { Plus, Edit, Trash2, MessageCircle, Star, X, GripVertical } from 'lucide-react';
 import { toast } from 'sonner';
 import { useDragReorder } from '@/hooks/useDragReorder';
+import { StaggerList, StaggerItem } from '@/components/panel/StaggerList';
 
 const PanelTestimonios = () => {
   const { token } = useAuth();
@@ -153,7 +154,7 @@ const PanelTestimonios = () => {
           </div>
         )}
 
-        <div className="space-y-1">
+        <StaggerList className="space-y-1">
           {testimonials.length === 0 && (
             <div className="p-12 text-center rounded-xl border border-dashed border-border">
               <MessageCircle size={32} className="mx-auto mb-3 text-muted-foreground/20" />
@@ -162,7 +163,7 @@ const PanelTestimonios = () => {
             </div>
           )}
           {testimonials.map((t, idx) => (
-            <div
+            <StaggerItem
               key={t.id}
               {...getDragProps(idx)}
               className={`flex items-center gap-4 p-4 rounded-xl bg-card border transition-all duration-150 group ${
@@ -192,9 +193,9 @@ const PanelTestimonios = () => {
                 <button onClick={() => setEditing(t)} className="p-2 rounded-lg hover:bg-primary/10 text-primary"><Edit size={15} /></button>
                 <button onClick={() => handleDelete(t.id)} className="p-2 rounded-lg hover:bg-destructive/10 text-destructive"><Trash2 size={15} /></button>
               </div>
-            </div>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerList>
       </div>
       <ConfirmDialog />
     </PanelLayout>

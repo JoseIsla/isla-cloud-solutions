@@ -11,6 +11,7 @@ import { Plus, Edit, Trash2, HelpCircle, X, GripVertical } from 'lucide-react';
 import { toast } from 'sonner';
 import RichEditor from '@/components/ui/rich-editor';
 import { useDragReorder } from '@/hooks/useDragReorder';
+import { StaggerList, StaggerItem } from '@/components/panel/StaggerList';
 
 const PanelFAQs = () => {
   const { token } = useAuth();
@@ -123,7 +124,7 @@ const PanelFAQs = () => {
           </div>
         )}
 
-        <div className="space-y-1">
+        <StaggerList className="space-y-1">
           {faqs.length === 0 && (
             <div className="p-12 text-center rounded-xl border border-dashed border-border">
               <HelpCircle size={32} className="mx-auto mb-3 text-muted-foreground/20" />
@@ -132,7 +133,7 @@ const PanelFAQs = () => {
             </div>
           )}
           {faqs.map((f, idx) => (
-            <div
+            <StaggerItem
               key={f.id}
               {...getDragProps(idx)}
               className={`flex items-center gap-3 p-4 rounded-xl bg-card border transition-all duration-150 group ${
@@ -154,9 +155,9 @@ const PanelFAQs = () => {
                 <button onClick={() => setEditing(f)} className="p-2 rounded-lg hover:bg-primary/10 text-primary"><Edit size={15} /></button>
                 <button onClick={() => handleDelete(f.id)} className="p-2 rounded-lg hover:bg-destructive/10 text-destructive"><Trash2 size={15} /></button>
               </div>
-            </div>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerList>
       </div>
       <ConfirmDialog />
     </PanelLayout>

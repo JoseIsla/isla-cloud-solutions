@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Plus, Pencil, Trash2, X, Upload, Calendar } from 'lucide-react';
 import { toast } from 'sonner';
 import RichEditor from '@/components/ui/rich-editor';
+import { StaggerList, StaggerItem } from '@/components/panel/StaggerList';
 
 const generateSlug = (text: string) =>
   text
@@ -186,9 +187,9 @@ const PanelNoticias = () => {
           </div>
         )}
 
-        <div className="space-y-2">
+        <StaggerList className="space-y-2">
           {news.map((n) => (
-            <div key={n.id} className="flex items-center gap-4 p-4 rounded-xl bg-card border border-border hover:border-primary/15 transition-colors group">
+            <StaggerItem key={n.id} className="flex items-center gap-4 p-4 rounded-xl bg-card border border-border hover:border-primary/15 transition-colors group">
               {n.image_url ? (
                 <img src={n.image_url} alt="" className="w-12 h-10 rounded-lg object-cover shrink-0" />
               ) : (
@@ -210,14 +211,14 @@ const PanelNoticias = () => {
                 <button onClick={() => { setEditing(n); setIsNew(false); }} className="p-2 rounded-lg hover:bg-primary/10 text-primary"><Pencil size={15} /></button>
                 <button onClick={() => handleDelete(n.id)} className="p-2 rounded-lg hover:bg-destructive/10 text-destructive"><Trash2 size={15} /></button>
               </div>
-            </div>
+            </StaggerItem>
           ))}
           {news.length === 0 && (
             <div className="p-12 text-center text-muted-foreground text-sm rounded-xl border border-dashed border-border">
               No hay noticias publicadas
             </div>
           )}
-        </div>
+        </StaggerList>
       </div>
       <ConfirmDialog />
     </PanelLayout>
