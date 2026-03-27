@@ -16,6 +16,13 @@ const Navbar = () => {
   const nav6 = useCMSValue('nav_link6_label', 'Casos de Éxito');
   const navCta = useCMSValue('nav_cta_text', 'Solicitar Consulta');
 
+  const path1 = useCMSValue('nav_link1_path', '/');
+  const path2 = useCMSValue('nav_link2_path', '/#servicios');
+  const path3 = useCMSValue('nav_link3_path', '/sobre-nosotros');
+  const path4 = useCMSValue('nav_link4_path', '/blog');
+  const path5 = useCMSValue('nav_link5_path', '/contacto');
+  const path6 = useCMSValue('nav_link6_path', '/casos');
+
   const vis1 = useCMSValue('nav_link1_visible', 'true');
   const vis2 = useCMSValue('nav_link2_visible', 'true');
   const vis3 = useCMSValue('nav_link3_visible', 'true');
@@ -31,17 +38,17 @@ const Navbar = () => {
   const ord6 = useCMSValue('nav_link6_order', '6');
 
   const allLinks = [
-    { label: nav1, path: "/", visible: vis1 !== 'false', order: parseInt(ord1) || 1 },
-    { label: nav2, path: "/#servicios", visible: vis2 !== 'false', order: parseInt(ord2) || 2 },
-    { label: nav3, path: "/sobre-nosotros", visible: vis3 !== 'false', order: parseInt(ord3) || 3 },
-    { label: nav4, path: "/blog", visible: vis4 !== 'false', order: parseInt(ord4) || 4 },
-    { label: nav5, path: "/contacto", visible: vis5 !== 'false', order: parseInt(ord5) || 5 },
-    { label: nav6, path: "/casos", visible: vis6 !== 'false', order: parseInt(ord6) || 6 },
+    { label: nav1, path: path1, visible: vis1 !== 'false', order: parseInt(ord1) || 1 },
+    { label: nav2, path: path2, visible: vis2 !== 'false', order: parseInt(ord2) || 2 },
+    { label: nav3, path: path3, visible: vis3 !== 'false', order: parseInt(ord3) || 3 },
+    { label: nav4, path: path4, visible: vis4 !== 'false', order: parseInt(ord4) || 4 },
+    { label: nav5, path: path5, visible: vis5 !== 'false', order: parseInt(ord5) || 5 },
+    { label: nav6, path: path6, visible: vis6 !== 'false', order: parseInt(ord6) || 6 },
   ];
 
   const navLinks = useMemo(
     () => allLinks.filter(l => l.visible).sort((a, b) => a.order - b.order),
-    [nav1, nav2, nav3, nav4, nav5, nav6, vis1, vis2, vis3, vis4, vis5, vis6, ord1, ord2, ord3, ord4, ord5, ord6]
+    [nav1, nav2, nav3, nav4, nav5, nav6, path1, path2, path3, path4, path5, path6, vis1, vis2, vis3, vis4, vis5, vis6, ord1, ord2, ord3, ord4, ord5, ord6]
   );
 
   const [isOpen, setIsOpen] = useState(false);
