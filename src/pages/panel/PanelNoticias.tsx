@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 import { useConfirmDialog } from '@/hooks/useConfirmDialog';
 import { useAuth } from '@/hooks/useAuth';
 import PanelLayout from './PanelLayout';
@@ -29,7 +29,22 @@ const PanelNoticias = () => {
   const [editing, setEditing] = useState<Partial<NewsFromAPI> | null>(null);
   const [isNew, setIsNew] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [catOpen, setCatOpen] = useState(false);
+  const catRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const existingCategories = useMemo(() =>
+    [...new Set(news.map(n => n.category).filter(Boolean))].sort()
+  , [news]);
+
+  // Close category dropdown on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (catRef.current && !catRef.current.contains(e.target as Node)) setCatOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
 
   // Auto-generate slug when title changes on new posts
   const updateField = (key: string, value: string) => {
@@ -146,21 +161,32 @@ const PanelNoticias = () => {
                     <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Slug</label>
                     <input type="text" value={editing.slug ?? ''} onChange={(e) => updateField('slug', e.target.value)} className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm" />
                   </div>
-                  <div>
+                  <div ref={catRef} className="relative">
                     <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Categoría</label>
                     <input
                       type="text"
-                      list="category-options"
                       value={editing.category ?? ''}
-                      onChange={(e) => updateField('category', e.target.value)}
+                      onChange={(e) => { updateField('category', e.target.value); setCatOpen(true); }}
+                      onFocus={() => setCatOpen(true)}
                       placeholder="Seleccionar o escribir nueva..."
                       className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm"
                     />
-                    <datalist id="category-options">
-                      {[...new Set(news.map(n => n.category).filter(Boolean))].sort().map(cat => (
-                        <option key={cat} value={cat} />
-                      ))}
-                    </datalist>
+                    {catOpen && existingCategories.length > 0 && (
+                      <div className="absolute z-50 top-full mt-1 w-full bg-card border border-border rounded-lg shadow-xl max-h-40 overflow-y-auto">
+                        {existingCategories
+                          .filter(cat => !editing.category || cat.toLowerCase().includes((editing.category || '').toLowerCase()))
+                          .map(cat => (
+                            <button
+                              key={cat}
+                              type="button"
+                              onClick={() => { updateField('category', cat); setCatOpen(false); }}
+                              className="w-full text-left px-3 py-2 text-sm text-foreground hover:bg-primary/10 transition-colors first:rounded-t-lg last:rounded-b-lg"
+                            >
+                              {cat}
+                            </button>
+                          ))}
+                      </div>
+                    )}
                   </div>
                 </div>
 
