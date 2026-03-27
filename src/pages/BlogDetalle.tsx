@@ -8,6 +8,7 @@ import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { newsApi, type NewsFromAPI } from "@/lib/api";
 import { sanitizeHTML } from "@/lib/sanitize";
 import ShareButtons from "@/components/ShareButtons";
+import BlurImage from "@/components/BlurImage";
 
 const BlogDetalle = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -147,10 +148,12 @@ const BlogDetalle = () => {
               transition={{ delay: 0.2 }}
               className="max-w-3xl mx-auto -mt-8 relative z-10"
             >
-              <img
+              <BlurImage
                 src={post.image_url}
                 alt={post.title}
                 className="w-full rounded-2xl border border-border shadow-lg object-cover max-h-[420px]"
+                wrapperClassName="rounded-2xl"
+                placeholderColor="#0a1628"
               />
             </motion.div>
           </div>
