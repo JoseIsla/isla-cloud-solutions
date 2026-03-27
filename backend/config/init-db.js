@@ -332,6 +332,14 @@ async function initDB() {
     `, [defaultClients[i], i]);
   }
 
+  // Migrations: add sort_order to news if missing
+  try {
+    await conn.query('ALTER TABLE news ADD COLUMN sort_order INT DEFAULT 0 AFTER is_published');
+    console.log('✅ Columna sort_order añadida a news');
+  } catch (e) {
+    // Column already exists
+  }
+
   console.log('✅ Base de datos inicializada correctamente');
   console.log('📧 Admin: admin@islacloudsolutions.com');
   console.log('🔑 Password: IslaCloud2024!');
