@@ -38,7 +38,7 @@ router.post('/', contactLimiter, [
     let notifConn;
     try {
       notifConn = await pool.getConnection();
-      const rows = await notifConn.query("SELECT value FROM contents WHERE `key` = 'contact_email'");
+      const rows = await notifConn.query("SELECT value FROM contents WHERE content_key = 'contact_email'");
       const toEmail = (rows.length > 0 && rows[0].value) ? rows[0].value : process.env.SMTP_USER;
       if (toEmail) {
         sendContactNotification({ nombre, email, empresa, telefono, mensaje }, toEmail);
