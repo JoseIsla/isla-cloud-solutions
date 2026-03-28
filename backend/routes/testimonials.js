@@ -45,11 +45,11 @@ router.post('/', authMiddleware, [
 
   let conn;
   try {
-    const { author_name, author_role, author_company, quote, avatar_url, rating, sort_order } = req.body;
+    const { author_name, author_role, author_company, quote, avatar_url, rating, sort_order, is_active } = req.body;
     conn = await pool.getConnection();
     const result = await conn.query(
-      'INSERT INTO testimonials (author_name, author_role, author_company, quote, avatar_url, rating, sort_order) VALUES (?, ?, ?, ?, ?, ?, ?)',
-      [author_name, author_role || '', author_company || '', quote, avatar_url || '', rating || 5, sort_order || 0]
+      'INSERT INTO testimonials (author_name, author_role, author_company, quote, avatar_url, rating, sort_order, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      [author_name, author_role || '', author_company || '', quote, avatar_url || '', rating || 5, sort_order || 0, is_active !== undefined ? (is_active ? 1 : 0) : 1]
     );
     res.status(201).json({ id: Number(result.insertId), message: 'Testimonio creado' });
   } catch (err) {
