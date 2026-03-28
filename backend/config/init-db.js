@@ -298,10 +298,21 @@ async function initDB() {
   }
 
   // ── Migrations (siempre se ejecutan) ──
-  try {
-    await conn.query('ALTER TABLE news ADD COLUMN sort_order INT DEFAULT 0 AFTER is_published');
-    console.log('  ✅ Columna sort_order añadida a news');
-  } catch (e) { /* ya existe */ }
+  const safeAlter = async (sql, label) => {
+    try { await conn.query(sql); console.log('  ✅ ' + label); } catch (e) { /* ya existe */ }
+  };
+
+  await safeAlter('ALTER TABLE news ADD COLUMN sort_order INT DEFAULT 0 AFTER is_published', 'news.sort_order');
+  await safeAlter('ALTER TABLE news ADD COLUMN meta_title VARCHAR(255) DEFAULT \'\'', 'news.meta_title');
+  await safeAlter('ALTER TABLE news ADD COLUMN meta_description VARCHAR(500) DEFAULT \'\'', 'news.meta_description');
+  await safeAlter('ALTER TABLE news ADD COLUMN noindex TINYINT(1) DEFAULT 0', 'news.noindex');
+  await safeAlter('ALTER TABLE news ADD COLUMN nofollow TINYINT(1) DEFAULT 0', 'news.nofollow');
+
+  await safeAlter('ALTER TABLE success_cases ADD COLUMN slug VARCHAR(255) DEFAULT \'\'', 'success_cases.slug');
+  await safeAlter('ALTER TABLE success_cases ADD COLUMN meta_title VARCHAR(255) DEFAULT \'\'', 'success_cases.meta_title');
+  await safeAlter('ALTER TABLE success_cases ADD COLUMN meta_description VARCHAR(500) DEFAULT \'\'', 'success_cases.meta_description');
+  await safeAlter('ALTER TABLE success_cases ADD COLUMN noindex TINYINT(1) DEFAULT 0', 'success_cases.noindex');
+  await safeAlter('ALTER TABLE success_cases ADD COLUMN nofollow TINYINT(1) DEFAULT 0', 'success_cases.nofollow');
 
   // Media library table
   await conn.query(`
