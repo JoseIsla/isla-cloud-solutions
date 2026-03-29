@@ -64,10 +64,10 @@ const ServicesSection = () => {
       // Linear progress for tight scroll sync
       const progress = Math.max(0, Math.min(1, raw));
       const maxLift =
-        window.innerWidth >= 1280 ? 420 :
-        window.innerWidth >= 1024 ? 360 :
-        window.innerWidth >= 768 ? 280 :
-        200;
+        window.innerWidth >= 1280 ? 280 :
+        window.innerWidth >= 1024 ? 240 :
+        window.innerWidth >= 768 ? 180 :
+        120;
 
       setOverlap({
         capOpacity: Math.min(1, progress * 1.2),
@@ -125,7 +125,7 @@ const ServicesSection = () => {
         }}
       />
 
-      <div className="relative z-10 min-h-screen overflow-hidden">
+      <div className="relative z-10 min-h-[85vh] overflow-hidden">
         <div className="absolute inset-0">
             <BlurImage
               src={servicesBg}
@@ -136,6 +136,7 @@ const ServicesSection = () => {
             />
             <div className="services-image-overlay absolute inset-0" />
             <div className="services-image-vignette absolute inset-0" />
+            <div className="absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-background via-background/40 to-transparent pointer-events-none" />
           </div>
 
           <div className="container relative z-10 mx-auto px-4 pt-28 pb-24 md:pt-36 md:pb-32 lg:pt-40 lg:pb-36">
