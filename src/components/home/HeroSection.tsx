@@ -167,16 +167,16 @@ const HeroSection = () => {
   return (
     <section aria-label="Presentación principal" role="region" className="relative h-screen flex items-center overflow-hidden">
       <div className="absolute inset-0">
-        <AnimatePresence mode="wait">
+        <AnimatePresence>
           <motion.img
             key={activeSlide}
             src={slideBackgrounds[activeSlide]}
             alt=""
             className="absolute inset-0 w-full h-full object-cover"
-            initial={{ opacity: 0, scale: 1.05 }}
+            initial={{ opacity: 0, scale: 1.08 }}
             animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
+            exit={{ opacity: 0, scale: 1 }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
           />
         </AnimatePresence>
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/30" />
