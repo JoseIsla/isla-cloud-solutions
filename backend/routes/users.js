@@ -77,6 +77,42 @@ router.post('/',
   }
 );
 
+// PUT /api/users/me/password — change own password (MUST be before /:id to avoid conflict)
+router.put('/me/password',
+  body('currentPassword').notEmpty().withMessage('Contraseña actual requerida'),
+  body('newPassword').isLength({ min: 8 }).withMessage('La nueva contraseña debe tener al menos 8 caracteres'),
+  async (req, res) => {
+    const err = validate(req, res);
+    if (err) return;
+
+    let conn;
+    try {
+      const { currentPassword, newPassword } = req.body;
+      conn = await pool.getConnection();
+
+      const rows = await conn.query('SELECT password FROM users WHERE id = ?', [req.user.id]);
+      if (rows.length === 0) {
+        return res.status(404).json({ error: 'Usuario no encontrado' });
+      }
+
+      const valid = await bcrypt.compare(currentPassword, rows[0].password);
+      if (!valid) {
+        return res.status(401).json({ error: 'La contraseña actual es incorrecta' });
+      }
+
+      const hashed = await bcrypt.hash(newPassword, 12);
+      await conn.query('UPDATE users SET password = ? WHERE id = ?', [hashed, req.user.id]);
+
+      res.json({ success: true });
+    } catch (err) {
+      console.error('Error changing password:', err);
+      res.status(500).json({ error: 'Error del servidor' });
+    } finally {
+      if (conn) conn.release();
+    }
+  }
+);
+
 // PUT /api/users/:id — update user (name, email, password optional)
 router.put('/:id',
   param('id').isInt().withMessage('ID inválido'),
@@ -121,42 +157,6 @@ router.put('/:id',
       res.json({ id: Number(id), name, email });
     } catch (err) {
       console.error('Error updating user:', err);
-      res.status(500).json({ error: 'Error del servidor' });
-    } finally {
-      if (conn) conn.release();
-    }
-  }
-);
-
-// PUT /api/users/me/password — change own password
-router.put('/me/password',
-  body('currentPassword').notEmpty().withMessage('Contraseña actual requerida'),
-  body('newPassword').isLength({ min: 8 }).withMessage('La nueva contraseña debe tener al menos 8 caracteres'),
-  async (req, res) => {
-    const err = validate(req, res);
-    if (err) return;
-
-    let conn;
-    try {
-      const { currentPassword, newPassword } = req.body;
-      conn = await pool.getConnection();
-
-      const rows = await conn.query('SELECT password FROM users WHERE id = ?', [req.user.id]);
-      if (rows.length === 0) {
-        return res.status(404).json({ error: 'Usuario no encontrado' });
-      }
-
-      const valid = await bcrypt.compare(currentPassword, rows[0].password);
-      if (!valid) {
-        return res.status(401).json({ error: 'La contraseña actual es incorrecta' });
-      }
-
-      const hashed = await bcrypt.hash(newPassword, 12);
-      await conn.query('UPDATE users SET password = ? WHERE id = ?', [hashed, req.user.id]);
-
-      res.json({ success: true });
-    } catch (err) {
-      console.error('Error changing password:', err);
       res.status(500).json({ error: 'Error del servidor' });
     } finally {
       if (conn) conn.release();
