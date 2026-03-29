@@ -44,7 +44,7 @@ const PanelCasos = () => {
   const [mediaPicker, setMediaPicker] = useState(false);
 
   useEffect(() => {
-    clientsApi.list().then(setClients).catch(() => {});
+    clientsApi.list(token).then(setClients).catch(() => {});
   }, []);
 
   const fetchCases = () => {
