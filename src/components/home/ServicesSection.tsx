@@ -113,7 +113,7 @@ const ServicesSection = () => {
       id="servicios"
       ref={sectionRef}
       className="relative z-20 will-change-transform"
-      style={{ transform: `translateY(-${overlap.lift}px)` }}
+      style={{ transform: `translateY(-${overlap.lift}px)`, marginBottom: `-${overlap.lift}px` }}
     >
       {/* Fade sits above the image edge so it only softens the intro text behind it */}
       <div
