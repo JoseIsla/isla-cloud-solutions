@@ -1,9 +1,23 @@
 const express = require('express');
 const pool = require('../config/db');
 const { authMiddleware } = require('../middleware/auth');
-const { body, validationResult } = require('express-validator');
+const { body, param, validationResult } = require('express-validator');
 
 const router = express.Router();
+
+const serviceValidation = [
+  body('title').trim().notEmpty().isLength({ max: 255 }),
+  body('slug').trim().notEmpty().isLength({ max: 255 }),
+  body('short_title').trim().notEmpty().isLength({ max: 100 }),
+  body('description').optional().isLength({ max: 5000 }),
+  body('long_description').optional().isLength({ max: 50000 }),
+  body('icon').optional().trim().isLength({ max: 50 }),
+  body('image_url').optional().trim().isLength({ max: 500 }),
+  body('sort_order').optional().isInt({ min: 0, max: 9999 }),
+  body('is_active').optional().isInt({ min: 0, max: 1 }),
+];
+
+const idParam = param('id').isInt({ min: 1 });
 
 // GET /api/services (public)
 router.get('/', async (req, res) => {
@@ -42,11 +56,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // POST /api/services (admin)
-router.post('/', authMiddleware, [
-  body('title').trim().notEmpty(),
-  body('slug').trim().notEmpty(),
-  body('short_title').trim().notEmpty(),
-], async (req, res) => {
+router.post('/', authMiddleware, serviceValidation, async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
@@ -61,14 +71,17 @@ router.post('/', authMiddleware, [
     res.status(201).json({ id: Number(result.insertId), message: 'Servicio creado' });
   } catch (err) {
     console.error('POST /api/services error:', err.message);
-    res.status(500).json({ error: 'Error del servidor: ' + err.message });
+    res.status(500).json({ error: 'Error del servidor' });
   } finally {
     if (conn) conn.release();
   }
 });
 
 // PUT /api/services/:id (admin)
-router.put('/:id', authMiddleware, async (req, res) => {
+router.put('/:id', authMiddleware, idParam, serviceValidation, async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+
   let conn;
   try {
     const { slug, title, short_title, description, long_description, icon, features, image_url, sort_order, is_active } = req.body;
@@ -80,14 +93,17 @@ router.put('/:id', authMiddleware, async (req, res) => {
     res.json({ message: 'Servicio actualizado' });
   } catch (err) {
     console.error('PUT /api/services/:id error:', err.message);
-    res.status(500).json({ error: 'Error del servidor: ' + err.message });
+    res.status(500).json({ error: 'Error del servidor' });
   } finally {
     if (conn) conn.release();
   }
 });
 
 // DELETE /api/services/:id (admin)
-router.delete('/:id', authMiddleware, async (req, res) => {
+router.delete('/:id', authMiddleware, idParam, async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+
   let conn;
   try {
     conn = await pool.getConnection();
@@ -95,7 +111,7 @@ router.delete('/:id', authMiddleware, async (req, res) => {
     res.json({ message: 'Servicio eliminado' });
   } catch (err) {
     console.error('DELETE /api/services/:id error:', err.message);
-    res.status(500).json({ error: 'Error del servidor: ' + err.message });
+    res.status(500).json({ error: 'Error del servidor' });
   } finally {
     if (conn) conn.release();
   }
