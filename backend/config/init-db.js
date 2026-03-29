@@ -331,6 +331,10 @@ async function initDB() {
     )
   `);
 
+  // Account lockout columns
+  await safeAlter('ALTER TABLE users ADD COLUMN failed_login_attempts INT DEFAULT 0', 'users.failed_login_attempts');
+  await safeAlter('ALTER TABLE users ADD COLUMN locked_until TIMESTAMP NULL DEFAULT NULL', 'users.locked_until');
+
   console.log('✅ Base de datos actualizada correctamente');
 
   await conn.end();
