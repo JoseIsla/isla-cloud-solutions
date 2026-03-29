@@ -342,6 +342,20 @@ async function initDB() {
   await safeAlter('ALTER TABLE users ADD COLUMN failed_login_attempts INT DEFAULT 0', 'users.failed_login_attempts');
   await safeAlter('ALTER TABLE users ADD COLUMN locked_until TIMESTAMP NULL DEFAULT NULL', 'users.locked_until');
 
+  // Ensure legal content keys always exist (idempotent)
+  const requiredContents = [
+    ['footer_legal_link3', 'Footer: Enlace Legal 3', 'Política de Cookies', 'text'],
+    ['legal_aviso_visible', 'Legal: Aviso Legal visible', 'true', 'text'],
+    ['legal_privacidad_visible', 'Legal: Privacidad visible', 'true', 'text'],
+    ['legal_cookies_visible', 'Legal: Cookies visible', 'true', 'text'],
+    ['legal_aviso_content', 'Legal: Contenido Aviso Legal', '', 'html'],
+    ['legal_privacidad_content', 'Legal: Contenido Política de Privacidad', '', 'html'],
+    ['legal_cookies_content', 'Legal: Contenido Política de Cookies', '', 'html'],
+  ];
+  for (const [key, title, value, type] of requiredContents) {
+    await conn.query('INSERT IGNORE INTO contents (content_key, title, value, content_type) VALUES (?, ?, ?, ?)', [key, title, value, type]);
+  }
+
   console.log('✅ Base de datos actualizada correctamente');
 
   await conn.end();
