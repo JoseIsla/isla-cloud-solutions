@@ -58,16 +58,15 @@ const ServicesSection = () => {
 
       const rect = section.getBoundingClientRect();
       const viewportHeight = window.innerHeight;
-      const start = viewportHeight * 0.85;
-      const end = viewportHeight * 0.05;
+      const start = viewportHeight * 1.1;
+      const end = viewportHeight * -0.1;
       const raw = (start - rect.top) / (start - end);
-      // Linear progress for tight scroll sync
       const progress = Math.max(0, Math.min(1, raw));
       const maxLift =
-        window.innerWidth >= 1280 ? 280 :
-        window.innerWidth >= 1024 ? 240 :
-        window.innerWidth >= 768 ? 180 :
-        120;
+        window.innerWidth >= 1280 ? 500 :
+        window.innerWidth >= 1024 ? 420 :
+        window.innerWidth >= 768 ? 340 :
+        260;
 
       setOverlap({
         capOpacity: Math.min(1, progress * 1.2),
@@ -118,7 +117,7 @@ const ServicesSection = () => {
       {/* Fade sits above the image edge so it only softens the intro text behind it */}
       <div
         aria-hidden="true"
-        className="services-overlap-cap pointer-events-none absolute inset-x-0 z-0 h-12 md:h-16 lg:h-20"
+        className="services-overlap-cap pointer-events-none absolute inset-x-0 z-0 h-24 md:h-32 lg:h-40"
         style={{
           opacity: overlap.capOpacity,
           bottom: "100%",
