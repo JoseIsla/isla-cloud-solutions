@@ -38,9 +38,9 @@ self.addEventListener('fetch', (event) => {
   if (request.method !== 'GET') return;
   if (url.protocol === 'chrome-extension:') return;
 
-  // API requests — network-first with 5s timeout, fall back to cache
+  // API requests — always network-only to avoid stale CMS/admin data
   if (url.pathname.startsWith('/api/')) {
-    event.respondWith(networkFirstWithTimeout(request, API_CACHE, 5000));
+    event.respondWith(fetch(request, { cache: 'no-store' }));
     return;
   }
 
