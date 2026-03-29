@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import BlurImage from "@/components/BlurImage";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { services as fallbackServices } from "@/data/services";
 import { servicesApi, type ServiceFromAPI } from "@/lib/api";
 import { useCMSValue } from "@/hooks/useCMS";
@@ -31,66 +31,15 @@ const iconMap: Record<string, LucideIcon> = {
   Database,
 };
 
-type OverlapState = {
-  capOpacity: number;
-  lift: number;
-};
-
 const ServicesSection = () => {
-  const sectionRef = useRef<HTMLElement | null>(null);
   const sectionTitle = useCMSValue(
     "services_section_title",
     "Resolvemos los Problemas Tecnológicos que Frenan tu Empresa"
   );
   const [apiServices, setApiServices] = useState<ServiceFromAPI[] | null>(null);
-  const [overlap, setOverlap] = useState<OverlapState>({ capOpacity: 0, lift: 0 });
 
   useEffect(() => {
     servicesApi.list().then(setApiServices).catch(() => setApiServices(null));
-  }, []);
-
-  useEffect(() => {
-    let frameId = 0;
-
-    const updateOverlap = () => {
-      const section = sectionRef.current;
-      if (!section) return;
-
-      const rect = section.getBoundingClientRect();
-      const viewportHeight = window.innerHeight;
-      const start = viewportHeight * 1.1;
-      const end = viewportHeight * -0.1;
-      const raw = (start - rect.top) / (start - end);
-      const progress = Math.max(0, Math.min(1, raw));
-      const maxLift =
-        window.innerWidth >= 1280 ? 750 :
-        window.innerWidth >= 1024 ? 620 :
-        window.innerWidth >= 768 ? 480 :
-        360;
-
-      setOverlap({
-        capOpacity: Math.min(1, progress * 1.2),
-        lift: progress * maxLift,
-      });
-    };
-
-    const onScroll = () => {
-      if (frameId) return;
-      frameId = window.requestAnimationFrame(() => {
-        updateOverlap();
-        frameId = 0;
-      });
-    };
-
-    updateOverlap();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-
-    return () => {
-      if (frameId) window.cancelAnimationFrame(frameId);
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-    };
   }, []);
 
   const useApi = apiServices && apiServices.length > 0;
@@ -110,71 +59,65 @@ const ServicesSection = () => {
   return (
     <section
       id="servicios"
-      ref={sectionRef}
-      className="relative z-20 will-change-transform"
-      style={{ transform: `translateY(-${overlap.lift}px)`, marginBottom: `-${overlap.lift}px` }}
+      className="relative z-20"
     >
-      {/* Fade sits above the image edge so it only softens the intro text behind it */}
+      {/* Soft shadow that fades the sticky intro behind */}
       <div
         aria-hidden="true"
         className="services-overlap-cap pointer-events-none absolute inset-x-0 z-0 h-12 md:h-16 lg:h-20"
-        style={{
-          opacity: overlap.capOpacity,
-          bottom: "100%",
-        }}
+        style={{ bottom: "100%" }}
       />
 
       <div className="relative z-10 min-h-[85vh] overflow-hidden">
         <div className="absolute inset-0">
-            <BlurImage
-              src={servicesBg}
-              alt=""
-              className="h-full w-full object-cover"
-              wrapperClassName="h-full w-full"
-              placeholderColor="#0a1628"
-            />
-            <div className="services-image-overlay absolute inset-0" />
-            <div className="services-image-vignette absolute inset-0" />
-            
-          </div>
+          <BlurImage
+            src={servicesBg}
+            alt=""
+            className="h-full w-full object-cover"
+            wrapperClassName="h-full w-full"
+            placeholderColor="#0a1628"
+          />
+          <div className="services-image-overlay absolute inset-0" />
+          <div className="services-image-vignette absolute inset-0" />
+        </div>
 
-          <div className="container relative z-10 mx-auto px-4 pt-28 pb-24 md:pt-36 md:pb-32 lg:pt-40 lg:pb-36">
-            <div className="grid grid-cols-1 items-start gap-8 md:gap-10 lg:grid-cols-12 lg:gap-16">
-              <motion.div
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.3 }}
-                transition={{ duration: 0.7 }}
-                className="lg:col-span-5 lg:sticky lg:top-32"
-              >
-                <h2 className="services-heading max-w-md font-heading text-4xl font-bold leading-[0.96] md:text-5xl lg:text-[4.25rem]">
-                  {sectionTitle}
-                </h2>
-              </motion.div>
+        <div className="container relative z-10 mx-auto px-4 pt-28 pb-24 md:pt-36 md:pb-32 lg:pt-40 lg:pb-36">
+          <div className="grid grid-cols-1 items-start gap-8 md:gap-10 lg:grid-cols-12 lg:gap-16">
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.7 }}
+              className="lg:col-span-5 lg:sticky lg:top-32"
+            >
+              <h2 className="services-heading max-w-md font-heading text-4xl font-bold leading-[0.96] md:text-5xl lg:text-[4.25rem]">
+                {sectionTitle}
+              </h2>
+            </motion.div>
 
-              <div className="lg:col-span-7 lg:pt-12">
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:gap-4">
-                  {serviceItems.map((service, index) => (
-                    <motion.div
-                      key={service.slug}
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true, amount: 0.2 }}
-                      transition={{ delay: index * 0.05, duration: 0.4 }}
+            <div className="lg:col-span-7 lg:pt-12">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:gap-4">
+                {serviceItems.map((service, index) => (
+                  <motion.div
+                    key={service.slug}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.2 }}
+                    transition={{ delay: index * 0.05, duration: 0.4 }}
+                  >
+                    <Link
+                      to={`/servicios/${service.slug}`}
+                      className="services-card group flex min-h-[152px] flex-col justify-between gap-10 rounded-[1.75rem] p-5 md:p-6"
                     >
-                      <Link
-                        to={`/servicios/${service.slug}`}
-                        className="services-card group flex min-h-[152px] flex-col justify-between gap-10 rounded-[1.75rem] p-5 md:p-6"
-                      >
-                        <service.Icon size={26} className="services-card-icon" />
-                        <span className="services-card-title text-lg font-semibold leading-tight md:text-xl">
-                          {service.title}
-                        </span>
-                      </Link>
-                    </motion.div>
-                  ))}
-                </div>
+                      <service.Icon size={26} className="services-card-icon" />
+                      <span className="services-card-title text-lg font-semibold leading-tight md:text-xl">
+                        {service.title}
+                      </span>
+                    </Link>
+                  </motion.div>
+                ))}
               </div>
+            </div>
           </div>
         </div>
       </div>
