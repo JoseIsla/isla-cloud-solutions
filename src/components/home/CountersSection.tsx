@@ -39,7 +39,7 @@ const CountersSection = () => {
   ];
 
   return (
-    <section className="py-20 bg-hero relative overflow-hidden">
+    <section className="py-14 md:py-16 bg-hero relative overflow-hidden">
       <div className="absolute inset-0 grid-pattern opacity-20" />
       <div className="container mx-auto px-4 relative z-10">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
