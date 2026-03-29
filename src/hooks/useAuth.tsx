@@ -1,7 +1,9 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef, ReactNode } from 'react';
 import { authApi } from '@/lib/api';
+import { toast } from 'sonner';
 
 const INACTIVITY_TIMEOUT_MS = 10 * 60 * 1000; // 10 minutes
+const WARNING_BEFORE_MS = 60 * 1000; // warn 1 minute before
 
 interface User {
   id: number;
@@ -31,20 +33,34 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const warningRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const logout = useCallback(() => {
     setToken(null);
     setUser(null);
     sessionStorage.removeItem('islacloud_token');
     if (timerRef.current) clearTimeout(timerRef.current);
+    if (warningRef.current) clearTimeout(warningRef.current);
+    toast.dismiss('session-warning');
   }, []);
 
   // Reset inactivity timer on user activity
   const resetTimer = useCallback(() => {
     if (!sessionStorage.getItem('islacloud_token')) return;
     if (timerRef.current) clearTimeout(timerRef.current);
+    if (warningRef.current) clearTimeout(warningRef.current);
+    toast.dismiss('session-warning');
+
+    warningRef.current = setTimeout(() => {
+      toast.warning('Tu sesión expirará en 1 minuto por inactividad. Interactúa para mantenerla activa.', {
+        id: 'session-warning',
+        duration: WARNING_BEFORE_MS,
+      });
+    }, INACTIVITY_TIMEOUT_MS - WARNING_BEFORE_MS);
+
     timerRef.current = setTimeout(() => {
       logout();
+      toast.info('Sesión cerrada por inactividad.');
     }, INACTIVITY_TIMEOUT_MS);
   }, [logout]);
 
@@ -61,6 +77,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return () => {
       events.forEach((e) => window.removeEventListener(e, handler));
       if (timerRef.current) clearTimeout(timerRef.current);
+      if (warningRef.current) clearTimeout(warningRef.current);
     };
   }, [token, resetTimer]);
 
