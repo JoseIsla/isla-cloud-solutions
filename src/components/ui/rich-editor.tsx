@@ -4,14 +4,25 @@ import Link from '@tiptap/extension-link';
 import Image from '@tiptap/extension-image';
 import Underline from '@tiptap/extension-underline';
 import TextAlign from '@tiptap/extension-text-align';
+import { Table } from '@tiptap/extension-table';
+import { TableRow } from '@tiptap/extension-table-row';
+import { TableCell } from '@tiptap/extension-table-cell';
+import { TableHeader } from '@tiptap/extension-table-header';
 import { useEffect } from 'react';
 import {
   Bold, Italic, Underline as UnderlineIcon, Strikethrough,
   List, ListOrdered, Heading1, Heading2, Heading3,
   AlignLeft, AlignCenter, AlignRight, Link as LinkIcon,
   Image as ImageIcon, Undo, Redo, Quote, Minus,
+  TableIcon, Plus, Trash2, Rows3, Columns3,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 interface RichEditorProps {
   value: string;
@@ -42,6 +53,10 @@ const RichEditor = ({ value, onChange, placeholder, className }: RichEditorProps
       Link.configure({ openOnClick: false, HTMLAttributes: { class: 'text-primary underline' } }),
       Image.configure({ HTMLAttributes: { class: 'rounded-lg max-w-full' } }),
       TextAlign.configure({ types: ['heading', 'paragraph'] }),
+      Table.configure({ resizable: true, HTMLAttributes: { class: 'border-collapse border border-border w-full' } }),
+      TableRow,
+      TableCell.configure({ HTMLAttributes: { class: 'border border-border p-2' } }),
+      TableHeader.configure({ HTMLAttributes: { class: 'border border-border p-2 bg-secondary/50 font-medium text-foreground' } }),
     ],
     content: value || '',
     onUpdate: ({ editor }) => onChange(editor.getHTML()),
@@ -127,6 +142,44 @@ const RichEditor = ({ value, onChange, placeholder, className }: RichEditorProps
         <ToolbarButton onClick={addImage} title="Imagen">
           <ImageIcon size={s} />
         </ToolbarButton>
+        <div className="w-px h-6 bg-border mx-1 self-center" />
+
+        {/* Table dropdown */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              type="button"
+              title="Tabla"
+              className={cn(
+                'p-1.5 rounded-lg transition-colors',
+                editor.isActive('table') ? 'bg-primary/15 text-primary' : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
+              )}
+            >
+              <TableIcon size={s} />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="min-w-[180px]">
+            <DropdownMenuItem onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}>
+              <Plus size={14} className="mr-2" /> Insertar tabla 3×3
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => editor.chain().focus().addColumnAfter().run()} disabled={!editor.can().addColumnAfter()}>
+              <Columns3 size={14} className="mr-2" /> Añadir columna
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => editor.chain().focus().addRowAfter().run()} disabled={!editor.can().addRowAfter()}>
+              <Rows3 size={14} className="mr-2" /> Añadir fila
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => editor.chain().focus().deleteColumn().run()} disabled={!editor.can().deleteColumn()}>
+              <Trash2 size={14} className="mr-2" /> Eliminar columna
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => editor.chain().focus().deleteRow().run()} disabled={!editor.can().deleteRow()}>
+              <Trash2 size={14} className="mr-2" /> Eliminar fila
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => editor.chain().focus().deleteTable().run()} disabled={!editor.can().deleteTable()}>
+              <Trash2 size={14} className="mr-2 text-destructive" /> Eliminar tabla
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
         <div className="w-px h-6 bg-border mx-1 self-center" />
         <ToolbarButton onClick={() => editor.chain().focus().undo().run()} title="Deshacer">
           <Undo size={s} />
