@@ -1,18 +1,21 @@
 
 
-## Implementar 3 mejoras de auditoría en ServicesSection
+## Plan: Overlap agresivo de Servicios sobre Hero
 
-### Cambios en `src/components/home/ServicesSection.tsx`
+**Objetivo**: Que la sección de servicios "se coma" el Hero y la Intro al hacer scroll, dando la sensación de que la sección sube y tapa todo lo anterior, no de scroll normal.
 
-**1. Reducir maxLift** (líneas 66-70)
-- De `420 / 360 / 280 / 200` a `280 / 240 / 180 / 120`
-- Evita que la sección suba tanto y la sombra invada el Hero.
+### Enfoque técnico
 
-**2. Cambiar min-h-screen a min-h-[85vh]** (línea 128)
-- `min-h-screen` → `min-h-[85vh]`
-- Elimina espacio vacío innecesario en pantallas altas.
+La sección de servicios ya tiene `z-20` (por encima del Hero `z-0` e Intro `z-0`), y usa `translateY` negativo sincronizado con scroll. Solo necesitamos:
 
-**3. Añadir gradiente inferior** (después de línea 139, dentro del `div.absolute.inset-0`)
-- Nuevo `div` con gradiente `bg-gradient-to-t from-background via-background/40 to-transparent` en la parte inferior (~25% de altura).
-- Suaviza la transición de la sección oscura de servicios al fondo claro de "¿Por qué elegirnos?".
+1. **Aumentar `maxLift` drásticamente** en `ServicesSection.tsx` (líneas 66-70): de `280/240/180/120` a valores mucho más altos como `500/420/340/260`, para que la sección suba lo suficiente y tape el Hero completo.
+
+2. **Hacer la sombra-cap más alta** (línea 121): cambiar `h-12 md:h-16 lg:h-20` a `h-24 md:h-32 lg:h-40` para que el desvanecimiento cubra más contenido al subir.
+
+3. **Ajustar el rango de scroll** (líneas 61-62): ampliar el rango (`start`/`end`) para que el efecto empiece antes y dure más, creando una animación más progresiva.
+
+4. **Asegurar z-index del Hero e Intro**: Verificar que Hero e Intro tengan `z-index` inferior (ya lo tienen con `z-0`), así la sección de servicios pasa por encima.
+
+### Archivos a modificar
+- `src/components/home/ServicesSection.tsx` — maxLift, shadow height, scroll range
 
