@@ -112,6 +112,8 @@ export const usersApi = {
     apiRequest('/api/users/' + id, { method: 'PUT', body: data, token }),
   delete: (id: number, token: string) =>
     apiRequest('/api/users/' + id, { method: 'DELETE', token }),
+  changePassword: (data: { currentPassword: string; newPassword: string }, token: string) =>
+    apiRequest<{ success: boolean }>('/api/users/me/password', { method: 'PUT', body: data, token }),
 };
 
 // Clients
