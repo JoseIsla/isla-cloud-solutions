@@ -49,10 +49,13 @@ const Index = () => {
   return (
     <Layout>
       <HeroSection />
-      <IntroSection />
-      <Suspense fallback={<SectionFallback minH="min-h-screen" />}>
-        <ServicesSection />
-      </Suspense>
+      {/* Wrapper limits the sticky range of IntroSection */}
+      <div className="relative">
+        <IntroSection />
+        <Suspense fallback={<SectionFallback minH="min-h-screen" />}>
+          <ServicesSection />
+        </Suspense>
+      </div>
       <Suspense fallback={<SectionFallback minH="min-h-[600px]" />}>
         <WhyUsSection />
       </Suspense>
