@@ -41,6 +41,13 @@ const HeroSection = () => {
     currentCase?.image_url || heroBg3 || defaultHeroCasesBg,
   ];
 
+  useEffect(() => {
+    slideBackgrounds.forEach(src => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, [slideBackgrounds[0], slideBackgrounds[1], slideBackgrounds[2]]);
+
   const tab1Label = useCMSValue('hero_tab1_label', 'Isla Cloud Solutions');
   const tab2Label = useCMSValue('hero_tab2_label', 'Último en el Blog');
   const tab3Label = useCMSValue('hero_tab3_label', 'Casos de Éxito');
@@ -160,16 +167,16 @@ const HeroSection = () => {
   return (
     <section aria-label="Presentación principal" role="region" className="relative h-screen flex items-center overflow-hidden">
       <div className="absolute inset-0">
-        <AnimatePresence initial={false}>
+        <AnimatePresence mode="wait">
           <motion.img
             key={activeSlide}
             src={slideBackgrounds[activeSlide]}
             alt=""
             className="absolute inset-0 w-full h-full object-cover"
-            initial={{ scale: 1.1 }}
-            animate={{ scale: 1 }}
-            exit={{ scale: 1 }}
-            transition={{ duration: 8, ease: "easeOut" }}
+            initial={{ opacity: 0, scale: 1.05 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
           />
         </AnimatePresence>
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/30" />
