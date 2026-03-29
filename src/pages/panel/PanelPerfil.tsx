@@ -63,7 +63,7 @@ const PanelPerfil = () => {
               </div>
             </div>
             <div className="p-6">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 <div className="space-y-1">
                   <span className="text-muted-foreground text-[11px] font-medium uppercase tracking-wider flex items-center gap-1.5">
                     <User size={11} /> Nombre
