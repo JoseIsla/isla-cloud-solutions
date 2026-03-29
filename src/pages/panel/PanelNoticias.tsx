@@ -232,7 +232,7 @@ const PanelNoticias = () => {
                       className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm"
                     />
                     {catOpen && existingCategories.length > 0 && (
-                      <div className="absolute z-50 top-full mt-1 w-full bg-card border border-border rounded-lg shadow-xl max-h-40 overflow-y-auto">
+                      <div className="absolute z-[10001] top-full mt-1 w-full bg-card border border-border rounded-lg shadow-xl max-h-40 overflow-y-auto">
                         {existingCategories
                           .filter(cat => !editing.category || cat.toLowerCase().includes((editing.category || '').toLowerCase()))
                           .map(cat => (
