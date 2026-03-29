@@ -178,9 +178,8 @@
   .services-overlap-cap {
     background: linear-gradient(
       0deg,
-      hsl(var(--background)) 0%,
-      hsl(var(--background) / 0.7) 35%,
-      hsl(var(--background) / 0.25) 65%,
+      hsl(var(--background) / 0.6) 0%,
+      hsl(var(--background) / 0.2) 50%,
       transparent 100%
     );
   }
