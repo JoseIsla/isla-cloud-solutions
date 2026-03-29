@@ -24,6 +24,7 @@ const TAB_CONFIG = [
   { id: 'cabecera', label: '🏠 Cabecera', description: 'Hero e introducción' },
   { id: 'secciones', label: '📦 Secciones', description: 'Servicios, contadores, clientes y más' },
   { id: 'footer', label: '📞 Footer y CTA', description: 'Contacto, pie de página y redes' },
+  { id: 'legal', label: '⚖️ Legal', description: 'Textos legales y visibilidad' },
 ];
 
 const sectionGroups: SectionGroup[] = [
@@ -154,7 +155,7 @@ const sectionGroups: SectionGroup[] = [
       'contact_title', 'contact_subtitle',
       'footer_description', 'footer_services_title', 'footer_company_title', 'footer_contact_title',
       'footer_company_link1', 'footer_company_link2', 'footer_company_link3',
-      'footer_legal_link1', 'footer_legal_link2', 'footer_copyright',
+      'footer_legal_link1', 'footer_legal_link2', 'footer_legal_link3', 'footer_copyright',
     ],
   },
   {
@@ -165,6 +166,33 @@ const sectionGroups: SectionGroup[] = [
       'social_linkedin', 'social_twitter', 'social_facebook',
       'social_instagram', 'social_youtube', 'social_github',
     ],
+  },
+
+  // TAB: Legal
+  {
+    tab: 'legal',
+    label: '👁️ Visibilidad en el Footer',
+    description: 'Activa o desactiva las páginas legales que aparecen en el pie de página.',
+    keys: ['legal_aviso_visible', 'legal_privacidad_visible', 'legal_cookies_visible'],
+    customRenderer: true,
+  },
+  {
+    tab: 'legal',
+    label: '📜 Aviso Legal',
+    description: 'Contenido completo de la página de Aviso Legal.',
+    keys: ['legal_aviso_content'],
+  },
+  {
+    tab: 'legal',
+    label: '🔒 Política de Privacidad',
+    description: 'Contenido completo de la página de Política de Privacidad.',
+    keys: ['legal_privacidad_content'],
+  },
+  {
+    tab: 'legal',
+    label: '🍪 Política de Cookies',
+    description: 'Contenido completo de la página de Política de Cookies.',
+    keys: ['legal_cookies_content'],
   },
 ];
 
