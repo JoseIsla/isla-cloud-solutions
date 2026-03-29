@@ -37,8 +37,8 @@ const HeroSection = () => {
   const heroBg3 = useCMSValue('hero_bg_slide3', '');
   const slideBackgrounds = [
     heroBg1 || defaultHeroBg,
-    heroBg2 || defaultHeroBlogBg,
-    heroBg3 || defaultHeroCasesBg,
+    latestNews?.image_url || heroBg2 || defaultHeroBlogBg,
+    currentCase?.image_url || heroBg3 || defaultHeroCasesBg,
   ];
 
   const tab1Label = useCMSValue('hero_tab1_label', 'Isla Cloud Solutions');
