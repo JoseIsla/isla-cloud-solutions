@@ -68,7 +68,7 @@ const ServicesSection = () => {
         style={{ bottom: "100%" }}
       />
 
-      <div className="relative z-10 min-h-[85vh] overflow-hidden">
+      <div className="relative z-10 min-h-screen overflow-hidden">
         <div className="absolute inset-0">
           <BlurImage
             src={servicesBg}
