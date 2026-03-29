@@ -9,7 +9,7 @@ const IntroSection = () => {
   );
 
   return (
-    <section className="relative z-0 bg-background pt-14 md:pt-20 pb-12 md:pb-16">
+    <section className="sticky top-0 z-10 bg-background pt-14 md:pt-20 pb-20 md:pb-28 lg:pb-32">
       <div className="container mx-auto px-4">
         {introText.startsWith('<') ? (
           <motion.div
