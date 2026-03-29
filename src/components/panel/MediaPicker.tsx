@@ -68,7 +68,7 @@ const MediaPicker = ({ open, onClose, onSelect, defaultCategory }: MediaPickerPr
 
   return (
     <Dialog open={open} onOpenChange={onClose} modal>
-      <DialogContent className="max-w-3xl max-h-[80vh] flex flex-col [&~*]:z-[100] z-[100]" style={{ zIndex: 100 }}>
+      <DialogContent className="max-w-3xl max-h-[80vh] flex flex-col z-[100]" overlayClassName="z-[100]">
         <DialogHeader>
           <DialogTitle>Seleccionar imagen</DialogTitle>
         </DialogHeader>
