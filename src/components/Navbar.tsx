@@ -78,7 +78,7 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 lg:h-20">
           <Link to="/" className="flex items-center">
-            <img src={logo} alt="Isla Cloud Solutions" className="h-10 w-auto" />
+            <img src={logo} alt="Isla Cloud Solutions" className="h-14 w-auto" />
           </Link>
 
           {/* Desktop nav */}
