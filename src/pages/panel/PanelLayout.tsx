@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard, FileText, Newspaper, MessageSquare,
   LogOut, Menu, X, Users, Trophy, Globe, Pencil, MessageCircle,
-  ChevronLeft, HelpCircle, ImageIcon,
+  ChevronLeft, HelpCircle, ImageIcon, UserCog,
 } from 'lucide-react';
 import PanelSearch from '@/components/panel/PanelSearch';
 import logotipoBlanco from '@/assets/logos/logotipo-blanco-small.png';
@@ -36,6 +36,12 @@ const sidebarSections = [
       { label: 'Clientes', path: '/panel/clientes', icon: Users },
       { label: 'Testimonios', path: '/panel/testimonios', icon: MessageCircle },
       { label: 'FAQs', path: '/panel/faqs', icon: HelpCircle },
+    ],
+  },
+  {
+    label: 'Administración',
+    links: [
+      { label: 'Usuarios', path: '/panel/usuarios', icon: UserCog },
     ],
   },
 ];

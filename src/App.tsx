@@ -41,6 +41,7 @@ const PanelCasos = lazy(() => import("./pages/panel/PanelCasos"));
 const PanelTestimonios = lazy(() => import("./pages/panel/PanelTestimonios"));
 const PanelFAQs = lazy(() => import("./pages/panel/PanelFAQs"));
 const PanelMedios = lazy(() => import("./pages/panel/PanelMedios"));
+const PanelUsuarios = lazy(() => import("./pages/panel/PanelUsuarios"));
 
 const queryClient = new QueryClient();
 
@@ -109,6 +110,7 @@ const AppRoutes = () => (
       <Route path="/panel/testimonios" element={<ProtectedRoute><PanelTestimonios /></ProtectedRoute>} />
       <Route path="/panel/faqs" element={<ProtectedRoute><PanelFAQs /></ProtectedRoute>} />
       <Route path="/panel/medios" element={<ProtectedRoute><PanelMedios /></ProtectedRoute>} />
+      <Route path="/panel/usuarios" element={<ProtectedRoute><PanelUsuarios /></ProtectedRoute>} />
 
       <Route path="*" element={<NotFound />} />
     </Routes>
