@@ -31,10 +31,10 @@ const PanelDashboard = () => {
   useEffect(() => {
     if (!token) return;
     Promise.all([
-      servicesApi.list().catch(() => []),
+      servicesApi.list(token).catch(() => []),
       newsApi.list(token).catch(() => []),
       contactsApi.list(token).catch(() => []),
-      clientsApi.list().catch(() => []),
+      clientsApi.list(token).catch(() => []),
       casesApi.list(token).catch(() => []),
       testimonialsApi.listAll(token).catch(() => []),
       faqsApi.listAll(token).catch(() => []),

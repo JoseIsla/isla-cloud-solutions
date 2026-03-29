@@ -177,7 +177,7 @@ const PanelContenidos = () => {
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
-    contentsApi.list().then((data) => {
+    (token ? contentsApi.listFresh(token) : contentsApi.list()).then((data) => {
       setContents(data);
       const vals: Record<string, string> = {};
       Object.values(data).forEach(c => { vals[c.content_key] = c.value; });

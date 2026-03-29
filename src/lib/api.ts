@@ -61,7 +61,7 @@ export const authApi = {
 
 // Services
 export const servicesApi = {
-  list: () => apiRequest<ServiceFromAPI[]>('/api/services'),
+  list: (token?: string | null) => apiRequest<ServiceFromAPI[]>('/api/services', { token: token || undefined }),
   get: (idOrSlug: string) => apiRequest<ServiceFromAPI>(`/api/services/${idOrSlug}`),
   create: (data: Partial<ServiceFromAPI>, token: string) =>
     apiRequest<{ id: number }>('/api/services', { method: 'POST', body: data, token }),
@@ -97,13 +97,14 @@ export const contactsApi = {
 // Contents
 export const contentsApi = {
   list: () => apiRequest<Record<string, ContentFromAPI>>('/api/contents'),
+  listFresh: (token: string) => apiRequest<Record<string, ContentFromAPI>>('/api/contents', { token }),
   update: (key: string, value: string, token: string, title?: string) =>
     apiRequest(`/api/contents/${key}`, { method: 'PUT', body: { value, title }, token }),
 };
 
 // Clients
 export const clientsApi = {
-  list: () => apiRequest<ClientFromAPI[]>('/api/clients'),
+  list: (token?: string | null) => apiRequest<ClientFromAPI[]>('/api/clients', { token: token || undefined }),
   create: (data: Partial<ClientFromAPI>, token: string) =>
     apiRequest<{ id: number }>('/api/clients', { method: 'POST', body: data, token }),
   update: (id: number, data: Partial<ClientFromAPI>, token: string) =>
@@ -114,7 +115,7 @@ export const clientsApi = {
 
 // Testimonials
 export const testimonialsApi = {
-  list: () => apiRequest<TestimonialFromAPI[]>('/api/testimonials'),
+  list: (token?: string | null) => apiRequest<TestimonialFromAPI[]>('/api/testimonials', { token: token || undefined }),
   listAll: (token: string) => apiRequest<TestimonialFromAPI[]>('/api/testimonials/all', { token }),
   create: (data: Partial<TestimonialFromAPI>, token: string) =>
     apiRequest<{ id: number }>('/api/testimonials', { method: 'POST', body: data, token }),
@@ -138,7 +139,7 @@ export const casesApi = {
 
 // FAQs
 export const faqsApi = {
-  list: () => apiRequest<FAQFromAPI[]>('/api/faqs'),
+  list: (token?: string | null) => apiRequest<FAQFromAPI[]>('/api/faqs', { token: token || undefined }),
   listAll: (token: string) => apiRequest<FAQFromAPI[]>('/api/faqs/all', { token }),
   create: (data: Partial<FAQFromAPI>, token: string) =>
     apiRequest<{ id: number }>('/api/faqs', { method: 'POST', body: data, token }),
