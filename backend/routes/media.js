@@ -1,17 +1,23 @@
 const express = require('express');
 const pool = require('../config/db');
 const { authMiddleware } = require('../middleware/auth');
+const { body, param, query, validationResult } = require('express-validator');
 
 const router = express.Router();
 
 const DEFAULT_CATEGORIES = ['general', 'logos', 'fondos', 'servicios', 'noticias', 'casos', 'clientes', 'testimonios'];
 
+const idParam = param('id').isInt({ min: 1 });
+
 // GET /api/media (admin) - list all media with optional filters
-router.get('/', authMiddleware, async (req, res) => {
+router.get('/', authMiddleware, [
+  query('category').optional().trim().isLength({ max: 100 }),
+  query('search').optional().trim().isLength({ max: 200 }),
+], async (req, res) => {
   let conn;
   try {
     const { category, search } = req.query;
-    let query = 'SELECT * FROM media';
+    let sql = 'SELECT * FROM media';
     const params = [];
     const conditions = [];
 
@@ -25,12 +31,12 @@ router.get('/', authMiddleware, async (req, res) => {
     }
 
     if (conditions.length) {
-      query += ' WHERE ' + conditions.join(' AND ');
+      sql += ' WHERE ' + conditions.join(' AND ');
     }
-    query += ' ORDER BY created_at DESC';
+    sql += ' ORDER BY created_at DESC';
 
     conn = await pool.getConnection();
-    const rows = await conn.query(query, params);
+    const rows = await conn.query(sql, params);
     res.json(rows);
   } catch (err) {
     console.error('Error listing media:', err.message);
@@ -56,13 +62,19 @@ router.get('/categories', authMiddleware, async (req, res) => {
   }
 });
 
-// POST /api/media (admin) - register a media entry (called after upload)
-router.post('/', authMiddleware, async (req, res) => {
+// POST /api/media (admin) - register a media entry
+router.post('/', authMiddleware, [
+  body('url').trim().notEmpty().isLength({ max: 500 }),
+  body('original_name').optional().trim().isLength({ max: 255 }),
+  body('category').optional().trim().isLength({ max: 100 }),
+  body('alt_text').optional().trim().isLength({ max: 500 }),
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+
   let conn;
   try {
     const { url, original_name, category, alt_text } = req.body;
-    if (!url) return res.status(400).json({ error: 'URL requerida' });
-
     conn = await pool.getConnection();
     const result = await conn.query(
       'INSERT INTO media (url, original_name, category, alt_text) VALUES (?, ?, ?, ?)',
@@ -78,7 +90,13 @@ router.post('/', authMiddleware, async (req, res) => {
 });
 
 // PUT /api/media/:id (admin) - update category or alt_text
-router.put('/:id', authMiddleware, async (req, res) => {
+router.put('/:id', authMiddleware, idParam, [
+  body('category').optional().trim().isLength({ max: 100 }),
+  body('alt_text').optional().trim().isLength({ max: 500 }),
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+
   let conn;
   try {
     const { category, alt_text } = req.body;
@@ -96,7 +114,10 @@ router.put('/:id', authMiddleware, async (req, res) => {
 });
 
 // DELETE /api/media/:id (admin)
-router.delete('/:id', authMiddleware, async (req, res) => {
+router.delete('/:id', authMiddleware, idParam, async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+
   let conn;
   try {
     conn = await pool.getConnection();
@@ -115,7 +136,6 @@ router.post('/sync', authMiddleware, async (req, res) => {
   try {
     conn = await pool.getConnection();
 
-    // Gather all image URLs from every table that has them
     const sources = [
       { query: 'SELECT image_url AS url, title AS name FROM services WHERE image_url IS NOT NULL AND image_url != \'\'', category: 'servicios' },
       { query: 'SELECT image_url AS url, title AS name FROM news WHERE image_url IS NOT NULL AND image_url != \'\'', category: 'noticias' },
@@ -124,9 +144,8 @@ router.post('/sync', authMiddleware, async (req, res) => {
       { query: 'SELECT avatar_url AS url, author_name AS name FROM testimonials WHERE avatar_url IS NOT NULL AND avatar_url != \'\'', category: 'testimonios' },
     ];
 
-    // Also grab CMS content values that look like image URLs
     const cmsRows = await conn.query(
-      "SELECT value AS url, title AS name FROM contents WHERE (content_key LIKE '%logo%' OR content_key LIKE '%bg%' OR content_key LIKE '%image%') AND value IS NOT NULL AND value != '' AND (value LIKE '%.jpg' OR value LIKE '%.png' OR value LIKE '%.webp' OR value LIKE '%.gif' OR value LIKE '%.svg' OR value LIKE '%/uploads/%')"
+      "SELECT value AS url, title AS name FROM contents WHERE (content_key LIKE '%logo%' OR content_key LIKE '%bg%' OR content_key LIKE '%image%') AND value IS NOT NULL AND value != '' AND (value LIKE '%.jpg' OR value LIKE '%.png' OR value LIKE '%.webp' OR value LIKE '%.gif' OR value LIKE '%/uploads/%')"
     );
 
     let inserted = 0;
@@ -144,10 +163,8 @@ router.post('/sync', authMiddleware, async (req, res) => {
     }
 
     for (const item of allUrls) {
-      // Check if already exists in media table
       const existing = await conn.query('SELECT id FROM media WHERE url = ?', [item.url]);
       if (existing.length === 0) {
-        // Extract original filename from URL
         const originalName = item.name || item.url.split('/').pop() || '';
         await conn.query(
           'INSERT INTO media (url, original_name, category, alt_text) VALUES (?, ?, ?, ?)',
