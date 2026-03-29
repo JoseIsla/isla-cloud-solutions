@@ -63,10 +63,10 @@ const ServicesSection = () => {
       const raw = (start - rect.top) / (start - end);
       const progress = Math.max(0, Math.min(1, raw));
       const maxLift =
-        window.innerWidth >= 1280 ? 500 :
-        window.innerWidth >= 1024 ? 420 :
-        window.innerWidth >= 768 ? 340 :
-        260;
+        window.innerWidth >= 1280 ? 750 :
+        window.innerWidth >= 1024 ? 620 :
+        window.innerWidth >= 768 ? 480 :
+        360;
 
       setOverlap({
         capOpacity: Math.min(1, progress * 1.2),
