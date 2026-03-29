@@ -50,7 +50,7 @@ const PanelUsuarios = () => {
     }
     try {
       if (isNew) {
-        await usersApi.create(editing, token);
+        await usersApi.create(editing as { name: string; email: string; password: string; role?: string }, token);
         toast.success('Usuario creado');
       } else {
         await usersApi.update(editing.id!, editing, token);
