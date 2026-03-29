@@ -118,7 +118,7 @@ const ServicesSection = () => {
       {/* Fade sits above the image edge so it only softens the intro text behind it */}
       <div
         aria-hidden="true"
-        className="services-overlap-cap pointer-events-none absolute inset-x-0 z-0 h-20 md:h-28 lg:h-36"
+        className="services-overlap-cap pointer-events-none absolute inset-x-0 z-0 h-12 md:h-16 lg:h-20"
         style={{
           opacity: overlap.capOpacity,
           bottom: "100%",
