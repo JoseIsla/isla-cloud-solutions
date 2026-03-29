@@ -63,7 +63,7 @@ const PanelServicios = () => {
 
   const { getDragProps, isDragOver } = useDragReorder({ items: services, setItems: setServices, onReorder: handleReorder });
 
-  const load = () => { servicesApi.list().then(setServices).catch(() => {}); };
+  const load = () => { servicesApi.list(token).then(setServices).catch(() => {}); };
   useEffect(load, []);
 
   const moveItem = async (idx: number, dir: -1 | 1) => {

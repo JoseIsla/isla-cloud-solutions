@@ -38,7 +38,7 @@ const PanelClientes = () => {
 
   const [filter, setFilter] = useState('');
 
-  const load = () => { clientsApi.list().then(setClients).catch(() => {}); };
+  const load = () => { clientsApi.list(token).then(setClients).catch(() => {}); };
   useEffect(load, []);
 
   const moveItem = async (idx: number, dir: -1 | 1) => {
