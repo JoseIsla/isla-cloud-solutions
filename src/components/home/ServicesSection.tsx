@@ -136,7 +136,7 @@ const ServicesSection = () => {
             />
             <div className="services-image-overlay absolute inset-0" />
             <div className="services-image-vignette absolute inset-0" />
-            <div className="absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-background via-background/40 to-transparent pointer-events-none" />
+            
           </div>
 
           <div className="container relative z-10 mx-auto px-4 pt-28 pb-24 md:pt-36 md:pb-32 lg:pt-40 lg:pb-36">
