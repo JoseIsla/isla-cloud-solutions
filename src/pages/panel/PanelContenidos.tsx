@@ -287,6 +287,44 @@ const PanelContenidos = () => {
               <LogoUploader contents={contents} editValues={editValues} setEditValues={setEditValues} />
             ) : group.customRenderer && group.label === '🌄 Imágenes del Hero' ? (
               <HeroImagesUploader contents={contents} editValues={editValues} setEditValues={setEditValues} />
+            ) : group.customRenderer && group.label === '👁️ Visibilidad en el Footer' ? (
+              <div className="space-y-3">
+                {[
+                  { key: 'legal_aviso_visible', label: 'Aviso Legal' },
+                  { key: 'legal_privacidad_visible', label: 'Política de Privacidad' },
+                  { key: 'legal_cookies_visible', label: 'Política de Cookies' },
+                ].map(({ key, label }) => (
+                  <div key={key} className="flex items-center justify-between p-4 rounded-xl bg-background border border-border">
+                    <span className="font-medium text-foreground text-sm">{label}</span>
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs text-muted-foreground">
+                        {(editValues[key] ?? 'true') === 'true' ? 'Visible' : 'Oculto'}
+                      </span>
+                      <button
+                        type="button"
+                        role="switch"
+                        aria-checked={(editValues[key] ?? 'true') === 'true'}
+                        onClick={() => {
+                          const newVal = (editValues[key] ?? 'true') === 'true' ? 'false' : 'true';
+                          setEditValues({ ...editValues, [key]: newVal });
+                          if (token) {
+                            contentsApi.update(key, newVal, token, contents[key]?.title).then(() => {
+                              toast.success(`${label}: ${newVal === 'true' ? 'visible' : 'oculto'} en el footer`);
+                            }).catch((e: any) => toast.error(e.message));
+                          }
+                        }}
+                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                          (editValues[key] ?? 'true') === 'true' ? 'bg-primary' : 'bg-muted'
+                        }`}
+                      >
+                        <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                          (editValues[key] ?? 'true') === 'true' ? 'translate-x-6' : 'translate-x-1'
+                        }`} />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
             ) : (
               group.keys.map(renderField)
             )}
