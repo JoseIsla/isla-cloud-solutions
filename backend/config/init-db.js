@@ -271,6 +271,13 @@ async function initDB() {
       ['faq_section_label', 'FAQ: Etiqueta', 'FAQ', 'text'],
       ['faq_section_title', 'FAQ: Título', 'Preguntas frecuentes', 'text'],
       ['faq_section_subtitle', 'FAQ: Subtítulo', 'Resolvemos las dudas más habituales sobre nuestros servicios.', 'text'],
+      ['footer_legal_link3', 'Footer: Enlace Legal 3', 'Política de Cookies', 'text'],
+      ['legal_aviso_visible', 'Legal: Aviso Legal visible', 'true', 'text'],
+      ['legal_privacidad_visible', 'Legal: Privacidad visible', 'true', 'text'],
+      ['legal_cookies_visible', 'Legal: Cookies visible', 'true', 'text'],
+      ['legal_aviso_content', 'Legal: Contenido Aviso Legal', '', 'html'],
+      ['legal_privacidad_content', 'Legal: Contenido Política de Privacidad', '', 'html'],
+      ['legal_cookies_content', 'Legal: Contenido Política de Cookies', '', 'html'],
     ];
 
     for (const [key, title, value, type] of defaultContents) {
