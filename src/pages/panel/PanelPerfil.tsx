@@ -74,7 +74,7 @@ const PanelPerfil = () => {
                   <span className="text-muted-foreground text-[11px] font-medium uppercase tracking-wider flex items-center gap-1.5">
                     <Mail size={11} /> Email
                   </span>
-                  <p className="font-medium text-foreground text-sm">{user?.email}</p>
+                  <p className="font-medium text-foreground text-sm break-all">{user?.email}</p>
                 </div>
                 <div className="space-y-1">
                   <span className="text-muted-foreground text-[11px] font-medium uppercase tracking-wider flex items-center gap-1.5">
