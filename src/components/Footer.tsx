@@ -21,7 +21,14 @@ const Footer = () => {
   const footerCompanyLink3 = useCMSValue('footer_company_link3', 'Contacto');
   const footerLegal1 = useCMSValue('footer_legal_link1', 'Política de Privacidad');
   const footerLegal2 = useCMSValue('footer_legal_link2', 'Aviso Legal');
+  const footerLegal3 = useCMSValue('footer_legal_link3', 'Política de Cookies');
   const footerCopyright = useCMSValue('footer_copyright', '© {year} Isla Cloud Solutions. Todos los derechos reservados.');
+
+  // Visibility toggles for legal pages
+  const legalPrivacidadVisible = useCMSValue('legal_privacidad_visible', 'true');
+  const legalAvisoVisible = useCMSValue('legal_aviso_visible', 'true');
+  const legalCookiesVisible = useCMSValue('legal_cookies_visible', 'true');
+
   const socialLinkedin = useCMSValue('social_linkedin', '');
   const socialTwitter = useCMSValue('social_twitter', '');
   const socialFacebook = useCMSValue('social_facebook', '');
@@ -37,6 +44,12 @@ const Footer = () => {
     { url: socialYoutube, icon: Youtube, label: 'YouTube' },
     { url: socialGithub, icon: Github, label: 'GitHub' },
   ].filter(s => s.url);
+
+  const legalLinks = [
+    { visible: legalPrivacidadVisible === 'true', to: '/privacidad', label: footerLegal1 },
+    { visible: legalAvisoVisible === 'true', to: '/legal', label: footerLegal2 },
+    { visible: legalCookiesVisible === 'true', to: '/cookies', label: footerLegal3 },
+  ].filter(l => l.visible);
 
   const [apiServices, setApiServices] = useState<ServiceFromAPI[] | null>(null);
 
@@ -134,10 +147,13 @@ const Footer = () => {
                 ))}
               </div>
             )}
-            <div className="flex gap-6 text-xs text-hero-foreground/40">
-              <Link to="/privacidad" className="hover:text-primary transition-colors">{footerLegal1}</Link>
-              <Link to="/legal" className="hover:text-primary transition-colors">{footerLegal2}</Link>
-            </div>
+            {legalLinks.length > 0 && (
+              <div className="flex gap-6 text-xs text-hero-foreground/40">
+                {legalLinks.map(link => (
+                  <Link key={link.to} to={link.to} className="hover:text-primary transition-colors">{link.label}</Link>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
