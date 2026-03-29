@@ -1,5 +1,7 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, useRef, ReactNode } from 'react';
 import { authApi } from '@/lib/api';
+
+const INACTIVITY_TIMEOUT_MS = 10 * 60 * 1000; // 10 minutes
 
 interface User {
   id: number;
@@ -28,6 +30,39 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const logout = useCallback(() => {
+    setToken(null);
+    setUser(null);
+    sessionStorage.removeItem('islacloud_token');
+    if (timerRef.current) clearTimeout(timerRef.current);
+  }, []);
+
+  // Reset inactivity timer on user activity
+  const resetTimer = useCallback(() => {
+    if (!sessionStorage.getItem('islacloud_token')) return;
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
+      logout();
+    }, INACTIVITY_TIMEOUT_MS);
+  }, [logout]);
+
+  // Attach activity listeners when authenticated
+  useEffect(() => {
+    if (!token) return;
+
+    const events: (keyof WindowEventMap)[] = ['mousedown', 'keydown', 'scroll', 'touchstart'];
+    const handler = () => resetTimer();
+
+    events.forEach((e) => window.addEventListener(e, handler, { passive: true }));
+    resetTimer(); // start timer
+
+    return () => {
+      events.forEach((e) => window.removeEventListener(e, handler));
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, [token, resetTimer]);
 
   useEffect(() => {
     const savedToken = sessionStorage.getItem('islacloud_token');
@@ -51,12 +86,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setToken(res.token);
     setUser(res.user);
     sessionStorage.setItem('islacloud_token', res.token);
-  };
-
-  const logout = () => {
-    setToken(null);
-    setUser(null);
-    sessionStorage.removeItem('islacloud_token');
   };
 
   return (
