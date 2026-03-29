@@ -16,7 +16,7 @@ const CTASection = () => {
   const card2Desc = useCMSValue('cta_card2_desc', 'Precios flexibles y adaptados. Solo pagas por lo que necesitas, cuando lo necesitas.');
 
   return (
-    <section className="py-20 md:py-28 bg-hero relative overflow-hidden">
+    <section className="py-14 md:py-20 bg-hero relative overflow-hidden">
       <div className="absolute inset-0 grid-pattern opacity-15" />
       <div className="container mx-auto px-4 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">

@@ -49,7 +49,7 @@ const TestimonialsSection = () => {
     ));
 
   return (
-    <section className="py-20 md:py-28 bg-secondary/30 overflow-hidden">
+    <section className="py-14 md:py-20 bg-secondary/30 overflow-hidden">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
