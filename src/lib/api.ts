@@ -103,6 +103,17 @@ export const contentsApi = {
     apiRequest(`/api/contents/${key}`, { method: 'PUT', body: { value, title }, token }),
 };
 
+// Users (admin management)
+export const usersApi = {
+  list: (token: string) => apiRequest<{ id: number; name: string; email: string; role: string; created_at: string }[]>('/api/users', { token }),
+  create: (data: { name: string; email: string; password: string; role?: string }, token: string) =>
+    apiRequest<{ id: number }>('/api/users', { method: 'POST', body: data, token }),
+  update: (id: number, data: { name?: string; email?: string; password?: string }, token: string) =>
+    apiRequest('/api/users/' + id, { method: 'PUT', body: data, token }),
+  delete: (id: number, token: string) =>
+    apiRequest('/api/users/' + id, { method: 'DELETE', token }),
+};
+
 // Clients
 export const clientsApi = {
   list: (token?: string | null) => apiRequest<ClientFromAPI[]>('/api/clients', { token: token || undefined }),

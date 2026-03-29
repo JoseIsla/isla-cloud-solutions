@@ -38,6 +38,12 @@ const sidebarSections = [
       { label: 'FAQs', path: '/panel/faqs', icon: HelpCircle },
     ],
   },
+  {
+    label: 'Administración',
+    links: [
+      { label: 'Usuarios', path: '/panel/usuarios', icon: UserCog },
+    ],
+  },
 ];
 
 const allLinks = sidebarSections.flatMap(s => s.links);
