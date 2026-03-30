@@ -229,10 +229,10 @@ const PanelServicios = () => {
 
                 <div>
                   <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Imagen</label>
-                  <p className="text-[10px] text-muted-foreground/70 mb-1.5">Recomendado: 1200×675px (16:9). Se recortará automáticamente.</p>
+                  <p className="text-[10px] text-muted-foreground/70 mb-1.5">Recomendado: 1200×675px (16:9). Se ajusta automáticamente sin recorte.</p>
                   {editing.image_url && (
-                    <div className="mb-2 rounded-lg overflow-hidden border border-border inline-block">
-                      <img src={editing.image_url} alt="" className="h-20 object-cover" />
+                    <div className="mb-2 w-[178px] h-20 rounded-lg border border-border bg-muted/40 flex items-center justify-center p-1.5">
+                      <img src={editing.image_url} alt="" className="w-full h-full object-contain" />
                     </div>
                   )}
                   <div className="flex items-center gap-2">
@@ -294,7 +294,9 @@ const PanelServicios = () => {
               >
                 <GripVertical size={16} className="text-muted-foreground/30 shrink-0 cursor-grab active:cursor-grabbing" />
                 {s.image_url ? (
-                  <img src={s.image_url} alt="" className="w-10 h-10 rounded-lg object-cover shrink-0" />
+                  <div className="w-10 h-10 rounded-lg bg-muted/40 shrink-0 flex items-center justify-center p-1">
+                    <img src={s.image_url} alt="" className="w-full h-full object-contain" />
+                  </div>
                 ) : (
                   <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center shrink-0">
                     <FileText size={16} className="text-muted-foreground" />

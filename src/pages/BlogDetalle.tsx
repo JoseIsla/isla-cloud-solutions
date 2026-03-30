@@ -151,8 +151,8 @@ const BlogDetalle = () => {
               <BlurImage
                 src={post.image_url}
                 alt={post.title}
-                className="w-full rounded-2xl border border-border shadow-lg object-cover max-h-[420px]"
-                wrapperClassName="rounded-2xl"
+                className="w-full h-full rounded-2xl border border-border shadow-lg object-contain"
+                wrapperClassName="rounded-2xl aspect-video bg-muted flex items-center justify-center p-2"
                 placeholderColor="#0a1628"
               />
             </motion.div>

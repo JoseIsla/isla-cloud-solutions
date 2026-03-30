@@ -123,7 +123,7 @@ const MediaPicker = ({ open, onClose, onSelect, defaultCategory }: MediaPickerPr
                           : 'border-border hover:border-primary/40'
                       }`}
                     >
-                      <img src={item.url} alt={item.alt_text || item.original_name} className="w-full h-full object-cover" loading="lazy" />
+                      <img src={item.url} alt={item.alt_text || item.original_name} className="w-full h-full object-contain p-1 bg-muted" loading="lazy" />
                       {selected === item.url && (
                         <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
                           <Check size={24} className="text-primary-foreground drop-shadow" />
@@ -165,7 +165,9 @@ const MediaPicker = ({ open, onClose, onSelect, defaultCategory }: MediaPickerPr
             </div>
             {selected && (
               <div className="text-center space-y-2">
-                <img src={selected} alt="" className="h-24 mx-auto rounded-lg object-cover" />
+                <div className="h-24 w-40 mx-auto rounded-lg bg-muted/40 border border-border flex items-center justify-center p-1.5">
+                  <img src={selected} alt="" className="w-full h-full object-contain" />
+                </div>
                 <Button size="sm" onClick={confirm}>Usar esta imagen</Button>
               </div>
             )}
