@@ -26,7 +26,7 @@ const generateSlug = (text: string) =>
     .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
-    .slice(0, 80);
+    .slice(0, 60);
 
 const stripHtmlToExcerpt = (html: string, maxLen = 155) => {
   const text = html.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
