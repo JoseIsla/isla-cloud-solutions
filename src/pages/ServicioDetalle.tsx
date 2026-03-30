@@ -146,7 +146,7 @@ const ServicioDetalle = () => {
                   <BlurImage
                     src={imageUrl}
                     alt={title}
-                    className="w-full h-full object-contain shadow-lg"
+                    className="w-full h-full object-cover rounded-2xl shadow-lg"
                     wrapperClassName="w-full rounded-2xl overflow-hidden aspect-video"
                   />
                 </motion.div>
