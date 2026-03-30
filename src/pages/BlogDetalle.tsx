@@ -185,6 +185,44 @@ const BlogDetalle = () => {
           </motion.div>
         </div>
       </section>
+      {/* Related articles */}
+      {related.length > 0 && (
+        <section className="pb-16 bg-background">
+          <div className="container mx-auto px-4">
+            <div className="max-w-3xl mx-auto">
+              <h2 className="text-2xl font-heading font-bold text-foreground mb-8">Artículos relacionados</h2>
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {related.map((item) => (
+                  <Link
+                    key={item.id}
+                    to={`/blog/${item.slug}`}
+                    className="group rounded-2xl border border-border bg-card overflow-hidden hover:shadow-lg transition-shadow"
+                  >
+                    {item.image_url && (
+                      <div className="overflow-hidden">
+                        <img
+                          src={item.image_url}
+                          alt={item.title}
+                          className="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-500"
+                          loading="lazy"
+                        />
+                      </div>
+                    )}
+                    <div className="p-4 space-y-2">
+                      <span className="text-xs text-muted-foreground">
+                        {new Date(item.published_at || item.created_at).toLocaleDateString("es-ES", { year: "numeric", month: "short", day: "numeric" })}
+                      </span>
+                      <h3 className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2">
+                        {item.title}
+                      </h3>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
     </Layout>
   );
 };
