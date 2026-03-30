@@ -121,17 +121,7 @@ const BlogDetalle = () => {
           <ArrowLeft className="mr-1 h-4 w-4" /> Volver al blog
         </Link>
 
-        {post.image_url && (
-          <BlurImage
-            src={post.image_url}
-            alt={post.title}
-            className="w-full h-auto block object-contain rounded-2xl"
-            wrapperClassName="rounded-2xl overflow-hidden mb-8"
-            placeholderColor="#0a1628"
-          />
-        )}
-
-        <div className="space-y-4">
+        <div className="space-y-4 mb-8">
           <div className="flex items-center gap-3">
             {post.category && (
               <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-primary bg-primary/15 border border-primary/20 px-2.5 py-1 rounded-full">
@@ -146,12 +136,21 @@ const BlogDetalle = () => {
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-foreground leading-tight">
             {post.title}
           </h1>
+          {post.excerpt && (
+            <p className="text-lg text-muted-foreground leading-relaxed italic border-l-4 border-primary pl-4">
+              {post.excerpt}
+            </p>
+          )}
         </div>
 
-        {post.excerpt && (
-          <p className="mt-6 text-lg text-muted-foreground leading-relaxed italic border-l-4 border-primary pl-4">
-            {post.excerpt}
-          </p>
+        {post.image_url && (
+          <BlurImage
+            src={post.image_url}
+            alt={post.title}
+            className="w-full h-auto block object-contain rounded-2xl"
+            wrapperClassName="rounded-2xl overflow-hidden"
+            placeholderColor="#0a1628"
+          />
         )}
       </motion.div>
 

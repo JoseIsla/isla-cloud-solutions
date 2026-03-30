@@ -117,17 +117,7 @@ const CasoDetalle = () => {
           <ArrowLeft className="mr-1 h-4 w-4" /> Volver a casos
         </Link>
 
-        {caso.image_url && (
-          <BlurImage
-            src={caso.image_url}
-            alt={caso.title}
-            className="w-full h-auto block object-contain rounded-2xl"
-            wrapperClassName="rounded-2xl overflow-hidden mb-8"
-            placeholderColor="#0a1628"
-          />
-        )}
-
-        <div className="space-y-4">
+        <div className="space-y-4 mb-8">
           <p className="text-sm font-medium text-primary uppercase tracking-wider">
             Caso de éxito
           </p>
@@ -137,12 +127,21 @@ const CasoDetalle = () => {
           <p className="text-lg text-muted-foreground">
             Cliente: <span className="font-semibold text-foreground">{caso.client_name}</span>
           </p>
+          {caso.excerpt && (
+            <p className="text-lg text-muted-foreground leading-relaxed italic border-l-4 border-primary pl-4">
+              {caso.excerpt}
+            </p>
+          )}
         </div>
 
-        {caso.excerpt && (
-          <p className="mt-6 text-lg text-muted-foreground leading-relaxed italic border-l-4 border-primary pl-4">
-            {caso.excerpt}
-          </p>
+        {caso.image_url && (
+          <BlurImage
+            src={caso.image_url}
+            alt={caso.title}
+            className="w-full h-auto block object-contain rounded-2xl"
+            wrapperClassName="rounded-2xl overflow-hidden"
+            placeholderColor="#0a1628"
+          />
         )}
 
         {caso.description && (
