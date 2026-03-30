@@ -6,7 +6,11 @@ const { authMiddleware, generateToken } = require('../middleware/auth');
 const router = express.Router();
 
 const MAX_FAILED_ATTEMPTS = 5;
-const LOCKOUT_MINUTES = 15;
+
+// Helper to get client IP
+function getClientIp(req) {
+  return req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.ip || 'unknown';
+}
 
 // POST /api/auth/login
 router.post('/login', async (req, res) => {
@@ -17,43 +21,49 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ error: 'Email y contraseña requeridos' });
     }
 
+    const ip = getClientIp(req);
     conn = await pool.getConnection();
     const rows = await conn.query('SELECT * FROM users WHERE email = ?', [email]);
 
     if (rows.length === 0) {
+      // Log failed attempt even if user doesn't exist
+      await conn.query('INSERT INTO login_attempts (email, ip_address) VALUES (?, ?)', [email, ip]);
       return res.status(401).json({ error: 'Credenciales inválidas' });
     }
 
     const user = rows[0];
 
-    // Check if account is locked
-    if (user.locked_until && new Date(user.locked_until) > new Date()) {
-      const minutesLeft = Math.ceil((new Date(user.locked_until) - new Date()) / 60000);
+    // Check if account is permanently locked
+    if (user.is_locked) {
+      await conn.query('INSERT INTO login_attempts (email, ip_address) VALUES (?, ?)', [email, ip]);
       return res.status(423).json({
-        error: `Cuenta bloqueada temporalmente. Inténtalo en ${minutesLeft} minuto${minutesLeft > 1 ? 's' : ''}.`,
+        error: 'Cuenta bloqueada por seguridad. Contacta con un administrador para desbloquearla.',
       });
     }
 
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword) {
+      // Log failed attempt
+      await conn.query('INSERT INTO login_attempts (email, ip_address) VALUES (?, ?)', [email, ip]);
+
       const attempts = (user.failed_login_attempts || 0) + 1;
       if (attempts >= MAX_FAILED_ATTEMPTS) {
-        const lockedUntil = new Date(Date.now() + LOCKOUT_MINUTES * 60000);
+        // Permanent lock
         await conn.query(
-          'UPDATE users SET failed_login_attempts = ?, locked_until = ? WHERE id = ?',
-          [attempts, lockedUntil, user.id]
+          'UPDATE users SET failed_login_attempts = ?, is_locked = 1 WHERE id = ?',
+          [attempts, user.id]
         );
         return res.status(423).json({
-          error: `Demasiados intentos fallidos. Cuenta bloqueada durante ${LOCKOUT_MINUTES} minutos.`,
+          error: 'Cuenta bloqueada por demasiados intentos fallidos. Contacta con un administrador.',
         });
       }
       await conn.query('UPDATE users SET failed_login_attempts = ? WHERE id = ?', [attempts, user.id]);
       return res.status(401).json({ error: 'Credenciales inválidas' });
     }
 
-    // Successful login — reset failed attempts and lockout
+    // Successful login — reset failed attempts
     await conn.query(
-      'UPDATE users SET failed_login_attempts = 0, locked_until = NULL WHERE id = ?',
+      'UPDATE users SET failed_login_attempts = 0, is_locked = 0, locked_until = NULL WHERE id = ?',
       [user.id]
     );
 

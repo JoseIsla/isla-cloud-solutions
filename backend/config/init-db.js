@@ -341,6 +341,19 @@ async function initDB() {
   // Account lockout columns
   await safeAlter('ALTER TABLE users ADD COLUMN failed_login_attempts INT DEFAULT 0', 'users.failed_login_attempts');
   await safeAlter('ALTER TABLE users ADD COLUMN locked_until TIMESTAMP NULL DEFAULT NULL', 'users.locked_until');
+  await safeAlter('ALTER TABLE users ADD COLUMN is_locked TINYINT(1) DEFAULT 0', 'users.is_locked');
+
+  // Login attempts log table
+  await conn.query(`
+    CREATE TABLE IF NOT EXISTS login_attempts (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      email VARCHAR(255) NOT NULL,
+      ip_address VARCHAR(45) NOT NULL,
+      attempted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      INDEX idx_email (email),
+      INDEX idx_attempted_at (attempted_at)
+    )
+  `);
 
   // Ensure legal content keys always exist (idempotent)
   const requiredContents = [
