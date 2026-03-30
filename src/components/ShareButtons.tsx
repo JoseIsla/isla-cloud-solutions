@@ -37,7 +37,7 @@ const ShareButtons = ({ path, title }: ShareButtonsProps) => {
   return (
     <div className="flex items-center gap-3">
       <span className="text-sm text-muted-foreground font-medium">Compartir:</span>
-      {links.map(({ href, label, icon: Icon }) => (
+      {links.map(({ href, label, icon: Icon, iconCustom: CustomIcon }) => (
         <a
           key={label}
           href={href}
@@ -46,7 +46,7 @@ const ShareButtons = ({ path, title }: ShareButtonsProps) => {
           aria-label={label}
           className="inline-flex items-center justify-center w-9 h-9 rounded-full border border-border bg-card text-muted-foreground hover:text-primary hover:border-primary/40 transition-colors"
         >
-          <Icon size={16} />
+          {CustomIcon ? <CustomIcon size={16} /> : Icon ? <Icon size={16} /> : null}
         </a>
       ))}
     </div>
