@@ -42,6 +42,7 @@ const ContactoPage = () => {
   const contactAddress = useCMSValue('contact_address', 'España');
 
   const [form, setForm] = useState({ nombre: "", email: "", empresa: "", telefono: "", mensaje: "" });
+  const [acceptedLegal, setAcceptedLegal] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
