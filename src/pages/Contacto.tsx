@@ -51,6 +51,12 @@ const ContactoPage = () => {
     e.preventDefault();
     setErrors({});
 
+    if (!acceptedLegal) {
+      setErrors((prev) => ({ ...prev, legal: 'Debes aceptar el aviso legal y la política de privacidad.' }));
+      toast.error("Debes aceptar el aviso legal y la política de privacidad.");
+      return;
+    }
+
     const result = contactSchema.safeParse(form);
     if (!result.success) {
       const fieldErrors: Record<string, string> = {};
