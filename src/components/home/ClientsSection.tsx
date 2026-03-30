@@ -10,7 +10,7 @@ const MarqueeRow = ({
   reverse = false,
   duration = 60,
 }: {
-  items: { name: string; logo_url?: string }[];
+  items: { name: string; logo_url?: string; website_url?: string }[];
   reverse?: boolean;
   duration?: number;
 }) => {
@@ -24,8 +24,8 @@ const MarqueeRow = ({
         className={`flex gap-5 w-max ${reverse ? "animate-marquee-reverse" : "animate-marquee"}`}
         style={{ animationDuration: `${duration}s` }}
       >
-        {doubled.map((client, index) => (
-          const inner = (
+        {doubled.map((client, index) => {
+          const card = (
             <div
               className="flex-shrink-0 flex items-center justify-center rounded-xl bg-card border border-border hover:border-primary/20 transition-all duration-300 w-[200px] h-20"
             >
@@ -40,12 +40,12 @@ const MarqueeRow = ({
           );
           return client.website_url ? (
             <a key={`${client.name}-${index}`} href={client.website_url} target="_blank" rel="noopener noreferrer">
-              {inner}
+              {card}
             </a>
           ) : (
-            <div key={`${client.name}-${index}`}>{inner}</div>
+            <div key={`${client.name}-${index}`}>{card}</div>
           );
-        ))}
+        })}
       </div>
     </div>
   );
