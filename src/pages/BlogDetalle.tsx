@@ -111,54 +111,49 @@ const BlogDetalle = () => {
   return (
     <Layout>
       <BreadcrumbJsonLd items={breadcrumbs} />
-      <section className="bg-hero grid-pattern py-24">
-        <div className="container mx-auto px-4">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-3xl mx-auto">
-            <Link to="/blog" className="text-primary text-sm font-medium hover:underline inline-flex items-center gap-1 mb-6">
-              <ArrowLeft size={14} /> Volver al blog
-            </Link>
-            <div className="flex items-center gap-3 mb-4">
-              {post.category && (
-                <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-primary bg-primary/15 border border-primary/20 px-2.5 py-1 rounded-full">
-                  <Tag size={10} /> {post.category}
-                </span>
-              )}
-              <span className="flex items-center gap-1 text-xs text-hero-foreground/50">
-                <Calendar size={12} />
-                {new Date(post.published_at || post.created_at).toLocaleDateString("es-ES", { year: "numeric", month: "long", day: "numeric" })}
-              </span>
-            </div>
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-hero-foreground leading-tight">
-              {post.title}
-            </h1>
-            {post.excerpt && (
-              <p className="text-hero-foreground/60 text-lg mt-6 leading-relaxed">{post.excerpt}</p>
-            )}
-          </motion.div>
-        </div>
-      </section>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="max-w-3xl mx-auto px-4 pt-12 md:pt-20"
+      >
+        <Link to="/blog" className="inline-flex items-center text-sm text-muted-foreground hover:text-primary transition-colors mb-8">
+          <ArrowLeft className="mr-1 h-4 w-4" /> Volver al blog
+        </Link>
 
-      {/* Image */}
-      {post.image_url && (
-        <div className="bg-background">
-          <div className="container mx-auto px-4">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="max-w-3xl mx-auto -mt-8 relative z-10"
-            >
-              <BlurImage
-                src={post.image_url}
-                alt={post.title}
-                className="w-full h-auto block rounded-2xl shadow-lg object-contain"
-                wrapperClassName="rounded-2xl overflow-hidden"
-                placeholderColor="#0a1628"
-              />
-            </motion.div>
+        {post.image_url && (
+          <BlurImage
+            src={post.image_url}
+            alt={post.title}
+            className="w-full h-auto block object-contain rounded-2xl"
+            wrapperClassName="rounded-2xl overflow-hidden mb-8"
+            placeholderColor="#0a1628"
+          />
+        )}
+
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+            {post.category && (
+              <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-primary bg-primary/15 border border-primary/20 px-2.5 py-1 rounded-full">
+                <Tag size={10} /> {post.category}
+              </span>
+            )}
+            <span className="flex items-center gap-1 text-xs text-muted-foreground">
+              <Calendar size={12} />
+              {new Date(post.published_at || post.created_at).toLocaleDateString("es-ES", { year: "numeric", month: "long", day: "numeric" })}
+            </span>
           </div>
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-foreground leading-tight">
+            {post.title}
+          </h1>
         </div>
-      )}
+
+        {post.excerpt && (
+          <p className="mt-6 text-lg text-muted-foreground leading-relaxed italic border-l-4 border-primary pl-4">
+            {post.excerpt}
+          </p>
+        )}
+      </motion.div>
 
       {/* Content */}
       <section className="py-16 bg-background">
