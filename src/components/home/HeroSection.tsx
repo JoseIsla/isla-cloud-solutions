@@ -173,10 +173,16 @@ const HeroSection = () => {
             src={slideBackgrounds[activeSlide]}
             alt=""
             className="absolute inset-0 w-full h-full object-cover"
-            initial={{ opacity: 0, scale: 1.03 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 1 }}
-            transition={{ duration: 1.4, ease: "easeOut" }}
+            initial={{ opacity: 0, scale: 1 }}
+            animate={{
+              opacity: 1,
+              scale: 1.06,
+            }}
+            exit={{ opacity: 0 }}
+            transition={{
+              opacity: { duration: 1.2, ease: "easeOut" },
+              scale: { duration: 14, ease: "linear" },
+            }}
           />
         </AnimatePresence>
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/30" />
