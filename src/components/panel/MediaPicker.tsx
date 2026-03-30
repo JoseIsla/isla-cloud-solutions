@@ -165,7 +165,7 @@ const MediaPicker = ({ open, onClose, onSelect, defaultCategory }: MediaPickerPr
             </div>
             {selected && (
               <div className="text-center space-y-2">
-                <div className="h-24 w-40 mx-auto rounded-lg bg-muted/40 border border-border flex items-center justify-center p-1.5">
+                <div className="h-24 w-40 mx-auto rounded-lg bg-transparent border border-border flex items-center justify-center p-1.5">
                   <img src={selected} alt="" className="w-full h-full object-contain" />
                 </div>
                 <Button size="sm" onClick={confirm}>Usar esta imagen</Button>

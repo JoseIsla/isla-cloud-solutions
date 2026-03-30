@@ -422,7 +422,7 @@ const PanelMedios = () => {
           <DialogHeader><DialogTitle>Editar imagen</DialogTitle></DialogHeader>
           {editItem && (
             <div className="space-y-4">
-              <div className="w-full h-40 rounded-lg border border-border bg-muted/40 flex items-center justify-center p-2">
+              <div className="w-full h-40 rounded-lg border border-border bg-transparent flex items-center justify-center p-2">
                 <img src={editItem.url} alt="" className="w-full h-full object-contain" />
               </div>
               <div>

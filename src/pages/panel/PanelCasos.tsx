@@ -226,7 +226,7 @@ const PanelCasos = () => {
                     </Button>
                   </div>
                   {editing.image_url && (
-                    <div className="w-[178px] h-20 mt-2 rounded-lg border border-border bg-muted/40 flex items-center justify-center p-1.5">
+                    <div className="w-[178px] h-20 mt-2 rounded-lg border border-border bg-transparent flex items-center justify-center p-1.5">
                       <img src={editing.image_url} alt="" className="w-full h-full object-contain" />
                     </div>
                   )}
@@ -322,7 +322,7 @@ const PanelCasos = () => {
               >
                 <GripVertical size={16} className="text-muted-foreground shrink-0" />
                 {c.image_url ? (
-                  <div className="w-10 h-10 rounded-lg bg-muted/40 shrink-0 flex items-center justify-center p-1">
+                  <div className="w-10 h-10 rounded-lg bg-transparent shrink-0 flex items-center justify-center p-1">
                     <img src={c.image_url} alt="" className="w-full h-full object-contain" />
                   </div>
                 ) : (
