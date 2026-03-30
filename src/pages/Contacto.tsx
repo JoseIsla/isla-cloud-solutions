@@ -173,7 +173,23 @@ const ContactoPage = () => {
                   />
                   {errors.mensaje && <p className="text-destructive text-xs mt-1">{errors.mensaje}</p>}
                 </div>
-                <Button variant="hero" size="lg" type="submit" disabled={loading}>
+                <div className="flex items-start gap-3">
+                  <input
+                    id="contact-legal"
+                    type="checkbox"
+                    checked={acceptedLegal}
+                    onChange={(e) => { setAcceptedLegal(e.target.checked); setErrors((prev) => ({ ...prev, legal: '' })); }}
+                    className="mt-1 h-4 w-4 shrink-0 rounded border-border text-primary focus:ring-primary/30 accent-primary"
+                  />
+                  <label htmlFor="contact-legal" className="text-sm text-muted-foreground leading-snug">
+                    He leído y acepto el{' '}
+                    <Link to="/aviso-legal" target="_blank" className="text-primary hover:underline">aviso legal</Link>
+                    {' '}y la{' '}
+                    <Link to="/politica-privacidad" target="_blank" className="text-primary hover:underline">política de privacidad</Link>.
+                  </label>
+                </div>
+                {errors.legal && <p className="text-destructive text-xs -mt-4">{errors.legal}</p>}
+                <Button variant="hero" size="lg" type="submit" disabled={loading || !acceptedLegal}>
                   {loading ? "Enviando..." : "Enviar mensaje"} <Send size={18} />
                 </Button>
               </form>
