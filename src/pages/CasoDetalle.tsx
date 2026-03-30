@@ -121,8 +121,8 @@ const CasoDetalle = () => {
           <BlurImage
             src={caso.image_url}
             alt={caso.title}
-            className="w-full h-full object-cover rounded-2xl"
-            wrapperClassName="rounded-2xl overflow-hidden mb-8 aspect-video"
+            className="w-full h-auto block object-contain rounded-2xl"
+            wrapperClassName="rounded-2xl overflow-hidden mb-8"
             placeholderColor="#0a1628"
           />
         )}
