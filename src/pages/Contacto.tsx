@@ -73,6 +73,7 @@ const ContactoPage = () => {
       await contactsApi.send(result.data as { nombre: string; email: string; empresa?: string; telefono?: string; mensaje: string });
       toast.success("Mensaje enviado correctamente. Nos pondremos en contacto contigo pronto.");
       setForm({ nombre: "", email: "", empresa: "", telefono: "", mensaje: "" });
+      setAcceptedLegal(false);
     } catch {
       toast.error("Error al enviar el mensaje. Inténtalo de nuevo más tarde.");
     } finally {
