@@ -127,7 +127,7 @@ const BlogPage = () => {
                       className="group rounded-2xl bg-card border border-border overflow-hidden hover:border-primary/30 transition-colors duration-300 h-full"
                     >
                       {post.image_url ? (
-                        <div className="h-48 overflow-hidden bg-muted flex items-center justify-center p-2">
+                        <div className="h-48 overflow-hidden">
                           <img src={post.image_url} alt={post.title} className="w-full h-full object-contain group-hover:scale-[1.02] transition-transform duration-500" loading="lazy" />
                         </div>
                       ) : (
