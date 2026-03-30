@@ -85,11 +85,11 @@ const PanelLayout = ({ children }: { children: React.ReactNode }) => {
       >
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className={`border-b border-white/[0.06] flex items-center justify-center ${collapsed ? 'p-4 h-16' : 'p-5 h-16'}`}>
+          <div className={`border-b border-white/[0.06] flex items-center justify-center ${collapsed ? 'p-4 h-20' : 'p-5 h-20'}`}>
             {collapsed ? (
-              <img src={isotipoLogo} alt="ICS" className="h-8 w-8 object-contain" />
+              <img src={isotipoLogo} alt="ICS" className="h-10 w-10 object-contain" />
             ) : (
-              <img src={logotipoBlanco} alt="Isla Cloud Solutions" className="h-9 object-contain" />
+              <img src={logotipoBlanco} alt="Isla Cloud Solutions" className="h-12 object-contain" />
             )}
           </div>
 
