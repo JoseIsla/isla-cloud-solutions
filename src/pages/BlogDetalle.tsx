@@ -13,13 +13,25 @@ import BlurImage from "@/components/BlurImage";
 const BlogDetalle = () => {
   const { slug } = useParams<{ slug: string }>();
   const [post, setPost] = useState<NewsFromAPI | null>(null);
+  const [related, setRelated] = useState<NewsFromAPI[]>([]);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
     if (!slug) return;
     newsApi.get(slug)
-      .then(setPost)
+      .then((data) => {
+        setPost(data);
+        // Fetch related articles by same category
+        if (data.category) {
+          newsApi.list().then((all) => {
+            const filtered = all
+              .filter((n) => n.category === data.category && n.slug !== data.slug && n.is_published)
+              .slice(0, 3);
+            setRelated(filtered);
+          }).catch(() => {});
+        }
+      })
       .catch(() => setNotFound(true))
       .finally(() => setLoading(false));
   }, [slug]);
