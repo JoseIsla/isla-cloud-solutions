@@ -147,7 +147,7 @@ const ServicioDetalle = () => {
                     src={imageUrl}
                     alt={title}
                     className="w-full h-full object-contain shadow-lg"
-                    wrapperClassName="w-full rounded-2xl overflow-hidden aspect-video bg-muted flex items-center justify-center p-2"
+                    wrapperClassName="w-full rounded-2xl overflow-hidden aspect-video"
                   />
                 </motion.div>
               )}

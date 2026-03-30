@@ -122,7 +122,7 @@ const CasoDetalle = () => {
             src={caso.image_url}
             alt={caso.title}
             className="w-full h-full object-contain"
-            wrapperClassName="rounded-2xl overflow-hidden mb-8 aspect-video bg-muted flex items-center justify-center p-2"
+            wrapperClassName="rounded-2xl overflow-hidden mb-8 aspect-video"
             placeholderColor="#0a1628"
           />
         )}
