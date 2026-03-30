@@ -126,11 +126,11 @@ const Casos = () => {
                       className="group block rounded-2xl border border-border bg-card overflow-hidden hover:border-primary/30 transition-colors duration-300"
                     >
                       {caso.image_url ? (
-                        <div className="aspect-video overflow-hidden">
+                        <div className="aspect-video overflow-hidden rounded-t-2xl">
                           <img
                             src={caso.image_url}
                             alt={caso.title}
-                            className="w-full h-full object-contain group-hover:scale-[1.02] transition-transform duration-500"
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 rounded-t-2xl"
                             loading="lazy"
                           />
                         </div>
