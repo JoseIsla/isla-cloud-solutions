@@ -218,14 +218,18 @@ const PanelCasos = () => {
                 </div>
                 <div>
                   <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Imagen</label>
-                  <p className="text-[10px] text-muted-foreground/70 mb-1.5">Recomendado: 1200×675px (16:9). Se recortará automáticamente.</p>
+                  <p className="text-[10px] text-muted-foreground/70 mb-1.5">Recomendado: 1200×675px (16:9). Se ajusta automáticamente sin recorte.</p>
                   <div className="flex items-center gap-2">
                     <Input type="file" accept="image/*" onChange={handleImageUpload} className="flex-1" />
                     <Button type="button" variant="outline" size="sm" onClick={() => setMediaPicker(true)}>
                       Galería
                     </Button>
                   </div>
-                  {editing.image_url && <img src={editing.image_url} alt="" className="h-12 mt-2 rounded-lg object-cover" />}
+                  {editing.image_url && (
+                    <div className="w-[178px] h-20 mt-2 rounded-lg border border-border bg-muted/40 flex items-center justify-center p-1.5">
+                      <img src={editing.image_url} alt="" className="w-full h-full object-contain" />
+                    </div>
+                  )}
                   <MediaPicker
                     open={mediaPicker}
                     onClose={() => setMediaPicker(false)}
@@ -318,7 +322,9 @@ const PanelCasos = () => {
               >
                 <GripVertical size={16} className="text-muted-foreground shrink-0" />
                 {c.image_url ? (
-                  <img src={c.image_url} alt="" className="w-10 h-10 rounded-lg object-cover shrink-0" />
+                  <div className="w-10 h-10 rounded-lg bg-muted/40 shrink-0 flex items-center justify-center p-1">
+                    <img src={c.image_url} alt="" className="w-full h-full object-contain" />
+                  </div>
                 ) : (
                   <div className="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center shrink-0">
                     <Trophy size={16} className="text-amber-500" />

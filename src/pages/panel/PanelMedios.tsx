@@ -383,7 +383,7 @@ const PanelMedios = () => {
                     <img
                       src={item.url}
                       alt={item.alt_text || item.original_name}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain p-1"
                       loading="lazy"
                     />
                   </div>
@@ -422,7 +422,9 @@ const PanelMedios = () => {
           <DialogHeader><DialogTitle>Editar imagen</DialogTitle></DialogHeader>
           {editItem && (
             <div className="space-y-4">
-              <img src={editItem.url} alt="" className="w-full h-40 object-cover rounded-lg" />
+              <div className="w-full h-40 rounded-lg border border-border bg-muted/40 flex items-center justify-center p-2">
+                <img src={editItem.url} alt="" className="w-full h-full object-contain" />
+              </div>
               <div>
                 <label className="text-xs font-medium text-foreground mb-1 block">Categoría</label>
                 <Select value={editCategory} onValueChange={setEditCategory}>
