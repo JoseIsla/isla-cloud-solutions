@@ -31,7 +31,7 @@ const Casos = () => {
         itemListElement: cases.slice(0, 10).map((c, i) => ({
           '@type': 'ListItem',
           position: i + 1,
-          url: `${SITE_URL}/casos/${c.id}`,
+          url: `${SITE_URL}/casos/${c.slug || c.id}`,
           name: c.title,
         })),
       },
@@ -122,7 +122,7 @@ const Casos = () => {
                     className="rounded-2xl"
                   >
                     <Link
-                      to={`/casos/${caso.id}`}
+                      to={`/casos/${caso.slug || caso.id}`}
                       className="group block rounded-2xl border border-border bg-card overflow-hidden hover:border-primary/30 transition-colors duration-300"
                     >
                       {caso.image_url ? (

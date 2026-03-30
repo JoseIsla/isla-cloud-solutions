@@ -61,7 +61,7 @@ const CasoDetalle = () => {
 
   useEffect(() => {
     if (!id) return;
-    casesApi.get(Number(id))
+    casesApi.get(id)
       .then(setCaso)
       .catch(() => setError(true))
       .finally(() => setLoading(false));

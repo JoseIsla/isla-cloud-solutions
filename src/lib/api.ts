@@ -142,7 +142,7 @@ export const testimonialsApi = {
 // Cases (success stories)
 export const casesApi = {
   list: (token?: string | null) => apiRequest<CaseFromAPI[]>('/api/cases', { token: token || undefined }),
-  get: (id: number) => apiRequest<CaseFromAPI>(`/api/cases/${id}`),
+  get: (idOrSlug: number | string) => apiRequest<CaseFromAPI>(`/api/cases/${idOrSlug}`),
   create: (data: Partial<CaseFromAPI>, token: string) =>
     apiRequest<{ id: number }>('/api/cases', { method: 'POST', body: data, token }),
   update: (id: number, data: Partial<CaseFromAPI>, token: string) =>
