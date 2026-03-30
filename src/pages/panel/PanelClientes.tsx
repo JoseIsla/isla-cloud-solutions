@@ -154,7 +154,7 @@ const PanelClientes = () => {
                   <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Logo</label>
                   <p className="text-[10px] text-muted-foreground/70 mb-1.5">Recomendado: 280×80px, PNG con fondo transparente.</p>
                   {editing.logo_url && (
-                    <div className="mb-2 p-3 rounded-lg bg-muted/30 border border-border flex items-center gap-3">
+                    <div className="mb-2 p-3 rounded-lg border border-border flex items-center gap-3">
                       <img src={editing.logo_url} alt="" className="h-8 max-w-[100px] object-contain" />
                       <button onClick={() => setEditing({ ...editing, logo_url: '' })} className="text-[10px] text-destructive hover:underline">Quitar</button>
                     </div>
@@ -205,7 +205,7 @@ const PanelClientes = () => {
               >
                 <GripVertical size={14} className="text-muted-foreground/30 shrink-0 cursor-grab active:cursor-grabbing" />
                 {c.logo_url ? (
-                  <img src={c.logo_url} alt={c.name} className="w-9 h-9 rounded-lg object-contain bg-muted/30 p-1 shrink-0" />
+                  <img src={c.logo_url} alt={c.name} className="w-9 h-9 rounded-lg object-contain p-1 shrink-0" />
                 ) : (
                   <div className="w-9 h-9 rounded-lg bg-accent/50 flex items-center justify-center shrink-0">
                     <Building2 size={14} className="text-primary" />
