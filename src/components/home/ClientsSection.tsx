@@ -25,18 +25,26 @@ const MarqueeRow = ({
         style={{ animationDuration: `${duration}s` }}
       >
         {doubled.map((client, index) => (
-          <div
-            key={`${client.name}-${index}`}
-            className="flex-shrink-0 flex items-center justify-center rounded-xl bg-card border border-border hover:border-primary/20 transition-all duration-300 w-[200px] h-20"
-          >
-            {client.logo_url ? (
-              <BlurImage src={client.logo_url} alt={client.name} className="w-[140px] h-10 object-contain" wrapperClassName="flex items-center justify-center w-[140px] h-10" />
-            ) : (
-              <span className="text-muted-foreground text-sm font-medium text-center leading-tight whitespace-nowrap">
-                {client.name}
-              </span>
-            )}
-          </div>
+          const inner = (
+            <div
+              className="flex-shrink-0 flex items-center justify-center rounded-xl bg-card border border-border hover:border-primary/20 transition-all duration-300 w-[200px] h-20"
+            >
+              {client.logo_url ? (
+                <BlurImage src={client.logo_url} alt={client.name} className="w-[140px] h-10 object-contain" wrapperClassName="flex items-center justify-center w-[140px] h-10" />
+              ) : (
+                <span className="text-muted-foreground text-sm font-medium text-center leading-tight whitespace-nowrap">
+                  {client.name}
+                </span>
+              )}
+            </div>
+          );
+          return client.website_url ? (
+            <a key={`${client.name}-${index}`} href={client.website_url} target="_blank" rel="noopener noreferrer">
+              {inner}
+            </a>
+          ) : (
+            <div key={`${client.name}-${index}`}>{inner}</div>
+          );
         ))}
       </div>
     </div>
@@ -57,7 +65,7 @@ const ClientsSection = () => {
   }, []);
 
   const clients = apiClients && apiClients.length > 0
-    ? apiClients.map(c => ({ name: c.name, logo_url: c.logo_url || undefined }))
+    ? apiClients.map(c => ({ name: c.name, logo_url: c.logo_url || undefined, website_url: c.website_url || undefined }))
     : clientLogos.map(name => ({ name }));
 
   const half = Math.ceil(clients.length / 2);
