@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -42,6 +43,7 @@ const ContactoPage = () => {
   const contactAddress = useCMSValue('contact_address', 'España');
 
   const [form, setForm] = useState({ nombre: "", email: "", empresa: "", telefono: "", mensaje: "" });
+  const [acceptedLegal, setAcceptedLegal] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -49,6 +51,12 @@ const ContactoPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
+
+    if (!acceptedLegal) {
+      setErrors((prev) => ({ ...prev, legal: 'Debes aceptar el aviso legal y la política de privacidad.' }));
+      toast.error("Debes aceptar el aviso legal y la política de privacidad.");
+      return;
+    }
 
     const result = contactSchema.safeParse(form);
     if (!result.success) {
@@ -66,6 +74,7 @@ const ContactoPage = () => {
       await contactsApi.send(result.data as { nombre: string; email: string; empresa?: string; telefono?: string; mensaje: string });
       toast.success("Mensaje enviado correctamente. Nos pondremos en contacto contigo pronto.");
       setForm({ nombre: "", email: "", empresa: "", telefono: "", mensaje: "" });
+      setAcceptedLegal(false);
     } catch {
       toast.error("Error al enviar el mensaje. Inténtalo de nuevo más tarde.");
     } finally {
@@ -164,7 +173,23 @@ const ContactoPage = () => {
                   />
                   {errors.mensaje && <p className="text-destructive text-xs mt-1">{errors.mensaje}</p>}
                 </div>
-                <Button variant="hero" size="lg" type="submit" disabled={loading}>
+                <div className="flex items-start gap-3">
+                  <input
+                    id="contact-legal"
+                    type="checkbox"
+                    checked={acceptedLegal}
+                    onChange={(e) => { setAcceptedLegal(e.target.checked); setErrors((prev) => ({ ...prev, legal: '' })); }}
+                    className="mt-1 h-4 w-4 shrink-0 rounded border-border text-primary focus:ring-primary/30 accent-primary"
+                  />
+                  <label htmlFor="contact-legal" className="text-sm text-muted-foreground leading-snug">
+                    He leído y acepto el{' '}
+                    <Link to="/aviso-legal" target="_blank" className="text-primary hover:underline">aviso legal</Link>
+                    {' '}y la{' '}
+                    <Link to="/politica-privacidad" target="_blank" className="text-primary hover:underline">política de privacidad</Link>.
+                  </label>
+                </div>
+                {errors.legal && <p className="text-destructive text-xs -mt-4">{errors.legal}</p>}
+                <Button variant="hero" size="lg" type="submit" disabled={loading || !acceptedLegal}>
                   {loading ? "Enviando..." : "Enviar mensaje"} <Send size={18} />
                 </Button>
               </form>
