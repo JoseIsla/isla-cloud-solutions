@@ -9,6 +9,66 @@ const router = express.Router();
 // All routes require auth
 router.use(authMiddleware);
 
+// GET /api/users/locked — list locked accounts with recent attempts
+router.get('/locked', async (req, res) => {
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const lockedUsers = await conn.query(
+      'SELECT id, name, email, role, failed_login_attempts, created_at FROM users WHERE is_locked = 1 ORDER BY updated_at DESC'
+    );
+
+    // For each locked user, get recent login attempts
+    const result = [];
+    for (const u of lockedUsers) {
+      const attempts = await conn.query(
+        'SELECT ip_address, attempted_at FROM login_attempts WHERE email = ? ORDER BY attempted_at DESC LIMIT 10',
+        [u.email]
+      );
+      result.push({ ...u, recent_attempts: attempts });
+    }
+
+    res.json(result);
+  } catch (err) {
+    console.error('Error listing locked users:', err);
+    res.status(500).json({ error: 'Error del servidor' });
+  } finally {
+    if (conn) conn.release();
+  }
+});
+
+// PUT /api/users/:id/unlock — unlock a user account
+router.put('/:id/unlock',
+  param('id').isInt().withMessage('ID inválido'),
+  async (req, res) => {
+    const err = validate(req, res);
+    if (err) return;
+
+    let conn;
+    try {
+      const { id } = req.params;
+      conn = await pool.getConnection();
+
+      const rows = await conn.query('SELECT id, email FROM users WHERE id = ?', [id]);
+      if (rows.length === 0) {
+        return res.status(404).json({ error: 'Usuario no encontrado' });
+      }
+
+      await conn.query(
+        'UPDATE users SET is_locked = 0, failed_login_attempts = 0, locked_until = NULL WHERE id = ?',
+        [id]
+      );
+
+      res.json({ success: true });
+    } catch (err) {
+      console.error('Error unlocking user:', err);
+      res.status(500).json({ error: 'Error del servidor' });
+    } finally {
+      if (conn) conn.release();
+    }
+  }
+);
+
 // Validation helper
 const validate = (req, res) => {
   const errors = validationResult(req);

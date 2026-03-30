@@ -18,8 +18,8 @@ const PanelLogin = () => {
     try {
       await login(email, password);
       toast.success('Sesión iniciada');
-    } catch {
-      toast.error('Credenciales inválidas');
+    } catch (err: any) {
+      toast.error(err.message || 'Credenciales inválidas');
     } finally {
       setLoading(false);
     }

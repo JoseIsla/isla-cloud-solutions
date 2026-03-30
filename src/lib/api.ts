@@ -114,7 +114,21 @@ export const usersApi = {
     apiRequest('/api/users/' + id, { method: 'DELETE', token }),
   changePassword: (data: { currentPassword: string; newPassword: string }, token: string) =>
     apiRequest<{ success: boolean }>('/api/users/me/password', { method: 'PUT', body: data, token }),
+  listLocked: (token: string) =>
+    apiRequest<LockedUserFromAPI[]>('/api/users/locked', { token }),
+  unlock: (id: number, token: string) =>
+    apiRequest<{ success: boolean }>('/api/users/' + id + '/unlock', { method: 'PUT', token }),
 };
+
+export interface LockedUserFromAPI {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+  failed_login_attempts: number;
+  created_at: string;
+  recent_attempts: { ip_address: string; attempted_at: string }[];
+}
 
 // Clients
 export const clientsApi = {
