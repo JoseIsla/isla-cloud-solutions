@@ -165,15 +165,15 @@ const HeroSection = () => {
   const currentSlideData = slides[activeSlide];
 
   return (
-    <section aria-label="Presentación principal" role="region" className="relative h-screen flex items-center overflow-hidden bg-hero">
+    <section aria-label="Presentación principal" role="region" className="relative h-screen flex items-center overflow-hidden">
       <div className="absolute inset-0">
         <AnimatePresence>
           <motion.img
             key={activeSlide}
             src={slideBackgrounds[activeSlide]}
             alt=""
-            className="absolute inset-0 w-full h-full object-contain"
-            initial={{ opacity: 0, scale: 1 }}
+            className="absolute inset-0 w-full h-full object-cover"
+            initial={{ opacity: 0, scale: 1.08 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 1 }}
             transition={{ duration: 0.7, ease: "easeOut" }}
