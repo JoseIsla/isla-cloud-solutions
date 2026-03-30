@@ -175,7 +175,7 @@ const PanelLayout = ({ children }: { children: React.ReactNode }) => {
 
       {/* Main */}
       <div className={`flex-1 ${mainMargin} transition-all duration-300`}>
-        <header className="sticky top-0 z-30 bg-background/80 backdrop-blur-xl border-b border-border/50 h-16 flex items-center px-6 gap-4">
+        <header className="sticky top-0 z-30 bg-background/80 backdrop-blur-xl border-b border-border/50 h-20 flex items-center px-6 gap-4">
           <button onClick={() => setSidebarOpen(!sidebarOpen)} className="lg:hidden text-muted-foreground hover:text-foreground transition-colors">
             {sidebarOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
