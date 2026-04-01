@@ -202,7 +202,7 @@ const ContactoPage = () => {
                 <div>
                   <ReCAPTCHA
                     ref={recaptchaRef}
-                    sitekey="6Lc_aKEsAAAAAKezOUi_nwXwyrWM8ojcNtnak-6g"
+                    sitekey="6LecdKEsAAAAAGT9GO1lCqknRar29G3VLq55rZxJ"
                     onChange={() => setErrors((prev) => ({ ...prev, recaptcha: '' }))}
                   />
                   {errors.recaptcha && <p className="text-destructive text-xs mt-1">{errors.recaptcha}</p>}
