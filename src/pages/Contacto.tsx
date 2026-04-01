@@ -1,5 +1,6 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import { Link } from "react-router-dom";
+import ReCAPTCHA from "react-google-recaptcha";
 import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -45,6 +46,7 @@ const ContactoPage = () => {
   const [form, setForm] = useState({ nombre: "", email: "", empresa: "", telefono: "", mensaje: "" });
   const [acceptedLegal, setAcceptedLegal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -55,6 +57,13 @@ const ContactoPage = () => {
     if (!acceptedLegal) {
       setErrors((prev) => ({ ...prev, legal: 'Debes aceptar el aviso legal y la política de privacidad.' }));
       toast.error("Debes aceptar el aviso legal y la política de privacidad.");
+      return;
+    }
+
+    const recaptchaToken = recaptchaRef.current?.getValue();
+    if (!recaptchaToken) {
+      setErrors((prev) => ({ ...prev, recaptcha: 'Debes completar el captcha.' }));
+      toast.error("Debes completar el captcha.");
       return;
     }
 
@@ -71,10 +80,11 @@ const ContactoPage = () => {
 
     setLoading(true);
     try {
-      await contactsApi.send(result.data as { nombre: string; email: string; empresa?: string; telefono?: string; mensaje: string });
+      await contactsApi.send({ ...result.data, recaptchaToken } as { nombre: string; email: string; empresa?: string; telefono?: string; mensaje: string; recaptchaToken: string });
       toast.success("Mensaje enviado correctamente. Nos pondremos en contacto contigo pronto.");
       setForm({ nombre: "", email: "", empresa: "", telefono: "", mensaje: "" });
       setAcceptedLegal(false);
+      recaptchaRef.current?.reset();
     } catch {
       toast.error("Error al enviar el mensaje. Inténtalo de nuevo más tarde.");
     } finally {
@@ -189,6 +199,14 @@ const ContactoPage = () => {
                   </label>
                 </div>
                 {errors.legal && <p className="text-destructive text-xs -mt-4">{errors.legal}</p>}
+                <div>
+                  <ReCAPTCHA
+                    ref={recaptchaRef}
+                    sitekey="6Lc_aKEsAAAAAKezOUi_nwXwyrWM8ojcNtnak-6g"
+                    onChange={() => setErrors((prev) => ({ ...prev, recaptcha: '' }))}
+                  />
+                  {errors.recaptcha && <p className="text-destructive text-xs mt-1">{errors.recaptcha}</p>}
+                </div>
                 <Button variant="hero" size="lg" type="submit" disabled={loading || !acceptedLegal}>
                   {loading ? "Enviando..." : "Enviar mensaje"} <Send size={18} />
                 </Button>

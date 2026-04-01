@@ -20,9 +20,26 @@ router.post('/', contactLimiter, [
   body('mensaje').trim().notEmpty().isLength({ max: 1000 }),
   body('empresa').optional().trim().isLength({ max: 100 }),
   body('telefono').optional().trim().isLength({ max: 20 }),
+  body('recaptchaToken').trim().notEmpty().withMessage('reCAPTCHA es obligatorio'),
 ], async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+
+  // Verify reCAPTCHA token with Google
+  try {
+    const recaptchaSecret = process.env.RECAPTCHA_SECRET_KEY;
+    if (recaptchaSecret) {
+      const verifyUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${recaptchaSecret}&response=${req.body.recaptchaToken}`;
+      const recaptchaRes = await fetch(verifyUrl, { method: 'POST' });
+      const recaptchaData = await recaptchaRes.json();
+      if (!recaptchaData.success) {
+        return res.status(400).json({ error: 'Verificación reCAPTCHA fallida. Inténtalo de nuevo.' });
+      }
+    }
+  } catch (recaptchaErr) {
+    console.error('reCAPTCHA verification error:', recaptchaErr.message);
+    return res.status(500).json({ error: 'Error verificando reCAPTCHA' });
+  }
 
   let conn;
   try {
