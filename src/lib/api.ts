@@ -86,7 +86,7 @@ export const newsApi = {
 
 // Contacts
 export const contactsApi = {
-  send: (data: { nombre: string; email: string; empresa?: string; telefono?: string; mensaje: string }) =>
+  send: (data: { nombre: string; email: string; empresa?: string; telefono?: string; mensaje: string; recaptchaToken: string }) =>
     apiRequest('/api/contacts', { method: 'POST', body: data }),
   list: (token: string) => apiRequest<ContactFromAPI[]>('/api/contacts', { token }),
   markRead: (id: number, token: string) =>
