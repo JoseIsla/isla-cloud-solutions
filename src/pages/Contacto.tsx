@@ -199,6 +199,14 @@ const ContactoPage = () => {
                   </label>
                 </div>
                 {errors.legal && <p className="text-destructive text-xs -mt-4">{errors.legal}</p>}
+                <div>
+                  <ReCAPTCHA
+                    ref={recaptchaRef}
+                    sitekey="6Lc_aKEsAAAAAKezOUi_nwXwyrWM8ojcNtnak-6g"
+                    onChange={() => setErrors((prev) => ({ ...prev, recaptcha: '' }))}
+                  />
+                  {errors.recaptcha && <p className="text-destructive text-xs mt-1">{errors.recaptcha}</p>}
+                </div>
                 <Button variant="hero" size="lg" type="submit" disabled={loading || !acceptedLegal}>
                   {loading ? "Enviando..." : "Enviar mensaje"} <Send size={18} />
                 </Button>
