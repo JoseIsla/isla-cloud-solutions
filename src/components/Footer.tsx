@@ -4,7 +4,7 @@ import { useCMSValue } from "@/hooks/useCMS";
 import { Linkedin, Twitter, Facebook, Instagram, Youtube, Github } from "lucide-react";
 import defaultFooterLogo from "@/assets/logos/logotipo-blanco-small.png";
 import { useQuery } from "@tanstack/react-query";
-import { servicesApi, type ServiceFromAPI } from "@/lib/api";
+import { servicesApi } from "@/lib/api";
 
 const Footer = () => {
   const footerLogoUrl = useCMSValue('site_logo_footer', '');
