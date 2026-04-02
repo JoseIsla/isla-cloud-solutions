@@ -193,9 +193,9 @@ const ContactoPage = () => {
                   />
                   <label htmlFor="contact-legal" className="text-sm text-muted-foreground leading-snug">
                     He leído y acepto el{' '}
-                    <Link to="/aviso-legal" target="_blank" className="text-primary hover:underline">aviso legal</Link>
+                    <Link to="/legal" target="_blank" className="text-primary hover:underline">aviso legal</Link>
                     {' '}y la{' '}
-                    <Link to="/politica-privacidad" target="_blank" className="text-primary hover:underline">política de privacidad</Link>.
+                    <Link to="/privacidad" target="_blank" className="text-primary hover:underline">política de privacidad</Link>.
                   </label>
                 </div>
                 {errors.legal && <p className="text-destructive text-xs -mt-4">{errors.legal}</p>}
