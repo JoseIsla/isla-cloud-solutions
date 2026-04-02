@@ -43,7 +43,15 @@ const PanelMedios = lazy(() => import("./pages/panel/PanelMedios"));
 const PanelUsuarios = lazy(() => import("./pages/panel/PanelUsuarios"));
 const PanelPerfil = lazy(() => import("./pages/panel/PanelPerfil"));
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-background">
