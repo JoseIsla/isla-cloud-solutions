@@ -3,7 +3,7 @@ import { Mail, Phone, MapPin } from "lucide-react";
 import { useCMSValue } from "@/hooks/useCMS";
 import { Linkedin, Twitter, Facebook, Instagram, Youtube, Github } from "lucide-react";
 import defaultFooterLogo from "@/assets/logos/logotipo-blanco-small.png";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { servicesApi, type ServiceFromAPI } from "@/lib/api";
 
 const Footer = () => {
