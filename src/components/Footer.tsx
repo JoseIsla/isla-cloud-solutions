@@ -3,7 +3,7 @@ import { Mail, Phone, MapPin } from "lucide-react";
 import { useCMSValue } from "@/hooks/useCMS";
 import { Linkedin, Twitter, Facebook, Instagram, Youtube, Github } from "lucide-react";
 import defaultFooterLogo from "@/assets/logos/logotipo-blanco-small.png";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { servicesApi, type ServiceFromAPI } from "@/lib/api";
 
 const Footer = () => {
@@ -51,13 +51,11 @@ const Footer = () => {
     { visible: legalCookiesVisible === 'true', to: '/cookies', label: footerLegal3 },
   ].filter(l => l.visible);
 
-  const [apiServices, setApiServices] = useState<ServiceFromAPI[] | null>(null);
-
-  useEffect(() => {
-    servicesApi.list()
-      .then(setApiServices)
-      .catch(() => setApiServices(null));
-  }, []);
+  const { data: apiServices } = useQuery({
+    queryKey: ['services-footer'],
+    queryFn: () => servicesApi.list(),
+    staleTime: 10 * 60 * 1000,
+  });
 
   const serviceLinks = apiServices && apiServices.length > 0
     ? apiServices.slice(0, 5).map(s => ({ label: s.short_title || s.title, slug: s.slug }))

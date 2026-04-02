@@ -2,7 +2,6 @@ import { lazy, Suspense } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
-import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { CMSProvider } from "@/hooks/useCMS";
@@ -44,7 +43,15 @@ const PanelMedios = lazy(() => import("./pages/panel/PanelMedios"));
 const PanelUsuarios = lazy(() => import("./pages/panel/PanelUsuarios"));
 const PanelPerfil = lazy(() => import("./pages/panel/PanelPerfil"));
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-background">
@@ -122,7 +129,6 @@ const AppRoutes = () => (
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
       <Sonner />
       <BrowserRouter>
         <LazyMotion features={domAnimation} strict>
