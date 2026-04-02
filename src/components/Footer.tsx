@@ -51,13 +51,11 @@ const Footer = () => {
     { visible: legalCookiesVisible === 'true', to: '/cookies', label: footerLegal3 },
   ].filter(l => l.visible);
 
-  const [apiServices, setApiServices] = useState<ServiceFromAPI[] | null>(null);
-
-  useEffect(() => {
-    servicesApi.list()
-      .then(setApiServices)
-      .catch(() => setApiServices(null));
-  }, []);
+  const { data: apiServices } = useQuery({
+    queryKey: ['services-footer'],
+    queryFn: () => servicesApi.list(),
+    staleTime: 10 * 60 * 1000,
+  });
 
   const serviceLinks = apiServices && apiServices.length > 0
     ? apiServices.slice(0, 5).map(s => ({ label: s.short_title || s.title, slug: s.slug }))
