@@ -282,7 +282,7 @@ const HeroSection = () => {
 
       <nav aria-label="Pestañas del slider" className="absolute bottom-6 md:bottom-12 left-0 right-0 z-10">
         <div className="container mx-auto px-4">
-          <div className="mx-0 md:mx-8 lg:mx-12 relative" ref={tabsContainerRef} role="tablist" aria-label="Secciones del hero">
+          <div className="mx-0 relative" ref={tabsContainerRef} role="tablist" aria-label="Secciones del hero">
             <div className="flex gap-2 md:gap-3">
               {slides.map((slide, index) => (
                 <button
