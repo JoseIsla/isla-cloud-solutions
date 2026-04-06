@@ -24,7 +24,6 @@ const HeroSection = () => {
   const [latestNews, setLatestNews] = useState<NewsFromAPI | null>(null);
   const [currentCase, setCurrentCase] = useState<CaseFromAPI | null>(null);
   const tabsContainerRef = useRef<HTMLDivElement>(null);
-  const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 });
 
   const title = useCMSValue('hero_title', 'Soluciones Cloud y Tecnología para Empresas');
   const subtitle = useCMSValue('hero_subtitle', 'Más de 20 años siendo el socio tecnológico de empresas que necesitan un departamento IT profesional, cercano y disponible 24x7.');
