@@ -124,6 +124,14 @@ const HeroSection = () => {
     },
   ];
 
+  // Autoplay: avanza de slide cada 7 segundos
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveSlide(prev => (prev + 1) % slides.length);
+    }, 7000);
+    return () => clearInterval(timer);
+  }, [slides.length]);
+
   const handleTabClick = (index: number) => {
     if (index === activeSlide) return;
     setActiveSlide(index);
