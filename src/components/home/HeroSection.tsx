@@ -123,23 +123,6 @@ const HeroSection = () => {
     },
   ];
 
-  useEffect(() => {
-    const updateIndicator = () => {
-      const container = tabsContainerRef.current;
-      if (!container) return;
-      const tabs = container.querySelectorAll<HTMLButtonElement>('[data-tab]');
-      const tab = tabs[activeSlide];
-      if (!tab) return;
-      setIndicatorStyle({
-        left: tab.offsetLeft,
-        width: tab.offsetWidth,
-      });
-    };
-    updateIndicator();
-    window.addEventListener('resize', updateIndicator);
-    return () => window.removeEventListener('resize', updateIndicator);
-  }, [activeSlide]);
-
   const handleTabClick = (index: number) => {
     if (index === activeSlide) return;
     setActiveSlide(index);
