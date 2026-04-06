@@ -252,7 +252,7 @@ const HeroSection = () => {
                 }}
               >
                 <motion.p
-                  className="text-lg md:text-xl text-white/60 max-w-2xl leading-relaxed"
+                  className="text-lg md:text-xl text-white/60 max-w-2xl mx-auto leading-relaxed"
                   variants={{
                     hidden: { y: "100%" },
                     visible: { y: 0, transition: { duration: 0.4, ease: [0.25, 1, 0.5, 1] } },
