@@ -24,7 +24,6 @@ const HeroSection = () => {
   const [latestNews, setLatestNews] = useState<NewsFromAPI | null>(null);
   const [currentCase, setCurrentCase] = useState<CaseFromAPI | null>(null);
   const tabsContainerRef = useRef<HTMLDivElement>(null);
-  const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 });
 
   const title = useCMSValue('hero_title', 'Soluciones Cloud y Tecnología para Empresas');
   const subtitle = useCMSValue('hero_subtitle', 'Más de 20 años siendo el socio tecnológico de empresas que necesitan un departamento IT profesional, cercano y disponible 24x7.');
@@ -123,23 +122,6 @@ const HeroSection = () => {
       ctaSecondary: { text: slide3CtaSec, to: "/casos" },
     },
   ];
-
-  useEffect(() => {
-    const updateIndicator = () => {
-      const container = tabsContainerRef.current;
-      if (!container) return;
-      const tabs = container.querySelectorAll<HTMLButtonElement>('[data-tab]');
-      const tab = tabs[activeSlide];
-      if (!tab) return;
-      setIndicatorStyle({
-        left: tab.offsetLeft,
-        width: tab.offsetWidth,
-      });
-    };
-    updateIndicator();
-    window.addEventListener('resize', updateIndicator);
-    return () => window.removeEventListener('resize', updateIndicator);
-  }, [activeSlide]);
 
   const handleTabClick = (index: number) => {
     if (index === activeSlide) return;
@@ -296,23 +278,8 @@ const HeroSection = () => {
 
       <nav aria-label="Pestañas del slider" className="absolute bottom-6 md:bottom-12 left-0 right-0 z-10">
         <div className="container mx-auto px-4">
-          <div className="mx-0 md:mx-16 lg:mx-24 relative" ref={tabsContainerRef} role="tablist" aria-label="Secciones del hero">
-            <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-white/10" />
-            <motion.div
-              className="absolute bottom-0 h-[3px]"
-              style={{ background: "hsl(var(--primary))" }}
-              animate={{
-                left: indicatorStyle.left,
-                width: indicatorStyle.width,
-              }}
-              transition={{
-                type: "spring",
-                stiffness: 300,
-                damping: 25,
-                mass: 1,
-              }}
-            />
-            <div className="flex">
+          <div className="mx-0 md:mx-8 lg:mx-12 relative" ref={tabsContainerRef} role="tablist" aria-label="Secciones del hero">
+            <div className="flex gap-2 md:gap-3">
               {slides.map((slide, index) => (
                 <button
                   key={index}
@@ -321,13 +288,16 @@ const HeroSection = () => {
                   aria-selected={index === activeSlide}
                   aria-label={`Ir a ${slide.tabLabel}`}
                   onClick={() => handleTabClick(index)}
-                  className={`flex-1 py-3 px-2 md:py-5 md:px-6 text-xs md:text-base font-medium transition-colors duration-300 text-left cursor-pointer ${
+                  className={`flex-1 py-3 px-2 md:py-5 md:px-6 text-xs md:text-base font-medium transition-colors duration-300 text-center cursor-pointer relative ${
                     index === activeSlide
                       ? "text-white"
                       : "text-white/40 hover:text-white/60"
                   }`}
                 >
                   <span className="truncate block">{slide.tabLabel}</span>
+                  <div className={`absolute bottom-0 left-0 right-0 h-[2px] transition-colors duration-300 ${
+                    index === activeSlide ? "bg-primary" : "bg-white/10"
+                  }`} />
                 </button>
               ))}
             </div>
