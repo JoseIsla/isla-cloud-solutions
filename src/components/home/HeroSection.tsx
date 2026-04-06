@@ -299,9 +299,14 @@ const HeroSection = () => {
                   }`}
                 >
                   <span className="truncate block">{slide.tabLabel}</span>
-                  <div className={`absolute bottom-0 left-0 right-0 h-[2px] transition-colors duration-300 ${
-                    index === activeSlide ? "bg-primary" : "bg-white/10"
-                  }`} />
+                  <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-white/10" />
+                  {index === activeSlide && (
+                    <motion.div
+                      className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary"
+                      layoutId="hero-tab-indicator"
+                      transition={{ type: "spring", stiffness: 400, damping: 28 }}
+                    />
+                  )}
                 </button>
               ))}
             </div>
