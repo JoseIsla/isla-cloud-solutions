@@ -113,4 +113,29 @@ router.put('/:key', authMiddleware, [
   }
 });
 
+// POST /api/contents/translate-all (admin) — retranslate all ES contents to EN
+router.post('/translate-all', authMiddleware, async (req, res) => {
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const rows = await conn.query("SELECT content_key, value, content_type, title FROM contents WHERE content_key NOT LIKE '%\\_\\_en' ESCAPE '\\\\'");
+    conn.release();
+    conn = null;
+
+    const translatable = rows.filter(r => r.value && r.value.trim() && r.content_type !== 'json');
+    res.json({ message: `Traduciendo ${translatable.length} contenidos en background`, count: translatable.length });
+
+    // Fire-and-forget all translations
+    for (const row of translatable) {
+      translateAndSave(pool, row.content_key, row.value, row.content_type || 'text', row.title)
+        .catch(err => console.error('[Translator] Bulk error:', row.content_key, err.message));
+    }
+  } catch (err) {
+    console.error('POST /api/contents/translate-all error:', err.message);
+    res.status(500).json({ error: 'Error del servidor' });
+  } finally {
+    if (conn) conn.release();
+  }
+});
+
 module.exports = router;
