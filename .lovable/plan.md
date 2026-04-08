@@ -1,59 +1,64 @@
 
 
-## Analysis
+## Plan: Traducción automática de contenidos CMS con OpenAI
 
-The current system has a **temporary** lockout: after 5 failed attempts, the account is locked for 15 minutes, then auto-unlocks. There is no IP tracking, no permanent lock, and no admin unlock mechanism.
+### Resumen
 
-The user wants: permanent lockout after too many failed attempts, with IP logging, visible in the admin panel, and manual unlock by another admin.
+Cuando un administrador guarda un contenido en español desde el panel, el backend automáticamente lo traduce al inglés usando la API de OpenAI y guarda ambas versiones. El frontend pide los contenidos en el idioma activo del usuario.
 
-## Plan
+### Arquitectura
 
-### 1. Backend: New `login_attempts` table and login logic changes
+```text
+Panel CMS → PUT /api/contents/:key
+  ├─ Guarda valor ES (content_key = "hero_title")
+  ├─ Llama a OpenAI para traducir ES → EN
+  └─ Guarda valor EN (content_key = "hero_title__en")
 
-**New table** `login_attempts` to log each failed attempt with IP address:
-- `id`, `email` (attempted), `ip_address`, `attempted_at`
+Frontend (idioma = "en") → GET /api/contents?lang=en
+  └─ Devuelve claves con sufijo __en, mapeadas sin sufijo
+```
 
-**Modify `backend/routes/auth.js`**:
-- Change lockout behavior: when `locked_until` is set to a far-future date (e.g., year 9999) or add a new `is_locked` boolean column to `users`, the account stays locked permanently until an admin unlocks it.
-- On each failed attempt, insert a row into `login_attempts` with the IP (`req.ip` or `x-forwarded-for`).
-- Keep the 5-attempt threshold but instead of a 15-min lock, set a permanent lock flag.
-- When locked, return a message like "Cuenta bloqueada por seguridad. Contacta con un administrador."
+### Cambios
 
-**Add columns to `users` table**: `is_locked BOOLEAN DEFAULT FALSE` (simpler than using `locked_until` with magic dates).
+#### 1. Backend: Nuevo archivo `backend/services/translator.js`
+- Módulo que llama a la API de OpenAI (`POST https://api.openai.com/v1/chat/completions`)
+- Usa `OPENAI_API_KEY` del `.env`
+- Modelo: `gpt-4o-mini` (rápido y barato para traducciones)
+- System prompt: "Traduce el siguiente texto de español a inglés. Mantén el formato HTML si lo tiene. Devuelve SOLO la traducción."
+- Manejo de errores: si falla la traducción, se loguea pero no bloquea el guardado del contenido original
 
-### 2. Backend: New endpoints for admin lock management
+#### 2. Backend: Modificar `backend/routes/contents.js`
+- **GET `/api/contents?lang=en`**: Si `lang=en`, busca primero las claves con sufijo `__en`; si no existe, devuelve la versión ES como fallback. Devuelve el mapa sin el sufijo para que el frontend no necesite cambios en las claves.
+- **PUT `/api/contents/:key`**: Después de guardar el contenido ES, llama al traductor de forma asíncrona (sin bloquear la respuesta) y guarda el resultado como `{key}__en`. Para contenidos de tipo `json` (como nav links), traduce los valores de texto dentro del JSON.
 
-**Add to `backend/routes/users.js`**:
-- `GET /api/users/locked` — list locked accounts with their recent failed login attempts (email, IP, timestamp).
-- `PUT /api/users/:id/unlock` — unlock a user account (reset `is_locked`, `failed_login_attempts`).
+#### 3. Backend: Actualizar `backend/config/init-db.js`
+- Añadir migración segura: nada especial, las claves `__en` se crean dinámicamente en la misma tabla `contents`.
 
-### 3. Frontend API: Add new methods
+#### 4. Backend: Actualizar `.env.template` y `.env.example`
+- Añadir variable `OPENAI_API_KEY`
 
-**In `src/lib/api.ts`**, add to `usersApi`:
-- `listLocked(token)` — fetch locked accounts with attempt details.
-- `unlock(id, token)` — unlock a user.
+#### 5. Backend: Actualizar `backend/package.json`
+- No se necesitan dependencias nuevas; se usa `fetch` nativo de Node.js 18+ (o el `node-fetch` si es Node <18). El servidor ya corre Node moderno.
 
-### 4. Frontend: Add "Cuentas Bloqueadas" section to PanelUsuarios
+#### 6. Frontend: Modificar `src/hooks/useCMS.tsx`
+- El `CMSProvider` lee el idioma actual del `LanguageContext`
+- Pasa `?lang=es` o `?lang=en` a `contentsApi.list()`
+- Cuando el idioma cambia, vuelve a cargar los contenidos
 
-**In `src/pages/panel/PanelUsuarios.tsx`**:
-- Add a new section/tab showing locked accounts.
-- Each locked account shows: user name, email, last IP addresses that attempted login, timestamps.
-- "Desbloquear" button per account that calls the unlock endpoint.
-- Visual indicator (badge/icon) on locked accounts in the main user list too.
+#### 7. Frontend: Modificar `src/lib/api.ts`
+- `contentsApi.list()` acepta un parámetro `lang` opcional y lo envía como query string
 
-### 5. Login page: Better error handling
+#### 8. Panel CMS: Indicador visual (opcional pero recomendado)
+- Pequeño badge "🌐 Auto-traducido" junto a cada campo en `PanelContenidos.tsx` para que el admin sepa que se traducirá automáticamente
 
-**In `src/pages/panel/PanelLogin.tsx`**:
-- Handle HTTP 423 responses specifically to show the "account locked" message from the server instead of the generic "Credenciales inválidas".
+### Configuración necesaria del cliente
+- El cliente debe obtener una API key de OpenAI en https://platform.openai.com/api-keys
+- Añadirla como `OPENAI_API_KEY` en el `.env` del servidor backend
+- Reiniciar el servidor Node.js
 
-### Files to modify
-- `backend/routes/auth.js` — permanent lock + IP logging
-- `backend/routes/users.js` — unlock endpoint + locked users list
-- `src/lib/api.ts` — new API methods
-- `src/pages/panel/PanelUsuarios.tsx` — locked accounts UI section
-- `src/pages/panel/PanelLogin.tsx` — proper 423 error display
-
-### Database changes needed
-- Add `is_locked` column to `users` table
-- Create `login_attempts` table
+### Detalles técnicos clave
+- Las traducciones se ejecutan en background (fire-and-forget) para no ralentizar el guardado
+- Fallback: si no existe traducción EN, se muestra el texto ES
+- Los contenidos tipo `json` (configuración de nav links, redes sociales) no se traducen (son datos estructurales)
+- Los contenidos tipo `html` se traducen preservando las etiquetas HTML
 
