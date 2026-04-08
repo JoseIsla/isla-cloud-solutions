@@ -234,7 +234,10 @@ const PanelContenidos = () => {
     return (
       <div key={key} className="p-4 rounded-xl bg-background border border-border">
         <div className="flex justify-between items-center mb-2">
-          <label className="font-medium text-foreground text-sm">{c.title || c.content_key}</label>
+          <div className="flex items-center gap-2">
+            <label className="font-medium text-foreground text-sm">{c.title || c.content_key}</label>
+            <span className="inline-flex items-center gap-1 text-[10px] font-medium text-muted-foreground bg-muted px-1.5 py-0.5 rounded-full">🌐 Auto-EN</span>
+          </div>
           <Button variant="default" size="sm" onClick={() => handleSave(key)}>
             <Save size={14} /> Guardar
           </Button>
