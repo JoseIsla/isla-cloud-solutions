@@ -283,7 +283,7 @@ const HeroSection = () => {
       <nav aria-label="Pestañas del slider" className="absolute bottom-6 md:bottom-12 left-0 right-0 z-10">
         <div className="container mx-auto px-4">
           <div className="mx-0 relative" ref={tabsContainerRef} role="tablist" aria-label="Secciones del hero">
-            <div className="flex gap-2 md:gap-3">
+            <div className="flex gap-3 md:gap-4">
               {slides.map((slide, index) => (
                 <button
                   key={index}
@@ -292,14 +292,14 @@ const HeroSection = () => {
                   aria-selected={index === activeSlide}
                   aria-label={`Ir a ${slide.tabLabel}`}
                   onClick={() => handleTabClick(index)}
-                  className={`flex-1 py-3 px-2 md:py-5 md:px-6 text-xs md:text-base font-medium transition-colors duration-300 text-center cursor-pointer relative ${
+                  className={`flex-1 py-4 px-3 md:py-5 md:px-6 text-sm md:text-base font-semibold transition-colors duration-300 text-center cursor-pointer relative ${
                     index === activeSlide
                       ? "text-white"
-                      : "text-white/40 hover:text-white/60"
+                      : "text-white/60 hover:text-white/90"
                   }`}
                 >
                   <span className="truncate block">{slide.tabLabel}</span>
-                  <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-white/10" />
+                  <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-white/15" />
                   {index === activeSlide && (
                     <motion.div
                       className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary"

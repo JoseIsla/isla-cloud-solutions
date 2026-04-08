@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Cookie, Settings2, X } from 'lucide-react';
+import { Cookie, Settings2 } from 'lucide-react';
+import { useT } from '@/i18n/LanguageContext';
 
 type CookiePreferences = {
   essential: boolean;
@@ -24,11 +25,7 @@ const getStoredConsent = (): CookiePreferences | null => {
 
 const saveConsent = (prefs: CookiePreferences) => {
   localStorage.setItem(COOKIE_KEY, JSON.stringify(prefs));
-
-  // Dispatch custom event for analytics/scripts to listen
   window.dispatchEvent(new CustomEvent('cookie-consent-update', { detail: prefs }));
-
-  // Remove cookies for rejected categories
   if (!prefs.statistics) {
     deleteCookiesByPrefix(['_ga', '_gid', '_gat']);
   }
@@ -48,6 +45,7 @@ const deleteCookiesByPrefix = (prefixes: string[]) => {
 };
 
 const CookieBanner = () => {
+  const t = useT();
   const [visible, setVisible] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [prefs, setPrefs] = useState<CookiePreferences>({
@@ -60,21 +58,18 @@ const CookieBanner = () => {
   useEffect(() => {
     const stored = getStoredConsent();
     if (!stored) {
-      // Small delay for better UX
-      const t = setTimeout(() => setVisible(true), 1200);
-      return () => clearTimeout(t);
+      const timer = setTimeout(() => setVisible(true), 1200);
+      return () => clearTimeout(timer);
     }
   }, []);
 
   const acceptAll = () => {
-    const all: CookiePreferences = { essential: true, preferences: true, statistics: true, marketing: true };
-    saveConsent(all);
+    saveConsent({ essential: true, preferences: true, statistics: true, marketing: true });
     setVisible(false);
   };
 
   const rejectAll = () => {
-    const min: CookiePreferences = { essential: true, preferences: false, statistics: false, marketing: false };
-    saveConsent(min);
+    saveConsent({ essential: true, preferences: false, statistics: false, marketing: false });
     setVisible(false);
   };
 
@@ -84,30 +79,10 @@ const CookieBanner = () => {
   };
 
   const categories = [
-    {
-      key: 'essential' as const,
-      label: 'Esenciales',
-      description: 'Necesarias para el funcionamiento básico del sitio. No pueden desactivarse.',
-      locked: true,
-    },
-    {
-      key: 'preferences' as const,
-      label: 'Preferencias',
-      description: 'Permiten recordar tus ajustes como idioma o región.',
-      locked: false,
-    },
-    {
-      key: 'statistics' as const,
-      label: 'Estadísticas',
-      description: 'Nos ayudan a entender cómo interactúas con la web (Google Analytics).',
-      locked: false,
-    },
-    {
-      key: 'marketing' as const,
-      label: 'Marketing',
-      description: 'Se usan para mostrarte publicidad relevante en otras plataformas.',
-      locked: false,
-    },
+    { key: 'essential' as const, label: t('cookies.essential'), description: t('cookies.essential_desc'), locked: true },
+    { key: 'preferences' as const, label: t('cookies.preferences'), description: t('cookies.preferences_desc'), locked: false },
+    { key: 'statistics' as const, label: t('cookies.statistics'), description: t('cookies.statistics_desc'), locked: false },
+    { key: 'marketing' as const, label: t('cookies.marketing'), description: t('cookies.marketing_desc'), locked: false },
   ];
 
   return (
@@ -121,27 +96,20 @@ const CookieBanner = () => {
           className="fixed bottom-0 inset-x-0 z-[100] p-4 md:p-6"
         >
           <div className="max-w-4xl mx-auto rounded-2xl bg-card border border-border shadow-2xl overflow-hidden">
-            {/* Main banner */}
             <div className="p-6 md:p-8">
               <div className="flex items-start gap-4">
                 <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
                   <Cookie size={20} className="text-primary" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-heading font-semibold text-foreground text-base mb-1">
-                    Utilizamos cookies
-                  </h3>
+                  <h3 className="font-heading font-semibold text-foreground text-base mb-1">{t('cookies.title')}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    Usamos cookies propias y de terceros para mejorar tu experiencia, analizar el tráfico y personalizar contenido.
-                    Puedes aceptar todas, rechazarlas o configurar tus preferencias.{' '}
-                    <Link to="/privacidad" className="text-primary hover:underline">
-                      Política de Privacidad
-                    </Link>
+                    {t('cookies.description')}{' '}
+                    <Link to="/privacidad" className="text-primary hover:underline">{t('footer.privacy')}</Link>
                   </p>
                 </div>
               </div>
 
-              {/* Settings panel */}
               <AnimatePresence>
                 {showSettings && (
                   <motion.div
@@ -153,10 +121,7 @@ const CookieBanner = () => {
                   >
                     <div className="mt-6 space-y-3 border-t border-border pt-6">
                       {categories.map((cat) => (
-                        <div
-                          key={cat.key}
-                          className="flex items-center justify-between gap-4 p-3 rounded-xl bg-background border border-border"
-                        >
+                        <div key={cat.key} className="flex items-center justify-between gap-4 p-3 rounded-xl bg-background border border-border">
                           <div className="min-w-0">
                             <span className="text-sm font-medium text-foreground">{cat.label}</span>
                             <p className="text-xs text-muted-foreground mt-0.5">{cat.description}</p>
@@ -166,21 +131,12 @@ const CookieBanner = () => {
                               type="checkbox"
                               checked={prefs[cat.key]}
                               disabled={cat.locked}
-                              onChange={(e) =>
-                                !cat.locked && setPrefs({ ...prefs, [cat.key]: e.target.checked })
-                              }
+                              onChange={(e) => !cat.locked && setPrefs({ ...prefs, [cat.key]: e.target.checked })}
                               className="sr-only peer"
                             />
-                            <div className={`
-                              w-10 h-5 rounded-full transition-colors
-                              ${cat.locked
-                                ? 'bg-primary/40 cursor-not-allowed'
-                                : 'bg-muted peer-checked:bg-primary cursor-pointer'
-                              }
-                              after:content-[''] after:absolute after:top-0.5 after:left-0.5
-                              after:bg-card after:rounded-full after:h-4 after:w-4
-                              after:transition-transform peer-checked:after:translate-x-5
-                            `} />
+                            <div className={`w-10 h-5 rounded-full transition-colors ${
+                              cat.locked ? 'bg-primary/40 cursor-not-allowed' : 'bg-muted peer-checked:bg-primary cursor-pointer'
+                            } after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-card after:rounded-full after:h-4 after:w-4 after:transition-transform peer-checked:after:translate-x-5`} />
                           </label>
                         </div>
                       ))}
@@ -189,27 +145,16 @@ const CookieBanner = () => {
                 )}
               </AnimatePresence>
 
-              {/* Actions */}
               <div className="flex flex-col sm:flex-row gap-3 mt-6">
-                <Button variant="hero" onClick={acceptAll} className="flex-1">
-                  Aceptar todas
-                </Button>
+                <Button variant="hero" onClick={acceptAll} className="flex-1">{t('cookies.accept_all')}</Button>
                 {showSettings ? (
-                  <Button variant="default" onClick={saveCustom} className="flex-1">
-                    Guardar preferencias
-                  </Button>
+                  <Button variant="default" onClick={saveCustom} className="flex-1">{t('cookies.save')}</Button>
                 ) : (
-                  <Button
-                    variant="outline"
-                    onClick={() => setShowSettings(true)}
-                    className="flex-1 gap-2"
-                  >
-                    <Settings2 size={16} /> Configurar
+                  <Button variant="outline" onClick={() => setShowSettings(true)} className="flex-1 gap-2">
+                    <Settings2 size={16} /> {t('cookies.configure')}
                   </Button>
                 )}
-                <Button variant="ghost" onClick={rejectAll} className="flex-1 text-muted-foreground">
-                  Rechazar opcionales
-                </Button>
+                <Button variant="ghost" onClick={rejectAll} className="flex-1 text-muted-foreground">{t('cookies.reject')}</Button>
               </div>
             </div>
           </div>

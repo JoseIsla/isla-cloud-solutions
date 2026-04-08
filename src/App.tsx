@@ -5,6 +5,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { CMSProvider } from "@/hooks/useCMS";
+import { LanguageProvider } from "@/i18n/LanguageContext";
 import { LazyMotion, domAnimation, AnimatePresence, m } from "framer-motion";
 
 // Lazy load CookieBanner — not needed for initial render
@@ -57,7 +58,6 @@ const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-background">
     <div className="flex flex-col items-center gap-3">
       <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-      <p className="text-sm text-muted-foreground">Cargando...</p>
     </div>
   </div>
 );
@@ -132,6 +132,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <LazyMotion features={domAnimation} strict>
+          <LanguageProvider>
           <AuthProvider>
             <CMSProvider>
               <ScrollToTop />
@@ -141,6 +142,7 @@ const App = () => (
               </Suspense>
             </CMSProvider>
           </AuthProvider>
+          </LanguageProvider>
         </LazyMotion>
       </BrowserRouter>
     </TooltipProvider>

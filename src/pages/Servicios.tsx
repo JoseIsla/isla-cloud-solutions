@@ -8,6 +8,7 @@ import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { services as fallbackServices } from "@/data/services";
 import { servicesApi, type ServiceFromAPI } from "@/lib/api";
 import { useCMSValue } from "@/hooks/useCMS";
+import { useT } from "@/i18n/LanguageContext";
 import { useEffect, useState, useMemo } from "react";
 
 const iconMap: Record<string, LucideIcon> = {
@@ -15,6 +16,7 @@ const iconMap: Record<string, LucideIcon> = {
 };
 
 const ServiciosPage = () => {
+  const t = useT();
   const [apiServices, setApiServices] = useState<ServiceFromAPI[] | null>(null);
 
   useEffect(() => {
@@ -32,40 +34,35 @@ const ServiciosPage = () => {
     return {
       '@context': 'https://schema.org',
       '@type': 'CollectionPage',
-      name: `Servicios IT | ${SITE_NAME}`,
+      name: `${t('services_page.label')} | ${SITE_NAME}`,
       url: `${SITE_URL}/servicios`,
-      description: 'Hosting, cloud servers, desarrollo web, consultoría IT, mantenimiento informático y más.',
-      mainEntity: {
-        '@type': 'ItemList',
-        numberOfItems: items.length,
-        itemListElement: items,
-      },
+      description: t('services_page.subtitle'),
+      mainEntity: { '@type': 'ItemList', numberOfItems: items.length, itemListElement: items },
     };
-  }, [useApi, apiServices]);
+  }, [useApi, apiServices, t]);
 
   usePageMeta({
-    title: 'Servicios IT',
-    description: 'Hosting, cloud servers, desarrollo web, consultoría IT, mantenimiento informático y más. Soluciones tecnológicas a medida para tu empresa.',
+    title: t('services_page.label'),
+    description: t('services_page.subtitle'),
     canonical: '/servicios',
     jsonLd: serviciosJsonLd,
   });
+
   return (
     <Layout>
-      <BreadcrumbJsonLd items={[{ name: 'Inicio', path: '/' }, { name: 'Servicios', path: '/servicios' }]} />
-      {/* Hero */}
+      <BreadcrumbJsonLd items={[{ name: t('breadcrumb.home'), path: '/' }, { name: t('services_page.label'), path: '/servicios' }]} />
       <ParallaxHero>
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-2xl">
-          <span className="text-primary text-sm font-semibold uppercase tracking-wider">Servicios</span>
+          <span className="text-primary text-sm font-semibold uppercase tracking-wider">{t('services_page.label')}</span>
           <h1 className="text-4xl md:text-5xl font-heading font-bold text-hero-foreground mt-3 mb-6">
-            {useCMSValue('services_page_title', 'Soluciones IT completas para tu negocio')}
+            {useCMSValue('services_page_title', '') || t('services_page.title')}
           </h1>
           <p className="text-hero-foreground/70 text-lg">
-            {useCMSValue('services_page_subtitle', 'Descubre todos nuestros servicios tecnológicos diseñados para impulsar la productividad y seguridad de tu empresa.')}
+            {useCMSValue('services_page_subtitle', '') || t('services_page.subtitle')}
           </p>
         </motion.div>
       </ParallaxHero>
 
-      {/* Services grid */}
       <section className="py-24 bg-background">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -73,28 +70,17 @@ const ServiciosPage = () => {
               ? apiServices!.map((service, index) => {
                   const Icon = iconMap[service.icon] || Server;
                   return (
-                    <motion.div
-                      key={service.slug}
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: index * 0.06 }}
-                    >
-                      <Link
-                        to={`/servicios/${service.slug}`}
-                        className="group block p-8 rounded-2xl bg-card border border-border hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 h-full"
-                      >
+                    <motion.div key={service.slug} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }} transition={{ delay: index * 0.06 }}>
+                      <Link to={`/servicios/${service.slug}`}
+                        className="group block p-8 rounded-2xl bg-card border border-border hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 h-full">
                         <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
                           <Icon size={28} className="text-primary" />
                         </div>
-                        <h2 className="font-heading font-semibold text-xl text-card-foreground mb-3">
-                          {service.title}
-                        </h2>
-                        <p className="text-muted-foreground text-sm leading-relaxed mb-5">
-                          {service.description}
-                        </p>
+                        <h2 className="font-heading font-semibold text-xl text-card-foreground mb-3">{service.title}</h2>
+                        <p className="text-muted-foreground text-sm leading-relaxed mb-5">{service.description}</p>
                         <span className="text-primary text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
-                          Ver detalle <ArrowRight size={14} />
+                          {t('services_page.view_detail')} <ArrowRight size={14} />
                         </span>
                       </Link>
                     </motion.div>
@@ -103,28 +89,17 @@ const ServiciosPage = () => {
               : fallbackServices.map((service, index) => {
                   const Icon = service.icon;
                   return (
-                    <motion.div
-                      key={service.slug}
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: index * 0.06 }}
-                    >
-                      <Link
-                        to={`/servicios/${service.slug}`}
-                        className="group block p-8 rounded-2xl bg-card border border-border hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 h-full"
-                      >
+                    <motion.div key={service.slug} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }} transition={{ delay: index * 0.06 }}>
+                      <Link to={`/servicios/${service.slug}`}
+                        className="group block p-8 rounded-2xl bg-card border border-border hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 h-full">
                         <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
                           <Icon size={28} className="text-primary" />
                         </div>
-                        <h2 className="font-heading font-semibold text-xl text-card-foreground mb-3">
-                          {service.title}
-                        </h2>
-                        <p className="text-muted-foreground text-sm leading-relaxed mb-5">
-                          {service.description}
-                        </p>
+                        <h2 className="font-heading font-semibold text-xl text-card-foreground mb-3">{service.title}</h2>
+                        <p className="text-muted-foreground text-sm leading-relaxed mb-5">{service.description}</p>
                         <span className="text-primary text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
-                          Ver detalle <ArrowRight size={14} />
+                          {t('services_page.view_detail')} <ArrowRight size={14} />
                         </span>
                       </Link>
                     </motion.div>
