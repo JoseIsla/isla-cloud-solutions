@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { contentsApi, type ContentFromAPI } from '@/lib/api';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 interface CMSContextType {
   contents: Record<string, string>;
@@ -19,9 +20,11 @@ export const useCMSValue = (key: string, fallback: string = '') => {
 export const CMSProvider = ({ children }: { children: ReactNode }) => {
   const [contents, setContents] = useState<Record<string, string>>({});
   const [isLoaded, setIsLoaded] = useState(false);
+  const { language } = useLanguage();
 
   useEffect(() => {
-    contentsApi.list()
+    setIsLoaded(false);
+    contentsApi.list(language)
       .then((data) => {
         const map: Record<string, string> = {};
         Object.values(data).forEach((c: ContentFromAPI) => {
@@ -31,7 +34,7 @@ export const CMSProvider = ({ children }: { children: ReactNode }) => {
       })
       .catch(() => {})
       .finally(() => setIsLoaded(true));
-  }, []);
+  }, [language]);
 
   return (
     <CMSContext.Provider value={{ contents, isLoaded }}>
