@@ -143,6 +143,7 @@ const App = () => (
               </Suspense>
             </CMSProvider>
           </AuthProvider>
+          </LanguageProvider>
         </LazyMotion>
       </BrowserRouter>
     </TooltipProvider>
