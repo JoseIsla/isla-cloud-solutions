@@ -133,6 +133,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <LazyMotion features={domAnimation} strict>
+          <LanguageProvider>
           <AuthProvider>
             <CMSProvider>
               <ScrollToTop />
