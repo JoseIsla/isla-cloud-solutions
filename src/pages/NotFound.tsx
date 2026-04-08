@@ -5,13 +5,15 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Layout from "@/components/Layout";
 import usePageMeta from "@/hooks/usePageMeta";
+import { useT } from "@/i18n/LanguageContext";
 
 const NotFound = () => {
   const location = useLocation();
+  const t = useT();
 
   usePageMeta({
-    title: "Página no encontrada",
-    description: "La página que buscas no existe o ha sido movida.",
+    title: t("notfound.title"),
+    description: t("notfound.description"),
     noindex: true,
   });
 
@@ -29,14 +31,14 @@ const NotFound = () => {
         >
           <p className="text-8xl font-heading font-bold text-primary mb-4">404</p>
           <h1 className="text-2xl md:text-3xl font-heading font-bold text-foreground mb-3">
-            Página no encontrada
+            {t("notfound.title")}
           </h1>
           <p className="text-muted-foreground mb-8 max-w-md mx-auto">
-            Lo sentimos, la página que buscas no existe o ha sido movida.
+            {t("notfound.description")}
           </p>
           <Button variant="hero" asChild>
             <Link to="/">
-              <ArrowLeft size={16} className="mr-2" /> Volver al inicio
+              <ArrowLeft size={16} className="mr-2" /> {t("notfound.back")}
             </Link>
           </Button>
         </motion.div>
