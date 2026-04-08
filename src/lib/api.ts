@@ -101,6 +101,8 @@ export const contentsApi = {
   listFresh: (token: string) => apiRequest<Record<string, ContentFromAPI>>('/api/contents', { token }),
   update: (key: string, value: string, token: string, title?: string) =>
     apiRequest(`/api/contents/${key}`, { method: 'PUT', body: { value, title }, token }),
+  translateAll: (token: string) =>
+    apiRequest<{ message: string; count: number }>('/api/contents/translate-all', { method: 'POST', token }),
 };
 
 // Users (admin management)
