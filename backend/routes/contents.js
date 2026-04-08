@@ -2,7 +2,14 @@ const express = require('express');
 const pool = require('../config/db');
 const { authMiddleware } = require('../middleware/auth');
 const { body, param, query, validationResult } = require('express-validator');
-const { translateAndSave } = require('../services/translator');
+const {
+  canAutoTranslateKey,
+  getTranslationDiagnostics,
+  getTranslatorRuntimeState,
+  noteBulkTranslationRequested,
+  shouldTranslateContent,
+  translateAndSave,
+} = require('../services/translator');
 
 const router = express.Router();
 
@@ -54,6 +61,23 @@ router.get('/', [
   }
 });
 
+// GET /api/contents/diagnostics (admin) — visible diagnostics for CMS auto-translation
+router.get('/diagnostics', authMiddleware, async (req, res) => {
+  try {
+    const diagnostics = await getTranslationDiagnostics(pool);
+    const ok = diagnostics.status !== 'error';
+
+    res.json({
+      ok,
+      message: ok ? 'Diagnóstico de traducción obtenido' : 'La auto-traducción tiene incidencias',
+      diagnostics,
+    });
+  } catch (err) {
+    console.error('GET /api/contents/diagnostics error:', err.message);
+    res.status(500).json({ error: 'Error del servidor' });
+  }
+});
+
 // PUT /api/contents/:key (admin) — auto-translates to EN in background
 router.put('/:key', authMiddleware, [
   param('key').trim().notEmpty().isLength({ max: 100 }).matches(/^[a-z0-9_]+$/),
@@ -98,10 +122,25 @@ router.put('/:key', authMiddleware, [
       );
     }
 
-    res.json({ message: 'Contenido actualizado' });
+    const translationQueued = canAutoTranslateKey(req.params.key, resolvedContentType);
+
+    res.json({
+      message: 'Contenido actualizado',
+      translation: translationQueued
+        ? {
+            queued: true,
+            status: 'queued',
+            message: 'La traducción EN se ejecutará en background.',
+          }
+        : {
+            queued: false,
+            status: 'skipped',
+            message: 'Este contenido no entra en la traducción automática.',
+          },
+    });
 
     // Fire-and-forget: translate in background
-    if (!req.params.key.endsWith('__en')) {
+    if (translationQueued) {
       translateAndSave(pool, req.params.key, value || '', resolvedContentType, title)
         .catch(err => console.error('[Translator] Background error:', err.message));
     }
@@ -122,8 +161,36 @@ router.post('/translate-all', authMiddleware, async (req, res) => {
     conn.release();
     conn = null;
 
-    const translatable = rows.filter(r => r.value && r.value.trim() && r.content_type !== 'json');
-    res.json({ message: `Traduciendo ${translatable.length} contenidos en background`, count: translatable.length });
+    const translatable = rows.filter(shouldTranslateContent);
+    noteBulkTranslationRequested(translatable.length, translatable.map((row) => row.content_key));
+
+    if (!getTranslatorRuntimeState().openaiConfigured) {
+      const diagnostics = await getTranslationDiagnostics(pool);
+      return res.json({
+        ok: false,
+        message: 'OPENAI_API_KEY no está configurada en el backend.',
+        count: 0,
+        diagnostics,
+      });
+    }
+
+    if (translatable.length === 0) {
+      const diagnostics = await getTranslationDiagnostics(pool);
+      return res.json({
+        ok: false,
+        message: 'No hay contenidos traducibles pendientes en este momento.',
+        count: 0,
+        diagnostics,
+      });
+    }
+
+    const diagnostics = await getTranslationDiagnostics(pool);
+    res.json({
+      ok: true,
+      message: `Traduciendo ${translatable.length} contenidos en background`,
+      count: translatable.length,
+      diagnostics,
+    });
 
     // Fire-and-forget all translations
     for (const row of translatable) {
