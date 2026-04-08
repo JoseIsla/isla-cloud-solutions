@@ -1,0 +1,201 @@
+const en: Record<string, string> = {
+  // Navbar
+  "nav.home": "Home",
+  "nav.services": "Services",
+  "nav.about": "About Us",
+  "nav.blog": "News",
+  "nav.contact": "Contact",
+  "nav.cases": "Success Stories",
+  "nav.cta": "Request a Consultation",
+  "nav.openMenu": "Open menu",
+  "nav.closeMenu": "Close menu",
+
+  // Footer
+  "footer.services": "Services",
+  "footer.company": "Company",
+  "footer.contact": "Contact",
+  "footer.about": "About Us",
+  "footer.news": "News",
+  "footer.cases": "Success Stories",
+  "footer.privacy": "Privacy Policy",
+  "footer.legal": "Legal Notice",
+  "footer.cookies": "Cookie Policy",
+  "footer.copyright": "© {year} Isla Cloud Solutions. All rights reserved.",
+  "footer.description": "Your trusted technology partner. Over 20 years of experience in IT solutions for businesses.",
+
+  // Hero
+  "hero.badge": "Your trusted technology partner",
+  "hero.title": "Cloud Solutions & Technology for Businesses",
+  "hero.subtitle": "Over 20 years as the technology partner for companies that need a professional, approachable IT department available 24/7.",
+  "hero.cta_primary": "Request information",
+  "hero.cta_secondary": "Our services",
+  "hero.tab1": "Isla Cloud Solutions",
+  "hero.tab2": "Latest news",
+  "hero.tab3": "Success Stories",
+  "hero.slide2_title": "Latest on our blog",
+  "hero.slide2_subtitle": "Discover the latest news and articles on enterprise technology.",
+  "hero.slide2_cta": "Read article",
+  "hero.slide2_cta_sec": "View all posts",
+  "hero.slide3_title": "Our clients speak for us",
+  "hero.slide3_subtitle": "Discover how we've helped businesses like yours grow with technology.",
+  "hero.slide3_cta": "View success story",
+  "hero.slide3_cta_sec": "Our services",
+  "hero.aria_label": "Main presentation",
+  "hero.tabs_aria": "Slider tabs",
+  "hero.go_to": "Go to",
+
+  // Intro
+  "intro.text": "Isla Cloud Solutions is your strategic technology partner, offering managed IT services that drive business growth with the local support you expect, backed by professional expertise, proactive security, and 24/7 service to keep your organization productive and future-ready.",
+
+  // Services section
+  "services.title": "We Solve the Technology Problems Holding Your Business Back",
+
+  // Why us
+  "whyus.label": "Why choose us?",
+  "whyus.title": "Your IT infrastructure in the best hands",
+  "whyus.subtitle": "Unlike providers who only \"fix\" problems, we take a proactive approach to prevent incidents, unlock efficiencies, and drive long-term growth.",
+  "whyus.reason1_title": "20+ years of experience",
+  "whyus.reason1_desc": "Over two decades solving enterprise technology challenges with a team of certified experts.",
+  "whyus.reason2_title": "24/7 Support",
+  "whyus.reason2_desc": "When your team needs help, they shouldn't have to wait. Our support is always available.",
+  "whyus.reason3_title": "Guaranteed security",
+  "whyus.reason3_desc": "24/7 monitoring, multi-factor authentication, and CISO-level expertise keep your organization secure.",
+  "whyus.reason4_title": "Full transparency",
+  "whyus.reason4_desc": "No surprises. Every ticket, device, and response time is visible through our client portal.",
+
+  // Counters
+  "counters.projects": "Projects completed",
+  "counters.maintenance": "Active maintenance contracts",
+  "counters.clients": "Satisfied clients",
+  "counters.systems": "Managed systems",
+
+  // Clients
+  "clients.label": "Clients",
+  "clients.title": "Companies that trust us",
+  "clients.subtitle": "Over 60 companies and institutions across all sectors trust our IT services.",
+
+  // Testimonials
+  "testimonials.label": "Testimonials",
+  "testimonials.title": "What our clients say",
+  "testimonials.subtitle": "Our clients' satisfaction is our best reference.",
+  "testimonials.prev": "Previous testimonial",
+  "testimonials.next": "Next testimonial",
+
+  // FAQ
+  "faq.label": "FAQ",
+  "faq.title": "Frequently asked questions",
+  "faq.subtitle": "We answer the most common questions about our services.",
+
+  // CTA
+  "cta.title": "Ready to boost your business with technology?",
+  "cta.subtitle": "What IT challenges are holding your business back? Let's find the solution that drives your long-term growth together.",
+  "cta.button": "Request a free consultation",
+  "cta.card1_title": "Need help?",
+  "cta.card1_desc": "Call our team and we'll help you.",
+  "cta.card2_title": "Proactive approach",
+  "cta.card2_desc": "Flexible and tailored pricing. You only pay for what you need, when you need it.",
+
+  // Blog page
+  "blog.label": "Blog",
+  "blog.title": "IT News & Updates",
+  "blog.subtitle": "Stay up to date with the latest tech industry news and Isla Cloud Solutions updates.",
+  "blog.empty": "No news published yet.",
+  "blog.empty_hint": "News is managed from the admin panel.",
+  "blog.back": "Back to blog",
+  "blog.related": "Related articles",
+  "blog.not_found": "Article not found",
+  "blog.not_found_desc": "The article you're looking for doesn't exist or has been removed.",
+
+  // Cases page
+  "cases.label": "Success Stories",
+  "cases.title": "Projects that speak for themselves",
+  "cases.subtitle": "Learn how we've helped real businesses achieve their goals with cloud technology.",
+  "cases.coming_soon": "We'll be publishing our success stories soon.",
+  "cases.view_detail": "View details",
+
+  // Contact page
+  "contact.label": "Contact",
+  "contact.title": "Let's talk about your project",
+  "contact.subtitle": "Tell us what you need and we'll advise you with no commitment.",
+  "contact.name": "Name",
+  "contact.email": "Email",
+  "contact.company": "Company",
+  "contact.phone": "Phone",
+  "contact.message": "Message",
+  "contact.name_placeholder": "Your name",
+  "contact.email_placeholder": "you@company.com",
+  "contact.company_placeholder": "Your company name",
+  "contact.phone_placeholder": "+1 555 000 000",
+  "contact.message_placeholder": "Tell us about your project...",
+  "contact.legal_accept": "I have read and accept the",
+  "contact.legal_notice": "legal notice",
+  "contact.and_the": "and the",
+  "contact.privacy_policy": "privacy policy",
+  "contact.submit": "Send message",
+  "contact.sending": "Sending...",
+  "contact.success": "Message sent successfully. We'll get in touch with you soon.",
+  "contact.error": "Error sending the message. Please try again later.",
+  "contact.captcha_required": "You must complete the captcha.",
+  "contact.legal_required": "You must accept the legal notice and privacy policy.",
+  "contact.check_fields": "Please check the fields marked in red.",
+  "contact.info_title": "Contact information",
+  "contact.location": "Location",
+  "contact.validation.name_required": "Name is required",
+  "contact.validation.name_max": "Maximum 100 characters",
+  "contact.validation.email_required": "Email is required",
+  "contact.validation.email_invalid": "Enter a valid email",
+  "contact.validation.email_max": "Maximum 255 characters",
+  "contact.validation.company_max": "Maximum 100 characters",
+  "contact.validation.phone_max": "Maximum 20 characters",
+  "contact.validation.message_required": "Message is required",
+  "contact.validation.message_max": "Maximum 1000 characters",
+
+  // About page
+  "about.label": "About Us",
+  "about.title": "Over 20 years creating technology solutions",
+  "about.subtitle": "We are a team of professionals passionate about technology, dedicated to being the tech partner your business needs.",
+  "about.history_title": "Our story",
+  "about.values_title": "Our values",
+  "about.value1_title": "Security",
+  "about.value1_desc": "Protecting your data and systems is our top priority.",
+  "about.value2_title": "Availability",
+  "about.value2_desc": "24/7 technical support with guaranteed response times.",
+  "about.value3_title": "Excellence",
+  "about.value3_desc": "We demand the highest quality standards in every project.",
+  "about.value4_title": "Commitment",
+  "about.value4_desc": "We become your IT department, fully integrated into your company.",
+
+  // Services page
+  "services_page.label": "Services",
+  "services_page.title": "Complete IT solutions for your business",
+  "services_page.subtitle": "Discover all our technology services designed to boost your company's productivity and security.",
+  "services_page.view_detail": "View details",
+
+  // 404
+  "notfound.title": "Page not found",
+  "notfound.description": "Sorry, the page you're looking for doesn't exist or has been moved.",
+  "notfound.back": "Back to home",
+
+  // Cookie banner
+  "cookies.title": "We use cookies",
+  "cookies.description": "We use our own and third-party cookies to improve your experience, analyze traffic, and personalize content. You can accept all, reject them, or configure your preferences.",
+  "cookies.accept_all": "Accept all",
+  "cookies.configure": "Configure",
+  "cookies.reject": "Reject optional",
+  "cookies.save": "Save preferences",
+  "cookies.essential": "Essential",
+  "cookies.essential_desc": "Required for basic site functionality. Cannot be disabled.",
+  "cookies.preferences": "Preferences",
+  "cookies.preferences_desc": "Allow us to remember your settings like language or region.",
+  "cookies.statistics": "Statistics",
+  "cookies.statistics_desc": "Help us understand how you interact with the website (Google Analytics).",
+  "cookies.marketing": "Marketing",
+  "cookies.marketing_desc": "Used to show you relevant advertising on other platforms.",
+
+  // General
+  "loading": "Loading...",
+  "language": "Language",
+  "breadcrumb.home": "Home",
+};
+
+export default en;
