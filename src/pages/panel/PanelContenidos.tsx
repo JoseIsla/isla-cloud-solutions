@@ -203,6 +203,7 @@ const PanelContenidos = () => {
   const [contents, setContents] = useState<Record<string, ContentFromAPI>>({});
   const [editValues, setEditValues] = useState<Record<string, string>>({});
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
+  const [translating, setTranslating] = useState(false);
 
   useEffect(() => {
     (token ? contentsApi.listFresh(token) : contentsApi.list()).then((data) => {
