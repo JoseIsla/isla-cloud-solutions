@@ -1,20 +1,26 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Globe, ChevronDown } from "lucide-react";
 import defaultLogo from "@/assets/logos/logotipo-blanco-small.png";
 import { useCMSValue } from "@/hooks/useCMS";
+import { useLanguage } from "@/i18n/LanguageContext";
+import type { Language } from "@/i18n/LanguageContext";
 
 const Navbar = () => {
+  const { language, setLanguage, t } = useLanguage();
+  const [langOpen, setLangOpen] = useState(false);
+
   const navbarLogoUrl = useCMSValue('site_logo_navbar', '');
   const logo = navbarLogoUrl || defaultLogo;
-  const nav1 = useCMSValue('nav_link1_label', 'Inicio');
-  const nav2 = useCMSValue('nav_link2_label', 'Servicios');
-  const nav3 = useCMSValue('nav_link3_label', 'Sobre Nosotros');
-  const nav4 = useCMSValue('nav_link4_label', 'Blog');
-  const nav5 = useCMSValue('nav_link5_label', 'Contacto');
-  const nav6 = useCMSValue('nav_link6_label', 'Casos de Éxito');
-  const navCta = useCMSValue('nav_cta_text', 'Solicitar Consulta');
+
+  const nav1 = useCMSValue('nav_link1_label', '') || t('nav.home');
+  const nav2 = useCMSValue('nav_link2_label', '') || t('nav.services');
+  const nav3 = useCMSValue('nav_link3_label', '') || t('nav.about');
+  const nav4 = useCMSValue('nav_link4_label', '') || t('nav.blog');
+  const nav5 = useCMSValue('nav_link5_label', '') || t('nav.contact');
+  const nav6 = useCMSValue('nav_link6_label', '') || t('nav.cases');
+  const navCta = useCMSValue('nav_cta_text', '') || t('nav.cta');
 
   const path1 = useCMSValue('nav_link1_path', '/');
   const path2 = useCMSValue('nav_link2_path', '/#servicios');
@@ -64,15 +70,27 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Fully transparent when on hero (home + not scrolled + mobile menu closed)
+  // Close language dropdown when clicking outside
+  useEffect(() => {
+    if (!langOpen) return;
+    const handler = () => setLangOpen(false);
+    document.addEventListener("click", handler);
+    return () => document.removeEventListener("click", handler);
+  }, [langOpen]);
+
   const isTransparent = isHome && !scrolled && !isOpen;
+
+  const languages: { code: Language; label: string; flag: string }[] = [
+    { code: "es", label: "Español", flag: "🇪🇸" },
+    { code: "en", label: "English", flag: "🇬🇧" },
+  ];
 
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out border-b ${
         isTransparent
-          ? "bg-transparent border-white/[0.08]"
-          : "bg-hero/95 backdrop-blur-md border-white/[0.08] shadow-lg shadow-black/10"
+          ? "bg-transparent border-white/[0.12]"
+          : "bg-hero/95 backdrop-blur-md border-white/[0.12] shadow-lg shadow-black/10"
       }`}
     >
       <div className="container mx-auto px-4">
@@ -82,7 +100,7 @@ const Navbar = () => {
           </Link>
 
           {/* Desktop nav */}
-          <div className="hidden lg:flex items-center gap-1">
+          <div className="hidden lg:flex items-center gap-1.5">
             {navLinks.map((link) => {
               const isHash = link.path.startsWith("/#");
               const isActive = isHash
@@ -109,10 +127,10 @@ const Navbar = () => {
                   key={link.path}
                   to={isHash ? "/" : link.path}
                   onClick={handleClick}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                  className={`px-4 py-2 rounded-lg text-[15px] font-medium transition-all duration-200 ${
                     isActive
                       ? "text-white bg-white/15"
-                      : "text-white/70 hover:text-white hover:bg-white/10"
+                      : "text-white/80 hover:text-white hover:bg-white/10"
                   }`}
                 >
                   {link.label}
@@ -121,7 +139,38 @@ const Navbar = () => {
             })}
           </div>
 
-          <div className="hidden lg:block">
+          <div className="hidden lg:flex items-center gap-3">
+            {/* Language dropdown */}
+            <div className="relative">
+              <button
+                onClick={(e) => { e.stopPropagation(); setLangOpen(!langOpen); }}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-all duration-200 cursor-pointer"
+                aria-label={t('language')}
+              >
+                <Globe size={16} />
+                <span className="uppercase">{language}</span>
+                <ChevronDown size={14} className={`transition-transform duration-200 ${langOpen ? 'rotate-180' : ''}`} />
+              </button>
+              {langOpen && (
+                <div className="absolute right-0 top-full mt-2 w-40 rounded-xl bg-hero/95 backdrop-blur-md border border-white/[0.12] shadow-xl overflow-hidden animate-fade-in">
+                  {languages.map((lang) => (
+                    <button
+                      key={lang.code}
+                      onClick={() => { setLanguage(lang.code); setLangOpen(false); }}
+                      className={`w-full flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium transition-colors cursor-pointer ${
+                        language === lang.code
+                          ? "text-white bg-white/15"
+                          : "text-white/70 hover:text-white hover:bg-white/10"
+                      }`}
+                    >
+                      <span>{lang.flag}</span>
+                      <span>{lang.label}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
             <Button variant="hero" size="default" asChild>
               <Link to="/contacto">{navCta}</Link>
             </Button>
@@ -131,7 +180,7 @@ const Navbar = () => {
           <button
             onClick={() => setIsOpen(!isOpen)}
             className="lg:hidden text-white p-2"
-            aria-label={isOpen ? 'Cerrar menú' : 'Abrir menú'}
+            aria-label={isOpen ? t('nav.closeMenu') : t('nav.openMenu')}
             aria-expanded={isOpen}
           >
             {isOpen ? <X size={24} /> : <Menu size={24} />}
@@ -174,6 +223,25 @@ const Navbar = () => {
                   </Link>
                 );
               })}
+
+              {/* Mobile language switcher */}
+              <div className="flex gap-2 px-4 py-2">
+                {languages.map((lang) => (
+                  <button
+                    key={lang.code}
+                    onClick={() => setLanguage(lang.code)}
+                    className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
+                      language === lang.code
+                        ? "text-white bg-white/15"
+                        : "text-white/50 hover:text-white"
+                    }`}
+                  >
+                    <span>{lang.flag}</span>
+                    <span>{lang.label}</span>
+                  </button>
+                ))}
+              </div>
+
               <Button variant="hero" size="default" className="mt-2" asChild>
                 <Link to="/contacto" onClick={() => setIsOpen(false)}>
                   {navCta}
