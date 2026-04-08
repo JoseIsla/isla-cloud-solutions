@@ -97,7 +97,7 @@ export const contactsApi = {
 
 // Contents
 export const contentsApi = {
-  list: () => apiRequest<Record<string, ContentFromAPI>>('/api/contents'),
+  list: (lang?: string) => apiRequest<Record<string, ContentFromAPI>>(`/api/contents${lang ? `?lang=${lang}` : ''}`),
   listFresh: (token: string) => apiRequest<Record<string, ContentFromAPI>>('/api/contents', { token }),
   update: (key: string, value: string, token: string, title?: string) =>
     apiRequest(`/api/contents/${key}`, { method: 'PUT', body: { value, title }, token }),

@@ -1,18 +1,50 @@
 const express = require('express');
 const pool = require('../config/db');
 const { authMiddleware } = require('../middleware/auth');
-const { body, param, validationResult } = require('express-validator');
+const { body, param, query, validationResult } = require('express-validator');
+const { translateAndSave } = require('../services/translator');
 
 const router = express.Router();
 
-// GET /api/contents (public)
-router.get('/', async (req, res) => {
+// GET /api/contents (public) — supports ?lang=en
+router.get('/', [
+  query('lang').optional().isIn(['es', 'en']),
+], async (req, res) => {
   let conn;
   try {
+    const lang = req.query.lang || 'es';
     conn = await pool.getConnection();
     const rows = await conn.query('SELECT * FROM contents');
+
     const map = {};
-    rows.forEach(row => { map[row.content_key] = row; });
+
+    if (lang === 'en') {
+      // Build maps: base keys and __en keys
+      const baseRows = {};
+      const enRows = {};
+      rows.forEach(row => {
+        if (row.content_key.endsWith('__en')) {
+          enRows[row.content_key.replace('__en', '')] = row;
+        } else {
+          baseRows[row.content_key] = row;
+        }
+      });
+
+      // For each base key, prefer __en version, fallback to ES
+      for (const [key, row] of Object.entries(baseRows)) {
+        map[key] = enRows[key] || row;
+        // Ensure the key in the response is the base key
+        map[key] = { ...map[key], content_key: key };
+      }
+    } else {
+      // Spanish: return only base keys (exclude __en)
+      rows.forEach(row => {
+        if (!row.content_key.endsWith('__en')) {
+          map[row.content_key] = row;
+        }
+      });
+    }
+
     res.json(map);
   } catch (err) {
     console.error('GET /api/contents error:', err.message);
@@ -22,7 +54,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// PUT /api/contents/:key (admin)
+// PUT /api/contents/:key (admin) — auto-translates to EN in background
 router.put('/:key', authMiddleware, [
   param('key').trim().notEmpty().isLength({ max: 100 }).matches(/^[a-z0-9_]+$/),
   body('value').optional().isLength({ max: 100000 }),
@@ -36,14 +68,18 @@ router.put('/:key', authMiddleware, [
   try {
     const { value, title, content_type } = req.body;
     conn = await pool.getConnection();
-    const existing = await conn.query('SELECT id FROM contents WHERE content_key = ?', [req.params.key]);
-    
+    const existing = await conn.query('SELECT id, content_type FROM contents WHERE content_key = ?', [req.params.key]);
+
+    let resolvedContentType = content_type;
+
     if (existing.length === 0) {
+      resolvedContentType = content_type || 'text';
       await conn.query(
         'INSERT INTO contents (content_key, title, value, content_type) VALUES (?, ?, ?, ?)',
-        [req.params.key, title || req.params.key, value || '', content_type || 'text']
+        [req.params.key, title || req.params.key, value || '', resolvedContentType]
       );
     } else {
+      resolvedContentType = content_type || existing[0].content_type || 'text';
       const updates = ['value = ?'];
       const params = [value || ''];
       if (title !== undefined) {
@@ -61,7 +97,14 @@ router.put('/:key', authMiddleware, [
         params
       );
     }
+
     res.json({ message: 'Contenido actualizado' });
+
+    // Fire-and-forget: translate in background
+    if (!req.params.key.endsWith('__en')) {
+      translateAndSave(pool, req.params.key, value || '', resolvedContentType, title)
+        .catch(err => console.error('[Translator] Background error:', err.message));
+    }
   } catch (err) {
     console.error('Error updating content:', req.params.key, err.message);
     res.status(500).json({ error: 'Error del servidor' });
