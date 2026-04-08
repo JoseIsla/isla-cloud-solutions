@@ -100,9 +100,11 @@ export const contentsApi = {
   list: (lang?: string) => apiRequest<Record<string, ContentFromAPI>>(`/api/contents${lang ? `?lang=${lang}` : ''}`),
   listFresh: (token: string) => apiRequest<Record<string, ContentFromAPI>>('/api/contents', { token }),
   update: (key: string, value: string, token: string, title?: string) =>
-    apiRequest(`/api/contents/${key}`, { method: 'PUT', body: { value, title }, token }),
+    apiRequest<ContentUpdateResponse>(`/api/contents/${key}`, { method: 'PUT', body: { value, title }, token }),
   translateAll: (token: string) =>
-    apiRequest<{ message: string; count: number }>('/api/contents/translate-all', { method: 'POST', token }),
+    apiRequest<ContentTranslateAllResponse>('/api/contents/translate-all', { method: 'POST', token }),
+  diagnostics: (token: string) =>
+    apiRequest<ContentTranslationDiagnosticsResponse>('/api/contents/diagnostics', { token }),
 };
 
 // Users (admin management)
@@ -252,6 +254,69 @@ export interface ContentFromAPI {
   title: string;
   value: string;
   content_type: string;
+}
+
+export interface ContentUpdateResponse {
+  message: string;
+  translation?: {
+    queued: boolean;
+    status: 'queued' | 'skipped';
+    message: string;
+  };
+}
+
+export interface ContentTranslationEventFromAPI {
+  id: string;
+  timestamp: string;
+  status: 'info' | 'success' | 'warning' | 'error';
+  stage: string;
+  key: string | null;
+  message: string;
+  details: string;
+}
+
+export interface ContentTranslationDiagnostics {
+  status: 'healthy' | 'warning' | 'error';
+  runtime: {
+    openaiConfigured: boolean;
+    model: string;
+    transport: string;
+    fetchAvailable: boolean;
+  };
+  issues: string[];
+  counts: {
+    totalRows: number;
+    baseRows: number;
+    translatedRows: number;
+    translatableRows: number;
+    missingTranslations: number;
+    staleTranslations: number;
+    skippedRows: number;
+  };
+  sampleMissingKeys: string[];
+  sampleStaleKeys: string[];
+  lastSuccess: ContentTranslationEventFromAPI | null;
+  lastError: ContentTranslationEventFromAPI | null;
+  lastBulkRequest: {
+    timestamp: string;
+    requestedCount: number;
+    sampleKeys: string[];
+  } | null;
+  recentEvents: ContentTranslationEventFromAPI[];
+  error?: string;
+}
+
+export interface ContentTranslationDiagnosticsResponse {
+  ok: boolean;
+  message: string;
+  diagnostics: ContentTranslationDiagnostics;
+}
+
+export interface ContentTranslateAllResponse {
+  ok: boolean;
+  message: string;
+  count: number;
+  diagnostics: ContentTranslationDiagnostics;
 }
 
 export interface ClientFromAPI {
