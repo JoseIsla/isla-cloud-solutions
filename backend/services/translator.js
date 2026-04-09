@@ -528,6 +528,78 @@ async function translateAndSave(pool, key, value, contentType, title) {
   }
 }
 
+/**
+ * Traduce campos de una entidad (servicio, noticia, caso) y guarda en columnas _en.
+ * @param {object} pool - Pool de conexiones
+ * @param {string} table - Nombre de la tabla (services, news, success_cases)
+ * @param {number} id - ID del registro
+ * @param {Array<{field: string, value: string, type: 'text'|'html'}>} fields - Campos a traducir
+ */
+async function translateEntityAndSave(pool, table, id, fields) {
+  const label = `${table}#${id}`;
+  let conn;
+
+  try {
+    const translations = {};
+    for (const { field, value, type } of fields) {
+      if (!value || !String(value).trim()) {
+        translations[field + '_en'] = '';
+        continue;
+      }
+      // Special handling for features (JSON array of strings)
+      if (field === 'features' && type === 'json') {
+        try {
+          const arr = typeof value === 'string' ? JSON.parse(value) : value;
+          if (Array.isArray(arr)) {
+            const translated = [];
+            for (const item of arr) {
+              if (typeof item === 'string' && item.trim()) {
+                const t = await translateToEnglish(item, 'text', `${label}.${field}`);
+                translated.push(t || item);
+              } else {
+                translated.push(item);
+              }
+            }
+            translations[field + '_en'] = JSON.stringify(translated);
+          }
+        } catch (e) {
+          pushDiagnostic({ status: 'warning', stage: 'entity_json', key: label, message: `Error traduciendo features: ${e.message}` });
+        }
+        continue;
+      }
+      const translated = await translateToEnglish(value, type || 'text', `${label}.${field}`);
+      translations[field + '_en'] = translated !== null ? translated : '';
+    }
+
+    const sets = Object.keys(translations).map(col => `\`${col}\` = ?`).join(', ');
+    const values = Object.values(translations);
+    values.push(id);
+
+    conn = await pool.getConnection();
+    await conn.query(`UPDATE \`${table}\` SET ${sets} WHERE id = ?`, values);
+
+    pushDiagnostic({
+      status: 'success',
+      stage: 'entity_translate',
+      key: label,
+      message: `Traducción de ${table} #${id} guardada (${fields.length} campos)`,
+    });
+
+    return { status: 'success', table, id };
+  } catch (err) {
+    pushDiagnostic({
+      status: 'error',
+      stage: 'entity_translate',
+      key: label,
+      message: `Error traduciendo ${table} #${id}`,
+      details: err.message,
+    });
+    return { status: 'error', table, id };
+  } finally {
+    if (conn) conn.release();
+  }
+}
+
 module.exports = {
   canAutoTranslateKey,
   getTranslationDiagnostics,
@@ -537,4 +609,5 @@ module.exports = {
   shouldTranslateContent,
   translateToEnglish,
   translateAndSave,
+  translateEntityAndSave,
 };
