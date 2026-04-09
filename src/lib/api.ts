@@ -62,8 +62,17 @@ export const authApi = {
 
 // Services
 export const servicesApi = {
-  list: (token?: string | null) => apiRequest<ServiceFromAPI[]>('/api/services', { token: token || undefined }),
-  get: (idOrSlug: string) => apiRequest<ServiceFromAPI>(`/api/services/${idOrSlug}`),
+  list: (tokenOrLang?: string | null, lang?: string) => {
+    const isToken = tokenOrLang && tokenOrLang.length > 20;
+    const queryLang = lang || (!isToken ? tokenOrLang : undefined);
+    const token = isToken ? tokenOrLang : undefined;
+    const qs = queryLang && queryLang !== 'es' ? `?lang=${queryLang}` : '';
+    return apiRequest<ServiceFromAPI[]>(`/api/services${qs}`, { token: token || undefined });
+  },
+  get: (idOrSlug: string, lang?: string) => {
+    const qs = lang && lang !== 'es' ? `?lang=${lang}` : '';
+    return apiRequest<ServiceFromAPI>(`/api/services/${idOrSlug}${qs}`);
+  },
   create: (data: Partial<ServiceFromAPI>, token: string) =>
     apiRequest<{ id: number }>('/api/services', { method: 'POST', body: data, token }),
   update: (id: number, data: Partial<ServiceFromAPI>, token: string) =>
@@ -74,8 +83,17 @@ export const servicesApi = {
 
 // News
 export const newsApi = {
-  list: (token?: string | null) => apiRequest<NewsFromAPI[]>('/api/news', { token: token || undefined }),
-  get: (idOrSlug: string) => apiRequest<NewsFromAPI>(`/api/news/${idOrSlug}`),
+  list: (tokenOrLang?: string | null, lang?: string) => {
+    const isToken = tokenOrLang && tokenOrLang.length > 20;
+    const queryLang = lang || (!isToken ? tokenOrLang : undefined);
+    const token = isToken ? tokenOrLang : undefined;
+    const qs = queryLang && queryLang !== 'es' ? `?lang=${queryLang}` : '';
+    return apiRequest<NewsFromAPI[]>(`/api/news${qs}`, { token: token || undefined });
+  },
+  get: (idOrSlug: string, lang?: string) => {
+    const qs = lang && lang !== 'es' ? `?lang=${lang}` : '';
+    return apiRequest<NewsFromAPI>(`/api/news/${idOrSlug}${qs}`);
+  },
   create: (data: Partial<NewsFromAPI>, token: string) =>
     apiRequest<{ id: number }>('/api/news', { method: 'POST', body: data, token }),
   update: (id: number, data: Partial<NewsFromAPI>, token: string) =>
@@ -159,8 +177,17 @@ export const testimonialsApi = {
 
 // Cases (success stories)
 export const casesApi = {
-  list: (token?: string | null) => apiRequest<CaseFromAPI[]>('/api/cases', { token: token || undefined }),
-  get: (idOrSlug: number | string) => apiRequest<CaseFromAPI>(`/api/cases/${idOrSlug}`),
+  list: (tokenOrLang?: string | null, lang?: string) => {
+    const isToken = tokenOrLang && tokenOrLang.length > 20;
+    const queryLang = lang || (!isToken ? tokenOrLang : undefined);
+    const token = isToken ? tokenOrLang : undefined;
+    const qs = queryLang && queryLang !== 'es' ? `?lang=${queryLang}` : '';
+    return apiRequest<CaseFromAPI[]>(`/api/cases${qs}`, { token: token || undefined });
+  },
+  get: (idOrSlug: number | string, lang?: string) => {
+    const qs = lang && lang !== 'es' ? `?lang=${lang}` : '';
+    return apiRequest<CaseFromAPI>(`/api/cases/${idOrSlug}${qs}`);
+  },
   create: (data: Partial<CaseFromAPI>, token: string) =>
     apiRequest<{ id: number }>('/api/cases', { method: 'POST', body: data, token }),
   update: (id: number, data: Partial<CaseFromAPI>, token: string) =>
