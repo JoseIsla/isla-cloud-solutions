@@ -11,6 +11,19 @@ const MAX_RECENT_EVENTS = 50;
 const skipPatterns = [
   '_logo_', '_bg_', '_image', '_url', '_icon', '_color',
   'social_links', 'recaptcha', 'site_logo', 'hero_bg',
+  '_order', '_link_url', '_href',
+];
+
+// Keys whose value is a route path (starts with /) — never translate
+const skipExactKeys = [
+  // Navigation link URLs are routes, not translatable text
+];
+
+// Brand terms that must never be altered by DeepL
+const BRAND_GLOSSARY = [
+  { term: 'Isla Cloud Solutions', replacement: 'Isla Cloud Solutions' },
+  { term: 'Isla Cloud', replacement: 'Isla Cloud' },
+  { term: 'IslaCloud', replacement: 'IslaCloud' },
 ];
 
 const translatorState = {
