@@ -44,7 +44,7 @@ const TranslationDiagnosticsCard = ({ diagnostics, error, loading = false, onRef
         <div>
           <h3 className="font-heading font-semibold text-foreground">Diagnóstico de traducción EN</h3>
           <p className="mt-1 text-sm text-muted-foreground">
-            Verifica si faltan filas __en, el estado de OpenAI y el último error capturado del backend.
+            Verifica si faltan filas __en, el estado de DeepL y el último error capturado del backend.
           </p>
         </div>
 
@@ -88,7 +88,7 @@ const TranslationDiagnosticsCard = ({ diagnostics, error, loading = false, onRef
               <h4 className="text-sm font-medium text-foreground">Estado del backend</h4>
               <dl className="mt-3 grid gap-3 sm:grid-cols-2">
                 <div>
-                  <dt className="text-xs uppercase tracking-[0.12em] text-muted-foreground">OpenAI</dt>
+                  <dt className="text-xs uppercase tracking-[0.12em] text-muted-foreground">DeepL</dt>
                   <dd className="mt-1 text-sm text-foreground">
                     {diagnostics.runtime.openaiConfigured ? 'Configurada' : 'No configurada'}
                   </dd>
