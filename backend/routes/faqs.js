@@ -1,7 +1,8 @@
 const express = require('express');
 const pool = require('../config/db');
 const { authMiddleware } = require('../middleware/auth');
-const { body, param, validationResult } = require('express-validator');
+const { body, param, query, validationResult } = require('express-validator');
+const { translateEntityAndSave } = require('../services/translator');
 
 const router = express.Router();
 
@@ -14,15 +15,24 @@ const faqValidation = [
 
 const idParam = param('id').isInt({ min: 1 });
 
+function applyLang(row, lang) {
+  if (lang !== 'en') return row;
+  const r = { ...row };
+  if (r.question_en) r.question = r.question_en;
+  if (r.answer_en) r.answer = r.answer_en;
+  return r;
+}
+
 // GET /api/faqs — public (active only, sorted)
-router.get('/', async (req, res) => {
+router.get('/', [query('lang').optional().isIn(['es', 'en'])], async (req, res) => {
   let conn;
   try {
+    const lang = req.query.lang || 'es';
     conn = await pool.getConnection();
     const rows = await conn.query(
       'SELECT * FROM faqs WHERE is_active = 1 ORDER BY sort_order ASC, id ASC'
     );
-    res.json(rows);
+    res.json(rows.map(r => applyLang(r, lang)));
   } catch (err) {
     console.error('GET /api/faqs error:', err.message);
     res.status(500).json({ error: 'Error obteniendo FAQs' });
@@ -59,7 +69,13 @@ router.post('/', authMiddleware, faqValidation, async (req, res) => {
       'INSERT INTO faqs (question, answer, sort_order, is_active) VALUES (?, ?, ?, ?)',
       [question, answer, sort_order, is_active]
     );
-    res.status(201).json({ id: Number(result.insertId) });
+    const insertedId = Number(result.insertId);
+    res.status(201).json({ id: insertedId });
+
+    translateEntityAndSave(pool, 'faqs', insertedId, [
+      { field: 'question', value: question, type: 'text' },
+      { field: 'answer', value: answer, type: 'html' },
+    ]).catch(err => console.error('[Translator] FAQ create error:', err.message));
   } catch (err) {
     console.error('POST /api/faqs error:', err.message);
     res.status(500).json({ error: 'Error creando FAQ' });
@@ -82,6 +98,11 @@ router.put('/:id', authMiddleware, idParam, faqValidation, async (req, res) => {
       [question, answer, sort_order, is_active, req.params.id]
     );
     res.json({ success: true });
+
+    translateEntityAndSave(pool, 'faqs', Number(req.params.id), [
+      { field: 'question', value: question, type: 'text' },
+      { field: 'answer', value: answer, type: 'html' },
+    ]).catch(err => console.error('[Translator] FAQ update error:', err.message));
   } catch (err) {
     console.error('PUT /api/faqs/:id error:', err.message);
     res.status(500).json({ error: 'Error actualizando FAQ' });
