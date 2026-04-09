@@ -11,7 +11,7 @@ import { serviceImages } from "@/data/serviceImages";
 import { servicesApi, type ServiceFromAPI } from "@/lib/api";
 import { useEffect, useState, useMemo } from "react";
 import { sanitizeHTML } from "@/lib/sanitize";
-import { useT } from "@/i18n/LanguageContext";
+import { useT, useLanguage } from "@/i18n/LanguageContext";
 
 const iconMap: Record<string, LucideIcon> = {
   Server, Shield, Cloud, Monitor, Globe, Smartphone, Lock, Wrench, Database,
@@ -20,16 +20,17 @@ const iconMap: Record<string, LucideIcon> = {
 const ServicioDetalle = () => {
   const { slug } = useParams();
   const t = useT();
+  const { language } = useLanguage();
   const [apiService, setApiService] = useState<ServiceFromAPI | null>(null);
   const [loading, setLoading] = useState(true);
   const [apiError, setApiError] = useState(false);
 
   useEffect(() => {
     if (!slug) return;
-    servicesApi.get(slug)
+    servicesApi.get(slug, language)
       .then((data) => { setApiService(data); setLoading(false); })
       .catch(() => { setApiError(true); setLoading(false); });
-  }, [slug]);
+  }, [slug, language]);
 
   const fallback = fallbackServices.find((s) => s.slug === slug);
   const useApi = apiService && !apiError;

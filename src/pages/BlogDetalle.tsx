@@ -24,11 +24,11 @@ const BlogDetalle = () => {
 
   useEffect(() => {
     if (!slug) return;
-    newsApi.get(slug)
+    newsApi.get(slug, language)
       .then((data) => {
         setPost(data);
         if (data.category) {
-          newsApi.list().then((all) => {
+          newsApi.list(language).then((all) => {
             const filtered = all
               .filter((n) => n.category === data.category && n.slug !== data.slug && n.is_published)
               .slice(0, 3);
@@ -38,7 +38,7 @@ const BlogDetalle = () => {
       })
       .catch(() => setNotFound(true))
       .finally(() => setLoading(false));
-  }, [slug]);
+  }, [slug, language]);
 
   const articleJsonLd = useMemo(() => {
     if (!post) return undefined;
