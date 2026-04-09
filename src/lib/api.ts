@@ -121,6 +121,8 @@ export const contentsApi = {
     apiRequest<ContentUpdateResponse>(`/api/contents/${key}`, { method: 'PUT', body: { value, title }, token }),
   translateAll: (token: string) =>
     apiRequest<ContentTranslateAllResponse>('/api/contents/translate-all', { method: 'POST', token }),
+  translateEntities: (token: string) =>
+    apiRequest<{ ok: boolean; message: string; count: number }>('/api/contents/translate-entities', { method: 'POST', token }),
   diagnostics: (token: string) =>
     apiRequest<ContentTranslationDiagnosticsResponse>('/api/contents/diagnostics', { token }),
 };
