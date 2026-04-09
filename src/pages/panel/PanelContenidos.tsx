@@ -419,6 +419,31 @@ const PanelContenidos = () => {
           {translating ? <Loader2 size={16} className="animate-spin" /> : <Languages size={16} />}
           {translating ? 'Traduciendo...' : 'Traducir todo a EN'}
         </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          disabled={translating || !token}
+          onClick={async () => {
+            if (!token) return;
+            setTranslating(true);
+            try {
+              const res = await contentsApi.translateEntities(token);
+              if (res.ok) {
+                toast.success(`${res.count} entidades (servicios, noticias, casos) enviadas a traducir.`);
+              } else {
+                toast.error(res.message || 'Error al traducir entidades');
+              }
+            } catch (e: any) {
+              toast.error(e.message || 'Error al traducir entidades');
+            } finally {
+              setTranslating(false);
+            }
+          }}
+          className="gap-2"
+        >
+          {translating ? <Loader2 size={16} className="animate-spin" /> : <Languages size={16} />}
+          Traducir servicios/noticias/casos
+        </Button>
       </div>
 
       {token && (

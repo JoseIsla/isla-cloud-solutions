@@ -1,7 +1,8 @@
 const express = require('express');
 const pool = require('../config/db');
 const { authMiddleware } = require('../middleware/auth');
-const { body, param, validationResult } = require('express-validator');
+const { body, param, query, validationResult } = require('express-validator');
+const { translateEntityAndSave } = require('../services/translator');
 
 const router = express.Router();
 
@@ -19,15 +20,38 @@ const serviceValidation = [
 
 const idParam = param('id').isInt({ min: 1 });
 
+/** Apply _en fields when lang=en, falling back to ES */
+function applyLang(row, lang) {
+  if (lang !== 'en') return row;
+  const r = { ...row };
+  if (r.title_en) r.title = r.title_en;
+  if (r.short_title_en) r.short_title = r.short_title_en;
+  if (r.description_en) r.description = r.description_en;
+  if (r.long_description_en) r.long_description = r.long_description_en;
+  if (r.features_en) {
+    try { r.features = typeof r.features_en === 'string' ? JSON.parse(r.features_en) : r.features_en; } catch {}
+  }
+  return r;
+}
+
+function parseFeatures(s) {
+  return typeof s === 'string' ? JSON.parse(s) : s;
+}
+
 // GET /api/services (public)
-router.get('/', async (req, res) => {
+router.get('/', [query('lang').optional().isIn(['es', 'en'])], async (req, res) => {
   let conn;
   try {
+    const lang = req.query.lang || 'es';
     conn = await pool.getConnection();
     const rows = await conn.query(
       'SELECT * FROM services WHERE is_active = 1 ORDER BY sort_order ASC, id ASC'
     );
-    const services = rows.map(s => ({ ...s, features: typeof s.features === 'string' ? JSON.parse(s.features) : s.features }));
+    const services = rows.map(s => {
+      const r = applyLang(s, lang);
+      r.features = parseFeatures(r.features);
+      return r;
+    });
     res.json(services);
   } catch (err) {
     console.error('GET /api/services error:', err.message);
@@ -38,14 +62,15 @@ router.get('/', async (req, res) => {
 });
 
 // GET /api/services/:id (public)
-router.get('/:id', async (req, res) => {
+router.get('/:id', [query('lang').optional().isIn(['es', 'en'])], async (req, res) => {
   let conn;
   try {
+    const lang = req.query.lang || 'es';
     conn = await pool.getConnection();
     const rows = await conn.query('SELECT * FROM services WHERE id = ? OR slug = ?', [req.params.id, req.params.id]);
     if (rows.length === 0) return res.status(404).json({ error: 'Servicio no encontrado' });
-    const s = rows[0];
-    s.features = typeof s.features === 'string' ? JSON.parse(s.features) : s.features;
+    const s = applyLang(rows[0], lang);
+    s.features = parseFeatures(s.features);
     res.json(s);
   } catch (err) {
     console.error('GET /api/services/:id error:', err.message);
@@ -68,7 +93,17 @@ router.post('/', authMiddleware, serviceValidation, async (req, res) => {
       'INSERT INTO services (slug, title, short_title, description, long_description, icon, features, image_url, sort_order) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
       [slug, title, short_title, description || '', long_description || '', icon || 'Server', JSON.stringify(features || []), image_url || '', sort_order || 0]
     );
-    res.status(201).json({ id: Number(result.insertId), message: 'Servicio creado' });
+    const insertedId = Number(result.insertId);
+    res.status(201).json({ id: insertedId, message: 'Servicio creado' });
+
+    // Fire-and-forget translation
+    translateEntityAndSave(pool, 'services', insertedId, [
+      { field: 'title', value: title, type: 'text' },
+      { field: 'short_title', value: short_title, type: 'text' },
+      { field: 'description', value: description || '', type: 'text' },
+      { field: 'long_description', value: long_description || '', type: 'html' },
+      { field: 'features', value: JSON.stringify(features || []), type: 'json' },
+    ]).catch(err => console.error('[Translator] Service create error:', err.message));
   } catch (err) {
     console.error('POST /api/services error:', err.message);
     res.status(500).json({ error: 'Error del servidor' });
@@ -91,6 +126,15 @@ router.put('/:id', authMiddleware, idParam, serviceValidation, async (req, res) 
       [slug, title, short_title, description, long_description, icon, JSON.stringify(features || []), image_url, sort_order || 0, is_active !== undefined ? is_active : 1, req.params.id]
     );
     res.json({ message: 'Servicio actualizado' });
+
+    // Fire-and-forget translation
+    translateEntityAndSave(pool, 'services', Number(req.params.id), [
+      { field: 'title', value: title, type: 'text' },
+      { field: 'short_title', value: short_title, type: 'text' },
+      { field: 'description', value: description || '', type: 'text' },
+      { field: 'long_description', value: long_description || '', type: 'html' },
+      { field: 'features', value: JSON.stringify(features || []), type: 'json' },
+    ]).catch(err => console.error('[Translator] Service update error:', err.message));
   } catch (err) {
     console.error('PUT /api/services/:id error:', err.message);
     res.status(500).json({ error: 'Error del servidor' });

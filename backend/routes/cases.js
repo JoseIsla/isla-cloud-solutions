@@ -1,8 +1,9 @@
 const express = require('express');
 const pool = require('../config/db');
 const { authMiddleware } = require('../middleware/auth');
-const { body, param, validationResult } = require('express-validator');
+const { body, param, query, validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
+const { translateEntityAndSave } = require('../services/translator');
 
 const router = express.Router();
 
@@ -30,10 +31,20 @@ function verifyToken(req) {
   }
 }
 
+function applyLang(row, lang) {
+  if (lang !== 'en') return row;
+  const r = { ...row };
+  if (r.title_en) r.title = r.title_en;
+  if (r.excerpt_en) r.excerpt = r.excerpt_en;
+  if (r.description_en) r.description = r.description_en;
+  return r;
+}
+
 // GET /api/cases (public/admin)
-router.get('/', async (req, res) => {
+router.get('/', [query('lang').optional().isIn(['es', 'en'])], async (req, res) => {
   let conn;
   try {
+    const lang = req.query.lang || 'es';
     conn = await pool.getConnection();
     const user = verifyToken(req);
     let rows;
@@ -42,7 +53,8 @@ router.get('/', async (req, res) => {
     } else {
       rows = await conn.query('SELECT * FROM success_cases WHERE is_active = 1 ORDER BY sort_order ASC, created_at DESC');
     }
-    res.json(rows);
+    const mapped = user ? rows : rows.map(r => applyLang(r, lang));
+    res.json(mapped);
   } catch (err) {
     console.error('GET /api/cases error:', err.message);
     res.status(500).json({ error: 'Error del servidor' });
@@ -52,13 +64,14 @@ router.get('/', async (req, res) => {
 });
 
 // GET /api/cases/:id (public - by id or slug)
-router.get('/:id', async (req, res) => {
+router.get('/:id', [query('lang').optional().isIn(['es', 'en'])], async (req, res) => {
   let conn;
   try {
+    const lang = req.query.lang || 'es';
     conn = await pool.getConnection();
     const rows = await conn.query('SELECT * FROM success_cases WHERE id = ? OR slug = ?', [req.params.id, req.params.id]);
     if (rows.length === 0) return res.status(404).json({ error: 'Caso no encontrado' });
-    res.json(rows[0]);
+    res.json(applyLang(rows[0], lang));
   } catch (err) {
     console.error('GET /api/cases/:id error:', err.message);
     res.status(500).json({ error: 'Error del servidor' });
@@ -80,7 +93,14 @@ router.post('/', authMiddleware, caseValidation, async (req, res) => {
       'INSERT INTO success_cases (title, slug, client_name, excerpt, description, image_url, sort_order, is_active, meta_title, meta_description, noindex, nofollow) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
       [title, slug || '', client_name, excerpt || '', description || '', image_url || '', sort_order || 0, is_active !== undefined ? (is_active ? 1 : 0) : 1, meta_title || '', meta_description || '', noindex ? 1 : 0, nofollow ? 1 : 0]
     );
-    res.status(201).json({ id: Number(result.insertId), message: 'Caso de éxito creado' });
+    const insertedId = Number(result.insertId);
+    res.status(201).json({ id: insertedId, message: 'Caso de éxito creado' });
+
+    translateEntityAndSave(pool, 'success_cases', insertedId, [
+      { field: 'title', value: title, type: 'text' },
+      { field: 'excerpt', value: excerpt || '', type: 'text' },
+      { field: 'description', value: description || '', type: 'html' },
+    ]).catch(err => console.error('[Translator] Case create error:', err.message));
   } catch (err) {
     console.error('POST /api/cases error:', err.message);
     res.status(500).json({ error: 'Error del servidor' });
@@ -103,6 +123,12 @@ router.put('/:id', authMiddleware, idParam, caseValidation, async (req, res) => 
       [title, slug || '', client_name, excerpt, description, image_url, sort_order || 0, is_active ? 1 : 0, meta_title || '', meta_description || '', noindex ? 1 : 0, nofollow ? 1 : 0, req.params.id]
     );
     res.json({ message: 'Caso de éxito actualizado' });
+
+    translateEntityAndSave(pool, 'success_cases', Number(req.params.id), [
+      { field: 'title', value: title, type: 'text' },
+      { field: 'excerpt', value: excerpt || '', type: 'text' },
+      { field: 'description', value: description || '', type: 'html' },
+    ]).catch(err => console.error('[Translator] Case update error:', err.message));
   } catch (err) {
     console.error('PUT /api/cases/:id error:', err.message);
     res.status(500).json({ error: 'Error del servidor' });

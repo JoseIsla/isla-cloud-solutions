@@ -9,12 +9,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 import usePageMeta, { SITE_URL, SITE_NAME } from "@/hooks/usePageMeta";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import Pagination from "@/components/Pagination";
-import { useT } from "@/i18n/LanguageContext";
+import { useT, useLanguage } from "@/i18n/LanguageContext";
 
 const ITEMS_PER_PAGE = 9;
 
 const Casos = () => {
   const t = useT();
+  const { language } = useLanguage();
   const [cases, setCases] = useState<CaseFromAPI[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -48,11 +49,11 @@ const Casos = () => {
   });
 
   useEffect(() => {
-    casesApi.list()
+    casesApi.list(language)
       .then((data) => setCases(data.filter((c) => c.is_active)))
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, []);
+  }, [language]);
 
   const totalPages = Math.ceil(cases.length / ITEMS_PER_PAGE);
   const paginatedCases = cases.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);

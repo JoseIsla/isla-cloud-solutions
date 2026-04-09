@@ -10,13 +10,14 @@ import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { sanitizeHTML } from "@/lib/sanitize";
 import ShareButtons from "@/components/ShareButtons";
 import BlurImage from "@/components/BlurImage";
-import { useT } from "@/i18n/LanguageContext";
+import { useT, useLanguage } from "@/i18n/LanguageContext";
 
 const stripHtml = (html: string) => html.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
 
 const CasoDetalle = () => {
   const { id } = useParams<{ id: string }>();
   const t = useT();
+  const { language } = useLanguage();
   const [caso, setCaso] = useState<CaseFromAPI | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -63,11 +64,11 @@ const CasoDetalle = () => {
 
   useEffect(() => {
     if (!id) return;
-    casesApi.get(id)
+    casesApi.get(id, language)
       .then(setCaso)
       .catch(() => setError(true))
       .finally(() => setLoading(false));
-  }, [id]);
+  }, [id, language]);
 
   if (loading) {
     return (

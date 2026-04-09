@@ -50,11 +50,11 @@ const BlogPage = () => {
   });
 
   useEffect(() => {
-    newsApi.list()
+    newsApi.list(language)
       .then((data) => setPosts(data.filter((p) => p.is_published)))
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, []);
+  }, [language]);
 
   const totalPages = Math.ceil(posts.length / ITEMS_PER_PAGE);
   const paginatedPosts = posts.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);

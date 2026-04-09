@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import BlurImage from "@/components/BlurImage";
 import { useEffect, useState } from "react";
+import { useLanguage } from "@/i18n/LanguageContext";
 import { services as fallbackServices } from "@/data/services";
 import { servicesApi, type ServiceFromAPI } from "@/lib/api";
 import { useCMSValue } from "@/hooks/useCMS";
@@ -37,10 +38,11 @@ const ServicesSection = () => {
     "Resolvemos los Problemas Tecnológicos que Frenan tu Empresa"
   );
   const [apiServices, setApiServices] = useState<ServiceFromAPI[] | null>(null);
+  const { language } = useLanguage();
 
   useEffect(() => {
-    servicesApi.list().then(setApiServices).catch(() => setApiServices(null));
-  }, []);
+    servicesApi.list(language).then(setApiServices).catch(() => setApiServices(null));
+  }, [language]);
 
   const useApi = apiServices && apiServices.length > 0;
 

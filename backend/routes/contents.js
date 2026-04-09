@@ -9,6 +9,7 @@ const {
   noteBulkTranslationRequested,
   shouldTranslateContent,
   translateAndSave,
+  translateEntityAndSave,
 } = require('../services/translator');
 
 const router = express.Router();
@@ -210,6 +211,69 @@ router.post('/translate-all', authMiddleware, async (req, res) => {
     })();
   } catch (err) {
     console.error('POST /api/contents/translate-all error:', err.message);
+    res.status(500).json({ error: 'Error del servidor' });
+  } finally {
+    if (conn) conn.release();
+  }
+});
+
+// POST /api/contents/translate-entities (admin) — translate all services, news, cases
+router.post('/translate-entities', authMiddleware, async (req, res) => {
+  let conn;
+  try {
+    if (!getTranslatorRuntimeState().deeplConfigured) {
+      return res.json({ ok: false, message: 'DEEPL_API_KEY no está configurada.' });
+    }
+
+    conn = await pool.getConnection();
+    const services = await conn.query('SELECT id, title, short_title, description, long_description, features FROM services');
+    const news = await conn.query('SELECT id, title, excerpt, content FROM news');
+    const cases = await conn.query('SELECT id, title, excerpt, description FROM success_cases');
+    conn.release();
+    conn = null;
+
+    const total = services.length + news.length + cases.length;
+    res.json({ ok: true, message: `Traduciendo ${total} entidades en background`, count: total });
+
+    // Fire-and-forget
+    (async () => {
+      const DELAY_MS = 1200;
+      for (const s of services) {
+        try {
+          await translateEntityAndSave(pool, 'services', s.id, [
+            { field: 'title', value: s.title, type: 'text' },
+            { field: 'short_title', value: s.short_title, type: 'text' },
+            { field: 'description', value: s.description || '', type: 'text' },
+            { field: 'long_description', value: s.long_description || '', type: 'html' },
+            { field: 'features', value: typeof s.features === 'string' ? s.features : JSON.stringify(s.features || []), type: 'json' },
+          ]);
+        } catch (err) { console.error('[Translator] Bulk service error:', err.message); }
+        await new Promise(r => setTimeout(r, DELAY_MS));
+      }
+      for (const n of news) {
+        try {
+          await translateEntityAndSave(pool, 'news', n.id, [
+            { field: 'title', value: n.title, type: 'text' },
+            { field: 'excerpt', value: n.excerpt || '', type: 'text' },
+            { field: 'content', value: n.content || '', type: 'html' },
+          ]);
+        } catch (err) { console.error('[Translator] Bulk news error:', err.message); }
+        await new Promise(r => setTimeout(r, DELAY_MS));
+      }
+      for (const c of cases) {
+        try {
+          await translateEntityAndSave(pool, 'success_cases', c.id, [
+            { field: 'title', value: c.title, type: 'text' },
+            { field: 'excerpt', value: c.excerpt || '', type: 'text' },
+            { field: 'description', value: c.description || '', type: 'html' },
+          ]);
+        } catch (err) { console.error('[Translator] Bulk case error:', err.message); }
+        await new Promise(r => setTimeout(r, DELAY_MS));
+      }
+      console.log(`[Translator] Bulk entity translation finished: ${total} items processed`);
+    })();
+  } catch (err) {
+    console.error('POST /api/contents/translate-entities error:', err.message);
     res.status(500).json({ error: 'Error del servidor' });
   } finally {
     if (conn) conn.release();

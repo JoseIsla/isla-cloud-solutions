@@ -8,7 +8,7 @@ import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { services as fallbackServices } from "@/data/services";
 import { servicesApi, type ServiceFromAPI } from "@/lib/api";
 import { useCMSValue } from "@/hooks/useCMS";
-import { useT } from "@/i18n/LanguageContext";
+import { useT, useLanguage } from "@/i18n/LanguageContext";
 import { useEffect, useState, useMemo } from "react";
 
 const iconMap: Record<string, LucideIcon> = {
@@ -17,13 +17,14 @@ const iconMap: Record<string, LucideIcon> = {
 
 const ServiciosPage = () => {
   const t = useT();
+  const { language } = useLanguage();
   const [apiServices, setApiServices] = useState<ServiceFromAPI[] | null>(null);
 
   useEffect(() => {
-    servicesApi.list()
+    servicesApi.list(language)
       .then(setApiServices)
       .catch(() => setApiServices(null));
-  }, []);
+  }, [language]);
 
   const useApi = apiServices && apiServices.length > 0;
 
