@@ -112,6 +112,10 @@ const en: Record<string, string> = {
   "cases.subtitle": "Learn how we've helped real businesses achieve their goals with cloud technology.",
   "cases.coming_soon": "We'll be publishing our success stories soon.",
   "cases.view_detail": "View details",
+  "cases.back": "Back to cases",
+  "cases.success_story": "Success story",
+  "cases.client": "Client",
+  "cases.not_found": "Success story not found",
 
   // Contact page
   "contact.label": "Contact",
@@ -170,6 +174,12 @@ const en: Record<string, string> = {
   "services_page.title": "Complete IT solutions for your business",
   "services_page.subtitle": "Discover all our technology services designed to boost your company's productivity and security.",
   "services_page.view_detail": "View details",
+  "services_page.all_services": "All services",
+  "services_page.description_title": "Service description",
+  "services_page.features": "Features",
+  "services_page.request_info": "Request information",
+  "services_page.not_found": "Service not found",
+  "services_page.back": "Back to services",
 
   // 404
   "notfound.title": "Page not found",

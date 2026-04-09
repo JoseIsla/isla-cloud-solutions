@@ -11,6 +11,7 @@ import { serviceImages } from "@/data/serviceImages";
 import { servicesApi, type ServiceFromAPI } from "@/lib/api";
 import { useEffect, useState, useMemo } from "react";
 import { sanitizeHTML } from "@/lib/sanitize";
+import { useT } from "@/i18n/LanguageContext";
 
 const iconMap: Record<string, LucideIcon> = {
   Server, Shield, Cloud, Monitor, Globe, Smartphone, Lock, Wrench, Database,
@@ -18,6 +19,7 @@ const iconMap: Record<string, LucideIcon> = {
 
 const ServicioDetalle = () => {
   const { slug } = useParams();
+  const t = useT();
   const [apiService, setApiService] = useState<ServiceFromAPI | null>(null);
   const [loading, setLoading] = useState(true);
   const [apiError, setApiError] = useState(false);
@@ -32,7 +34,6 @@ const ServicioDetalle = () => {
   const fallback = fallbackServices.find((s) => s.slug === slug);
   const useApi = apiService && !apiError;
 
-  // Normalize data before hooks so hooks always run
   const title = useApi ? apiService!.title : (fallback?.title ?? '');
   const description = useApi ? apiService!.description : (fallback?.description ?? '');
   const longDescription = useApi ? apiService!.long_description : (fallback?.longDescription ?? '');
@@ -57,7 +58,7 @@ const ServicioDetalle = () => {
   }), [title, description, slug, useApi, apiService]);
 
   usePageMeta({
-    title: title || 'Servicio',
+    title: title || t('services_page.label'),
     description: description || '',
     canonical: `/servicios/${slug}`,
     ogImage: useApi ? apiService!.image_url : undefined,
@@ -65,10 +66,10 @@ const ServicioDetalle = () => {
   });
 
   const breadcrumbs = useMemo(() => [
-    { name: 'Inicio', path: '/' },
-    { name: 'Servicios', path: '/servicios' },
-    { name: title || 'Servicio', path: `/servicios/${slug}` },
-  ], [title, slug]);
+    { name: t('breadcrumb.home'), path: '/' },
+    { name: t('services_page.label'), path: '/servicios' },
+    { name: title || t('services_page.label'), path: `/servicios/${slug}` },
+  ], [title, slug, t]);
 
   if (loading) {
     return (
@@ -108,9 +109,9 @@ const ServicioDetalle = () => {
     return (
       <Layout>
         <div className="py-32 text-center">
-          <h1 className="text-2xl font-heading font-bold text-foreground">Servicio no encontrado</h1>
+          <h1 className="text-2xl font-heading font-bold text-foreground">{t('services_page.not_found')}</h1>
           <Button variant="default" className="mt-6" asChild>
-            <Link to="/servicios">Volver a servicios</Link>
+            <Link to="/servicios">{t('services_page.back')}</Link>
           </Button>
         </div>
       </Layout>
@@ -123,7 +124,7 @@ const ServicioDetalle = () => {
       <section className="relative bg-hero grid-pattern py-24 overflow-hidden">
         <div className="container mx-auto px-4 relative z-10">
           <Link to="/servicios" className="inline-flex items-center gap-2 text-primary text-sm mb-8 hover:gap-3 transition-all">
-            <ArrowLeft size={16} /> Todos los servicios
+            <ArrowLeft size={16} /> {t('services_page.all_services')}
           </Link>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-3xl">
             <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-6">
@@ -152,7 +153,7 @@ const ServicioDetalle = () => {
                 </motion.div>
               )}
               <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-                <h2 className="text-2xl font-heading font-bold text-foreground mb-6">Descripción del servicio</h2>
+                <h2 className="text-2xl font-heading font-bold text-foreground mb-6">{t('services_page.description_title')}</h2>
                 {useApi ? (
                   <div
                     className="text-muted-foreground leading-relaxed text-lg prose prose-lg max-w-none"
@@ -171,7 +172,7 @@ const ServicioDetalle = () => {
                 viewport={{ once: true }}
                 className="p-8 rounded-2xl bg-card border border-border sticky top-28"
               >
-                <h3 className="font-heading font-semibold text-lg text-card-foreground mb-6">Características</h3>
+                <h3 className="font-heading font-semibold text-lg text-card-foreground mb-6">{t('services_page.features')}</h3>
                 <ul className="space-y-4">
                   {features.map((feature) => (
                     <li key={feature} className="flex items-start gap-3 text-sm text-muted-foreground">
@@ -181,7 +182,7 @@ const ServicioDetalle = () => {
                   ))}
                 </ul>
                 <Button variant="hero" size="lg" className="w-full mt-8" asChild>
-                  <Link to="/contacto">Solicitar información</Link>
+                  <Link to="/contacto">{t('services_page.request_info')}</Link>
                 </Button>
               </motion.div>
             </div>

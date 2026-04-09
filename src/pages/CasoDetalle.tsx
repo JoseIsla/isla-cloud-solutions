@@ -10,21 +10,23 @@ import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { sanitizeHTML } from "@/lib/sanitize";
 import ShareButtons from "@/components/ShareButtons";
 import BlurImage from "@/components/BlurImage";
+import { useT } from "@/i18n/LanguageContext";
 
 const stripHtml = (html: string) => html.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
 
 const CasoDetalle = () => {
   const { id } = useParams<{ id: string }>();
+  const t = useT();
   const [caso, setCaso] = useState<CaseFromAPI | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
   const autoDescription = useMemo(() => {
-    if (!caso) return "Descubre cómo ayudamos a nuestros clientes a alcanzar sus objetivos.";
+    if (!caso) return t('cases.subtitle');
     if (caso.excerpt) return caso.excerpt;
     if (caso.description) return stripHtml(caso.description).slice(0, 155) + '…';
-    return `Caso de éxito: ${caso.title} - ${caso.client_name}. Descubre cómo Isla Cloud Solutions ayudó a alcanzar sus objetivos.`;
-  }, [caso]);
+    return `${t('cases.success_story')}: ${caso.title} - ${caso.client_name}`;
+  }, [caso, t]);
 
   const caseJsonLd = useMemo(() => {
     if (!caso) return undefined;
@@ -43,7 +45,7 @@ const CasoDetalle = () => {
   }, [caso, id, autoDescription]);
 
   usePageMeta({
-    title: caso?.meta_title || caso?.title || "Caso de éxito",
+    title: caso?.meta_title || caso?.title || t('cases.success_story'),
     description: caso?.meta_description || autoDescription,
     canonical: id ? `/casos/${id}` : undefined,
     ogImage: caso?.image_url || undefined,
@@ -54,10 +56,10 @@ const CasoDetalle = () => {
   });
 
   const breadcrumbs = useMemo(() => [
-    { name: 'Inicio', path: '/' },
-    { name: 'Casos de Éxito', path: '/casos' },
+    { name: t('breadcrumb.home'), path: '/' },
+    { name: t('cases.label'), path: '/casos' },
     ...(caso ? [{ name: caso.title, path: `/casos/${id}` }] : []),
-  ], [caso?.title, id]);
+  ], [caso?.title, id, t]);
 
   useEffect(() => {
     if (!id) return;
@@ -92,9 +94,9 @@ const CasoDetalle = () => {
     return (
       <Layout>
         <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4">
-          <p className="text-muted-foreground text-lg">Caso de éxito no encontrado</p>
+          <p className="text-muted-foreground text-lg">{t('cases.not_found')}</p>
           <Button asChild variant="outline">
-            <Link to="/casos"><ArrowLeft className="mr-2 h-4 w-4" /> Volver a casos</Link>
+            <Link to="/casos"><ArrowLeft className="mr-2 h-4 w-4" /> {t('cases.back')}</Link>
           </Button>
         </div>
       </Layout>
@@ -114,18 +116,18 @@ const CasoDetalle = () => {
           to="/casos"
           className="inline-flex items-center text-sm text-muted-foreground hover:text-primary transition-colors mb-8"
         >
-          <ArrowLeft className="mr-1 h-4 w-4" /> Volver a casos
+          <ArrowLeft className="mr-1 h-4 w-4" /> {t('cases.back')}
         </Link>
 
         <div className="space-y-4 mb-8">
           <p className="text-sm font-medium text-primary uppercase tracking-wider">
-            Caso de éxito
+            {t('cases.success_story')}
           </p>
           <h1 className="text-3xl md:text-4xl font-bold text-foreground">
             {caso.title}
           </h1>
           <p className="text-lg text-muted-foreground">
-            Cliente: <span className="font-semibold text-foreground">{caso.client_name}</span>
+            {t('cases.client')}: <span className="font-semibold text-foreground">{caso.client_name}</span>
           </p>
           {caso.excerpt && (
             <p className="text-lg text-muted-foreground leading-relaxed italic border-l-4 border-primary pl-4">

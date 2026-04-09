@@ -112,6 +112,10 @@ const es = {
   "cases.subtitle": "Conoce cómo hemos ayudado a empresas reales a alcanzar sus objetivos con tecnología cloud.",
   "cases.coming_soon": "Próximamente publicaremos nuestros casos de éxito.",
   "cases.view_detail": "Ver detalle",
+  "cases.back": "Volver a casos",
+  "cases.success_story": "Caso de éxito",
+  "cases.client": "Cliente",
+  "cases.not_found": "Caso de éxito no encontrado",
 
   // Contact page
   "contact.label": "Contacto",
@@ -170,6 +174,12 @@ const es = {
   "services_page.title": "Soluciones IT completas para tu negocio",
   "services_page.subtitle": "Descubre todos nuestros servicios tecnológicos diseñados para impulsar la productividad y seguridad de tu empresa.",
   "services_page.view_detail": "Ver detalle",
+  "services_page.all_services": "Todos los servicios",
+  "services_page.description_title": "Descripción del servicio",
+  "services_page.features": "Características",
+  "services_page.request_info": "Solicitar información",
+  "services_page.not_found": "Servicio no encontrado",
+  "services_page.back": "Volver a servicios",
 
   // 404
   "notfound.title": "Página no encontrada",
