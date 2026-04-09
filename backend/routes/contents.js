@@ -229,10 +229,12 @@ router.post('/translate-entities', authMiddleware, async (req, res) => {
     const services = await conn.query('SELECT id, title, short_title, description, long_description, features FROM services');
     const news = await conn.query('SELECT id, title, excerpt, content FROM news');
     const cases = await conn.query('SELECT id, title, excerpt, description FROM success_cases');
+    const testimonials = await conn.query('SELECT id, quote, author_role, author_company FROM testimonials');
+    const faqs = await conn.query('SELECT id, question, answer FROM faqs');
     conn.release();
     conn = null;
 
-    const total = services.length + news.length + cases.length;
+    const total = services.length + news.length + cases.length + testimonials.length + faqs.length;
     res.json({ ok: true, message: `Traduciendo ${total} entidades en background`, count: total });
 
     // Fire-and-forget
@@ -268,6 +270,25 @@ router.post('/translate-entities', authMiddleware, async (req, res) => {
             { field: 'description', value: c.description || '', type: 'html' },
           ]);
         } catch (err) { console.error('[Translator] Bulk case error:', err.message); }
+        await new Promise(r => setTimeout(r, DELAY_MS));
+      }
+      for (const t of testimonials) {
+        try {
+          await translateEntityAndSave(pool, 'testimonials', t.id, [
+            { field: 'quote', value: t.quote, type: 'text' },
+            { field: 'author_role', value: t.author_role || '', type: 'text' },
+            { field: 'author_company', value: t.author_company || '', type: 'text' },
+          ]);
+        } catch (err) { console.error('[Translator] Bulk testimonial error:', err.message); }
+        await new Promise(r => setTimeout(r, DELAY_MS));
+      }
+      for (const f of faqs) {
+        try {
+          await translateEntityAndSave(pool, 'faqs', f.id, [
+            { field: 'question', value: f.question, type: 'text' },
+            { field: 'answer', value: f.answer || '', type: 'html' },
+          ]);
+        } catch (err) { console.error('[Translator] Bulk FAQ error:', err.message); }
         await new Promise(r => setTimeout(r, DELAY_MS));
       }
       console.log(`[Translator] Bulk entity translation finished: ${total} items processed`);

@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useCMSValue } from '@/hooks/useCMS';
 import { faqsApi, type FAQFromAPI } from '@/lib/api';
 import { sanitizeHTML } from '@/lib/sanitize';
+import { useLanguage } from '@/i18n/LanguageContext';
 import {
   Accordion,
   AccordionContent,
@@ -13,6 +14,7 @@ import { HelpCircle } from 'lucide-react';
 
 const FAQSection = () => {
   const [faqs, setFaqs] = useState<FAQFromAPI[]>([]);
+  const { language } = useLanguage();
 
   const sectionLabel = useCMSValue('faq_section_label', 'FAQ');
   const sectionTitle = useCMSValue('faq_section_title', 'Preguntas frecuentes');
@@ -22,8 +24,8 @@ const FAQSection = () => {
   );
 
   useEffect(() => {
-    faqsApi.list().then(setFaqs).catch(() => {});
-  }, []);
+    faqsApi.list(language).then(setFaqs).catch(() => {});
+  }, [language]);
 
   if (faqs.length === 0) return null;
 

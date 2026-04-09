@@ -1,7 +1,8 @@
 const express = require('express');
 const pool = require('../config/db');
 const { authMiddleware } = require('../middleware/auth');
-const { body, param, validationResult } = require('express-validator');
+const { body, param, query, validationResult } = require('express-validator');
+const { translateEntityAndSave } = require('../services/translator');
 
 const router = express.Router();
 
@@ -18,13 +19,23 @@ const testimonialValidation = [
 
 const idParam = param('id').isInt({ min: 1 });
 
+function applyLang(row, lang) {
+  if (lang !== 'en') return row;
+  const r = { ...row };
+  if (r.quote_en) r.quote = r.quote_en;
+  if (r.author_role_en) r.author_role = r.author_role_en;
+  if (r.author_company_en) r.author_company = r.author_company_en;
+  return r;
+}
+
 // GET /api/testimonials (public - only active)
-router.get('/', async (req, res) => {
+router.get('/', [query('lang').optional().isIn(['es', 'en'])], async (req, res) => {
   let conn;
   try {
+    const lang = req.query.lang || 'es';
     conn = await pool.getConnection();
     const rows = await conn.query('SELECT * FROM testimonials WHERE is_active = 1 ORDER BY sort_order ASC, id DESC');
-    res.json(rows);
+    res.json(rows.map(r => applyLang(r, lang)));
   } catch (err) {
     console.error('GET /api/testimonials error:', err.message);
     res.status(500).json({ error: 'Error del servidor' });
@@ -61,7 +72,14 @@ router.post('/', authMiddleware, testimonialValidation, async (req, res) => {
       'INSERT INTO testimonials (author_name, author_role, author_company, quote, avatar_url, rating, sort_order, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
       [author_name, author_role || '', author_company || '', quote, avatar_url || '', rating || 5, sort_order || 0, is_active !== undefined ? (is_active ? 1 : 0) : 1]
     );
-    res.status(201).json({ id: Number(result.insertId), message: 'Testimonio creado' });
+    const insertedId = Number(result.insertId);
+    res.status(201).json({ id: insertedId, message: 'Testimonio creado' });
+
+    translateEntityAndSave(pool, 'testimonials', insertedId, [
+      { field: 'quote', value: quote, type: 'text' },
+      { field: 'author_role', value: author_role || '', type: 'text' },
+      { field: 'author_company', value: author_company || '', type: 'text' },
+    ]).catch(err => console.error('[Translator] Testimonial create error:', err.message));
   } catch (err) {
     console.error('POST /api/testimonials error:', err.message);
     res.status(500).json({ error: 'Error del servidor' });
@@ -84,6 +102,12 @@ router.put('/:id', authMiddleware, idParam, testimonialValidation, async (req, r
       [author_name, author_role, author_company, quote, avatar_url, rating || 5, sort_order || 0, is_active !== undefined ? is_active : 1, req.params.id]
     );
     res.json({ message: 'Testimonio actualizado' });
+
+    translateEntityAndSave(pool, 'testimonials', Number(req.params.id), [
+      { field: 'quote', value: quote, type: 'text' },
+      { field: 'author_role', value: author_role || '', type: 'text' },
+      { field: 'author_company', value: author_company || '', type: 'text' },
+    ]).catch(err => console.error('[Translator] Testimonial update error:', err.message));
   } catch (err) {
     console.error('PUT /api/testimonials/:id error:', err.message);
     res.status(500).json({ error: 'Error del servidor' });

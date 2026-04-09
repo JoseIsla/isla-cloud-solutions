@@ -392,6 +392,15 @@ async function initDB() {
   await safeAlter("ALTER TABLE success_cases ADD COLUMN excerpt_en TEXT", 'success_cases.excerpt_en');
   await safeAlter("ALTER TABLE success_cases ADD COLUMN description_en LONGTEXT", 'success_cases.description_en');
 
+  // Testimonials
+  await safeAlter("ALTER TABLE testimonials ADD COLUMN quote_en TEXT", 'testimonials.quote_en');
+  await safeAlter("ALTER TABLE testimonials ADD COLUMN author_role_en VARCHAR(255) DEFAULT ''", 'testimonials.author_role_en');
+  await safeAlter("ALTER TABLE testimonials ADD COLUMN author_company_en VARCHAR(255) DEFAULT ''", 'testimonials.author_company_en');
+
+  // FAQs
+  await safeAlter("ALTER TABLE faqs ADD COLUMN question_en VARCHAR(500) DEFAULT ''", 'faqs.question_en');
+  await safeAlter("ALTER TABLE faqs ADD COLUMN answer_en TEXT", 'faqs.answer_en');
+
   console.log('✅ Base de datos actualizada correctamente');
 
   await conn.end();
