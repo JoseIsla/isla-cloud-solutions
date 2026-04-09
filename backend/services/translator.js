@@ -385,7 +385,13 @@ async function translateToEnglish(text, contentType = 'text', key = null) {
       return null;
     }
 
-    return translated;
+    // Restore brand placeholders
+    let finalText = translated;
+    brandPlaceholders.forEach(({ placeholder, replacement }) => {
+      finalText = finalText.split(placeholder).join(replacement);
+    });
+
+    return finalText;
   } catch (err) {
     pushDiagnostic({
       status: 'error',
