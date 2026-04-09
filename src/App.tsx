@@ -43,6 +43,7 @@ const PanelFAQs = lazy(() => import("./pages/panel/PanelFAQs"));
 const PanelMedios = lazy(() => import("./pages/panel/PanelMedios"));
 const PanelUsuarios = lazy(() => import("./pages/panel/PanelUsuarios"));
 const PanelPerfil = lazy(() => import("./pages/panel/PanelPerfil"));
+const PanelTraduccion = lazy(() => import("./pages/panel/PanelTraduccion"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -120,6 +121,7 @@ const AppRoutes = () => (
       <Route path="/panel/medios" element={<ProtectedRoute><PanelMedios /></ProtectedRoute>} />
       <Route path="/panel/usuarios" element={<ProtectedRoute><PanelUsuarios /></ProtectedRoute>} />
       <Route path="/panel/perfil" element={<ProtectedRoute><PanelPerfil /></ProtectedRoute>} />
+      <Route path="/panel/traduccion" element={<ProtectedRoute><PanelTraduccion /></ProtectedRoute>} />
 
       <Route path="*" element={<NotFound />} />
     </Routes>

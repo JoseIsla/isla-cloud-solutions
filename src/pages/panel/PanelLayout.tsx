@@ -6,7 +6,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard, FileText, Newspaper, MessageSquare,
   LogOut, Menu, X, Users, Trophy, Globe, Pencil, MessageCircle,
-  ChevronLeft, HelpCircle, ImageIcon, UserCog, UserCircle,
+  ChevronLeft, HelpCircle, ImageIcon, UserCog, UserCircle, Languages,
+  ChevronDown,
 } from 'lucide-react';
 import PanelSearch from '@/components/panel/PanelSearch';
 import logotipoBlanco from '@/assets/logos/logotipo-blanco-small.png';
@@ -25,6 +26,7 @@ const sidebarSections = [
     links: [
       { label: 'Contenidos Web', path: '/panel/contenidos', icon: Pencil },
       { label: 'Galería de Medios', path: '/panel/medios', icon: ImageIcon },
+      { label: 'Traducción', path: '/panel/traduccion', icon: Languages },
     ],
   },
   {
@@ -49,6 +51,16 @@ const sidebarSections = [
 
 const allLinks = sidebarSections.flatMap(s => s.links);
 
+const COLLAPSED_SECTIONS_KEY = 'panel_collapsed_sections';
+
+function getInitialCollapsedSections(): Record<string, boolean> {
+  try {
+    const stored = localStorage.getItem(COLLAPSED_SECTIONS_KEY);
+    if (stored) return JSON.parse(stored);
+  } catch {}
+  return {};
+}
+
 const pageTransition = {
   initial: { opacity: 0, y: 16 },
   animate: { opacity: 1, y: 0 },
@@ -62,6 +74,7 @@ const PanelLayout = ({ children }: { children: React.ReactNode }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>(getInitialCollapsedSections);
 
   useEffect(() => {
     if (!token) return;
@@ -70,10 +83,23 @@ const PanelLayout = ({ children }: { children: React.ReactNode }) => {
     }).catch(() => {});
   }, [token, location.pathname]);
 
+  const toggleSectionCollapse = (label: string) => {
+    setCollapsedSections(prev => {
+      const next = { ...prev, [label]: !prev[label] };
+      try { localStorage.setItem(COLLAPSED_SECTIONS_KEY, JSON.stringify(next)); } catch {}
+      return next;
+    });
+  };
+
   const sidebarWidth = collapsed ? 'w-[72px]' : 'w-64';
   const mainMargin = collapsed ? 'lg:ml-[72px]' : 'lg:ml-64';
 
   const currentPage = allLinks.find(l => l.path === location.pathname);
+
+  // Check if current page belongs to a section (to auto-expand it)
+  const currentSectionLabel = sidebarSections.find(s =>
+    s.links.some(l => l.path === location.pathname)
+  )?.label;
 
   return (
     <div className="min-h-screen bg-muted/30 flex">
@@ -94,43 +120,74 @@ const PanelLayout = ({ children }: { children: React.ReactNode }) => {
           </div>
 
           {/* Nav */}
-          <nav className={`flex-1 overflow-y-auto ${collapsed ? 'px-2 py-4' : 'px-3 py-4'} space-y-6`}>
-            {sidebarSections.map((section) => (
-              <div key={section.label}>
-                {!collapsed && (
-                  <span className="px-3 text-[10px] font-bold uppercase tracking-[0.15em] text-white/25 block mb-2">
-                    {section.label}
-                  </span>
-                )}
-                <div className="space-y-0.5">
-                  {section.links.map((link) => {
-                    const Icon = link.icon;
-                    const isActive = location.pathname === link.path;
-                    return (
-                      <Link
-                        key={link.path}
-                        to={link.path}
-                        onClick={() => setSidebarOpen(false)}
-                        title={collapsed ? link.label : undefined}
-                        className={`group relative flex items-center ${collapsed ? 'justify-center' : ''} gap-3 ${collapsed ? 'px-2' : 'px-3'} py-2 rounded-lg text-[13px] font-medium transition-all duration-150 ${
-                          isActive
-                            ? 'bg-primary/15 text-primary shadow-sm shadow-primary/5'
-                            : 'text-white/50 hover:text-white/80 hover:bg-white/[0.04]'
+          <nav className={`flex-1 overflow-y-auto ${collapsed ? 'px-2 py-4' : 'px-3 py-4'} space-y-1`}>
+            {sidebarSections.map((section) => {
+              const isSectionCollapsed = collapsedSections[section.label] && currentSectionLabel !== section.label;
+              const hasActiveLink = section.links.some(l => l.path === location.pathname);
+
+              return (
+                <div key={section.label} className="mb-2">
+                  {!collapsed ? (
+                    <button
+                      onClick={() => toggleSectionCollapse(section.label)}
+                      className="w-full flex items-center justify-between px-3 py-1.5 group"
+                    >
+                      <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/25 group-hover:text-white/40 transition-colors">
+                        {section.label}
+                      </span>
+                      <ChevronDown
+                        size={12}
+                        className={`text-white/20 group-hover:text-white/40 transition-all duration-200 ${
+                          isSectionCollapsed ? '-rotate-90' : ''
                         }`}
+                      />
+                    </button>
+                  ) : (
+                    <div className="h-px bg-white/[0.06] mx-2 my-2" />
+                  )}
+
+                  <AnimatePresence initial={false}>
+                    {(!isSectionCollapsed || collapsed) && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.2, ease: 'easeInOut' }}
+                        className="overflow-hidden"
                       >
-                        <Icon size={collapsed ? 20 : 16} className={`shrink-0 ${isActive ? '' : 'group-hover:scale-105 transition-transform'}`} />
-                        {!collapsed && <span className="truncate flex-1">{link.label}</span>}
-                        {link.path === '/panel/contactos' && unreadCount > 0 && (
-                          <span className={`${collapsed ? 'absolute -top-1 -right-1' : ''} min-w-[18px] h-[18px] flex items-center justify-center rounded-full bg-red-500 text-white text-[10px] font-bold px-1 animate-pulse`}>
-                            {unreadCount}
-                          </span>
-                        )}
-                      </Link>
-                    );
-                  })}
+                        <div className="space-y-0.5">
+                          {section.links.map((link) => {
+                            const Icon = link.icon;
+                            const isActive = location.pathname === link.path;
+                            return (
+                              <Link
+                                key={link.path}
+                                to={link.path}
+                                onClick={() => setSidebarOpen(false)}
+                                title={collapsed ? link.label : undefined}
+                                className={`group relative flex items-center ${collapsed ? 'justify-center' : ''} gap-3 ${collapsed ? 'px-2' : 'px-3'} py-2 rounded-lg text-[13px] font-medium transition-all duration-150 ${
+                                  isActive
+                                    ? 'bg-primary/15 text-primary shadow-sm shadow-primary/5'
+                                    : 'text-white/50 hover:text-white/80 hover:bg-white/[0.04]'
+                                }`}
+                              >
+                                <Icon size={collapsed ? 20 : 16} className={`shrink-0 ${isActive ? '' : 'group-hover:scale-105 transition-transform'}`} />
+                                {!collapsed && <span className="truncate flex-1">{link.label}</span>}
+                                {link.path === '/panel/contactos' && unreadCount > 0 && (
+                                  <span className={`${collapsed ? 'absolute -top-1 -right-1' : ''} min-w-[18px] h-[18px] flex items-center justify-center rounded-full bg-red-500 text-white text-[10px] font-bold px-1 animate-pulse`}>
+                                    {unreadCount}
+                                  </span>
+                                )}
+                              </Link>
+                            );
+                          })}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </nav>
 
           {/* Bottom */}

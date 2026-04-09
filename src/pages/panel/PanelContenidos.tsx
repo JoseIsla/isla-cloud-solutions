@@ -1,15 +1,14 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import PanelLayout from './PanelLayout';
-import { contentsApi, type ContentFromAPI, type ContentTranslationDiagnostics } from '@/lib/api';
+import { contentsApi, type ContentFromAPI } from '@/lib/api';
 import { Button } from '@/components/ui/button';
-import { Save, ChevronDown, ChevronRight, Languages, Loader2 } from 'lucide-react';
+import { Save, ChevronDown, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
 import RichEditor from '@/components/ui/rich-editor';
 import NavLinksManager from '@/components/panel/NavLinksManager';
 import LogoUploader from '@/components/panel/LogoUploader';
 import HeroImagesUploader from '@/components/panel/HeroImagesUploader';
-import TranslationDiagnosticsCard from '@/components/panel/TranslationDiagnosticsCard';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
 interface SectionGroup {
@@ -204,10 +203,6 @@ const PanelContenidos = () => {
   const [contents, setContents] = useState<Record<string, ContentFromAPI>>({});
   const [editValues, setEditValues] = useState<Record<string, string>>({});
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
-  const [translating, setTranslating] = useState(false);
-  const [diagnostics, setDiagnostics] = useState<ContentTranslationDiagnostics | null>(null);
-  const [diagnosticsLoading, setDiagnosticsLoading] = useState(false);
-  const [diagnosticsError, setDiagnosticsError] = useState('');
 
   const loadContents = useCallback(async () => {
     (token ? contentsApi.listFresh(token) : contentsApi.list()).then((data) => {
@@ -218,37 +213,9 @@ const PanelContenidos = () => {
     }).catch(() => {});
   }, [token]);
 
-  const loadDiagnostics = useCallback(async () => {
-    if (!token) return;
-
-    setDiagnosticsLoading(true);
-    setDiagnosticsError('');
-
-    try {
-      const response = await contentsApi.diagnostics(token);
-      setDiagnostics(response.diagnostics);
-    } catch (e: any) {
-      setDiagnosticsError(e.message || 'No se pudo cargar el diagnóstico');
-    } finally {
-      setDiagnosticsLoading(false);
-    }
-  }, [token]);
-
-  const scheduleDiagnosticsRefresh = useCallback((delay = 1600) => {
-    if (!token) return;
-    window.setTimeout(() => {
-      void loadDiagnostics();
-    }, delay);
-  }, [loadDiagnostics, token]);
-
   useEffect(() => {
     void loadContents();
   }, [loadContents]);
-
-  useEffect(() => {
-    if (!token) return;
-    void loadDiagnostics();
-  }, [loadDiagnostics, token]);
 
   const handleSave = async (key: string) => {
     if (!token) return;
@@ -259,7 +226,6 @@ const PanelContenidos = () => {
           ? `"${contents[key]?.title || key}" actualizado y enviado a traducir`
           : `"${contents[key]?.title || key}" actualizado`
       );
-      scheduleDiagnosticsRefresh();
     } catch (e: any) {
       toast.error(e.message);
     }
@@ -384,76 +350,12 @@ const PanelContenidos = () => {
 
   return (
     <PanelLayout>
-      <div className="mb-6 flex items-center justify-between">
-        <div>
-          <h2 className="font-heading font-semibold text-xl text-foreground">Contenidos Web</h2>
-          <p className="text-muted-foreground text-sm mt-1">
-            Todos los textos e imágenes de la web organizados por categoría.
-          </p>
-        </div>
-        <Button
-          variant="outline"
-          size="sm"
-          disabled={translating || !token}
-          onClick={async () => {
-            if (!token) return;
-            setTranslating(true);
-            try {
-              const res = await contentsApi.translateAll(token);
-              setDiagnostics(res.diagnostics);
-
-              if (res.ok) {
-                toast.success(`${res.count} contenidos enviados a traducir. Las traducciones se generarán en unos segundos.`);
-                scheduleDiagnosticsRefresh(2200);
-              } else {
-                toast.error(res.message || 'La traducción automática tiene incidencias');
-              }
-            } catch (e: any) {
-              toast.error(e.message || 'Error al traducir');
-            } finally {
-              setTranslating(false);
-            }
-          }}
-          className="gap-2"
-        >
-          {translating ? <Loader2 size={16} className="animate-spin" /> : <Languages size={16} />}
-          {translating ? 'Traduciendo...' : 'Traducir todo a EN'}
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          disabled={translating || !token}
-          onClick={async () => {
-            if (!token) return;
-            setTranslating(true);
-            try {
-              const res = await contentsApi.translateEntities(token);
-              if (res.ok) {
-                toast.success(`${res.count} entidades (servicios, noticias, casos) enviadas a traducir.`);
-              } else {
-                toast.error(res.message || 'Error al traducir entidades');
-              }
-            } catch (e: any) {
-              toast.error(e.message || 'Error al traducir entidades');
-            } finally {
-              setTranslating(false);
-            }
-          }}
-          className="gap-2"
-        >
-          {translating ? <Loader2 size={16} className="animate-spin" /> : <Languages size={16} />}
-          Traducir servicios/noticias/casos
-        </Button>
+      <div className="mb-6">
+        <h2 className="font-heading font-semibold text-xl text-foreground">Contenidos Web</h2>
+        <p className="text-muted-foreground text-sm mt-1">
+          Todos los textos e imágenes de la web organizados por categoría.
+        </p>
       </div>
-
-      {token && (
-        <TranslationDiagnosticsCard
-          diagnostics={diagnostics}
-          error={diagnosticsError}
-          loading={diagnosticsLoading}
-          onRefresh={() => void loadDiagnostics()}
-        />
-      )}
 
       {Object.keys(contents).length === 0 ? (
         <div className="p-8 rounded-2xl bg-card border border-border text-center text-muted-foreground">
