@@ -164,11 +164,11 @@ router.post('/translate-all', authMiddleware, async (req, res) => {
     const translatable = rows.filter(shouldTranslateContent);
     noteBulkTranslationRequested(translatable.length, translatable.map((row) => row.content_key));
 
-    if (!getTranslatorRuntimeState().openaiConfigured) {
+    if (!getTranslatorRuntimeState().deeplConfigured) {
       const diagnostics = await getTranslationDiagnostics(pool);
       return res.json({
         ok: false,
-        message: 'OPENAI_API_KEY no está configurada en el backend.',
+        message: 'DEEPL_API_KEY no está configurada en el backend.',
         count: 0,
         diagnostics,
       });
