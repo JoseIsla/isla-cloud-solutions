@@ -322,8 +322,32 @@ async function translateToEnglish(text, contentType = 'text', key = null) {
   }
 
   try {
+    // Check if value is actually translatable
+    if (!isTranslatableValue(text)) {
+      pushDiagnostic({
+        status: 'info',
+        stage: 'skip_value',
+        key,
+        message: 'Valor no traducible (ruta, número o URL); se copia tal cual',
+        log: false,
+      });
+      return text; // Return as-is (route, number, etc.)
+    }
+
+    // Protect brand names: replace with placeholders before sending to DeepL
+    let processedText = text;
+    const brandPlaceholders = [];
+    BRAND_GLOSSARY.forEach((entry, i) => {
+      const placeholder = `__BRAND${i}__`;
+      const regex = new RegExp(entry.term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+      if (regex.test(processedText)) {
+        processedText = processedText.replace(regex, placeholder);
+        brandPlaceholders.push({ placeholder, replacement: entry.replacement });
+      }
+    });
+
     const params = {
-      text: text,
+      text: processedText,
       source_lang: 'ES',
       target_lang: 'EN',
     };
