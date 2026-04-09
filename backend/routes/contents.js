@@ -192,11 +192,22 @@ router.post('/translate-all', authMiddleware, async (req, res) => {
       diagnostics,
     });
 
-    // Fire-and-forget all translations
-    for (const row of translatable) {
-      translateAndSave(pool, row.content_key, row.value, row.content_type || 'text', row.title)
-        .catch(err => console.error('[Translator] Bulk error:', row.content_key, err.message));
-    }
+    // Fire-and-forget: translate sequentially with delay to avoid DeepL 429
+    (async () => {
+      const DELAY_MS = 1200; // 1.2s between requests to stay under DeepL Free rate limit
+      for (let i = 0; i < translatable.length; i++) {
+        const row = translatable[i];
+        try {
+          await translateAndSave(pool, row.content_key, row.value, row.content_type || 'text', row.title);
+        } catch (err) {
+          console.error('[Translator] Bulk error:', row.content_key, err.message);
+        }
+        if (i < translatable.length - 1) {
+          await new Promise(resolve => setTimeout(resolve, DELAY_MS));
+        }
+      }
+      console.log(`[Translator] Bulk translation finished: ${translatable.length} items processed`);
+    })();
   } catch (err) {
     console.error('POST /api/contents/translate-all error:', err.message);
     res.status(500).json({ error: 'Error del servidor' });
