@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { Quote, Star, ChevronLeft, ChevronRight } from "lucide-react";
 import { useCMSValue } from "@/hooks/useCMS";
 import { testimonialsApi, type TestimonialFromAPI } from "@/lib/api";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 const TestimonialsSection = () => {
   const sectionLabel = useCMSValue('testimonials_section_label', 'Testimonios');
@@ -13,10 +14,11 @@ const TestimonialsSection = () => {
   const [testimonials, setTestimonials] = useState<TestimonialFromAPI[]>([]);
   const [current, setCurrent] = useState(0);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const { language } = useLanguage();
 
   useEffect(() => {
-    testimonialsApi.list().then(setTestimonials).catch(() => {});
-  }, []);
+    testimonialsApi.list(language).then(setTestimonials).catch(() => {});
+  }, [language]);
 
   useEffect(() => {
     if (testimonials.length <= 1) return;
