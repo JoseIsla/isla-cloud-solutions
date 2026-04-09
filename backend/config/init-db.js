@@ -374,6 +374,24 @@ async function initDB() {
     await conn.query('INSERT IGNORE INTO contents (content_key, title, value, content_type) VALUES (?, ?, ?, ?)', [key, title, value, type]);
   }
 
+  // ── Translation columns for entities ──
+  // Services
+  await safeAlter("ALTER TABLE services ADD COLUMN title_en VARCHAR(255) DEFAULT ''", 'services.title_en');
+  await safeAlter("ALTER TABLE services ADD COLUMN short_title_en VARCHAR(100) DEFAULT ''", 'services.short_title_en');
+  await safeAlter("ALTER TABLE services ADD COLUMN description_en TEXT", 'services.description_en');
+  await safeAlter("ALTER TABLE services ADD COLUMN long_description_en TEXT", 'services.long_description_en');
+  await safeAlter("ALTER TABLE services ADD COLUMN features_en JSON", 'services.features_en');
+
+  // News
+  await safeAlter("ALTER TABLE news ADD COLUMN title_en VARCHAR(255) DEFAULT ''", 'news.title_en');
+  await safeAlter("ALTER TABLE news ADD COLUMN excerpt_en TEXT", 'news.excerpt_en');
+  await safeAlter("ALTER TABLE news ADD COLUMN content_en LONGTEXT", 'news.content_en');
+
+  // Success cases
+  await safeAlter("ALTER TABLE success_cases ADD COLUMN title_en VARCHAR(255) DEFAULT ''", 'success_cases.title_en');
+  await safeAlter("ALTER TABLE success_cases ADD COLUMN excerpt_en TEXT", 'success_cases.excerpt_en');
+  await safeAlter("ALTER TABLE success_cases ADD COLUMN description_en LONGTEXT", 'success_cases.description_en');
+
   console.log('✅ Base de datos actualizada correctamente');
 
   await conn.end();
