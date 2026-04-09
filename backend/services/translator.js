@@ -90,15 +90,32 @@ function canAutoTranslateKey(key = '', contentType = 'text') {
   return true;
 }
 
+/**
+ * Checks if a value is actually translatable text (not a route, number, etc.)
+ */
+function isTranslatableValue(value = '') {
+  const trimmed = String(value).trim();
+  if (!trimmed) return false;
+  // Skip route paths like /servicios, /contacto
+  if (/^\/[a-z0-9\-\/]*$/i.test(trimmed)) return false;
+  // Skip pure numbers or orders like "1", "2", "100"
+  if (/^\d+$/.test(trimmed)) return false;
+  // Skip URLs
+  if (/^https?:\/\//i.test(trimmed)) return false;
+  // Skip email addresses
+  if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) return false;
+  return true;
+}
+
 function shouldTranslateContent(rowOrKey, value, contentType) {
   if (typeof rowOrKey === 'string') {
     const trimmedValue = typeof value === 'string' ? value.trim() : '';
-    return canAutoTranslateKey(rowOrKey, contentType) && trimmedValue.length > 0;
+    return canAutoTranslateKey(rowOrKey, contentType) && trimmedValue.length > 0 && isTranslatableValue(trimmedValue);
   }
 
   const row = rowOrKey || {};
   const rowValue = typeof row.value === 'string' ? row.value.trim() : '';
-  return canAutoTranslateKey(row.content_key, row.content_type) && rowValue.length > 0;
+  return canAutoTranslateKey(row.content_key, row.content_type) && rowValue.length > 0 && isTranslatableValue(rowValue);
 }
 
 function noteBulkTranslationRequested(requestedCount, queuedKeys = []) {
