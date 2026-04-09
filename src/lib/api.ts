@@ -167,7 +167,13 @@ export const clientsApi = {
 
 // Testimonials
 export const testimonialsApi = {
-  list: (token?: string | null) => apiRequest<TestimonialFromAPI[]>('/api/testimonials', { token: token || undefined }),
+  list: (langOrToken?: string | null, lang?: string) => {
+    const isToken = langOrToken && langOrToken.length > 20;
+    const queryLang = lang || (!isToken ? langOrToken : undefined);
+    const token = isToken ? langOrToken : undefined;
+    const qs = queryLang && queryLang !== 'es' ? `?lang=${queryLang}` : '';
+    return apiRequest<TestimonialFromAPI[]>(`/api/testimonials${qs}`, { token: token || undefined });
+  },
   listAll: (token: string) => apiRequest<TestimonialFromAPI[]>('/api/testimonials/all', { token }),
   create: (data: Partial<TestimonialFromAPI>, token: string) =>
     apiRequest<{ id: number }>('/api/testimonials', { method: 'POST', body: data, token }),
@@ -200,7 +206,13 @@ export const casesApi = {
 
 // FAQs
 export const faqsApi = {
-  list: (token?: string | null) => apiRequest<FAQFromAPI[]>('/api/faqs', { token: token || undefined }),
+  list: (langOrToken?: string | null, lang?: string) => {
+    const isToken = langOrToken && langOrToken.length > 20;
+    const queryLang = lang || (!isToken ? langOrToken : undefined);
+    const token = isToken ? langOrToken : undefined;
+    const qs = queryLang && queryLang !== 'es' ? `?lang=${queryLang}` : '';
+    return apiRequest<FAQFromAPI[]>(`/api/faqs${qs}`, { token: token || undefined });
+  },
   listAll: (token: string) => apiRequest<FAQFromAPI[]>('/api/faqs/all', { token }),
   create: (data: Partial<FAQFromAPI>, token: string) =>
     apiRequest<{ id: number }>('/api/faqs', { method: 'POST', body: data, token }),
