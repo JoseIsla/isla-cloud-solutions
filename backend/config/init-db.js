@@ -364,6 +364,11 @@ async function initDB() {
     ['legal_aviso_content', 'Legal: Contenido Aviso Legal', '', 'html'],
     ['legal_privacidad_content', 'Legal: Contenido Política de Privacidad', '', 'html'],
     ['legal_cookies_content', 'Legal: Contenido Política de Cookies', '', 'html'],
+    // Nav link 6 (Casos de Éxito)
+    ['nav_link6_label', 'Nav: Enlace 6', 'Casos de Éxito', 'text'],
+    ['nav_link6_path', 'Nav: Enlace 6 Ruta', '/casos', 'text'],
+    ['nav_link6_visible', 'Nav: Enlace 6 Visible', 'true', 'text'],
+    ['nav_link6_order', 'Nav: Enlace 6 Orden', '6', 'text'],
   ];
   for (const [key, title, value, type] of requiredContents) {
     await conn.query('INSERT IGNORE INTO contents (content_key, title, value, content_type) VALUES (?, ?, ?, ?)', [key, title, value, type]);
