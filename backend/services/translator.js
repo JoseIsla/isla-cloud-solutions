@@ -1,12 +1,12 @@
 /**
- * Servicio de traducción automática ES → EN usando OpenAI.
+ * Servicio de traducción automática ES → EN usando DeepL Free API.
  * Mantiene un buffer en memoria con diagnósticos para exponerlos en el panel.
  */
 
 const https = require('https');
 
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-const MODEL = 'gpt-4o-mini';
+const DEEPL_API_KEY = process.env.DEEPL_API_KEY;
+const DEEPL_BASE_URL = 'https://api-free.deepl.com/v2/translate';
 const MAX_RECENT_EVENTS = 50;
 const skipPatterns = [
   '_logo_', '_bg_', '_image', '_url', '_icon', '_color',
@@ -56,13 +56,13 @@ function pushDiagnostic(event) {
 }
 
 function getTranslatorRuntimeState() {
-  const fetchAvailable = typeof fetch === 'function';
-
   return {
-    openaiConfigured: Boolean(OPENAI_API_KEY),
-    model: MODEL,
-    transport: fetchAvailable ? 'fetch' : 'https',
-    fetchAvailable,
+    deeplConfigured: Boolean(DEEPL_API_KEY),
+    // Keep openaiConfigured for backwards compat with frontend diagnostics
+    openaiConfigured: Boolean(DEEPL_API_KEY),
+    model: 'DeepL Free',
+    transport: typeof fetch === 'function' ? 'fetch' : 'https',
+    fetchAvailable: typeof fetch === 'function',
   };
 }
 
@@ -149,13 +149,12 @@ async function getTranslationDiagnostics(pool) {
     const summary = summarizeTranslationRows(rows);
 
     let status = 'healthy';
-    if (!runtime.openaiConfigured) status = 'error';
+    if (!runtime.deeplConfigured) status = 'error';
     else if (translatorState.lastError) status = 'warning';
     else if (summary.counts.missingTranslations > 0 || summary.counts.staleTranslations > 0) status = 'warning';
 
     const issues = [];
-    if (!runtime.openaiConfigured) issues.push('Falta OPENAI_API_KEY en el backend.');
-    if (!runtime.fetchAvailable) issues.push('El runtime no expone fetch; el backend usará HTTPS nativo para llamar a OpenAI.');
+    if (!runtime.deeplConfigured) issues.push('Falta DEEPL_API_KEY en el backend.');
     if (summary.counts.missingTranslations > 0) issues.push(`Hay ${summary.counts.missingTranslations} contenidos traducibles sin fila __en.`);
     if (summary.counts.staleTranslations > 0) issues.push(`Hay ${summary.counts.staleTranslations} traducciones EN desactualizadas respecto al contenido ES.`);
     if (translatorState.lastError?.message) issues.push(`Último error: ${translatorState.lastError.message}`);
@@ -204,11 +203,19 @@ async function getTranslationDiagnostics(pool) {
   }
 }
 
-function httpPostJson(url, headers, body) {
+/**
+ * Llama a la API de DeepL Free para traducir texto.
+ */
+function httpPostForm(url, params) {
+  const body = new URLSearchParams(params).toString();
+
   if (typeof fetch === 'function') {
     return fetch(url, {
       method: 'POST',
-      headers,
+      headers: {
+        'Authorization': `DeepL-Auth-Key ${DEEPL_API_KEY}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
       body,
     });
   }
@@ -223,13 +230,13 @@ function httpPostJson(url, headers, body) {
         path: `${parsedUrl.pathname}${parsedUrl.search}`,
         method: 'POST',
         headers: {
-          ...headers,
+          'Authorization': `DeepL-Auth-Key ${DEEPL_API_KEY}`,
+          'Content-Type': 'application/x-www-form-urlencoded',
           'Content-Length': Buffer.byteLength(body),
         },
       },
       (res) => {
         let raw = '';
-
         res.on('data', (chunk) => { raw += chunk; });
         res.on('end', () => {
           resolve({
@@ -243,26 +250,26 @@ function httpPostJson(url, headers, body) {
     );
 
     req.on('error', reject);
-    req.setTimeout(30000, () => req.destroy(new Error('Tiempo de espera agotado al llamar a OpenAI')));
+    req.setTimeout(30000, () => req.destroy(new Error('Tiempo de espera agotado al llamar a DeepL')));
     req.write(body);
     req.end();
   });
 }
 
 /**
- * Traduce texto de español a inglés.
+ * Traduce texto de español a inglés usando DeepL.
  * @param {string} text - Texto en español (puede contener HTML)
  * @param {'text'|'html'|'json'} contentType - Tipo de contenido
  * @param {string|null} key - Clave CMS para diagnóstico
  * @returns {Promise<string|null>} Texto traducido o null si falla
  */
 async function translateToEnglish(text, contentType = 'text', key = null) {
-  if (!OPENAI_API_KEY) {
+  if (!DEEPL_API_KEY) {
     pushDiagnostic({
       status: 'error',
       stage: 'env',
       key,
-      message: 'OPENAI_API_KEY no configurada; no se puede traducir automáticamente',
+      message: 'DEEPL_API_KEY no configurada; no se puede traducir automáticamente',
     });
     return null;
   }
@@ -284,49 +291,41 @@ async function translateToEnglish(text, contentType = 'text', key = null) {
     }
   }
 
-  const systemPrompt = contentType === 'html'
-    ? 'You are a professional translator. Translate the following HTML content from Spanish to English. Preserve ALL HTML tags, attributes, and structure exactly. Return ONLY the translated HTML, nothing else.'
-    : 'You are a professional translator. Translate the following text from Spanish to English. Return ONLY the translated text, nothing else.';
-
   try {
-    const response = await httpPostJson(
-      'https://api.openai.com/v1/chat/completions',
-      {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${OPENAI_API_KEY}`,
-      },
-      JSON.stringify({
-        model: MODEL,
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: text },
-        ],
-        temperature: 0.3,
-        max_tokens: 4096,
-      })
-    );
+    const params = {
+      text: text,
+      source_lang: 'ES',
+      target_lang: 'EN',
+    };
+
+    // DeepL soporta HTML nativamente con tag_handling
+    if (contentType === 'html') {
+      params.tag_handling = 'html';
+    }
+
+    const response = await httpPostForm(DEEPL_BASE_URL, params);
 
     if (!response.ok) {
       const err = await response.text();
       pushDiagnostic({
         status: 'error',
-        stage: 'openai_api',
+        stage: 'deepl_api',
         key,
-        message: `OpenAI respondió con ${response.status}`,
+        message: `DeepL respondió con ${response.status}`,
         details: err.slice(0, 280),
       });
       return null;
     }
 
     const data = await response.json();
-    const translated = data.choices?.[0]?.message?.content?.trim() || null;
+    const translated = data.translations?.[0]?.text?.trim() || null;
 
     if (!translated) {
       pushDiagnostic({
         status: 'error',
-        stage: 'openai_parse',
+        stage: 'deepl_parse',
         key,
-        message: 'OpenAI no devolvió texto traducido',
+        message: 'DeepL no devolvió texto traducido',
         details: JSON.stringify(data).slice(0, 280),
       });
       return null;
@@ -336,9 +335,9 @@ async function translateToEnglish(text, contentType = 'text', key = null) {
   } catch (err) {
     pushDiagnostic({
       status: 'error',
-      stage: 'openai_request',
+      stage: 'deepl_request',
       key,
-      message: 'Error llamando a OpenAI',
+      message: 'Error llamando a DeepL',
       details: err.message,
     });
     return null;
@@ -347,7 +346,6 @@ async function translateToEnglish(text, contentType = 'text', key = null) {
 
 /**
  * Traduce los valores de texto dentro de un JSON string.
- * Útil para estructuras como nav links donde los labels deben traducirse.
  */
 async function translateJsonValues(jsonString) {
   const parsed = JSON.parse(jsonString);
@@ -391,11 +389,6 @@ async function translateJsonValues(jsonString) {
 
 /**
  * Traduce y guarda la versión EN de un contenido en background.
- * @param {object} pool - Pool de conexión a la BD
- * @param {string} key - Clave original del contenido (sin sufijo)
- * @param {string} value - Valor en español
- * @param {string} contentType - Tipo de contenido
- * @param {string} [title] - Título descriptivo
  */
 async function translateAndSave(pool, key, value, contentType, title) {
   if (!canAutoTranslateKey(key, contentType)) {
