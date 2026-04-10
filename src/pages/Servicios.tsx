@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowRight, ChevronLeft, ChevronRight, Server, Shield, Cloud, Monitor, Globe, Smartphone, Lock, Wrench, Database, type LucideIcon } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
-import AutoScroll from "embla-carousel-auto-scroll";
 import Layout from "@/components/Layout";
 import usePageMeta, { SITE_URL, SITE_NAME } from "@/hooks/usePageMeta";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
@@ -74,56 +73,96 @@ const ServiciosPage = () => {
     jsonLd: serviciosJsonLd,
   });
 
-  // Carousel with continuous auto-scroll
-  const autoScrollRef = useRef<ReturnType<typeof AutoScroll> | null>(null);
-  const carouselWrapperRef = useRef<HTMLDivElement>(null);
+  // Carousel with custom auto-scroll
+  const directionRef = useRef<1 | -1>(1); // 1=forward, -1=backward
+  const pausedRef = useRef(false);
+  const rafRef = useRef<number>(0);
+  const speedRef = useRef(0.8);
 
-  if (!autoScrollRef.current) {
-    autoScrollRef.current = AutoScroll({
-      speed: 0.8,
-      direction: "forward",
-      stopOnInteraction: false,
-      stopOnMouseEnter: false,
-    });
-  }
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    align: "start",
+    slidesToScroll: 1,
+    containScroll: false,
+    loop: true,
+    dragFree: true,
+  });
 
-  const [emblaRef, emblaApi] = useEmblaCarousel(
-    {
-      align: "start",
-      slidesToScroll: 1,
-      containScroll: false,
-      loop: true,
-      dragFree: true,
-    },
-    [autoScrollRef.current]
-  );
-
-  // Mouse position controls direction
-  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+  // Custom continuous auto-scroll via engine manipulation
+  useEffect(() => {
     if (!emblaApi) return;
-    const autoScroll = emblaApi.plugins()?.autoScroll as any;
-    if (!autoScroll) return;
+
+    const engine = emblaApi.internalEngine();
+    let lastTime = 0;
+
+    const tick = (time: number) => {
+      if (!lastTime) lastTime = time;
+      const delta = time - lastTime;
+      lastTime = time;
+
+      if (!pausedRef.current && delta < 100) {
+        const px = directionRef.current * -speedRef.current * (delta / 16);
+        engine.location.add(px);
+        engine.target.set(engine.location.get());
+
+        // Update index
+        const currentIndex = engine.scrollTarget.byDistance(0, false).index;
+        if (engine.index.get() !== currentIndex) {
+          engine.indexPrevious.set(engine.index.get());
+          engine.index.set(currentIndex);
+          emblaApi.emit('select');
+        }
+
+        // Handle loop repositioning
+        engine.slideLooper.loop();
+        engine.translate.to(engine.location.get());
+      }
+
+      rafRef.current = requestAnimationFrame(tick);
+    };
+
+    rafRef.current = requestAnimationFrame(tick);
+
+    return () => {
+      cancelAnimationFrame(rafRef.current);
+    };
+  }, [emblaApi]);
+
+  // Pause on drag
+  useEffect(() => {
+    if (!emblaApi) return;
+    const onPointerDown = () => { pausedRef.current = true; };
+    const onPointerUp = () => { pausedRef.current = false; };
+    emblaApi.on('pointerDown', onPointerDown);
+    emblaApi.on('pointerUp', onPointerUp);
+    return () => {
+      emblaApi.off('pointerDown', onPointerDown);
+      emblaApi.off('pointerUp', onPointerUp);
+    };
+  }, [emblaApi]);
+
+  // Mouse position controls direction, hover on cards pauses
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = (e.clientX - rect.left) / rect.width;
-    // Left 20% → backward, Right 20% → forward, middle → keep current
     if (x < 0.15) {
-      autoScroll.options.direction = "backward";
+      directionRef.current = -1;
     } else if (x > 0.85) {
-      autoScroll.options.direction = "forward";
+      directionRef.current = 1;
     }
-  }, [emblaApi]);
+  }, []);
+
+  const handleCardEnter = useCallback(() => { pausedRef.current = true; }, []);
+  const handleCardLeave = useCallback(() => { pausedRef.current = false; }, []);
 
   const scrollPrev = useCallback(() => {
     if (!emblaApi) return;
-    const autoScroll = emblaApi.plugins()?.autoScroll as any;
-    if (autoScroll) autoScroll.options.direction = "backward";
+    directionRef.current = -1;
     emblaApi.scrollPrev();
   }, [emblaApi]);
 
   const scrollNext = useCallback(() => {
     if (!emblaApi) return;
-    const autoScroll = emblaApi.plugins()?.autoScroll as any;
-    if (autoScroll) autoScroll.options.direction = "forward";
+    directionRef.current = 1;
     emblaApi.scrollNext();
   }, [emblaApi]);
 
@@ -161,6 +200,8 @@ const ServiciosPage = () => {
                     className="flex-[0_0_85%] min-w-0 sm:flex-[0_0_48%] md:flex-[0_0_36%] lg:flex-[0_0_28%] xl:flex-[0_0_23%] pl-4 md:pl-5"
                   >
                     <Link
+                      onMouseEnter={handleCardEnter}
+                      onMouseLeave={handleCardLeave}
                       to={`/servicios/${service.slug}`}
                       className="group flex flex-col justify-between h-full min-h-[280px] md:min-h-[320px] rounded-2xl p-6 md:p-7
                         bg-[hsl(var(--services-card-surface))] backdrop-blur-[18px]
