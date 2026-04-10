@@ -75,7 +75,6 @@ const ServiciosPage = () => {
   });
 
   // Carousel with auto-scroll plugin
-  const pausedRef = useRef(false);
 
   const [emblaRef, emblaApi] = useEmblaCarousel(
     {
