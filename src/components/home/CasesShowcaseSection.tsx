@@ -13,6 +13,10 @@ const INTERVAL = 10_000;
 const CasesShowcaseSection = () => {
   const t = useT();
   const { language } = useLanguage();
+  const sectionLabel = useCMSValue("cases_section_label", t("cases.label"));
+  const sectionTitle = useCMSValue("cases_section_title", t("cases.title"));
+  const viewDetailBtn = useCMSValue("cases_view_detail_btn", t("cases.view_detail"));
+  const viewAllBtn = useCMSValue("cases_view_all_btn", "Ver todos los casos");
   const [cases, setCases] = useState<CaseFromAPI[]>([]);
   const [active, setActive] = useState(0);
 
