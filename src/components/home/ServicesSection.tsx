@@ -84,9 +84,6 @@ const ServicesSection = () => {
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             className="mb-12 md:mb-16 lg:mb-20 max-w-2xl"
           >
-            <span className="text-primary text-sm font-semibold uppercase tracking-wider mb-4 block">
-              Nuestros servicios
-            </span>
             <h2 className="services-heading font-heading text-3xl font-bold leading-tight md:text-4xl lg:text-5xl">
               {sectionTitle}
             </h2>
