@@ -106,17 +106,19 @@ const ServiciosPage = () => {
   return (
     <Layout>
       <BreadcrumbJsonLd items={[{ name: t('breadcrumb.home'), path: '/' }, { name: t('services_page.label'), path: '/servicios' }]} />
-      <ParallaxHero>
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-2xl">
-          <span className="text-primary text-sm font-semibold uppercase tracking-wider">{t('services_page.label')}</span>
-          <h1 className="text-4xl md:text-5xl font-heading font-bold text-hero-foreground mt-3 mb-6">
-            {useCMSValue('services_page_title', '') || t('services_page.title')}
-          </h1>
-          <p className="text-hero-foreground/70 text-lg">
-            {useCMSValue('services_page_subtitle', '') || t('services_page.subtitle')}
-          </p>
-        </motion.div>
-      </ParallaxHero>
+      <section className="bg-hero grid-pattern py-14 md:py-16 overflow-hidden relative">
+        <div className="container mx-auto px-4">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-2xl">
+            <span className="text-primary text-sm font-semibold uppercase tracking-wider">{t('services_page.label')}</span>
+            <h1 className="text-4xl md:text-5xl font-heading font-bold text-hero-foreground mt-3 mb-4">
+              {useCMSValue('services_page_title', '') || t('services_page.title')}
+            </h1>
+            <p className="text-hero-foreground/70 text-lg">
+              {useCMSValue('services_page_subtitle', '') || t('services_page.subtitle')}
+            </p>
+          </motion.div>
+        </div>
+      </section>
 
       {/* Slider Section */}
       <section className="bg-background">
