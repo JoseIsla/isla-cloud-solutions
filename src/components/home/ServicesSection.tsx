@@ -108,23 +108,13 @@ const ServicesSection = () => {
               >
                 <Link
                   to={`/servicios/${service.slug}`}
-                  className="services-card group flex flex-col justify-between h-full min-h-[180px] rounded-2xl p-6 md:p-7"
+                  className="services-card group flex items-center gap-4 h-full rounded-2xl p-6 md:p-7"
                 >
-                  <div>
-                    <service.Icon size={22} className="services-card-icon mb-5" />
-                    <h3 className="services-card-title text-lg font-semibold leading-tight md:text-xl mb-2">
-                      {service.title}
-                    </h3>
-                    {service.description && (
-                      <p className="text-[hsl(var(--services-foreground-soft))] text-sm leading-relaxed line-clamp-2 opacity-70">
-                        {service.description}
-                      </p>
-                    )}
-                  </div>
-                  <span className="flex items-center gap-1.5 text-primary/80 text-sm font-medium mt-5
-                    group-hover:text-primary group-hover:gap-2.5 transition-all duration-300">
-                    Ver más <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform duration-300" />
-                  </span>
+                  <service.Icon size={22} className="services-card-icon shrink-0" />
+                  <h3 className="services-card-title text-lg font-semibold leading-tight md:text-xl flex-1">
+                    {service.title}
+                  </h3>
+                  <ArrowRight size={16} className="shrink-0 text-primary/60 group-hover:text-primary group-hover:translate-x-1 transition-all duration-300" />
                 </Link>
               </motion.div>
             ))}
