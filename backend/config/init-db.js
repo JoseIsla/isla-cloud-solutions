@@ -158,8 +158,10 @@ async function initDB() {
       INSERT IGNORE INTO users (email, password, name, role)
       VALUES ('admin@islacloudsolutions.com', ?, 'Administrador', 'admin')
     `, [hashedPassword]);
+  }
 
-    const defaultContents = [
+  // ── CMS contents sync (siempre se ejecuta) ──
+  const defaultContents = [
       ['hero_title', 'Título del Hero', 'Soluciones Cloud y Tecnología para Empresas', 'text'],
       ['hero_subtitle', 'Subtítulo del Hero', 'Más de 20 años siendo el socio tecnológico de empresas que necesitan un departamento IT profesional, cercano y disponible 24x7.', 'text'],
       ['hero_cta_primary', 'Botón principal Hero', 'Solicita información', 'text'],
@@ -285,10 +287,11 @@ async function initDB() {
       ['legal_cookies_content', 'Legal: Contenido Política de Cookies', '', 'html'],
     ];
 
-    for (const [key, title, value, type] of defaultContents) {
-      await conn.query(`INSERT IGNORE INTO contents (content_key, title, value, content_type) VALUES (?, ?, ?, ?)`, [key, title, value, type || 'text']);
-    }
+  for (const [key, title, value, type] of defaultContents) {
+    await conn.query(`INSERT IGNORE INTO contents (content_key, title, value, content_type) VALUES (?, ?, ?, ?)`, [key, title, value, type || 'text']);
+  }
 
+  if (SEED) {
     const defaultClients = [
       'Fundación Amigos Museo del Prado', 'Fundación Museo Reina Sofía', 'American Friends of Prado Museum',
       'Enredart Comunicación', 'ACE', 'WWF España', 'Gasnam', 'Fran Silvestre Arquitectos',
