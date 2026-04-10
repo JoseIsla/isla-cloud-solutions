@@ -224,6 +224,7 @@ const CasesShowcaseSection = () => {
             )}
           </div>
         </motion.div>
+        </div>
       </div>
     </section>
   );
