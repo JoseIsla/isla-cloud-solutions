@@ -12,8 +12,6 @@ import { serviceImages } from "@/data/serviceImages";
 import { servicesApi, type ServiceFromAPI } from "@/lib/api";
 import { useCMSValue } from "@/hooks/useCMS";
 import { useT, useLanguage } from "@/i18n/LanguageContext";
-import BlurImage from "@/components/BlurImage";
-
 const iconMap: Record<string, LucideIcon> = {
   Server, Shield, Cloud, Monitor, Globe, Smartphone, Lock, Wrench, Database,
 };
