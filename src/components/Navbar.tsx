@@ -87,10 +87,10 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out border-b ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out border-b-2 ${
         isTransparent
-          ? "bg-transparent border-white/[0.12]"
-          : "bg-hero/95 backdrop-blur-md border-white/[0.12] shadow-lg shadow-black/10"
+          ? "bg-transparent border-white/[0.15]"
+          : "bg-hero/95 backdrop-blur-md border-white/[0.15] shadow-lg shadow-black/10"
       }`}
     >
       <div className="container mx-auto px-4">
