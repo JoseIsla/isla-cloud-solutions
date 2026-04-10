@@ -83,55 +83,56 @@ const CasesShowcaseSection = () => {
           )}
         </motion.div>
 
-        {/* Main showcase card */}
-        <motion.div
-          initial={{ opacity: 0, y: 40, scale: 0.97 }}
-          whileInView={{ opacity: 1, y: 0, scale: 1 }}
-          viewport={{ once: true, amount: 0.15 }}
-          transition={{ duration: 0.7, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
-          className="grid grid-cols-1 lg:grid-cols-2 gap-0 rounded-2xl overflow-hidden border border-border shadow-lg min-h-[400px]"
-        >
-          {/* Left: Image */}
-          <div className="relative aspect-[4/3] lg:aspect-auto overflow-hidden bg-muted group">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={active}
-                initial={{ opacity: 0, scale: 1.08 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.96 }}
-                transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
-                className="absolute inset-0"
+        {/* Main showcase card with arrows */}
+        <div className="relative group">
+          {/* Navigation arrows - outside the card */}
+          {cases.length > 1 && (
+            <>
+              <button
+                onClick={goPrev}
+                aria-label="Caso anterior"
+                className="absolute -left-5 top-1/2 -translate-y-1/2 z-10 flex items-center justify-center w-10 h-10 rounded-full bg-background border border-border text-foreground shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-muted"
               >
-                <BlurImage
-                  src={resolveImg(current.image_url)}
-                  alt={current.title}
-                  className="w-full h-full object-cover"
-                  wrapperClassName="w-full h-full"
-                  noWebp
-                />
-              </motion.div>
-            </AnimatePresence>
+                <ChevronLeft size={20} />
+              </button>
+              <button
+                onClick={goNext}
+                aria-label="Caso siguiente"
+                className="absolute -right-5 top-1/2 -translate-y-1/2 z-10 flex items-center justify-center w-10 h-10 rounded-full bg-background border border-border text-foreground shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-muted"
+              >
+                <ChevronRight size={20} />
+              </button>
+            </>
+          )}
 
-            {/* Navigation arrows */}
-            {cases.length > 1 && (
-              <>
-                <button
-                  onClick={goPrev}
-                  aria-label="Caso anterior"
-                  className="absolute left-3 top-1/2 -translate-y-1/2 z-10 flex items-center justify-center w-10 h-10 rounded-full bg-background/70 backdrop-blur-sm border border-border text-foreground shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-background"
+          <motion.div
+            initial={{ opacity: 0, y: 40, scale: 0.97 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: true, amount: 0.15 }}
+            transition={{ duration: 0.7, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
+            className="grid grid-cols-1 lg:grid-cols-2 gap-0 rounded-2xl overflow-hidden border border-border shadow-lg min-h-[400px]"
+          >
+            {/* Left: Image */}
+            <div className="relative aspect-[4/3] lg:aspect-auto overflow-hidden bg-muted">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={active}
+                  initial={{ opacity: 0, scale: 1.08 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.96 }}
+                  transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+                  className="absolute inset-0"
                 >
-                  <ChevronLeft size={20} />
-                </button>
-                <button
-                  onClick={goNext}
-                  aria-label="Caso siguiente"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 z-10 flex items-center justify-center w-10 h-10 rounded-full bg-background/70 backdrop-blur-sm border border-border text-foreground shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-background"
-                >
-                  <ChevronRight size={20} />
-                </button>
-              </>
-            )}
-          </div>
+                  <BlurImage
+                    src={resolveImg(current.image_url)}
+                    alt={current.title}
+                    className="w-full h-full object-cover"
+                    wrapperClassName="w-full h-full"
+                    noWebp
+                  />
+                </motion.div>
+              </AnimatePresence>
+            </div>
 
           {/* Right: Content */}
           <div className="flex flex-col justify-center bg-card p-8 md:p-12 lg:p-14">
@@ -223,6 +224,7 @@ const CasesShowcaseSection = () => {
             )}
           </div>
         </motion.div>
+        </div>
       </div>
     </section>
   );
