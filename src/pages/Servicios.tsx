@@ -122,52 +122,36 @@ const ServiciosPage = () => {
         </motion.div>
       </ParallaxHero>
 
-      {/* Slider Section - Ntiva-inspired */}
-      <section className="relative overflow-hidden">
-        {/* Background image */}
-        <div className="absolute inset-0">
-          {bgImage && (
-            <BlurImage
-              src={bgImage}
-              alt=""
-              className="h-full w-full object-cover"
-              wrapperClassName="h-full w-full"
-              placeholderColor="#0a1628"
-            />
-          )}
-          <div className="absolute inset-0 bg-gradient-to-b from-[hsl(var(--hero-bg)/0.92)] via-[hsl(var(--hero-bg)/0.88)] to-[hsl(var(--hero-bg)/0.95)]" />
-        </div>
-
-        <div className="relative z-10 container mx-auto px-4 py-20 md:py-28 lg:py-32">
+      {/* Slider Section */}
+      <section className="bg-background">
+        <div className="container mx-auto px-4 py-12 md:py-16 lg:py-20">
           {/* Carousel */}
           <div className="overflow-hidden" ref={emblaRef}>
             <div className="flex gap-4 md:gap-5">
               {items.map((service, index) => (
                 <motion.div
                   key={service.slug}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05, duration: 0.4 }}
                   className="flex-[0_0_85%] min-w-0 sm:flex-[0_0_48%] md:flex-[0_0_36%] lg:flex-[0_0_28%] xl:flex-[0_0_23%]"
                 >
                   <Link
                     to={`/servicios/${service.slug}`}
                     className="group flex flex-col justify-between h-full min-h-[280px] md:min-h-[320px] rounded-2xl p-6 md:p-7
-                      bg-[hsl(var(--services-card-surface))] border border-[hsl(var(--services-card-border))]
-                      backdrop-blur-[18px] shadow-[0_18px_60px_hsl(var(--hero-bg)/0.22)]
-                      hover:bg-[hsl(var(--services-card-surface-hover))] hover:border-[hsl(var(--services-card-border-hover))]
+                      bg-card border border-border
+                      shadow-sm hover:shadow-md
                       hover:-translate-y-1 transition-all duration-300"
                   >
                     <div>
-                      <div className="w-12 h-12 rounded-xl bg-[hsl(var(--primary)/0.12)] flex items-center justify-center mb-5
-                        group-hover:bg-[hsl(var(--primary)/0.2)] transition-colors duration-300">
-                        <service.Icon size={24} className="text-[hsl(var(--services-foreground-soft))] group-hover:text-primary transition-colors duration-300" />
+                      <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-5
+                        group-hover:bg-primary/20 transition-colors duration-300">
+                        <service.Icon size={24} className="text-muted-foreground group-hover:text-primary transition-colors duration-300" />
                       </div>
-                      <h3 className="text-[hsl(var(--services-foreground-strong))] font-heading font-semibold text-lg md:text-xl mb-3 leading-tight">
+                      <h3 className="text-foreground font-heading font-semibold text-lg md:text-xl mb-3 leading-tight">
                         {service.shortTitle}
                       </h3>
-                      <p className="text-[hsl(var(--services-foreground-soft))] text-sm leading-relaxed line-clamp-4">
+                      <p className="text-muted-foreground text-sm leading-relaxed line-clamp-4">
                         {service.description}
                       </p>
                     </div>
@@ -190,8 +174,8 @@ const ServiciosPage = () => {
                   onClick={() => scrollTo(i)}
                   className={`w-2.5 h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
                     i === selectedIndex
-                      ? "bg-[hsl(var(--hero-foreground))] scale-110"
-                      : "bg-[hsl(var(--hero-foreground)/0.3)] hover:bg-[hsl(var(--hero-foreground)/0.5)]"
+                      ? "bg-foreground scale-110"
+                      : "bg-muted-foreground/30 hover:bg-muted-foreground/50"
                   }`}
                   aria-label={`Go to slide ${i + 1}`}
                 />
@@ -202,8 +186,8 @@ const ServiciosPage = () => {
             <div className="flex gap-2">
               <button
                 onClick={scrollPrev}
-                className="w-11 h-11 rounded-xl border border-[hsl(var(--hero-foreground)/0.2)] flex items-center justify-center
-                  text-[hsl(var(--hero-foreground)/0.6)] hover:text-[hsl(var(--hero-foreground))] hover:border-[hsl(var(--hero-foreground)/0.4)]
+                className="w-11 h-11 rounded-xl border border-border flex items-center justify-center
+                  text-muted-foreground hover:text-foreground hover:border-foreground/40
                   transition-all duration-200 cursor-pointer"
                 aria-label="Previous"
               >
@@ -211,8 +195,8 @@ const ServiciosPage = () => {
               </button>
               <button
                 onClick={scrollNext}
-                className="w-11 h-11 rounded-xl border border-[hsl(var(--hero-foreground)/0.2)] flex items-center justify-center
-                  text-[hsl(var(--hero-foreground)/0.6)] hover:text-[hsl(var(--hero-foreground))] hover:border-[hsl(var(--hero-foreground)/0.4)]
+                className="w-11 h-11 rounded-xl border border-border flex items-center justify-center
+                  text-muted-foreground hover:text-foreground hover:border-foreground/40
                   transition-all duration-200 cursor-pointer"
                 aria-label="Next"
               >
