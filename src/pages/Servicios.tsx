@@ -200,6 +200,8 @@ const ServiciosPage = () => {
                     className="flex-[0_0_85%] min-w-0 sm:flex-[0_0_48%] md:flex-[0_0_36%] lg:flex-[0_0_28%] xl:flex-[0_0_23%] pl-4 md:pl-5"
                   >
                     <Link
+                      onMouseEnter={handleCardEnter}
+                      onMouseLeave={handleCardLeave}
                       to={`/servicios/${service.slug}`}
                       className="group flex flex-col justify-between h-full min-h-[280px] md:min-h-[320px] rounded-2xl p-6 md:p-7
                         bg-[hsl(var(--services-card-surface))] backdrop-blur-[18px]
