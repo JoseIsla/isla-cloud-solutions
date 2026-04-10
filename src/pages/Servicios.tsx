@@ -76,13 +76,14 @@ const ServiciosPage = () => {
 
   // Carousel with continuous auto-scroll
   const autoScrollRef = useRef<ReturnType<typeof AutoScroll> | null>(null);
+  const carouselWrapperRef = useRef<HTMLDivElement>(null);
 
   if (!autoScrollRef.current) {
     autoScrollRef.current = AutoScroll({
       speed: 0.8,
       direction: "forward",
       stopOnInteraction: false,
-      stopOnMouseEnter: true,
+      stopOnMouseEnter: false,
     });
   }
 
@@ -97,21 +98,32 @@ const ServiciosPage = () => {
     [autoScrollRef.current]
   );
 
+  // Mouse position controls direction
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (!emblaApi) return;
+    const autoScroll = emblaApi.plugins()?.autoScroll as any;
+    if (!autoScroll) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width;
+    // Left 20% → backward, Right 20% → forward, middle → keep current
+    if (x < 0.15) {
+      autoScroll.options.direction = "backward";
+    } else if (x > 0.85) {
+      autoScroll.options.direction = "forward";
+    }
+  }, [emblaApi]);
+
   const scrollPrev = useCallback(() => {
     if (!emblaApi) return;
     const autoScroll = emblaApi.plugins()?.autoScroll as any;
-    if (autoScroll) {
-      autoScroll.options.direction = "backward";
-    }
+    if (autoScroll) autoScroll.options.direction = "backward";
     emblaApi.scrollPrev();
   }, [emblaApi]);
 
   const scrollNext = useCallback(() => {
     if (!emblaApi) return;
     const autoScroll = emblaApi.plugins()?.autoScroll as any;
-    if (autoScroll) {
-      autoScroll.options.direction = "forward";
-    }
+    if (autoScroll) autoScroll.options.direction = "forward";
     emblaApi.scrollNext();
   }, [emblaApi]);
 
