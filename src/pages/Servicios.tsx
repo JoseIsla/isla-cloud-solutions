@@ -133,59 +133,60 @@ const ServiciosPage = () => {
           {/* Fade edges */}
           <div className="absolute left-0 top-0 bottom-0 w-16 md:w-24 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
           <div className="absolute right-0 top-0 bottom-0 w-16 md:w-24 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
-          <div ref={emblaRef} className="overflow-hidden">
-            <div className="flex -ml-4 md:-ml-5">
-              {rotatedItems.map((service, index) => (
-                <motion.div
-                  key={service.slug}
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{
-                    delay: 0.3 + index * 0.07,
-                    duration: 0.5,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
-                  className="flex-[0_0_85%] min-w-0 pl-4 md:pl-5 sm:flex-[0_0_48%] md:flex-[0_0_36%] lg:flex-[0_0_28%] xl:flex-[0_0_23%]"
-                >
-                  <Link
-                    to={`/servicios/${service.slug}`}
-                    className="group relative flex flex-col justify-between h-full min-h-[280px] md:min-h-[320px] rounded-2xl p-6 md:p-7
-                      bg-[hsl(var(--services-card-surface))] backdrop-blur-[18px]
-                      border border-[hsl(var(--services-card-border))]
-                      shadow-lg shadow-black/10
-                      hover:bg-[hsl(var(--services-card-surface-hover))]
-                      hover:border-[hsl(var(--services-card-border-hover))]
-                      hover:shadow-xl hover:shadow-primary/10
-                      transition-all duration-300 overflow-hidden"
+          <div className="overflow-hidden" style={{ marginLeft: '-8%' }}>
+            <div ref={emblaRef} className="overflow-hidden">
+              <div className="flex -ml-4 md:-ml-5">
+                {rotatedItems.map((service, index) => (
+                  <motion.div
+                    key={service.slug}
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      delay: 0.3 + index * 0.07,
+                      duration: 0.5,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
+                    className="flex-[0_0_85%] min-w-0 pl-4 md:pl-5 sm:flex-[0_0_48%] md:flex-[0_0_36%] lg:flex-[0_0_28%] xl:flex-[0_0_23%]"
                   >
-                    {/* Subtle glow on hover */}
-                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/0 via-primary/0 to-primary/0
-                      group-hover:from-primary/5 group-hover:via-transparent group-hover:to-primary/3
-                      transition-all duration-500 pointer-events-none" />
+                    <Link
+                      to={`/servicios/${service.slug}`}
+                      className="group relative flex flex-col justify-between h-full min-h-[280px] md:min-h-[320px] rounded-2xl p-6 md:p-7
+                        bg-[hsl(var(--services-card-surface))] backdrop-blur-[18px]
+                        border border-[hsl(var(--services-card-border))]
+                        shadow-lg shadow-black/10
+                        hover:bg-[hsl(var(--services-card-surface-hover))]
+                        hover:border-[hsl(var(--services-card-border-hover))]
+                        hover:shadow-xl hover:shadow-primary/10
+                        transition-all duration-300 overflow-hidden"
+                    >
+                      {/* Subtle glow on hover */}
+                      <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/0 via-primary/0 to-primary/0
+                        group-hover:from-primary/5 group-hover:via-transparent group-hover:to-primary/3
+                        transition-all duration-500 pointer-events-none" />
 
-                    <div className="relative z-10">
-                      <div className="w-12 h-12 rounded-xl bg-primary/15 flex items-center justify-center mb-5
-                        group-hover:bg-primary/25 group-hover:scale-110 transition-all duration-300">
-                        <service.Icon size={24} className="text-[hsl(var(--services-foreground-soft))] group-hover:text-primary transition-colors duration-300" />
+                      <div className="relative z-10">
+                        <div className="w-12 h-12 rounded-xl bg-primary/15 flex items-center justify-center mb-5
+                          group-hover:bg-primary/25 group-hover:scale-110 transition-all duration-300">
+                          <service.Icon size={24} className="text-[hsl(var(--services-foreground-soft))] group-hover:text-primary transition-colors duration-300" />
+                        </div>
+                        <h3 className="text-[hsl(var(--services-foreground-strong))] font-heading font-semibold text-lg md:text-xl mb-3 leading-tight
+                          group-hover:text-primary transition-colors duration-300">
+                          {service.shortTitle}
+                        </h3>
+                        <p className="text-[hsl(var(--services-foreground-soft))] text-sm leading-relaxed line-clamp-4">
+                          {service.description}
+                        </p>
                       </div>
-                      <h3 className="text-[hsl(var(--services-foreground-strong))] font-heading font-semibold text-lg md:text-xl mb-3 leading-tight
-                        group-hover:text-primary transition-colors duration-300">
-                        {service.shortTitle}
-                      </h3>
-                      <p className="text-[hsl(var(--services-foreground-soft))] text-sm leading-relaxed line-clamp-4">
-                        {service.description}
-                      </p>
-                    </div>
-                    <span className="relative z-10 flex items-center gap-1.5 text-primary text-sm font-medium mt-5
-                      group-hover:gap-2.5 transition-all duration-300">
-                      {t('services_page.view_detail')} <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform duration-300" />
-                    </span>
-                  </Link>
-                </motion.div>
-              ))}
+                      <span className="relative z-10 flex items-center gap-1.5 text-primary text-sm font-medium mt-5
+                        group-hover:gap-2.5 transition-all duration-300">
+                        {t('services_page.view_detail')} <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform duration-300" />
+                      </span>
+                    </Link>
+                  </motion.div>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
         </div>
 
         {/* Controls */}
