@@ -98,50 +98,48 @@ const ServicesSection = () => {
             </motion.div>
 
             <div className="lg:col-span-7 lg:pt-12">
-              {/* Zigzag / staircase layout */}
+              {/* Zigzag staircase layout — each row shifts right progressively */}
               <div className="flex flex-col gap-3 md:gap-4">
-                {serviceItems.map((service, index) => {
-                  // Staircase: row 0 = 1 card left, rows 1-2 = 2 cards, row 3 = 1 card shifted, etc.
-                  // Group into rows: first card alone (left), then pairs, last odd alone (right)
-                  return null; // handled below
-                })}
                 {(() => {
-                  const rows: { items: typeof serviceItems; offset: number }[] = [];
+                  // Row 0: 1 card (spans ~60%), left-aligned
+                  // Row 1+: pairs, each row nudged further right
+                  const rows: { items: typeof serviceItems; marginLeft: string }[] = [];
                   let i = 0;
-                  // First card alone, left-aligned
+
                   if (serviceItems.length > 0) {
-                    rows.push({ items: [serviceItems[0]], offset: 0 });
+                    rows.push({ items: [serviceItems[0]], marginLeft: "0%" });
                     i = 1;
                   }
-                  // Middle cards in pairs
+
+                  const shifts = ["5%", "10%", "5%", "10%"];
+                  let shiftIdx = 0;
+
                   while (i < serviceItems.length) {
+                    const shift = shifts[shiftIdx % shifts.length];
                     if (i + 1 < serviceItems.length) {
-                      rows.push({ items: [serviceItems[i], serviceItems[i + 1]], offset: 0 });
+                      rows.push({ items: [serviceItems[i], serviceItems[i + 1]], marginLeft: shift });
                       i += 2;
                     } else {
-                      // Last odd card, right-aligned
-                      rows.push({ items: [serviceItems[i]], offset: 1 });
+                      rows.push({ items: [serviceItems[i]], marginLeft: shift });
                       i += 1;
                     }
+                    shiftIdx++;
                   }
+
+                  let globalCounter = 0;
 
                   return rows.map((row, rowIdx) => (
                     <div
                       key={rowIdx}
-                      className={`grid gap-3 md:gap-4 ${
-                        row.items.length === 1
-                          ? row.offset === 0
-                            ? "grid-cols-1 sm:grid-cols-2"
-                            : "grid-cols-1 sm:grid-cols-2"
+                      className={`grid gap-3 md:gap-4 transition-all ${
+                        row.items.length === 1 && rowIdx === 0
+                          ? "grid-cols-1 sm:max-w-[60%]"
                           : "grid-cols-1 sm:grid-cols-2"
                       }`}
+                      style={{ marginLeft: row.marginLeft }}
                     >
-                      {/* Spacer for right-aligned single cards */}
-                      {row.items.length === 1 && row.offset === 1 && (
-                        <div className="hidden sm:block" />
-                      )}
                       {row.items.map((service) => {
-                        const globalIdx = serviceItems.indexOf(service);
+                        const idx = globalCounter++;
                         return (
                           <motion.div
                             key={service.slug}
@@ -149,7 +147,7 @@ const ServicesSection = () => {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true, amount: 0.1 }}
                             transition={{
-                              delay: globalIdx * 0.1,
+                              delay: idx * 0.1,
                               duration: 0.7,
                               ease: [0.22, 1, 0.36, 1],
                             }}
