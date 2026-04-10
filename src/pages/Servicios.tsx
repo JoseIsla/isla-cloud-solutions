@@ -1,15 +1,18 @@
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { ArrowRight, Server, Shield, Cloud, Monitor, Globe, Smartphone, Lock, Wrench, Database, type LucideIcon } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, Server, Shield, Cloud, Monitor, Globe, Smartphone, Lock, Wrench, Database, type LucideIcon } from "lucide-react";
+import useEmblaCarousel from "embla-carousel-react";
 import Layout from "@/components/Layout";
 import ParallaxHero from "@/components/ParallaxHero";
 import usePageMeta, { SITE_URL, SITE_NAME } from "@/hooks/usePageMeta";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { services as fallbackServices } from "@/data/services";
+import { serviceImages } from "@/data/serviceImages";
 import { servicesApi, type ServiceFromAPI } from "@/lib/api";
 import { useCMSValue } from "@/hooks/useCMS";
 import { useT, useLanguage } from "@/i18n/LanguageContext";
-import { useEffect, useState, useMemo } from "react";
+import BlurImage from "@/components/BlurImage";
 
 const iconMap: Record<string, LucideIcon> = {
   Server, Shield, Cloud, Monitor, Globe, Smartphone, Lock, Wrench, Database,
@@ -28,19 +31,43 @@ const ServiciosPage = () => {
 
   const useApi = apiServices && apiServices.length > 0;
 
+  const items = useMemo(() => {
+    if (useApi) {
+      return apiServices!.map(s => ({
+        slug: s.slug,
+        title: s.title,
+        shortTitle: s.short_title,
+        description: s.description,
+        Icon: iconMap[s.icon] || Server,
+        image: s.image_url || serviceImages[s.slug],
+      }));
+    }
+    return fallbackServices.map(s => ({
+      slug: s.slug,
+      title: s.title,
+      shortTitle: s.shortTitle,
+      description: s.description,
+      Icon: s.icon,
+      image: serviceImages[s.slug],
+    }));
+  }, [useApi, apiServices]);
+
   const serviciosJsonLd = useMemo(() => {
-    const items = useApi
-      ? apiServices!.map((s, i) => ({ '@type': 'ListItem' as const, position: i + 1, url: `${SITE_URL}/servicios/${s.slug}`, name: s.title }))
-      : fallbackServices.map((s, i) => ({ '@type': 'ListItem' as const, position: i + 1, url: `${SITE_URL}/servicios/${s.slug}`, name: s.title }));
+    const listItems = items.map((s, i) => ({
+      '@type': 'ListItem' as const,
+      position: i + 1,
+      url: `${SITE_URL}/servicios/${s.slug}`,
+      name: s.title,
+    }));
     return {
       '@context': 'https://schema.org',
       '@type': 'CollectionPage',
       name: `${t('services_page.label')} | ${SITE_NAME}`,
       url: `${SITE_URL}/servicios`,
       description: t('services_page.subtitle'),
-      mainEntity: { '@type': 'ItemList', numberOfItems: items.length, itemListElement: items },
+      mainEntity: { '@type': 'ItemList', numberOfItems: listItems.length, itemListElement: listItems },
     };
-  }, [useApi, apiServices, t]);
+  }, [items, t]);
 
   usePageMeta({
     title: t('services_page.label'),
@@ -48,6 +75,37 @@ const ServiciosPage = () => {
     canonical: '/servicios',
     jsonLd: serviciosJsonLd,
   });
+
+  // Carousel
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    align: "start",
+    slidesToScroll: 1,
+    containScroll: "trimSnaps",
+    loop: false,
+  });
+
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
+
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    setSelectedIndex(emblaApi.selectedScrollSnap());
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    setScrollSnaps(emblaApi.scrollSnapList());
+    emblaApi.on("select", onSelect);
+    onSelect();
+    return () => { emblaApi.off("select", onSelect); };
+  }, [emblaApi, onSelect]);
+
+  const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
+  const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
+  const scrollTo = useCallback((i: number) => emblaApi?.scrollTo(i), [emblaApi]);
+
+  // Pick a background image from the first service
+  const bgImage = items[0]?.image;
 
   return (
     <Layout>
@@ -64,48 +122,119 @@ const ServiciosPage = () => {
         </motion.div>
       </ParallaxHero>
 
-      <section className="py-24 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {useApi
-              ? apiServices!.map((service, index) => {
-                  const Icon = iconMap[service.icon] || Server;
-                  return (
-                    <motion.div key={service.slug} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }} transition={{ delay: index * 0.06 }}>
-                      <Link to={`/servicios/${service.slug}`}
-                        className="group block p-8 rounded-2xl bg-card border border-border hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 h-full">
-                        <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
-                          <Icon size={28} className="text-primary" />
-                        </div>
-                        <h2 className="font-heading font-semibold text-xl text-card-foreground mb-3">{service.title}</h2>
-                        <p className="text-muted-foreground text-sm leading-relaxed mb-5">{service.description}</p>
-                        <span className="text-primary text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
-                          {t('services_page.view_detail')} <ArrowRight size={14} />
-                        </span>
-                      </Link>
-                    </motion.div>
-                  );
-                })
-              : fallbackServices.map((service, index) => {
-                  const Icon = service.icon;
-                  return (
-                    <motion.div key={service.slug} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }} transition={{ delay: index * 0.06 }}>
-                      <Link to={`/servicios/${service.slug}`}
-                        className="group block p-8 rounded-2xl bg-card border border-border hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 h-full">
-                        <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
-                          <Icon size={28} className="text-primary" />
-                        </div>
-                        <h2 className="font-heading font-semibold text-xl text-card-foreground mb-3">{service.title}</h2>
-                        <p className="text-muted-foreground text-sm leading-relaxed mb-5">{service.description}</p>
-                        <span className="text-primary text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
-                          {t('services_page.view_detail')} <ArrowRight size={14} />
-                        </span>
-                      </Link>
-                    </motion.div>
-                  );
-                })}
+      {/* Slider Section - Ntiva-inspired */}
+      <section className="relative overflow-hidden">
+        {/* Background image */}
+        <div className="absolute inset-0">
+          {bgImage && (
+            <BlurImage
+              src={bgImage}
+              alt=""
+              className="h-full w-full object-cover"
+              wrapperClassName="h-full w-full"
+              placeholderColor="#0a1628"
+            />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-b from-[hsl(var(--hero-bg)/0.92)] via-[hsl(var(--hero-bg)/0.88)] to-[hsl(var(--hero-bg)/0.95)]" />
+        </div>
+
+        <div className="relative z-10 container mx-auto px-4 py-20 md:py-28 lg:py-32">
+          {/* Title */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="mb-12 md:mb-16 max-w-2xl"
+          >
+            <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-[hsl(var(--hero-foreground))] leading-tight">
+              {useCMSValue('services_slider_title', '') || t('services_page.title')}
+            </h2>
+            <p className="mt-4 text-[hsl(var(--hero-foreground)/0.65)] text-lg max-w-xl">
+              {useCMSValue('services_slider_subtitle', '') || t('services_page.subtitle')}
+            </p>
+          </motion.div>
+
+          {/* Carousel */}
+          <div className="overflow-hidden" ref={emblaRef}>
+            <div className="flex gap-4 md:gap-5">
+              {items.map((service, index) => (
+                <motion.div
+                  key={service.slug}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.05, duration: 0.4 }}
+                  className="flex-[0_0_85%] min-w-0 sm:flex-[0_0_48%] md:flex-[0_0_36%] lg:flex-[0_0_28%] xl:flex-[0_0_23%]"
+                >
+                  <Link
+                    to={`/servicios/${service.slug}`}
+                    className="group flex flex-col justify-between h-full min-h-[280px] md:min-h-[320px] rounded-2xl p-6 md:p-7
+                      bg-[hsl(var(--services-card-surface))] border border-[hsl(var(--services-card-border))]
+                      backdrop-blur-[18px] shadow-[0_18px_60px_hsl(var(--hero-bg)/0.22)]
+                      hover:bg-[hsl(var(--services-card-surface-hover))] hover:border-[hsl(var(--services-card-border-hover))]
+                      hover:-translate-y-1 transition-all duration-300"
+                  >
+                    <div>
+                      <div className="w-12 h-12 rounded-xl bg-[hsl(var(--primary)/0.12)] flex items-center justify-center mb-5
+                        group-hover:bg-[hsl(var(--primary)/0.2)] transition-colors duration-300">
+                        <service.Icon size={24} className="text-[hsl(var(--services-foreground-soft))] group-hover:text-primary transition-colors duration-300" />
+                      </div>
+                      <h3 className="text-[hsl(var(--services-foreground-strong))] font-heading font-semibold text-lg md:text-xl mb-3 leading-tight">
+                        {service.shortTitle}
+                      </h3>
+                      <p className="text-[hsl(var(--services-foreground-soft))] text-sm leading-relaxed line-clamp-4">
+                        {service.description}
+                      </p>
+                    </div>
+                    <span className="flex items-center gap-1.5 text-primary text-sm font-medium mt-5 group-hover:gap-2.5 transition-all duration-300">
+                      {t('services_page.view_detail')} <ArrowRight size={14} />
+                    </span>
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
+          {/* Controls */}
+          <div className="flex items-center justify-between mt-8 md:mt-10">
+            {/* Dots */}
+            <div className="flex gap-2">
+              {scrollSnaps.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => scrollTo(i)}
+                  className={`w-2.5 h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
+                    i === selectedIndex
+                      ? "bg-[hsl(var(--hero-foreground))] scale-110"
+                      : "bg-[hsl(var(--hero-foreground)/0.3)] hover:bg-[hsl(var(--hero-foreground)/0.5)]"
+                  }`}
+                  aria-label={`Go to slide ${i + 1}`}
+                />
+              ))}
+            </div>
+
+            {/* Arrows */}
+            <div className="flex gap-2">
+              <button
+                onClick={scrollPrev}
+                className="w-11 h-11 rounded-xl border border-[hsl(var(--hero-foreground)/0.2)] flex items-center justify-center
+                  text-[hsl(var(--hero-foreground)/0.6)] hover:text-[hsl(var(--hero-foreground))] hover:border-[hsl(var(--hero-foreground)/0.4)]
+                  transition-all duration-200 cursor-pointer"
+                aria-label="Previous"
+              >
+                <ChevronLeft size={20} />
+              </button>
+              <button
+                onClick={scrollNext}
+                className="w-11 h-11 rounded-xl border border-[hsl(var(--hero-foreground)/0.2)] flex items-center justify-center
+                  text-[hsl(var(--hero-foreground)/0.6)] hover:text-[hsl(var(--hero-foreground))] hover:border-[hsl(var(--hero-foreground)/0.4)]
+                  transition-all duration-200 cursor-pointer"
+                aria-label="Next"
+              >
+                <ChevronRight size={20} />
+              </button>
+            </div>
           </div>
         </div>
       </section>
