@@ -135,7 +135,7 @@ const CasesShowcaseSection = () => {
             </div>
 
           {/* Right: Content */}
-          <div className="flex flex-col justify-center bg-card p-8 md:p-12 lg:p-14">
+          <div className="flex flex-col justify-center p-8 md:p-12 lg:p-14">
             <AnimatePresence mode="wait">
               <motion.div
                 key={active}
