@@ -8,8 +8,6 @@ import { toast } from 'sonner';
 import RichEditor from '@/components/ui/rich-editor';
 
 const ABOUT_KEYS = [
-  'about_title',
-  'about_subtitle',
   'about_history_title',
   'about_history',
   'about_values_title',
