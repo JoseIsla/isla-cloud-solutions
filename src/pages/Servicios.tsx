@@ -102,8 +102,7 @@ const ServiciosPage = () => {
       if (!pausedRef.current && delta < 100) {
         const px = directionRef.current * -speedRef.current * (delta / 16);
         engine.location.add(px);
-        engine.target.set(engine.location);
-        engine.scrollBody.seek();
+        engine.target.set(engine.location.get());
 
         // Update index
         const currentIndex = engine.scrollTarget.byDistance(0, false).index;
@@ -114,8 +113,8 @@ const ServiciosPage = () => {
         }
 
         // Handle loop repositioning
-        engine.slideLooper.loop(engine.scrollBody.direction());
-        engine.translate.to(engine.location);
+        engine.slideLooper.loop(directionRef.current === 1 ? -1 : 1);
+        engine.translate.to(engine.location.get());
       }
 
       rafRef.current = requestAnimationFrame(tick);
