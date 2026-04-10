@@ -85,7 +85,6 @@ const ServiciosPage = () => {
     containScroll: false,
     loop: true,
     dragFree: true,
-    startIndex: items.length > 0 ? items.length - 1 : 0,
   });
 
   // Custom continuous auto-scroll via engine manipulation
