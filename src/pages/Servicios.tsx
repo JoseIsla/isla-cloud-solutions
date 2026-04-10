@@ -139,8 +139,8 @@ const ServiciosPage = () => {
         {/* Carousel - starts from container left, bleeds to screen right */}
         <div className="overflow-hidden">
           <div className="container mx-auto px-4">
-            <div ref={emblaRef} className="overflow-visible">
-              <div className="flex" style={{ marginLeft: '-10px' }}>
+            <div ref={emblaRef} className="overflow-hidden">
+              <div className="flex ml-[-16px] md:ml-[-20px]">
                 {items.map((service, index) => (
                   <motion.div
                     key={service.slug}
