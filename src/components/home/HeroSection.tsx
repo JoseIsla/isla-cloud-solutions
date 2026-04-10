@@ -163,8 +163,8 @@ const HeroSection = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30" />
       </div>
 
-      <div className="container mx-auto px-4 relative z-10 pt-20 lg:pt-24 flex justify-center">
-        <div className="max-w-3xl text-center">
+      <div className="container mx-auto px-4 relative z-10 pt-20 lg:pt-24 flex justify-start">
+        <div className="max-w-3xl text-left">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeSlide}
@@ -226,7 +226,7 @@ const HeroSection = () => {
                 }}
               >
                 <motion.p
-                  className="text-lg md:text-xl text-white/60 max-w-2xl mx-auto leading-relaxed"
+                  className="text-lg md:text-xl text-white/60 max-w-2xl leading-relaxed"
                   variants={{
                     hidden: { y: "100%" },
                     visible: { y: 0, transition: { duration: 0.4, ease: [0.25, 1, 0.5, 1] } },
@@ -238,7 +238,7 @@ const HeroSection = () => {
               </motion.div>
 
               <motion.div
-                className="flex flex-col sm:flex-row gap-4 justify-center"
+                className="flex flex-col sm:flex-row gap-4 justify-start"
                 variants={{
                   hidden: { opacity: 0, y: 20 },
                   visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: [0.25, 1, 0.5, 1] } },
