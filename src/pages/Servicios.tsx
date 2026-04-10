@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowRight, ChevronLeft, ChevronRight, Server, Shield, Cloud, Monitor, Globe, Smartphone, Lock, Wrench, Database, type LucideIcon } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
-import AutoScroll from "embla-carousel-auto-scroll";
+
 import Layout from "@/components/Layout";
 import usePageMeta, { SITE_URL, SITE_NAME } from "@/hooks/usePageMeta";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
@@ -74,38 +74,12 @@ const ServiciosPage = () => {
     jsonLd: serviciosJsonLd,
   });
 
-  // Carousel with auto-scroll plugin
-
-  const [emblaRef, emblaApi] = useEmblaCarousel(
-    {
-      align: "start",
-      slidesToScroll: 1,
-      loop: true,
-      dragFree: true,
-    },
-    [
-      AutoScroll({
-        speed: 0.8,
-        direction: "forward",
-        stopOnInteraction: false,
-        stopOnMouseEnter: false,
-        startDelay: 0,
-      }),
-    ]
-  );
-
-  // Pause/resume on card hover
-  const handleCardEnter = useCallback(() => {
-    if (!emblaApi) return;
-    const plugin = emblaApi.plugins()?.autoScroll as any;
-    plugin?.stop();
-  }, [emblaApi]);
-
-  const handleCardLeave = useCallback(() => {
-    if (!emblaApi) return;
-    const plugin = emblaApi.plugins()?.autoScroll as any;
-    plugin?.play(0);
-  }, [emblaApi]);
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    align: "start",
+    slidesToScroll: 1,
+    loop: true,
+    dragFree: true,
+  });
 
   const scrollPrev = useCallback(() => {
     emblaApi?.scrollPrev();
