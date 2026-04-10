@@ -152,17 +152,19 @@ const ServiciosPage = () => {
                     <Link
                       to={`/servicios/${service.slug}`}
                       className="group relative flex flex-col justify-between h-full min-h-[280px] md:min-h-[320px] rounded-2xl p-6 md:p-7
-                        bg-[hsl(var(--services-card-surface))] backdrop-blur-[18px]
+                        bg-[hsl(var(--services-card-surface))] backdrop-blur-[28px]
                         border border-[hsl(var(--services-card-border))]
-                        shadow-lg shadow-black/10
+                        shadow-[0_8px_32px_rgba(0,0,0,0.12),inset_0_1px_0_0_rgba(255,255,255,0.08)]
                         hover:bg-[hsl(var(--services-card-surface-hover))]
                         hover:border-[hsl(var(--services-card-border-hover))]
-                        hover:shadow-xl hover:shadow-primary/10
+                        hover:shadow-[0_8px_40px_rgba(0,102,255,0.12),inset_0_1px_0_0_rgba(255,255,255,0.15)]
                         transition-all duration-300 overflow-hidden"
                     >
+                      {/* Glass shine top edge */}
+                      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
                       {/* Subtle glow on hover */}
-                      <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/0 via-primary/0 to-primary/0
-                        group-hover:from-primary/5 group-hover:via-transparent group-hover:to-primary/3
+                      <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/0 via-transparent to-primary/0
+                        group-hover:from-primary/8 group-hover:via-transparent group-hover:to-primary/5
                         transition-all duration-500 pointer-events-none" />
 
                       <div className="relative z-10">
