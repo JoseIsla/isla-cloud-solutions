@@ -6,6 +6,7 @@ import IntroSection from "@/components/home/IntroSection";
 
 // Lazy load below-fold sections for faster initial paint
 const ServicesSection = lazy(() => import("@/components/home/ServicesSection"));
+const CasesShowcaseSection = lazy(() => import("@/components/home/CasesShowcaseSection"));
 const WhyUsSection = lazy(() => import("@/components/home/WhyUsSection"));
 const CountersSection = lazy(() => import("@/components/home/CountersSection"));
 const ClientsSection = lazy(() => import("@/components/home/ClientsSection"));
@@ -56,6 +57,9 @@ const Index = () => {
           <ServicesSection />
         </Suspense>
       </div>
+      <Suspense fallback={<SectionFallback minH="min-h-[340px]" />}>
+        <CasesShowcaseSection />
+      </Suspense>
       <Suspense fallback={<SectionFallback minH="min-h-[600px]" />}>
         <WhyUsSection />
       </Suspense>
