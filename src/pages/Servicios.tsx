@@ -79,8 +79,25 @@ const ServiciosPage = () => {
     slidesToScroll: 1,
     loop: true,
     dragFree: true,
-    startIndex: Math.max(0, Math.floor(items.length / 2)),
   });
+
+  // Jump to the middle on init so both edges show cut-off cards
+  const didJump = useRef(false);
+  useEffect(() => {
+    if (!emblaApi || didJump.current) return;
+    const onInit = () => {
+      if (!didJump.current && items.length > 2) {
+        const mid = Math.floor(items.length / 2);
+        // Use reInit to force startIndex
+        emblaApi.reInit({ startIndex: mid });
+        didJump.current = true;
+      }
+    };
+    emblaApi.on('init', onInit);
+    // Also try immediately in case already initialized
+    onInit();
+    return () => { emblaApi.off('init', onInit); };
+  }, [emblaApi, items.length]);
 
   const scrollPrev = useCallback(() => {
     emblaApi?.scrollPrev();
