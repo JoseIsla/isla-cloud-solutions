@@ -15,6 +15,10 @@ const CasesShowcaseSection = () => {
   const { language } = useLanguage();
   const sectionLabel = useCMSValue("cases_section_label", t("cases.label"));
   const sectionTitle = useCMSValue("cases_section_title", t("cases.title"));
+  const sectionSubtitle = useCMSValue(
+    "cases_section_subtitle",
+    "Descubre cómo hemos ayudado a nuestros clientes a alcanzar sus objetivos."
+  );
   const viewDetailBtn = useCMSValue("cases_view_detail_btn", t("cases.view_detail"));
   const viewAllBtn = useCMSValue("cases_view_all_btn", "Ver todos los casos");
   const [cases, setCases] = useState<CaseFromAPI[]>([]);
@@ -61,6 +65,11 @@ const CasesShowcaseSection = () => {
           <h2 className="text-3xl md:text-4xl font-heading font-bold text-foreground mb-10">
             {sectionTitle}
           </h2>
+          {sectionSubtitle && (
+            <p className="max-w-3xl text-base md:text-lg text-muted-foreground mb-10 -mt-6">
+              {sectionSubtitle}
+            </p>
+          )}
         </motion.div>
 
         {/* Main showcase card */}
