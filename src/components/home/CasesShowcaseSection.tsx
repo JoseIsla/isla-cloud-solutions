@@ -55,11 +55,11 @@ const CasesShowcaseSection = () => {
           <div className="flex items-center gap-2 mb-2">
             <Trophy size={16} className="text-primary" />
             <span className="text-primary text-sm font-bold uppercase tracking-widest">
-              {t("cases.label")}
+              {sectionLabel}
             </span>
           </div>
           <h2 className="text-3xl md:text-4xl font-heading font-bold text-foreground mb-10">
-            {t("cases.title")}
+            {sectionTitle}
           </h2>
         </motion.div>
 
