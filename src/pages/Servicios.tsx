@@ -117,7 +117,7 @@ const ServiciosPage = () => {
       {/* Slider Section */}
       <section className="bg-background py-10 md:py-14 lg:py-16">
         {/* Carousel - bleeds to screen edges */}
-        <div className="overflow-hidden">
+        <div className="overflow-hidden" style={{ marginLeft: '-8%' }}>
           <div ref={emblaRef} className="overflow-hidden">
             <div className="flex -ml-4 md:-ml-5">
               {rotatedItems.map((service, index) => (
