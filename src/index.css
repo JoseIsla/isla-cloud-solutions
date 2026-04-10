@@ -48,10 +48,10 @@
     --surface-glass: 0 0% 100% / 0.7;
     --services-overlay-top: 220 20% 97% / 0.98;
     --services-overlay-mid: 220 20% 97% / 0.82;
-    --services-card-surface: 220 30% 8% / 0.5;
-    --services-card-surface-hover: 220 30% 10% / 0.66;
-    --services-card-border: 0 0% 100% / 0.12;
-    --services-card-border-hover: 0 0% 100% / 0.22;
+    --services-card-surface: 220 30% 12% / 0.32;
+    --services-card-surface-hover: 220 30% 16% / 0.45;
+    --services-card-border: 0 0% 100% / 0.15;
+    --services-card-border-hover: 0 0% 100% / 0.3;
     --services-foreground-soft: 0 0% 100% / 0.68;
     --services-foreground-strong: 0 0% 100% / 0.94;
 
@@ -87,10 +87,10 @@
     --ring: 214 100% 55%;
     --services-overlay-top: 220 30% 6% / 0.98;
     --services-overlay-mid: 220 30% 6% / 0.82;
-    --services-card-surface: 220 24% 10% / 0.56;
-    --services-card-surface-hover: 220 24% 14% / 0.7;
-    --services-card-border: 0 0% 100% / 0.12;
-    --services-card-border-hover: 0 0% 100% / 0.24;
+    --services-card-surface: 220 24% 14% / 0.3;
+    --services-card-surface-hover: 220 24% 18% / 0.45;
+    --services-card-border: 0 0% 100% / 0.15;
+    --services-card-border-hover: 0 0% 100% / 0.32;
     --services-foreground-soft: 0 0% 100% / 0.68;
     --services-foreground-strong: 0 0% 100% / 0.94;
     --sidebar-background: 240 5.9% 10%;
