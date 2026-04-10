@@ -139,22 +139,6 @@ const ServiciosPage = () => {
         </div>
 
         <div className="relative z-10 container mx-auto px-4 py-20 md:py-28 lg:py-32">
-          {/* Title */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="mb-12 md:mb-16 max-w-2xl"
-          >
-            <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-[hsl(var(--hero-foreground))] leading-tight">
-              {useCMSValue('services_slider_title', '') || t('services_page.title')}
-            </h2>
-            <p className="mt-4 text-[hsl(var(--hero-foreground)/0.65)] text-lg max-w-xl">
-              {useCMSValue('services_slider_subtitle', '') || t('services_page.subtitle')}
-            </p>
-          </motion.div>
-
           {/* Carousel */}
           <div className="overflow-hidden" ref={emblaRef}>
             <div className="flex gap-4 md:gap-5">
