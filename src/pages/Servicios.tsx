@@ -50,6 +50,13 @@ const ServiciosPage = () => {
     }));
   }, [useApi, apiServices]);
 
+  // Rotate items so the carousel visually starts from the middle
+  const rotatedItems = useMemo(() => {
+    if (items.length <= 2) return items;
+    const mid = Math.floor(items.length / 2);
+    return [...items.slice(mid), ...items.slice(0, mid)];
+  }, [items]);
+
   const serviciosJsonLd = useMemo(() => {
     const listItems = items.map((s, i) => ({
       '@type': 'ListItem' as const,
@@ -74,14 +81,11 @@ const ServiciosPage = () => {
     jsonLd: serviciosJsonLd,
   });
 
-  const startIndex = Math.max(0, Math.floor(items.length / 2));
-
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "start",
     slidesToScroll: 1,
     loop: true,
     dragFree: true,
-    startIndex,
   });
 
   const scrollPrev = useCallback(() => {
@@ -113,10 +117,10 @@ const ServiciosPage = () => {
       {/* Slider Section */}
       <section className="bg-background py-10 md:py-14 lg:py-16">
         {/* Carousel - bleeds to screen edges */}
-        <div className="overflow-hidden">
+        <div className="overflow-hidden" style={{ marginLeft: '-8%' }}>
           <div ref={emblaRef} className="overflow-hidden">
             <div className="flex -ml-4 md:-ml-5">
-              {items.map((service, index) => (
+              {rotatedItems.map((service, index) => (
                 <motion.div
                   key={service.slug}
                   initial={{ opacity: 0, y: 20 }}
