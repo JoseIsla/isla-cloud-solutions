@@ -148,10 +148,10 @@ const ServiciosPage = () => {
       {/* Slider Section */}
       <section className="bg-background py-10 md:py-14 lg:py-16">
         {/* Carousel - starts from container left, bleeds to screen right */}
-        <div className="overflow-hidden">
+        <div className="overflow-hidden" onMouseMove={handleMouseMove}>
           <div className="container mx-auto px-4">
             <div ref={emblaRef} className="overflow-visible">
-              <div className="flex gap-4 md:gap-5">
+              <div className="flex" style={{ marginLeft: '-10px' }}>
                 {items.map((service, index) => (
                   <motion.div
                     key={service.slug}
