@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 import BlurImage from "@/components/BlurImage";
 import { useEffect, useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -21,15 +22,7 @@ import {
 } from "lucide-react";
 
 const iconMap: Record<string, LucideIcon> = {
-  Server,
-  Shield,
-  Cloud,
-  Monitor,
-  Globe,
-  Smartphone,
-  Lock,
-  Wrench,
-  Database,
+  Server, Shield, Cloud, Monitor, Globe, Smartphone, Lock, Wrench, Database,
 };
 
 const ServicesSection = () => {
@@ -50,19 +43,18 @@ const ServicesSection = () => {
     ? apiServices!.map((service) => ({
         slug: service.slug,
         title: service.short_title,
+        description: service.description,
         Icon: iconMap[service.icon] || Server,
       }))
     : fallbackServices.map((service) => ({
         slug: service.slug,
         title: service.shortTitle,
+        description: service.description,
         Icon: service.icon,
       }));
 
   return (
-    <section
-      id="servicios"
-      className="relative z-20"
-    >
+    <section id="servicios" className="relative z-20">
       {/* Soft shadow that fades the sticky intro behind */}
       <div
         aria-hidden="true"
@@ -83,47 +75,59 @@ const ServicesSection = () => {
           <div className="services-image-vignette absolute inset-0" />
         </div>
 
-        <div className="container relative z-10 mx-auto px-4 pt-28 pb-24 md:pt-36 md:pb-32 lg:pt-40 lg:pb-36">
-          <div className="grid grid-cols-1 items-start gap-8 md:gap-10 lg:grid-cols-12 lg:gap-12">
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.7 }}
-              className="lg:col-span-4 lg:sticky lg:top-32"
-            >
-              <h2 className="services-heading max-w-md font-heading text-4xl font-bold leading-[0.96] md:text-5xl lg:text-[4.25rem]">
-                {sectionTitle}
-              </h2>
-            </motion.div>
+        <div className="container relative z-10 mx-auto px-4 pt-24 pb-20 md:pt-32 md:pb-28 lg:pt-36 lg:pb-32">
+          {/* Header - top left aligned */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="mb-12 md:mb-16 lg:mb-20 max-w-2xl"
+          >
+            <span className="text-primary text-sm font-semibold uppercase tracking-wider mb-4 block">
+              Nuestros servicios
+            </span>
+            <h2 className="services-heading font-heading text-3xl font-bold leading-tight md:text-4xl lg:text-5xl">
+              {sectionTitle}
+            </h2>
+          </motion.div>
 
-            <div className="lg:col-span-7 lg:pt-12">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
-                {serviceItems.map((service, idx) => (
-                  <motion.div
-                    key={service.slug}
-                    initial={{ opacity: 0, y: 60 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.15 }}
-                    transition={{
-                      delay: idx * 0.08,
-                      duration: 0.65,
-                      ease: [0.22, 1, 0.36, 1],
-                    }}
-                  >
-                    <Link
-                      to={`/servicios/${service.slug}`}
-                      className="services-card group flex min-h-[140px] flex-col justify-between gap-8 rounded-[1.75rem] p-5 md:p-6"
-                    >
-                      <service.Icon size={24} className="services-card-icon" />
-                      <span className="services-card-title text-lg font-semibold leading-tight md:text-xl">
-                        {service.title}
-                      </span>
-                    </Link>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
+          {/* Services grid - 3 columns on desktop */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+            {serviceItems.map((service, idx) => (
+              <motion.div
+                key={service.slug}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.1 }}
+                transition={{
+                  delay: idx * 0.07,
+                  duration: 0.6,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+              >
+                <Link
+                  to={`/servicios/${service.slug}`}
+                  className="services-card group flex flex-col justify-between h-full min-h-[180px] rounded-2xl p-6 md:p-7"
+                >
+                  <div>
+                    <service.Icon size={22} className="services-card-icon mb-5" />
+                    <h3 className="services-card-title text-lg font-semibold leading-tight md:text-xl mb-2">
+                      {service.title}
+                    </h3>
+                    {service.description && (
+                      <p className="text-[hsl(var(--services-foreground-soft))] text-sm leading-relaxed line-clamp-2 opacity-70">
+                        {service.description}
+                      </p>
+                    )}
+                  </div>
+                  <span className="flex items-center gap-1.5 text-primary/80 text-sm font-medium mt-5
+                    group-hover:text-primary group-hover:gap-2.5 transition-all duration-300">
+                    Ver más <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform duration-300" />
+                  </span>
+                </Link>
+              </motion.div>
+            ))}
           </div>
         </div>
       </div>
