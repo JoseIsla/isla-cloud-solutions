@@ -143,13 +143,13 @@ const CasesShowcaseSection = () => {
                 >
                   <Button asChild size="lg">
                     <Link to={`/casos/${current.slug || current.id}`}>
-                      {t("cases.view_detail")}
+                      {viewDetailBtn}
                       <ArrowRight size={18} />
                     </Link>
                   </Button>
                   <Button asChild variant="outline" size="lg">
                     <Link to="/casos">
-                      Ver todos los casos
+                      {viewAllBtn}
                     </Link>
                   </Button>
                 </motion.div>
