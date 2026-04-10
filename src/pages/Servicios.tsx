@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { ArrowRight, ChevronLeft, ChevronRight, Server, Shield, Cloud, Monitor, Globe, Smartphone, Lock, Wrench, Database, type LucideIcon } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import Layout from "@/components/Layout";
-import ParallaxHero from "@/components/ParallaxHero";
 import usePageMeta, { SITE_URL, SITE_NAME } from "@/hooks/usePageMeta";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { services as fallbackServices } from "@/data/services";
