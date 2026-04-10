@@ -120,7 +120,7 @@ const ServiciosPage = () => {
         <div className="overflow-hidden">
           <div ref={emblaRef} className="overflow-hidden">
             <div className="flex -ml-4 md:-ml-5">
-              {items.map((service, index) => (
+              {rotatedItems.map((service, index) => (
                 <motion.div
                   key={service.slug}
                   initial={{ opacity: 0, y: 20 }}
