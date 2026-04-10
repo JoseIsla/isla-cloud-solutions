@@ -110,10 +110,10 @@ const CasesShowcaseSection = () => {
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true, amount: 0.15 }}
             transition={{ duration: 0.7, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="grid grid-cols-1 lg:grid-cols-2 gap-0 rounded-2xl overflow-hidden border border-border shadow-lg min-h-[400px]"
+            className="grid grid-cols-1 lg:grid-cols-2 gap-0 min-h-[400px]"
           >
             {/* Left: Image */}
-            <div className="relative aspect-[4/3] lg:aspect-auto overflow-hidden bg-muted">
+            <div className="relative aspect-[4/3] lg:aspect-auto overflow-hidden bg-muted rounded-2xl border border-border shadow-lg">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={active}
