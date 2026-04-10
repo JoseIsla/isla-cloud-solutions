@@ -73,56 +73,97 @@ const ServiciosPage = () => {
     jsonLd: serviciosJsonLd,
   });
 
-  // Carousel with continuous auto-scroll
-  const autoScrollRef = useRef<ReturnType<typeof AutoScroll> | null>(null);
-  const carouselWrapperRef = useRef<HTMLDivElement>(null);
+  // Carousel with custom auto-scroll
+  const directionRef = useRef<1 | -1>(1); // 1=forward, -1=backward
+  const pausedRef = useRef(false);
+  const rafRef = useRef<number>(0);
+  const speedRef = useRef(0.8);
 
-  if (!autoScrollRef.current) {
-    autoScrollRef.current = AutoScroll({
-      speed: 0.8,
-      direction: "forward",
-      stopOnInteraction: false,
-      stopOnMouseEnter: false,
-    });
-  }
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    align: "start",
+    slidesToScroll: 1,
+    containScroll: false,
+    loop: true,
+    dragFree: true,
+  });
 
-  const [emblaRef, emblaApi] = useEmblaCarousel(
-    {
-      align: "start",
-      slidesToScroll: 1,
-      containScroll: false,
-      loop: true,
-      dragFree: true,
-    },
-    [autoScrollRef.current]
-  );
-
-  // Mouse position controls direction
-  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+  // Custom continuous auto-scroll via engine manipulation
+  useEffect(() => {
     if (!emblaApi) return;
-    const autoScroll = emblaApi.plugins()?.autoScroll as any;
-    if (!autoScroll) return;
+
+    const engine = emblaApi.internalEngine();
+    let lastTime = 0;
+
+    const tick = (time: number) => {
+      if (!lastTime) lastTime = time;
+      const delta = time - lastTime;
+      lastTime = time;
+
+      if (!pausedRef.current && delta < 100) {
+        const px = directionRef.current * -speedRef.current * (delta / 16);
+        engine.location.add(px);
+        engine.target.set(engine.location);
+        engine.scrollBody.seek();
+
+        // Update index
+        const currentIndex = engine.scrollTarget.byDistance(0, false).index;
+        if (engine.index.get() !== currentIndex) {
+          engine.indexPrevious.set(engine.index.get());
+          engine.index.set(currentIndex);
+          emblaApi.emit('select');
+        }
+
+        // Handle loop repositioning
+        engine.slideLooper.loop(engine.scrollBody.direction());
+        engine.translate.to(engine.location);
+      }
+
+      rafRef.current = requestAnimationFrame(tick);
+    };
+
+    rafRef.current = requestAnimationFrame(tick);
+
+    return () => {
+      cancelAnimationFrame(rafRef.current);
+    };
+  }, [emblaApi]);
+
+  // Pause on drag
+  useEffect(() => {
+    if (!emblaApi) return;
+    const onPointerDown = () => { pausedRef.current = true; };
+    const onPointerUp = () => { pausedRef.current = false; };
+    emblaApi.on('pointerDown', onPointerDown);
+    emblaApi.on('pointerUp', onPointerUp);
+    return () => {
+      emblaApi.off('pointerDown', onPointerDown);
+      emblaApi.off('pointerUp', onPointerUp);
+    };
+  }, [emblaApi]);
+
+  // Mouse position controls direction, hover on cards pauses
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = (e.clientX - rect.left) / rect.width;
-    // Left 20% → backward, Right 20% → forward, middle → keep current
     if (x < 0.15) {
-      autoScroll.options.direction = "backward";
+      directionRef.current = -1;
     } else if (x > 0.85) {
-      autoScroll.options.direction = "forward";
+      directionRef.current = 1;
     }
-  }, [emblaApi]);
+  }, []);
+
+  const handleCardEnter = useCallback(() => { pausedRef.current = true; }, []);
+  const handleCardLeave = useCallback(() => { pausedRef.current = false; }, []);
 
   const scrollPrev = useCallback(() => {
     if (!emblaApi) return;
-    const autoScroll = emblaApi.plugins()?.autoScroll as any;
-    if (autoScroll) autoScroll.options.direction = "backward";
+    directionRef.current = -1;
     emblaApi.scrollPrev();
   }, [emblaApi]);
 
   const scrollNext = useCallback(() => {
     if (!emblaApi) return;
-    const autoScroll = emblaApi.plugins()?.autoScroll as any;
-    if (autoScroll) autoScroll.options.direction = "forward";
+    directionRef.current = 1;
     emblaApi.scrollNext();
   }, [emblaApi]);
 
