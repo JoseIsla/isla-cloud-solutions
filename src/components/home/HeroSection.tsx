@@ -65,7 +65,10 @@ const HeroSection = () => {
   useEffect(() => {
     newsApi.list().then((news) => {
       const published = news.filter((n) => n.is_published);
-      if (published.length > 0) setLatestNews(published[0]);
+      if (published.length > 0) {
+        const randomIndex = Math.floor(Math.random() * published.length);
+        setLatestNews(published[randomIndex]);
+      }
     }).catch(() => {});
   }, []);
 
