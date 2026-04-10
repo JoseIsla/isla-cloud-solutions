@@ -113,7 +113,7 @@ const ServiciosPage = () => {
         }
 
         // Handle loop repositioning
-        engine.slideLooper.loop(directionRef.current === 1 ? -1 : 1);
+        engine.slideLooper.loop();
         engine.translate.to(engine.location.get());
       }
 
