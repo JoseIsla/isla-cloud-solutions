@@ -74,11 +74,14 @@ const ServiciosPage = () => {
     jsonLd: serviciosJsonLd,
   });
 
+  const startIndex = Math.max(0, Math.floor(items.length / 2));
+
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "start",
     slidesToScroll: 1,
     loop: true,
     dragFree: true,
+    startIndex,
   });
 
   const scrollPrev = useCallback(() => {
