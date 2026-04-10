@@ -92,7 +92,7 @@ const CasesShowcaseSection = () => {
           className="grid grid-cols-1 lg:grid-cols-2 gap-0 rounded-2xl overflow-hidden border border-border shadow-lg min-h-[400px]"
         >
           {/* Left: Image */}
-          <div className="relative aspect-[4/3] lg:aspect-auto overflow-hidden bg-muted">
+          <div className="relative aspect-[4/3] lg:aspect-auto overflow-hidden bg-muted group">
             <AnimatePresence mode="wait">
               <motion.div
                 key={active}
@@ -111,6 +111,26 @@ const CasesShowcaseSection = () => {
                 />
               </motion.div>
             </AnimatePresence>
+
+            {/* Navigation arrows */}
+            {cases.length > 1 && (
+              <>
+                <button
+                  onClick={goPrev}
+                  aria-label="Caso anterior"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 z-10 flex items-center justify-center w-10 h-10 rounded-full bg-background/70 backdrop-blur-sm border border-border text-foreground shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-background"
+                >
+                  <ChevronLeft size={20} />
+                </button>
+                <button
+                  onClick={goNext}
+                  aria-label="Caso siguiente"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 z-10 flex items-center justify-center w-10 h-10 rounded-full bg-background/70 backdrop-blur-sm border border-border text-foreground shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-background"
+                >
+                  <ChevronRight size={20} />
+                </button>
+              </>
+            )}
           </div>
 
           {/* Right: Content */}
