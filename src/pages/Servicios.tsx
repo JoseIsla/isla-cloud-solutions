@@ -39,7 +39,7 @@ const ServiciosPage = () => {
         shortTitle: s.short_title,
         description: s.description,
         Icon: iconMap[s.icon] || Server,
-        image: s.image || serviceImages[s.slug],
+        image: s.image_url || serviceImages[s.slug],
       }));
     }
     return fallbackServices.map(s => ({
