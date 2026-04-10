@@ -86,6 +86,7 @@ const ServiciosPage = () => {
     slidesToScroll: 1,
     loop: true,
     dragFree: true,
+    duration: 30,
   });
 
   const scrollPrev = useCallback(() => {
