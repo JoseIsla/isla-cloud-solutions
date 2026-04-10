@@ -186,6 +186,7 @@ const ServiciosPage = () => {
             </div>
           </div>
         </div>
+        </div>
 
         {/* Controls */}
         <div className="container mx-auto px-4">
