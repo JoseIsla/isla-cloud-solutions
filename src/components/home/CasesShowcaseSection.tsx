@@ -23,6 +23,7 @@ const CasesShowcaseSection = () => {
   const viewAllBtn = useCMSValue("cases_view_all_btn", "Ver todos los casos");
   const [cases, setCases] = useState<CaseFromAPI[]>([]);
   const [active, setActive] = useState(0);
+  const [manualKey, setManualKey] = useState(0);
 
   useEffect(() => {
     casesApi.list(language).then((data) => {
@@ -34,6 +35,16 @@ const CasesShowcaseSection = () => {
     if (cases.length <= 1) return;
     const id = setInterval(() => setActive((p) => (p + 1) % cases.length), INTERVAL);
     return () => clearInterval(id);
+  }, [cases.length, manualKey]);
+
+  const goPrev = useCallback(() => {
+    setActive((p) => (p - 1 + cases.length) % cases.length);
+    setManualKey((k) => k + 1);
+  }, [cases.length]);
+
+  const goNext = useCallback(() => {
+    setActive((p) => (p + 1) % cases.length);
+    setManualKey((k) => k + 1);
   }, [cases.length]);
 
   const resolveImg = useCallback((url: string) => {
