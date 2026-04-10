@@ -141,17 +141,6 @@ const ServiciosPage = () => {
     };
   }, [emblaApi]);
 
-  // Mouse position controls direction, hover on cards pauses
-  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width;
-    if (x < 0.15) {
-      directionRef.current = -1;
-    } else if (x > 0.85) {
-      directionRef.current = 1;
-    }
-  }, []);
-
   const handleCardEnter = useCallback(() => { pausedRef.current = true; }, []);
   const handleCardLeave = useCallback(() => { pausedRef.current = false; }, []);
 
