@@ -120,7 +120,7 @@ const ServiciosPage = () => {
 
       {/* Slider Section */}
       <section className="bg-background">
-        <div className="container mx-auto px-4 py-12 md:py-16 lg:py-20">
+        <div className="container mx-auto px-4 py-10 md:py-14 lg:py-16">
           {/* Carousel */}
           <div className="overflow-hidden" ref={emblaRef}>
             <div className="flex gap-4 md:gap-5">
