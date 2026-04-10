@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { casesApi, CaseFromAPI, API_BASE_URL } from "@/lib/api";
 import { useLanguage, useT } from "@/i18n/LanguageContext";
+import { useCMSValue } from "@/hooks/useCMS";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Trophy } from "lucide-react";
 import BlurImage from "@/components/BlurImage";
@@ -12,6 +13,10 @@ const INTERVAL = 10_000;
 const CasesShowcaseSection = () => {
   const t = useT();
   const { language } = useLanguage();
+  const sectionLabel = useCMSValue("cases_section_label", t("cases.label"));
+  const sectionTitle = useCMSValue("cases_section_title", t("cases.title"));
+  const viewDetailBtn = useCMSValue("cases_view_detail_btn", t("cases.view_detail"));
+  const viewAllBtn = useCMSValue("cases_view_all_btn", "Ver todos los casos");
   const [cases, setCases] = useState<CaseFromAPI[]>([]);
   const [active, setActive] = useState(0);
 
@@ -50,11 +55,11 @@ const CasesShowcaseSection = () => {
           <div className="flex items-center gap-2 mb-2">
             <Trophy size={16} className="text-primary" />
             <span className="text-primary text-sm font-bold uppercase tracking-widest">
-              {t("cases.label")}
+              {sectionLabel}
             </span>
           </div>
           <h2 className="text-3xl md:text-4xl font-heading font-bold text-foreground mb-10">
-            {t("cases.title")}
+            {sectionTitle}
           </h2>
         </motion.div>
 
@@ -138,13 +143,13 @@ const CasesShowcaseSection = () => {
                 >
                   <Button asChild size="lg">
                     <Link to={`/casos/${current.slug || current.id}`}>
-                      {t("cases.view_detail")}
+                      {viewDetailBtn}
                       <ArrowRight size={18} />
                     </Link>
                   </Button>
                   <Button asChild variant="outline" size="lg">
                     <Link to="/casos">
-                      Ver todos los casos
+                      {viewAllBtn}
                     </Link>
                   </Button>
                 </motion.div>
