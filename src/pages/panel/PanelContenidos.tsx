@@ -124,6 +124,12 @@ const sectionGroups: SectionGroup[] = [
   },
   {
     tab: 'secciones',
+    label: '🏆 Casos de Éxito (Showcase)',
+    description: 'Etiqueta, título, subtítulo y botones de la sección de casos de éxito en el landing.',
+    keys: ['cases_section_label', 'cases_section_title', 'cases_section_subtitle', 'cases_view_detail_btn', 'cases_view_all_btn'],
+  },
+  {
+    tab: 'secciones',
     label: '📰 Blog (Página)',
     description: 'Título y subtítulo de la página del blog.',
     keys: ['blog_page_title', 'blog_page_subtitle'],

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { casesApi, CaseFromAPI, API_BASE_URL } from "@/lib/api";
 import { useLanguage, useT } from "@/i18n/LanguageContext";
+import { useCMSValue } from "@/hooks/useCMS";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Trophy } from "lucide-react";
 import BlurImage from "@/components/BlurImage";
