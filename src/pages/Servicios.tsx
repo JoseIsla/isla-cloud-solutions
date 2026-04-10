@@ -87,11 +87,19 @@ const ServiciosPage = () => {
     dragFree: true,
   });
 
+  // Scroll to last slide on init so the loop feels seamless from the start
+  const hasScrolledToEnd = useRef(false);
+  useEffect(() => {
+    if (!emblaApi || items.length === 0 || hasScrolledToEnd.current) return;
+    // Jump instantly (no animation) to the last slide
+    emblaApi.scrollTo(items.length - 1, true);
+    hasScrolledToEnd.current = true;
+  }, [emblaApi, items.length]);
+
   // Custom continuous auto-scroll via engine manipulation
   useEffect(() => {
     if (!emblaApi) return;
 
-    const engine = emblaApi.internalEngine();
     let lastTime = 0;
 
     const tick = (time: number) => {
@@ -100,21 +108,24 @@ const ServiciosPage = () => {
       lastTime = time;
 
       if (!pausedRef.current && delta < 100) {
-        const px = directionRef.current * -speedRef.current * (delta / 16);
-        engine.location.add(px);
-        engine.target.set(engine.location.get());
+        try {
+          const engine = emblaApi.internalEngine();
+          const px = directionRef.current * -speedRef.current * (delta / 16);
+          engine.location.add(px);
+          engine.target.set(engine.location.get());
 
-        // Update index
-        const currentIndex = engine.scrollTarget.byDistance(0, false).index;
-        if (engine.index.get() !== currentIndex) {
-          engine.indexPrevious.set(engine.index.get());
-          engine.index.set(currentIndex);
-          emblaApi.emit('select');
+          const currentIndex = engine.scrollTarget.byDistance(0, false).index;
+          if (engine.index.get() !== currentIndex) {
+            engine.indexPrevious.set(engine.index.get());
+            engine.index.set(currentIndex);
+            emblaApi.emit('select');
+          }
+
+          engine.slideLooper.loop();
+          engine.translate.to(engine.location.get());
+        } catch {
+          // Engine not ready yet
         }
-
-        // Handle loop repositioning
-        engine.slideLooper.loop();
-        engine.translate.to(engine.location.get());
       }
 
       rafRef.current = requestAnimationFrame(tick);
