@@ -102,8 +102,6 @@ const ServiciosPage = () => {
   const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
   const scrollTo = useCallback((i: number) => emblaApi?.scrollTo(i), [emblaApi]);
 
-  // Pick a background image from the first service
-  const bgImage = items[0]?.image;
 
   return (
     <Layout>
