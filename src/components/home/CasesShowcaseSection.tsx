@@ -1,6 +1,6 @@
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { motion, AnimatePresence, useInView } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { casesApi, CaseFromAPI, API_BASE_URL } from "@/lib/api";
 import { useLanguage, useT } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
@@ -14,8 +14,6 @@ const CasesShowcaseSection = () => {
   const { language } = useLanguage();
   const [cases, setCases] = useState<CaseFromAPI[]>([]);
   const [active, setActive] = useState(0);
-  const sectionRef = useRef<HTMLElement>(null);
-  const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
 
   useEffect(() => {
     casesApi.list(language).then((data) => {
@@ -40,12 +38,13 @@ const CasesShowcaseSection = () => {
   const current = cases[active];
 
   return (
-    <section ref={sectionRef} className="py-14 md:py-20 bg-background overflow-hidden">
+    <section className="py-14 md:py-20 bg-background overflow-hidden">
       <div className="container mx-auto px-4">
-        {/* Section header — reveal */}
+        {/* Section header */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
         >
           <div className="flex items-center gap-2 mb-2">
@@ -59,11 +58,12 @@ const CasesShowcaseSection = () => {
           </h2>
         </motion.div>
 
-        {/* Main showcase card — reveal */}
+        {/* Main showcase card */}
         <motion.div
           initial={{ opacity: 0, y: 40, scale: 0.97 }}
-          animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
-          transition={{ duration: 0.7, delay: 0.15, ease: [0.25, 0.46, 0.45, 0.94] }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          viewport={{ once: true, amount: 0.15 }}
+          transition={{ duration: 0.7, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
           className="grid grid-cols-1 lg:grid-cols-2 gap-0 rounded-2xl overflow-hidden border border-border shadow-lg min-h-[400px]"
         >
           {/* Left: Image */}
