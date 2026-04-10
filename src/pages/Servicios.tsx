@@ -129,11 +129,40 @@ const ServiciosPage = () => {
 
       {/* Slider Section */}
       <section className="bg-background py-10 md:py-14 lg:py-16">
-        {/* Carousel - bleeds to screen edges */}
+        {/* Carousel with side arrows */}
         <div className="relative">
           {/* Fade edges */}
           <div className="absolute left-0 top-0 bottom-0 w-16 md:w-24 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
           <div className="absolute right-0 top-0 bottom-0 w-16 md:w-24 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
+
+          {/* Arrow Left */}
+          <button
+            onClick={scrollPrev}
+            className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-20
+              w-10 h-10 md:w-11 md:h-11 rounded-full
+              bg-background/80 backdrop-blur-sm border border-border
+              flex items-center justify-center
+              text-muted-foreground hover:text-primary hover:border-primary/40 hover:bg-primary/5
+              active:scale-95 transition-all duration-200 cursor-pointer shadow-lg"
+            aria-label="Previous"
+          >
+            <ChevronLeft size={20} />
+          </button>
+
+          {/* Arrow Right */}
+          <button
+            onClick={scrollNext}
+            className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-20
+              w-10 h-10 md:w-11 md:h-11 rounded-full
+              bg-background/80 backdrop-blur-sm border border-border
+              flex items-center justify-center
+              text-muted-foreground hover:text-primary hover:border-primary/40 hover:bg-primary/5
+              active:scale-95 transition-all duration-200 cursor-pointer shadow-lg"
+            aria-label="Next"
+          >
+            <ChevronRight size={20} />
+          </button>
+
           <div className="overflow-hidden" style={{ marginLeft: '-8%' }}>
             <div ref={emblaRef} className="overflow-hidden">
               <div className="flex -ml-4 md:-ml-5">
@@ -190,37 +219,6 @@ const ServiciosPage = () => {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Controls */}
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.4 }}
-            className="flex items-center justify-end mt-8 md:mt-10"
-          >
-            <div className="flex gap-2">
-              <button
-                onClick={scrollPrev}
-                className="w-11 h-11 rounded-xl border border-border flex items-center justify-center
-                  text-muted-foreground hover:text-primary hover:border-primary/40 hover:bg-primary/5
-                  active:scale-95 transition-all duration-200 cursor-pointer"
-                aria-label="Previous"
-              >
-                <ChevronLeft size={20} />
-              </button>
-              <button
-                onClick={scrollNext}
-                className="w-11 h-11 rounded-xl border border-border flex items-center justify-center
-                  text-muted-foreground hover:text-primary hover:border-primary/40 hover:bg-primary/5
-                  active:scale-95 transition-all duration-200 cursor-pointer"
-                aria-label="Next"
-              >
-                <ChevronRight size={20} />
-              </button>
-            </div>
-          </motion.div>
         </div>
       </section>
     </Layout>
