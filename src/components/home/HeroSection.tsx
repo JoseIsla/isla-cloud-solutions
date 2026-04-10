@@ -69,29 +69,14 @@ const HeroSection = () => {
     }).catch(() => {});
   }, []);
 
-  const activeCasesRef = useRef<CaseFromAPI[]>([]);
-
   useEffect(() => {
     casesApi.list().then((cases) => {
       const active = cases.filter((c: CaseFromAPI) => c.is_active);
-      activeCasesRef.current = active;
       if (active.length > 0) {
-        setCurrentCase(active[Math.floor(Math.random() * active.length)]);
+        setCurrentCase(active[0]);
       }
     }).catch(() => {});
   }, []);
-
-  useEffect(() => {
-    if (activeCasesRef.current.length < 2) return;
-    const interval = setInterval(() => {
-      const cases = activeCasesRef.current;
-      setCurrentCase(prev => {
-        const others = cases.filter(c => c.id !== prev?.id);
-        return others[Math.floor(Math.random() * others.length)] || prev;
-      });
-    }, 10000);
-    return () => clearInterval(interval);
-  }, [currentCase]);
 
   const slides: SlideData[] = [
     {
