@@ -109,49 +109,47 @@ const ServiciosPage = () => {
 
       {/* Slider Section */}
       <section className="bg-background py-10 md:py-14 lg:py-16">
-        {/* Carousel - starts from container left, bleeds to screen right */}
+        {/* Carousel - bleeds to screen edges */}
         <div className="overflow-hidden">
-          <div className="container mx-auto px-4">
-            <div ref={emblaRef} className="overflow-hidden">
-              <div className="flex ml-[-16px] md:ml-[-20px]">
-                {items.map((service, index) => (
-                  <motion.div
-                    key={service.slug}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.05, duration: 0.4 }}
-                    className="flex-[0_0_85%] min-w-0 sm:flex-[0_0_48%] md:flex-[0_0_36%] lg:flex-[0_0_28%] xl:flex-[0_0_23%] pl-4 md:pl-5"
+          <div ref={emblaRef} className="overflow-hidden px-4 md:px-8 lg:px-12">
+            <div className="flex gap-4 md:gap-5">
+              {items.map((service, index) => (
+                <motion.div
+                  key={service.slug}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05, duration: 0.4 }}
+                  className="flex-[0_0_85%] min-w-0 sm:flex-[0_0_48%] md:flex-[0_0_36%] lg:flex-[0_0_28%] xl:flex-[0_0_23%]"
+                >
+                  <Link
+                    to={`/servicios/${service.slug}`}
+                    className="group flex flex-col justify-between h-full min-h-[280px] md:min-h-[320px] rounded-2xl p-6 md:p-7
+                      bg-[hsl(var(--services-card-surface))] backdrop-blur-[18px]
+                      border border-[hsl(var(--services-card-border))]
+                      shadow-lg shadow-black/10
+                      hover:bg-[hsl(var(--services-card-surface-hover))]
+                      hover:border-[hsl(var(--services-card-border-hover))]
+                      hover:shadow-xl hover:shadow-primary/10
+                      hover:-translate-y-1 transition-all duration-300"
                   >
-                    <Link
-                      to={`/servicios/${service.slug}`}
-                      className="group flex flex-col justify-between h-full min-h-[280px] md:min-h-[320px] rounded-2xl p-6 md:p-7
-                        bg-[hsl(var(--services-card-surface))] backdrop-blur-[18px]
-                        border border-[hsl(var(--services-card-border))]
-                        shadow-lg shadow-black/10
-                        hover:bg-[hsl(var(--services-card-surface-hover))]
-                        hover:border-[hsl(var(--services-card-border-hover))]
-                        hover:shadow-xl hover:shadow-primary/10
-                        hover:-translate-y-1 transition-all duration-300"
-                    >
-                      <div>
-                        <div className="w-12 h-12 rounded-xl bg-primary/15 flex items-center justify-center mb-5
-                          group-hover:bg-primary/25 transition-colors duration-300">
-                          <service.Icon size={24} className="text-[hsl(var(--services-foreground-soft))] group-hover:text-primary transition-colors duration-300" />
-                        </div>
-                        <h3 className="text-[hsl(var(--services-foreground-strong))] font-heading font-semibold text-lg md:text-xl mb-3 leading-tight">
-                          {service.shortTitle}
-                        </h3>
-                        <p className="text-[hsl(var(--services-foreground-soft))] text-sm leading-relaxed line-clamp-4">
-                          {service.description}
-                        </p>
+                    <div>
+                      <div className="w-12 h-12 rounded-xl bg-primary/15 flex items-center justify-center mb-5
+                        group-hover:bg-primary/25 transition-colors duration-300">
+                        <service.Icon size={24} className="text-[hsl(var(--services-foreground-soft))] group-hover:text-primary transition-colors duration-300" />
                       </div>
-                      <span className="flex items-center gap-1.5 text-primary text-sm font-medium mt-5 group-hover:gap-2.5 transition-all duration-300">
-                        {t('services_page.view_detail')} <ArrowRight size={14} />
-                      </span>
-                    </Link>
-                  </motion.div>
-                ))}
-              </div>
+                      <h3 className="text-[hsl(var(--services-foreground-strong))] font-heading font-semibold text-lg md:text-xl mb-3 leading-tight">
+                        {service.shortTitle}
+                      </h3>
+                      <p className="text-[hsl(var(--services-foreground-soft))] text-sm leading-relaxed line-clamp-4">
+                        {service.description}
+                      </p>
+                    </div>
+                    <span className="flex items-center gap-1.5 text-primary text-sm font-medium mt-5 group-hover:gap-2.5 transition-all duration-300">
+                      {t('services_page.view_detail')} <ArrowRight size={14} />
+                    </span>
+                  </Link>
+                </motion.div>
+              ))}
             </div>
           </div>
         </div>
