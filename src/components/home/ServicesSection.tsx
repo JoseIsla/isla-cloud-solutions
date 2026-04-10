@@ -124,9 +124,10 @@ const ServicesSection = () => {
                 ))}
               </div>
             </div>
+            </div>
+          </div>
         </div>
       </div>
-    </section>
   );
 };
 
