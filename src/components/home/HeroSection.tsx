@@ -139,7 +139,7 @@ const HeroSection = () => {
   const currentSlideData = slides[activeSlide];
 
   return (
-    <section aria-label="Presentación principal" role="region" className="relative h-screen flex items-start overflow-hidden">
+    <section aria-label="Presentación principal" role="region" className="relative h-screen flex flex-col justify-center overflow-hidden">
       <div className="absolute inset-0">
         <AnimatePresence>
           <motion.img
@@ -163,7 +163,7 @@ const HeroSection = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30" />
       </div>
 
-      <div className="container mx-auto px-4 relative z-10 pt-32 md:pt-40 lg:pt-44 pb-32 flex justify-start">
+      <div className="container mx-auto px-4 relative z-10 pt-16 pb-28 md:pb-32 flex justify-start">
         <div className="max-w-3xl text-left">
           <AnimatePresence mode="wait">
             <motion.div
