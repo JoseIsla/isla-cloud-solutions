@@ -5,7 +5,7 @@ import { casesApi, CaseFromAPI, API_BASE_URL } from "@/lib/api";
 import { useLanguage, useT } from "@/i18n/LanguageContext";
 import { useCMSValue } from "@/hooks/useCMS";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Trophy } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, Trophy } from "lucide-react";
 import BlurImage from "@/components/BlurImage";
 
 const INTERVAL = 10_000;
