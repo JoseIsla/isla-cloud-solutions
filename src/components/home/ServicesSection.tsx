@@ -98,64 +98,72 @@ const ServicesSection = () => {
             </motion.div>
 
             <div className="lg:col-span-8">
-              {/* Ntiva-style staircase: uses a 6-column sub-grid with cards spanning 3 cols each, 
-                  offset by 1 col per row to create a diagonal cascade effect */}
-              <div className="grid grid-cols-1 sm:grid-cols-6 gap-3 md:gap-4">
-                {serviceItems.map((service, idx) => {
-                  // Staircase positions on 6-col grid:
-                  // Row 0: col 1-3 (single wide card)
-                  // Row 1: col 1-3, col 4-6
-                  // Row 2: col 2-4, col 5-7 (shifted +1)
-                  // Row 3: col 1-3, col 4-6
-                  // Row 4: col 2-4, col 5-7
-                  // This creates a natural zigzag stepping pattern
-
-                  let colStart: number;
-                  let colSpan: number;
-
-                  if (idx === 0) {
-                    // First card: wider, centered-left
-                    colStart = 1;
-                    colSpan = 3;
-                  } else {
-                    // Pairs: alternate between flush (1,4) and shifted (2,5)
-                    const pairIdx = idx - 1; // 0-based index in pairs
-                    const row = Math.floor(pairIdx / 2); // which pair-row
-                    const col = pairIdx % 2; // left (0) or right (1)
-                    const isShifted = row % 2 === 1; // odd rows shift right
-                    colStart = (col * 3) + 1 + (isShifted ? 1 : 0);
-                    colSpan = 3;
+              {/* Staircase zigzag layout */}
+              <div className="flex flex-col gap-3 md:gap-4">
+                {(() => {
+                  // Build rows: first card solo, then pairs stepping right
+                  const rows: { items: typeof serviceItems; shift: number }[] = [];
+                  let i = 0;
+                  if (serviceItems.length > 0) {
+                    rows.push({ items: [serviceItems[0]], shift: 0 });
+                    i = 1;
+                  }
+                  let rowNum = 0;
+                  while (i < serviceItems.length) {
+                    const shift = rowNum % 2 === 0 ? 0 : 1; // alternate: flush, indented
+                    if (i + 1 < serviceItems.length) {
+                      rows.push({ items: [serviceItems[i], serviceItems[i + 1]], shift });
+                      i += 2;
+                    } else {
+                      rows.push({ items: [serviceItems[i]], shift });
+                      i += 1;
+                    }
+                    rowNum++;
                   }
 
-                  return (
-                    <motion.div
-                      key={service.slug}
-                      initial={{ opacity: 0, y: 60 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true, amount: 0.15 }}
-                      transition={{
-                        delay: idx * 0.08,
-                        duration: 0.65,
-                        ease: [0.22, 1, 0.36, 1],
-                      }}
-                      className="sm:col-span-3"
-                      style={{
-                        gridColumnStart: undefined,
-                      }}
-                      // Apply grid position only on sm+
-                    >
-                      <Link
-                        to={`/servicios/${service.slug}`}
-                        className="services-card group flex min-h-[140px] flex-col justify-between gap-8 rounded-[1.75rem] p-5 md:p-6"
+                  let counter = 0;
+                  return rows.map((row, rowIdx) => {
+                    const isSingle = row.items.length === 1;
+                    const isFirst = rowIdx === 0;
+                    return (
+                      <div
+                        key={rowIdx}
+                        className={`flex gap-3 md:gap-4 ${isFirst ? "" : ""}`}
+                        style={{
+                          paddingLeft: isFirst ? 0 : row.shift === 1 ? "8%" : 0,
+                        }}
                       >
-                        <service.Icon size={24} className="services-card-icon" />
-                        <span className="services-card-title text-lg font-semibold leading-tight md:text-xl">
-                          {service.title}
-                        </span>
-                      </Link>
-                    </motion.div>
-                  );
-                })}
+                        {row.items.map((service) => {
+                          const idx = counter++;
+                          return (
+                            <motion.div
+                              key={service.slug}
+                              initial={{ opacity: 0, y: 60 }}
+                              whileInView={{ opacity: 1, y: 0 }}
+                              viewport={{ once: true, amount: 0.15 }}
+                              transition={{
+                                delay: idx * 0.08,
+                                duration: 0.65,
+                                ease: [0.22, 1, 0.36, 1],
+                              }}
+                              className={isFirst && isSingle ? "w-full sm:w-[55%]" : "flex-1 min-w-0"}
+                            >
+                              <Link
+                                to={`/servicios/${service.slug}`}
+                                className="services-card group flex min-h-[140px] flex-col justify-between gap-8 rounded-[1.75rem] p-5 md:p-6"
+                              >
+                                <service.Icon size={24} className="services-card-icon" />
+                                <span className="services-card-title text-lg font-semibold leading-tight md:text-xl">
+                                  {service.title}
+                                </span>
+                              </Link>
+                            </motion.div>
+                          );
+                        })}
+                      </div>
+                    );
+                  });
+                })()}
               </div>
             </div>
           </div>
