@@ -120,7 +120,7 @@ const CasesShowcaseSection = () => {
                     transition={{ delay: 0.15, duration: 0.4 }}
                     className="text-muted-foreground text-sm font-medium"
                   >
-                    {t("cases.client")}: {current.client_name}
+                    {current.client_name}
                   </motion.span>
                 )}
 
