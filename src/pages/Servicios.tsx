@@ -81,25 +81,38 @@ const ServiciosPage = () => {
     loop: false,
   });
 
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
+  const [direction, setDirection] = useState<1 | -1>(1); // 1 = forward, -1 = backward
 
   const onSelect = useCallback(() => {
     if (!emblaApi) return;
-    setSelectedIndex(emblaApi.selectedScrollSnap());
   }, [emblaApi]);
 
   useEffect(() => {
     if (!emblaApi) return;
-    setScrollSnaps(emblaApi.scrollSnapList());
     emblaApi.on("select", onSelect);
     onSelect();
     return () => { emblaApi.off("select", onSelect); };
   }, [emblaApi, onSelect]);
 
-  const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
-  const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
-  const scrollTo = useCallback((i: number) => emblaApi?.scrollTo(i), [emblaApi]);
+  // Auto-scroll: advances forward, reverses at ends
+  useEffect(() => {
+    if (!emblaApi) return;
+    const interval = setInterval(() => {
+      if (!emblaApi.canScrollNext() && direction === 1) {
+        setDirection(-1);
+        emblaApi.scrollPrev();
+      } else if (!emblaApi.canScrollPrev() && direction === -1) {
+        setDirection(1);
+        emblaApi.scrollNext();
+      } else {
+        direction === 1 ? emblaApi.scrollNext() : emblaApi.scrollPrev();
+      }
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [emblaApi, direction]);
+
+  const scrollPrev = useCallback(() => { setDirection(-1); emblaApi?.scrollPrev(); }, [emblaApi]);
+  const scrollNext = useCallback(() => { setDirection(1); emblaApi?.scrollNext(); }, [emblaApi]);
 
 
   return (
