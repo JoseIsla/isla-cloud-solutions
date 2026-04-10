@@ -57,6 +57,9 @@ const Index = () => {
           <ServicesSection />
         </Suspense>
       </div>
+      <Suspense fallback={<SectionFallback minH="min-h-[340px]" />}>
+        <CasesShowcaseSection />
+      </Suspense>
       <Suspense fallback={<SectionFallback minH="min-h-[600px]" />}>
         <WhyUsSection />
       </Suspense>
