@@ -5,7 +5,7 @@ import { casesApi, CaseFromAPI, API_BASE_URL } from "@/lib/api";
 import { useLanguage, useT } from "@/i18n/LanguageContext";
 import { useCMSValue } from "@/hooks/useCMS";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Trophy } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, Trophy } from "lucide-react";
 import BlurImage from "@/components/BlurImage";
 
 const INTERVAL = 10_000;
@@ -23,6 +23,7 @@ const CasesShowcaseSection = () => {
   const viewAllBtn = useCMSValue("cases_view_all_btn", "Ver todos los casos");
   const [cases, setCases] = useState<CaseFromAPI[]>([]);
   const [active, setActive] = useState(0);
+  const [manualKey, setManualKey] = useState(0);
 
   useEffect(() => {
     casesApi.list(language).then((data) => {
@@ -34,6 +35,16 @@ const CasesShowcaseSection = () => {
     if (cases.length <= 1) return;
     const id = setInterval(() => setActive((p) => (p + 1) % cases.length), INTERVAL);
     return () => clearInterval(id);
+  }, [cases.length, manualKey]);
+
+  const goPrev = useCallback(() => {
+    setActive((p) => (p - 1 + cases.length) % cases.length);
+    setManualKey((k) => k + 1);
+  }, [cases.length]);
+
+  const goNext = useCallback(() => {
+    setActive((p) => (p + 1) % cases.length);
+    setManualKey((k) => k + 1);
   }, [cases.length]);
 
   const resolveImg = useCallback((url: string) => {
@@ -81,7 +92,7 @@ const CasesShowcaseSection = () => {
           className="grid grid-cols-1 lg:grid-cols-2 gap-0 rounded-2xl overflow-hidden border border-border shadow-lg min-h-[400px]"
         >
           {/* Left: Image */}
-          <div className="relative aspect-[4/3] lg:aspect-auto overflow-hidden bg-muted">
+          <div className="relative aspect-[4/3] lg:aspect-auto overflow-hidden bg-muted group">
             <AnimatePresence mode="wait">
               <motion.div
                 key={active}
@@ -100,6 +111,26 @@ const CasesShowcaseSection = () => {
                 />
               </motion.div>
             </AnimatePresence>
+
+            {/* Navigation arrows */}
+            {cases.length > 1 && (
+              <>
+                <button
+                  onClick={goPrev}
+                  aria-label="Caso anterior"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 z-10 flex items-center justify-center w-10 h-10 rounded-full bg-background/70 backdrop-blur-sm border border-border text-foreground shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-background"
+                >
+                  <ChevronLeft size={20} />
+                </button>
+                <button
+                  onClick={goNext}
+                  aria-label="Caso siguiente"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 z-10 flex items-center justify-center w-10 h-10 rounded-full bg-background/70 backdrop-blur-sm border border-border text-foreground shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-background"
+                >
+                  <ChevronRight size={20} />
+                </button>
+              </>
+            )}
           </div>
 
           {/* Right: Content */}
