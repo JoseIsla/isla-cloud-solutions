@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowRight, ChevronLeft, ChevronRight, Server, Shield, Cloud, Monitor, Globe, Smartphone, Lock, Wrench, Database, type LucideIcon } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
+import AutoScroll from "embla-carousel-auto-scroll";
 import Layout from "@/components/Layout";
 import usePageMeta, { SITE_URL, SITE_NAME } from "@/hooks/usePageMeta";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
@@ -73,97 +74,45 @@ const ServiciosPage = () => {
     jsonLd: serviciosJsonLd,
   });
 
-  // Carousel with custom auto-scroll
-  const directionRef = useRef<1 | -1>(1); // 1=forward, -1=backward
-  const pausedRef = useRef(false);
-  const rafRef = useRef<number>(0);
-  const speedRef = useRef(0.8);
+  // Carousel with auto-scroll plugin
 
-  const [emblaRef, emblaApi] = useEmblaCarousel({
-    align: "start",
-    slidesToScroll: 1,
-    containScroll: false,
-    loop: true,
-    dragFree: true,
-  });
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    {
+      align: "start",
+      slidesToScroll: 1,
+      loop: true,
+      dragFree: true,
+    },
+    [
+      AutoScroll({
+        speed: 0.8,
+        direction: "forward",
+        stopOnInteraction: false,
+        stopOnMouseEnter: false,
+        startDelay: 0,
+      }),
+    ]
+  );
 
-  // Scroll to last slide on init so the loop feels seamless from the start
-  const hasScrolledToEnd = useRef(false);
-  useEffect(() => {
-    if (!emblaApi || items.length === 0 || hasScrolledToEnd.current) return;
-    // Jump instantly (no animation) to the last slide
-    emblaApi.scrollTo(items.length - 1, true);
-    hasScrolledToEnd.current = true;
-  }, [emblaApi, items.length]);
-
-  // Custom continuous auto-scroll via engine manipulation
-  useEffect(() => {
+  // Pause/resume on card hover
+  const handleCardEnter = useCallback(() => {
     if (!emblaApi) return;
-
-    let lastTime = 0;
-
-    const tick = (time: number) => {
-      if (!lastTime) lastTime = time;
-      const delta = time - lastTime;
-      lastTime = time;
-
-      if (!pausedRef.current && delta < 100) {
-        try {
-          const engine = emblaApi.internalEngine();
-          const px = directionRef.current * -speedRef.current * (delta / 16);
-          engine.location.add(px);
-          engine.target.set(engine.location.get());
-
-          const currentIndex = engine.scrollTarget.byDistance(0, false).index;
-          if (engine.index.get() !== currentIndex) {
-            engine.indexPrevious.set(engine.index.get());
-            engine.index.set(currentIndex);
-            emblaApi.emit('select');
-          }
-
-          engine.slideLooper.loop();
-          engine.translate.to(engine.location.get());
-        } catch {
-          // Engine not ready yet
-        }
-      }
-
-      rafRef.current = requestAnimationFrame(tick);
-    };
-
-    rafRef.current = requestAnimationFrame(tick);
-
-    return () => {
-      cancelAnimationFrame(rafRef.current);
-    };
+    const plugin = emblaApi.plugins()?.autoScroll as any;
+    plugin?.stop();
   }, [emblaApi]);
 
-  // Pause on drag
-  useEffect(() => {
+  const handleCardLeave = useCallback(() => {
     if (!emblaApi) return;
-    const onPointerDown = () => { pausedRef.current = true; };
-    const onPointerUp = () => { pausedRef.current = false; };
-    emblaApi.on('pointerDown', onPointerDown);
-    emblaApi.on('pointerUp', onPointerUp);
-    return () => {
-      emblaApi.off('pointerDown', onPointerDown);
-      emblaApi.off('pointerUp', onPointerUp);
-    };
+    const plugin = emblaApi.plugins()?.autoScroll as any;
+    plugin?.play(0);
   }, [emblaApi]);
-
-  const handleCardEnter = useCallback(() => { pausedRef.current = true; }, []);
-  const handleCardLeave = useCallback(() => { pausedRef.current = false; }, []);
 
   const scrollPrev = useCallback(() => {
-    if (!emblaApi) return;
-    directionRef.current = -1;
-    emblaApi.scrollPrev();
+    emblaApi?.scrollPrev();
   }, [emblaApi]);
 
   const scrollNext = useCallback(() => {
-    if (!emblaApi) return;
-    directionRef.current = 1;
-    emblaApi.scrollNext();
+    emblaApi?.scrollNext();
   }, [emblaApi]);
 
 
@@ -189,8 +138,8 @@ const ServiciosPage = () => {
         {/* Carousel - starts from container left, bleeds to screen right */}
         <div className="overflow-hidden">
           <div className="container mx-auto px-4">
-            <div ref={emblaRef} className="overflow-visible">
-              <div className="flex" style={{ marginLeft: '-10px' }}>
+            <div ref={emblaRef} className="overflow-hidden">
+              <div className="flex ml-[-16px] md:ml-[-20px]">
                 {items.map((service, index) => (
                   <motion.div
                     key={service.slug}
