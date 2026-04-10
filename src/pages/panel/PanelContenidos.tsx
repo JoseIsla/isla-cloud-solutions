@@ -131,8 +131,8 @@ const sectionGroups: SectionGroup[] = [
   {
     tab: 'secciones',
     label: '🏢 Sobre Nosotros',
-    description: 'Textos de la página Sobre Nosotros.',
-    keys: ['about_title', 'about_subtitle', 'about_history_title', 'about_history', 'about_values_title'],
+    description: 'Título y subtítulo de la sección Sobre Nosotros (el contenido completo se edita en Gestión > Sobre Nosotros).',
+    keys: ['about_title', 'about_subtitle'],
   },
 
   // TAB: Footer y CTA
