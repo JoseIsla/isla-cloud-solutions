@@ -98,26 +98,77 @@ const ServicesSection = () => {
             </motion.div>
 
             <div className="lg:col-span-7 lg:pt-12">
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:gap-4">
-                {serviceItems.map((service, index) => (
-                  <motion.div
-                    key={service.slug}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.2 }}
-                    transition={{ delay: index * 0.05, duration: 0.4 }}
-                  >
-                    <Link
-                      to={`/servicios/${service.slug}`}
-                      className="services-card group flex min-h-[152px] flex-col justify-between gap-10 rounded-[1.75rem] p-5 md:p-6"
+              {/* Zigzag / staircase layout */}
+              <div className="flex flex-col gap-3 md:gap-4">
+                {serviceItems.map((service, index) => {
+                  // Staircase: row 0 = 1 card left, rows 1-2 = 2 cards, row 3 = 1 card shifted, etc.
+                  // Group into rows: first card alone (left), then pairs, last odd alone (right)
+                  return null; // handled below
+                })}
+                {(() => {
+                  const rows: { items: typeof serviceItems; offset: number }[] = [];
+                  let i = 0;
+                  // First card alone, left-aligned
+                  if (serviceItems.length > 0) {
+                    rows.push({ items: [serviceItems[0]], offset: 0 });
+                    i = 1;
+                  }
+                  // Middle cards in pairs
+                  while (i < serviceItems.length) {
+                    if (i + 1 < serviceItems.length) {
+                      rows.push({ items: [serviceItems[i], serviceItems[i + 1]], offset: 0 });
+                      i += 2;
+                    } else {
+                      // Last odd card, right-aligned
+                      rows.push({ items: [serviceItems[i]], offset: 1 });
+                      i += 1;
+                    }
+                  }
+
+                  return rows.map((row, rowIdx) => (
+                    <div
+                      key={rowIdx}
+                      className={`grid gap-3 md:gap-4 ${
+                        row.items.length === 1
+                          ? row.offset === 0
+                            ? "grid-cols-1 sm:grid-cols-2"
+                            : "grid-cols-1 sm:grid-cols-2"
+                          : "grid-cols-1 sm:grid-cols-2"
+                      }`}
                     >
-                      <service.Icon size={26} className="services-card-icon" />
-                      <span className="services-card-title text-lg font-semibold leading-tight md:text-xl">
-                        {service.title}
-                      </span>
-                    </Link>
-                  </motion.div>
-                ))}
+                      {/* Spacer for right-aligned single cards */}
+                      {row.items.length === 1 && row.offset === 1 && (
+                        <div className="hidden sm:block" />
+                      )}
+                      {row.items.map((service) => {
+                        const globalIdx = serviceItems.indexOf(service);
+                        return (
+                          <motion.div
+                            key={service.slug}
+                            initial={{ opacity: 0, y: 80 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true, amount: 0.1 }}
+                            transition={{
+                              delay: globalIdx * 0.1,
+                              duration: 0.7,
+                              ease: [0.22, 1, 0.36, 1],
+                            }}
+                          >
+                            <Link
+                              to={`/servicios/${service.slug}`}
+                              className="services-card group flex min-h-[152px] flex-col justify-between gap-10 rounded-[1.75rem] p-5 md:p-6"
+                            >
+                              <service.Icon size={26} className="services-card-icon" />
+                              <span className="services-card-title text-lg font-semibold leading-tight md:text-xl">
+                                {service.title}
+                              </span>
+                            </Link>
+                          </motion.div>
+                        );
+                      })}
+                    </div>
+                  ));
+                })()}
               </div>
             </div>
           </div>
