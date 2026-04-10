@@ -62,6 +62,7 @@
     "date-fns": "^3.6.0",
     "dompurify": "^3.3.3",
     "electron-to-chromium": "^1.5.313",
+    "embla-carousel-auto-scroll": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
     "framer-motion": "^12.36.0",
     "input-otp": "^1.4.2",

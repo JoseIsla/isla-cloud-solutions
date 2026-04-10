@@ -1,8 +1,9 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowRight, ChevronLeft, ChevronRight, Server, Shield, Cloud, Monitor, Globe, Smartphone, Lock, Wrench, Database, type LucideIcon } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
+import AutoScroll from "embla-carousel-auto-scroll";
 import Layout from "@/components/Layout";
 import usePageMeta, { SITE_URL, SITE_NAME } from "@/hooks/usePageMeta";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
@@ -73,46 +74,46 @@ const ServiciosPage = () => {
     jsonLd: serviciosJsonLd,
   });
 
-  // Carousel
-  const [emblaRef, emblaApi] = useEmblaCarousel({
-    align: "start",
-    slidesToScroll: 1,
-    containScroll: "trimSnaps",
-    loop: false,
-  });
+  // Carousel with continuous auto-scroll
+  const autoScrollRef = useRef<ReturnType<typeof AutoScroll> | null>(null);
 
-  const [direction, setDirection] = useState<1 | -1>(1); // 1 = forward, -1 = backward
+  if (!autoScrollRef.current) {
+    autoScrollRef.current = AutoScroll({
+      speed: 0.8,
+      direction: "forward",
+      stopOnInteraction: false,
+      stopOnMouseEnter: true,
+    });
+  }
 
-  const onSelect = useCallback(() => {
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    {
+      align: "start",
+      slidesToScroll: 1,
+      containScroll: false,
+      loop: true,
+      dragFree: true,
+    },
+    [autoScrollRef.current]
+  );
+
+  const scrollPrev = useCallback(() => {
     if (!emblaApi) return;
+    const autoScroll = emblaApi.plugins()?.autoScroll as any;
+    if (autoScroll) {
+      autoScroll.options.direction = "backward";
+    }
+    emblaApi.scrollPrev();
   }, [emblaApi]);
 
-  useEffect(() => {
+  const scrollNext = useCallback(() => {
     if (!emblaApi) return;
-    emblaApi.on("select", onSelect);
-    onSelect();
-    return () => { emblaApi.off("select", onSelect); };
-  }, [emblaApi, onSelect]);
-
-  // Auto-scroll: advances forward, reverses at ends
-  useEffect(() => {
-    if (!emblaApi) return;
-    const interval = setInterval(() => {
-      if (!emblaApi.canScrollNext() && direction === 1) {
-        setDirection(-1);
-        emblaApi.scrollPrev();
-      } else if (!emblaApi.canScrollPrev() && direction === -1) {
-        setDirection(1);
-        emblaApi.scrollNext();
-      } else {
-        direction === 1 ? emblaApi.scrollNext() : emblaApi.scrollPrev();
-      }
-    }, 3000);
-    return () => clearInterval(interval);
-  }, [emblaApi, direction]);
-
-  const scrollPrev = useCallback(() => { setDirection(-1); emblaApi?.scrollPrev(); }, [emblaApi]);
-  const scrollNext = useCallback(() => { setDirection(1); emblaApi?.scrollNext(); }, [emblaApi]);
+    const autoScroll = emblaApi.plugins()?.autoScroll as any;
+    if (autoScroll) {
+      autoScroll.options.direction = "forward";
+    }
+    emblaApi.scrollNext();
+  }, [emblaApi]);
 
 
   return (
