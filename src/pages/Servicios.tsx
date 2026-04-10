@@ -79,17 +79,8 @@ const ServiciosPage = () => {
     slidesToScroll: 1,
     loop: true,
     dragFree: true,
+    startIndex: Math.max(0, Math.floor(items.length / 2)),
   });
-
-  // Start carousel from the middle so the first visible card appears cut off
-  const hasScrolled = useRef(false);
-  useEffect(() => {
-    if (emblaApi && items.length > 0 && !hasScrolled.current) {
-      const mid = Math.floor(items.length / 2);
-      emblaApi.scrollTo(mid, true);
-      hasScrolled.current = true;
-    }
-  }, [emblaApi, items.length]);
 
   const scrollPrev = useCallback(() => {
     emblaApi?.scrollPrev();
