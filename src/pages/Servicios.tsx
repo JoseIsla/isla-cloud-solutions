@@ -183,24 +183,7 @@ const ServiciosPage = () => {
 
         {/* Controls */}
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between mt-8 md:mt-10">
-            {/* Dots */}
-            <div className="flex gap-2">
-              {scrollSnaps.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => scrollTo(i)}
-                  className={`w-2.5 h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
-                    i === selectedIndex
-                      ? "bg-foreground scale-110"
-                      : "bg-muted-foreground/30 hover:bg-muted-foreground/50"
-                  }`}
-                  aria-label={`Go to slide ${i + 1}`}
-                />
-              ))}
-            </div>
-
-            {/* Arrows */}
+          <div className="flex items-center justify-end mt-8 md:mt-10">
             <div className="flex gap-2">
               <button
                 onClick={scrollPrev}
