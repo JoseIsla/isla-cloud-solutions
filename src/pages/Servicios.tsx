@@ -85,6 +85,7 @@ const ServiciosPage = () => {
     containScroll: false,
     loop: true,
     dragFree: true,
+    startIndex: items.length > 0 ? items.length - 1 : 0,
   });
 
   // Custom continuous auto-scroll via engine manipulation
@@ -140,17 +141,6 @@ const ServiciosPage = () => {
     };
   }, [emblaApi]);
 
-  // Mouse position controls direction, hover on cards pauses
-  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width;
-    if (x < 0.15) {
-      directionRef.current = -1;
-    } else if (x > 0.85) {
-      directionRef.current = 1;
-    }
-  }, []);
-
   const handleCardEnter = useCallback(() => { pausedRef.current = true; }, []);
   const handleCardLeave = useCallback(() => { pausedRef.current = false; }, []);
 
@@ -187,7 +177,7 @@ const ServiciosPage = () => {
       {/* Slider Section */}
       <section className="bg-background py-10 md:py-14 lg:py-16">
         {/* Carousel - starts from container left, bleeds to screen right */}
-        <div className="overflow-hidden" onMouseMove={handleMouseMove}>
+        <div className="overflow-hidden">
           <div className="container mx-auto px-4">
             <div ref={emblaRef} className="overflow-visible">
               <div className="flex" style={{ marginLeft: '-10px' }}>
