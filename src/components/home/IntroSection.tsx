@@ -17,7 +17,7 @@ const IntroSection = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="text-xl md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-[2.75rem] font-heading font-medium leading-[1.75] md:leading-[1.7] max-w-6xl mx-auto text-justify animated-gradient-text [&>p]:mb-0"
+            className="text-xl md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-[2.75rem] font-heading font-medium leading-[1.9] md:leading-[1.85] max-w-7xl mx-auto text-justify animated-gradient-text [&>p]:mb-0"
             dangerouslySetInnerHTML={{ __html: sanitizeHTML(introText) }}
           />
         ) : (
@@ -26,7 +26,7 @@ const IntroSection = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="text-xl md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-[2.75rem] font-heading font-medium leading-[1.75] md:leading-[1.7] max-w-6xl mx-auto text-justify animated-gradient-text"
+            className="text-xl md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-[2.75rem] font-heading font-medium leading-[1.9] md:leading-[1.85] max-w-7xl mx-auto text-justify animated-gradient-text"
           >
             {introText}
           </motion.p>
