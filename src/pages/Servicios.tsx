@@ -1,8 +1,7 @@
-import { useState, useEffect, useMemo, useCallback, useRef } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { ArrowRight, ChevronLeft, ChevronRight, Server, Shield, Cloud, Monitor, Globe, Smartphone, Lock, Wrench, Database, type LucideIcon } from "lucide-react";
-import useEmblaCarousel from "embla-carousel-react";
+import { ArrowRight, Server, Shield, Cloud, Monitor, Globe, Smartphone, Lock, Wrench, Database, type LucideIcon } from "lucide-react";
 
 import Layout from "@/components/Layout";
 import usePageMeta, { SITE_URL, SITE_NAME } from "@/hooks/usePageMeta";
@@ -12,6 +11,7 @@ import { serviceImages } from "@/data/serviceImages";
 import { servicesApi, type ServiceFromAPI } from "@/lib/api";
 import { useCMSValue } from "@/hooks/useCMS";
 import { useT, useLanguage } from "@/i18n/LanguageContext";
+
 const iconMap: Record<string, LucideIcon> = {
   Server, Shield, Cloud, Monitor, Globe, Smartphone, Lock, Wrench, Database,
 };
@@ -50,13 +50,6 @@ const ServiciosPage = () => {
     }));
   }, [useApi, apiServices]);
 
-  // Rotate items so the carousel visually starts from the middle
-  const rotatedItems = useMemo(() => {
-    if (items.length <= 2) return items;
-    const mid = Math.floor(items.length / 2);
-    return [...items.slice(mid), ...items.slice(0, mid)];
-  }, [items]);
-
   const serviciosJsonLd = useMemo(() => {
     const listItems = items.map((s, i) => ({
       '@type': 'ListItem' as const,
@@ -81,26 +74,11 @@ const ServiciosPage = () => {
     jsonLd: serviciosJsonLd,
   });
 
-  const [emblaRef, emblaApi] = useEmblaCarousel({
-    align: "start",
-    slidesToScroll: 1,
-    loop: true,
-    dragFree: true,
-    duration: 30,
-  });
-
-  const scrollPrev = useCallback(() => {
-    emblaApi?.scrollPrev();
-  }, [emblaApi]);
-
-  const scrollNext = useCallback(() => {
-    emblaApi?.scrollNext();
-  }, [emblaApi]);
-
-
   return (
     <Layout>
       <BreadcrumbJsonLd items={[{ name: t('breadcrumb.home'), path: '/' }, { name: t('services_page.label'), path: '/servicios' }]} />
+
+      {/* Hero */}
       <section className="bg-hero grid-pattern py-14 md:py-16 overflow-hidden relative">
         <div className="container mx-auto px-4">
           <motion.div
@@ -127,97 +105,59 @@ const ServiciosPage = () => {
         </div>
       </section>
 
-      {/* Slider Section */}
+      {/* Services List */}
       <section className="bg-background py-10 md:py-14 lg:py-16">
-        {/* Carousel with side arrows */}
-        <div className="relative">
-          {/* Fade edges */}
-          <div className="absolute left-0 top-0 bottom-0 w-16 md:w-24 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
-          <div className="absolute right-0 top-0 bottom-0 w-16 md:w-24 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col gap-3 md:gap-4">
+            {items.map((service, index) => (
+              <motion.div
+                key={service.slug}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  delay: 0.15 + index * 0.06,
+                  duration: 0.5,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+              >
+                <Link
+                  to={`/servicios/${service.slug}`}
+                  className="group flex items-center gap-5 md:gap-7 rounded-2xl
+                    bg-card border border-border
+                    p-5 md:p-6 lg:p-7
+                    shadow-[0_1px_3px_hsl(var(--foreground)/0.04)]
+                    hover:border-primary/30 hover:shadow-[0_4px_20px_hsl(var(--primary)/0.08)]
+                    hover:-translate-y-0.5
+                    transition-all duration-300"
+                >
+                  {/* Icon */}
+                  <div className="flex-shrink-0 w-12 h-12 md:w-14 md:h-14 rounded-xl
+                    bg-primary/10 flex items-center justify-center
+                    group-hover:bg-primary/15 group-hover:scale-105 transition-all duration-300">
+                    <service.Icon size={24} className="text-primary/70 group-hover:text-primary transition-colors duration-300" />
+                  </div>
 
-          {/* Arrow Left */}
-          <button
-            onClick={scrollPrev}
-            className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-20
-              w-10 h-10 md:w-11 md:h-11 rounded-full
-              bg-background/80 backdrop-blur-sm border border-border
-              flex items-center justify-center
-              text-muted-foreground hover:text-primary hover:border-primary/40 hover:bg-primary/5
-              active:scale-95 transition-all duration-200 cursor-pointer shadow-lg"
-            aria-label="Previous"
-          >
-            <ChevronLeft size={20} />
-          </button>
+                  {/* Content */}
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-heading font-semibold text-base md:text-lg text-foreground
+                      group-hover:text-primary transition-colors duration-300 leading-tight">
+                      {service.shortTitle}
+                    </h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed mt-1 line-clamp-2 max-w-3xl">
+                      {service.description}
+                    </p>
+                  </div>
 
-          {/* Arrow Right */}
-          <button
-            onClick={scrollNext}
-            className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-20
-              w-10 h-10 md:w-11 md:h-11 rounded-full
-              bg-background/80 backdrop-blur-sm border border-border
-              flex items-center justify-center
-              text-muted-foreground hover:text-primary hover:border-primary/40 hover:bg-primary/5
-              active:scale-95 transition-all duration-200 cursor-pointer shadow-lg"
-            aria-label="Next"
-          >
-            <ChevronRight size={20} />
-          </button>
-
-          <div className="overflow-hidden" style={{ marginLeft: '-8%' }}>
-            <div ref={emblaRef} className="overflow-hidden">
-              <div className="flex -ml-4 md:-ml-5">
-                {rotatedItems.map((service, index) => (
-                  <motion.div
-                    key={service.slug}
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                      delay: 0.3 + index * 0.07,
-                      duration: 0.5,
-                      ease: [0.22, 1, 0.36, 1],
-                    }}
-                    className="flex-[0_0_85%] min-w-0 pl-4 md:pl-5 sm:flex-[0_0_48%] md:flex-[0_0_36%] lg:flex-[0_0_28%] xl:flex-[0_0_23%]"
-                  >
-                    <Link
-                      to={`/servicios/${service.slug}`}
-                      className="group relative flex flex-col justify-between h-full min-h-[280px] md:min-h-[320px] rounded-2xl p-6 md:p-7
-                        bg-[hsl(var(--services-card-surface))] backdrop-blur-[28px]
-                        border border-[hsl(var(--services-card-border))]
-                        shadow-[0_8px_32px_rgba(0,0,0,0.12),inset_0_1px_0_0_rgba(255,255,255,0.08)]
-                        hover:bg-[hsl(var(--services-card-surface-hover))]
-                        hover:border-[hsl(var(--services-card-border-hover))]
-                        hover:shadow-[0_8px_40px_rgba(0,102,255,0.12),inset_0_1px_0_0_rgba(255,255,255,0.15)]
-                        transition-all duration-300 overflow-hidden"
-                    >
-                      {/* Glass shine top edge */}
-                      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
-                      {/* Subtle glow on hover */}
-                      <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/0 via-transparent to-primary/0
-                        group-hover:from-primary/8 group-hover:via-transparent group-hover:to-primary/5
-                        transition-all duration-500 pointer-events-none" />
-
-                      <div className="relative z-10">
-                        <div className="w-12 h-12 rounded-xl bg-primary/15 flex items-center justify-center mb-5
-                          group-hover:bg-primary/25 group-hover:scale-110 transition-all duration-300">
-                          <service.Icon size={24} className="text-[hsl(var(--services-foreground-soft))] group-hover:text-primary transition-colors duration-300" />
-                        </div>
-                        <h3 className="text-[hsl(var(--services-foreground-strong))] font-heading font-semibold text-lg md:text-xl mb-3 leading-tight
-                          group-hover:text-primary transition-colors duration-300">
-                          {service.shortTitle}
-                        </h3>
-                        <p className="text-[hsl(var(--services-foreground-soft))] text-sm leading-relaxed line-clamp-4">
-                          {service.description}
-                        </p>
-                      </div>
-                      <span className="relative z-10 flex items-center gap-1.5 text-primary text-sm font-medium mt-5
-                        group-hover:gap-2.5 transition-all duration-300">
-                        {t('services_page.view_detail')} <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform duration-300" />
-                      </span>
-                    </Link>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
+                  {/* Arrow */}
+                  <div className="flex-shrink-0 w-9 h-9 rounded-full
+                    bg-muted/60 flex items-center justify-center
+                    group-hover:bg-primary group-hover:text-primary-foreground
+                    text-muted-foreground transition-all duration-300">
+                    <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform duration-300" />
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
