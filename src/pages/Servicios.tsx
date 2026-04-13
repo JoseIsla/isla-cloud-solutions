@@ -125,7 +125,7 @@ const ServiciosPage = () => {
                   className="group flex items-center gap-4 md:gap-5 rounded-xl
                     bg-card/65 backdrop-blur-xl
                     border border-border/80
-                    p-5 md:p-6 lg:p-7
+                    p-4 md:p-5
                     shadow-[0_2px_12px_hsl(var(--foreground)/0.02),inset_0_1px_1px_hsl(0_0%_100%/0.6)]
                     hover:bg-card/90 hover:border-primary/25
                     hover:shadow-[0_8px_32px_hsl(var(--primary)/0.08)]
@@ -133,21 +133,21 @@ const ServiciosPage = () => {
                     transition-all duration-300"
                 >
                   {/* Icon */}
-                  <div className="flex-shrink-0 w-12 h-12 md:w-14 md:h-14 rounded-xl
+                  <div className="flex-shrink-0 w-11 h-11 rounded-lg
                     bg-card/50 border border-border/60
                     flex items-center justify-center
                     group-hover:bg-primary/10 group-hover:border-primary/20
                     transition-all duration-300">
-                    <service.Icon size={22} className="text-muted-foreground group-hover:text-primary transition-colors duration-300" />
+                    <service.Icon size={20} className="text-muted-foreground group-hover:text-primary transition-colors duration-300" />
                   </div>
 
                   {/* Content */}
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-heading font-semibold text-base md:text-lg text-foreground
-                      group-hover:text-primary transition-colors duration-300 leading-tight">
+                    <h3 className="font-heading font-semibold text-sm md:text-[15px] text-foreground
+                      group-hover:text-primary transition-colors duration-300 leading-tight truncate">
                       {service.shortTitle}
                     </h3>
-                    <p className="text-muted-foreground text-sm leading-relaxed mt-1">
+                    <p className="text-muted-foreground text-xs md:text-sm mt-0.5 truncate">
                       {service.description}
                     </p>
                   </div>
