@@ -105,14 +105,14 @@ const ServiciosPage = () => {
         </div>
       </section>
 
-      {/* Services List */}
+      {/* Services Grid */}
       <section className="bg-background py-10 md:py-14 lg:py-16">
         <div className="container mx-auto px-4">
-          <div className="flex flex-col gap-3 md:gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
             {items.map((service, index) => (
               <motion.div
                 key={service.slug}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
                   delay: 0.15 + index * 0.06,
@@ -122,37 +122,39 @@ const ServiciosPage = () => {
               >
                 <Link
                   to={`/servicios/${service.slug}`}
-                  className="group flex items-center gap-5 md:gap-7 rounded-2xl
-                    bg-card border border-border
-                    p-5 md:p-6 lg:p-7
-                    shadow-[0_1px_3px_hsl(var(--foreground)/0.04)]
-                    hover:border-primary/30 hover:shadow-[0_4px_20px_hsl(var(--primary)/0.08)]
+                  className="group flex items-center gap-4 md:gap-5 rounded-xl
+                    bg-card/65 backdrop-blur-xl
+                    border border-border/80
+                    p-4 md:p-5
+                    shadow-[0_2px_12px_hsl(var(--foreground)/0.02),inset_0_1px_1px_hsl(0_0%_100%/0.6)]
+                    hover:bg-card/90 hover:border-primary/25
+                    hover:shadow-[0_8px_32px_hsl(var(--primary)/0.08)]
                     hover:-translate-y-0.5
                     transition-all duration-300"
                 >
                   {/* Icon */}
-                  <div className="flex-shrink-0 w-12 h-12 md:w-14 md:h-14 rounded-xl
-                    bg-primary/10 flex items-center justify-center
-                    group-hover:bg-primary/15 group-hover:scale-105 transition-all duration-300">
-                    <service.Icon size={24} className="text-primary/70 group-hover:text-primary transition-colors duration-300" />
+                  <div className="flex-shrink-0 w-11 h-11 rounded-lg
+                    bg-card/50 border border-border/60
+                    flex items-center justify-center
+                    group-hover:bg-primary/10 group-hover:border-primary/20
+                    transition-all duration-300">
+                    <service.Icon size={20} className="text-muted-foreground group-hover:text-primary transition-colors duration-300" />
                   </div>
 
                   {/* Content */}
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-heading font-semibold text-base md:text-lg text-foreground
-                      group-hover:text-primary transition-colors duration-300 leading-tight">
+                    <h3 className="font-heading font-semibold text-sm md:text-[15px] text-foreground
+                      group-hover:text-primary transition-colors duration-300 leading-tight truncate">
                       {service.shortTitle}
                     </h3>
-                    <p className="text-muted-foreground text-sm leading-relaxed mt-1 line-clamp-2 max-w-3xl">
+                    <p className="text-muted-foreground text-xs md:text-sm mt-0.5 truncate">
                       {service.description}
                     </p>
                   </div>
 
                   {/* Arrow */}
-                  <div className="flex-shrink-0 w-9 h-9 rounded-full
-                    bg-muted/60 flex items-center justify-center
-                    group-hover:bg-primary group-hover:text-primary-foreground
-                    text-muted-foreground transition-all duration-300">
+                  <div className="flex-shrink-0 text-muted-foreground/50
+                    group-hover:text-primary transition-colors duration-300">
                     <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform duration-300" />
                   </div>
                 </Link>
