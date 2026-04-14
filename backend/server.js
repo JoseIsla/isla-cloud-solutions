@@ -31,6 +31,7 @@ const contactLimiter = rateLimit({
   message: { error: 'Has enviado demasiados mensajes. Inténtalo más tarde.' },
 });
 
+const { authMiddleware } = require('./middleware/auth');
 const authRoutes = require('./routes/auth');
 const servicesRoutes = require('./routes/services');
 const newsRoutes = require('./routes/news');
