@@ -31,6 +31,7 @@ const contactLimiter = rateLimit({
   message: { error: 'Has enviado demasiados mensajes. Inténtalo más tarde.' },
 });
 
+const { authMiddleware } = require('./middleware/auth');
 const authRoutes = require('./routes/auth');
 const servicesRoutes = require('./routes/services');
 const newsRoutes = require('./routes/news');
@@ -176,6 +177,75 @@ app.get('/api/health', async (req, res) => {
     uptime: Math.round(process.uptime()) + 's',
     checks,
   });
+});
+
+// SMTP health check
+app.get('/api/health/smtp', authMiddleware, async (req, res) => {
+  const nodemailer = require('nodemailer');
+  const smtpConfig = {
+    host: process.env.SMTP_HOST,
+    port: parseInt(process.env.SMTP_PORT || '587', 10),
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  };
+
+  // Check env vars
+  if (!smtpConfig.host || !smtpConfig.user || !smtpConfig.pass) {
+    const missingVars = [];
+    if (!smtpConfig.host) missingVars.push('SMTP_HOST');
+    if (!smtpConfig.user) missingVars.push('SMTP_USER');
+    if (!smtpConfig.pass) missingVars.push('SMTP_PASS');
+    return res.status(503).json({
+      status: 'error',
+      message: 'Variables SMTP no configuradas',
+      missing: missingVars,
+    });
+  }
+
+  // Try SMTP connection
+  try {
+    const transporter = nodemailer.createTransport({
+      host: smtpConfig.host,
+      port: smtpConfig.port,
+      secure: smtpConfig.port === 465,
+      auth: { user: smtpConfig.user, pass: smtpConfig.pass },
+      connectionTimeout: 10000,
+    });
+
+    await transporter.verify();
+
+    // Also check contact_email in DB
+    let contactEmail = null;
+    try {
+      const pool = require('./config/db');
+      const conn = await pool.getConnection();
+      const rows = await conn.query("SELECT value FROM contents WHERE content_key = 'contact_email'");
+      conn.release();
+      contactEmail = (rows.length > 0 && rows[0].value) ? rows[0].value : null;
+    } catch (_) {}
+
+    res.json({
+      status: 'ok',
+      message: 'Conexión SMTP verificada correctamente',
+      smtp: {
+        host: smtpConfig.host,
+        port: smtpConfig.port,
+        user: smtpConfig.user,
+      },
+      contactEmail: contactEmail || `(fallback: ${smtpConfig.user})`,
+    });
+  } catch (err) {
+    res.status(503).json({
+      status: 'error',
+      message: 'No se pudo conectar al servidor SMTP',
+      error: err.message,
+      smtp: {
+        host: smtpConfig.host,
+        port: smtpConfig.port,
+        user: smtpConfig.user,
+      },
+    });
+  }
 });
 
 // Error handler
