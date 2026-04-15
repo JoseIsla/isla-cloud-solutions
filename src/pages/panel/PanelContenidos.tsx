@@ -339,7 +339,17 @@ const PanelContenidos = () => {
                       placeholder="URL de la imagen de fondo (déjalo vacío para usar el fondo por defecto)"
                       className="flex-1 px-4 py-3 rounded-xl bg-card border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm"
                     />
-                    <MediaPicker onSelect={(url) => setEditValues({ ...editValues, partners_bg_image: url })} />
+                    <Button variant="outline" size="sm" type="button" onClick={() => setOpenSections(prev => ({ ...prev, __partners_media: true }))}>
+                      Galería
+                    </Button>
+                    <MediaPicker
+                      open={!!openSections['__partners_media']}
+                      onClose={() => setOpenSections(prev => ({ ...prev, __partners_media: false }))}
+                      onSelect={(url) => {
+                        setEditValues({ ...editValues, partners_bg_image: url });
+                        setOpenSections(prev => ({ ...prev, __partners_media: false }));
+                      }}
+                    />
                   </div>
                   <p className="text-xs text-muted-foreground mt-2">Selecciona una imagen de la galería o pega una URL. Deja vacío para el fondo oscuro por defecto.</p>
                 </div>
