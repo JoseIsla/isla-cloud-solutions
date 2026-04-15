@@ -54,7 +54,7 @@ const PartnersSection = () => {
             src={partner.logo_url}
             alt={partner.name}
             placeholderColor="transparent"
-            className="w-[140px] h-12 object-contain relative z-10 group-hover:scale-105 transition-transform duration-300 brightness-90 group-hover:brightness-110"
+            className="w-[140px] h-12 object-contain relative z-10 group-hover:scale-105 transition-transform duration-300 brightness-125 contrast-110 group-hover:brightness-150"
             wrapperClassName="flex items-center justify-center w-[140px] h-12"
           />
         ) : (
