@@ -35,18 +35,32 @@ const HeroSection = () => {
   const heroBg1 = useCMSValue('hero_bg_slide1', '');
   const heroBg2 = useCMSValue('hero_bg_slide2', '');
   const heroBg3 = useCMSValue('hero_bg_slide3', '');
-  const slideBackgrounds = [
-    heroBg1 || defaultHeroBg,
-    latestNews?.image_url || heroBg2 || defaultHeroBlogBg,
-    currentCase?.image_url || heroBg3 || defaultHeroCasesBg,
+
+  // Track which remote images have been preloaded to avoid flash
+  const [readyImages, setReadyImages] = useState<Record<string, boolean>>({});
+
+  const remoteSources = [
+    heroBg1,
+    latestNews?.image_url || heroBg2,
+    currentCase?.image_url || heroBg3,
   ];
 
   useEffect(() => {
-    slideBackgrounds.forEach(src => {
+    remoteSources.forEach((src) => {
+      if (!src) return;
+      if (readyImages[src]) return;
       const img = new Image();
+      img.onload = () => setReadyImages((prev) => ({ ...prev, [src]: true }));
       img.src = src;
     });
-  }, [slideBackgrounds[0], slideBackgrounds[1], slideBackgrounds[2]]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [remoteSources[0], remoteSources[1], remoteSources[2]]);
+
+  const slideBackgrounds = [
+    (heroBg1 && readyImages[heroBg1]) ? heroBg1 : defaultHeroBg,
+    (remoteSources[1] && readyImages[remoteSources[1]!]) ? remoteSources[1]! : defaultHeroBlogBg,
+    (remoteSources[2] && readyImages[remoteSources[2]!]) ? remoteSources[2]! : defaultHeroCasesBg,
+  ];
 
   const tab1Label = useCMSValue('hero_tab1_label', 'Isla Cloud Solutions');
   const tab2Label = useCMSValue('hero_tab2_label', 'Último en el Blog');
