@@ -91,6 +91,20 @@ async function initDB() {
     )
   `);
 
+  // Partners table
+  await conn.query(`
+    CREATE TABLE IF NOT EXISTS partners (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      name VARCHAR(255) NOT NULL,
+      logo_url VARCHAR(500),
+      website_url VARCHAR(500),
+      sort_order INT DEFAULT 0,
+      is_active TINYINT(1) DEFAULT 1,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    )
+  `);
+
   // Clients table
   await conn.query(`
     CREATE TABLE IF NOT EXISTS clients (

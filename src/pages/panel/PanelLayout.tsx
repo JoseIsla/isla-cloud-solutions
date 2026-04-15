@@ -7,7 +7,7 @@ import {
   LayoutDashboard, FileText, Newspaper, MessageSquare,
   LogOut, Menu, X, Users, Trophy, Globe, Pencil, MessageCircle,
   ChevronLeft, HelpCircle, ImageIcon, UserCog, UserCircle, Languages,
-  ChevronDown,
+  ChevronDown, Handshake,
 } from 'lucide-react';
 import PanelSearch from '@/components/panel/PanelSearch';
 import logotipoBlanco from '@/assets/logos/logotipo-blanco-small.png';
@@ -37,6 +37,7 @@ const sidebarSections = [
       { label: 'Noticias / Blog', path: '/panel/noticias', icon: Newspaper },
       { label: 'Sobre Nosotros', path: '/panel/sobre-nosotros', icon: Globe },
       { label: 'Clientes', path: '/panel/clientes', icon: Users },
+      { label: 'Partners', path: '/panel/partners', icon: Handshake },
       { label: 'Testimonios', path: '/panel/testimonios', icon: MessageCircle },
       { label: 'FAQs', path: '/panel/faqs', icon: HelpCircle },
     ],

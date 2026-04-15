@@ -38,6 +38,7 @@ const faqsRoutes = require('./routes/faqs');
 const testimonialsRoutes = require('./routes/testimonials');
 const mediaRoutes = require('./routes/media');
 const usersRoutes = require('./routes/users');
+const partnersRoutes = require('./routes/partners');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -135,6 +136,7 @@ app.use('/api/testimonials', cacheControl({ maxAge: 600, swr: 1200 }), testimoni
 app.use('/api/faqs', cacheControl({ maxAge: 600, swr: 1200 }), faqsRoutes);
 app.use('/api/media', cacheControl({ maxAge: 300, swr: 600 }), mediaRoutes);
 app.use('/api/users', cacheControl({ isPrivate: true }), usersRoutes);
+app.use('/api/partners', cacheControl({ maxAge: 600, swr: 1200 }), partnersRoutes);
 
 // Health check — detailed diagnostics
 app.get('/api/health', async (req, res) => {
