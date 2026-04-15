@@ -69,73 +69,156 @@ const Footer = () => {
       ];
 
   return (
-    <footer className="bg-navy text-hero-foreground">
-      <div className="container mx-auto px-4 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
-          <div>
-            <img src={footerLogo} alt="Isla Cloud Solutions" className="h-10 w-auto mb-4" />
-            <p className="text-hero-foreground/60 text-sm leading-relaxed mb-6">{description}</p>
-          </div>
-          <div>
-            <h4 className="font-heading font-semibold text-sm uppercase tracking-wider mb-4 text-primary">{footerServicesTitle}</h4>
-            <ul className="space-y-2 text-sm text-hero-foreground/60">
-              {serviceLinks.map(s => (
-                <li key={s.slug}>
-                  <Link to={`/servicios/${s.slug}`} className="hover:text-primary transition-colors">{s.label}</Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-heading font-semibold text-sm uppercase tracking-wider mb-4 text-primary">{footerCompanyTitle}</h4>
-            <ul className="space-y-2 text-sm text-hero-foreground/60">
-              <li><Link to="/sobre-nosotros" className="hover:text-primary transition-colors">{footerCompanyLink1}</Link></li>
-              <li><Link to="/blog" className="hover:text-primary transition-colors">{footerCompanyLink2}</Link></li>
-              <li><Link to="/casos" className="hover:text-primary transition-colors">{t('footer.cases')}</Link></li>
-              <li><Link to="/contacto" className="hover:text-primary transition-colors">{footerCompanyLink3}</Link></li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-heading font-semibold text-sm uppercase tracking-wider mb-4 text-primary">{footerContactTitle}</h4>
-            <ul className="space-y-3 text-sm text-hero-foreground/60">
-              <li className="flex items-center gap-2">
-                <Mail size={14} className="text-primary" />
-                <a href={`mailto:${contactEmail}`} className="hover:text-primary transition-colors">{contactEmail}</a>
-              </li>
-              <li className="flex items-center gap-2">
-                <Phone size={14} className="text-primary" />
-                <a href={`tel:${contactPhone}`} className="hover:text-primary transition-colors">{contactPhone}</a>
-              </li>
-              <li className="flex items-start gap-2">
-                <MapPin size={14} className="text-primary mt-0.5" />
-                <span>{contactAddress}</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div className="border-t border-hero-foreground/10 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-hero-foreground/40 text-xs">
-            {footerCopyright.replace('{year}', String(new Date().getFullYear()))}
-          </p>
-          <div className="flex items-center gap-4">
+    <footer className="relative bg-hero overflow-hidden">
+      {/* Silk crease divider */}
+      <div className="absolute top-0 left-0 right-0 h-px" style={{
+        background: 'linear-gradient(to right, transparent, hsla(0, 0%, 100%, 0.10) 50%, transparent)',
+      }} />
+
+      <div className="container mx-auto px-4 pt-20 pb-10 relative z-10">
+        {/* 4-Column Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8 mb-20">
+
+          {/* Col 1: Brand */}
+          <div className="lg:col-span-4 flex flex-col gap-6 pr-4">
+            <img src={footerLogo} alt="Isla Cloud Solutions" className="h-10 w-auto" />
+            <p className="text-sm leading-relaxed max-w-[35ch] text-balance" style={{ color: 'hsla(0, 0%, 100%, 0.40)' }}>
+              {description}
+            </p>
+            {/* Social links */}
             {socialLinks.length > 0 && (
-              <div className="flex gap-3">
+              <div className="flex gap-5 mt-2">
                 {socialLinks.map(({ url, icon: Icon, label }) => (
-                  <a key={label} href={url} target="_blank" rel="noopener noreferrer" aria-label={label}
-                    className="text-hero-foreground/40 hover:text-primary transition-colors">
+                  <a
+                    key={label}
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={label}
+                    className="transition-colors duration-500"
+                    style={{ color: 'hsla(0, 0%, 100%, 0.35)' }}
+                    onMouseEnter={e => (e.currentTarget.style.color = 'hsl(var(--primary))')}
+                    onMouseLeave={e => (e.currentTarget.style.color = 'hsla(0, 0%, 100%, 0.35)')}
+                  >
                     <Icon size={16} />
                   </a>
                 ))}
               </div>
             )}
-            {legalLinks.length > 0 && (
-              <div className="flex gap-6 text-xs text-hero-foreground/40">
-                {legalLinks.map(link => (
-                  <Link key={link.to} to={link.to} className="hover:text-primary transition-colors">{link.label}</Link>
-                ))}
-              </div>
-            )}
           </div>
+
+          {/* Col 2: Services */}
+          <div className="lg:col-span-2 lg:col-start-6 flex flex-col gap-5">
+            <h4 className="text-xs uppercase tracking-[0.2em] mb-2" style={{ color: 'hsla(0, 0%, 100%, 0.40)' }}>
+              {footerServicesTitle}
+            </h4>
+            <ul className="flex flex-col gap-3">
+              {serviceLinks.map(s => (
+                <li key={s.slug}>
+                  <Link
+                    to={`/servicios/${s.slug}`}
+                    className="text-sm font-light transition-colors duration-500"
+                    style={{ color: 'hsla(0, 0%, 100%, 0.55)' }}
+                    onMouseEnter={e => (e.currentTarget.style.color = 'hsl(var(--primary))')}
+                    onMouseLeave={e => (e.currentTarget.style.color = 'hsla(0, 0%, 100%, 0.55)')}
+                  >
+                    {s.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Col 3: Company */}
+          <div className="lg:col-span-2 flex flex-col gap-5">
+            <h4 className="text-xs uppercase tracking-[0.2em] mb-2" style={{ color: 'hsla(0, 0%, 100%, 0.40)' }}>
+              {footerCompanyTitle}
+            </h4>
+            <ul className="flex flex-col gap-3">
+              {[
+                { to: '/sobre-nosotros', label: footerCompanyLink1 },
+                { to: '/blog', label: footerCompanyLink2 },
+                { to: '/casos', label: t('footer.cases') },
+                { to: '/contacto', label: footerCompanyLink3 },
+              ].map(link => (
+                <li key={link.to}>
+                  <Link
+                    to={link.to}
+                    className="text-sm font-light transition-colors duration-500"
+                    style={{ color: 'hsla(0, 0%, 100%, 0.55)' }}
+                    onMouseEnter={e => (e.currentTarget.style.color = 'hsl(var(--primary))')}
+                    onMouseLeave={e => (e.currentTarget.style.color = 'hsla(0, 0%, 100%, 0.55)')}
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Col 4: Contact */}
+          <div className="lg:col-span-3 flex flex-col gap-5">
+            <h4 className="text-xs uppercase tracking-[0.2em] mb-2" style={{ color: 'hsla(0, 0%, 100%, 0.40)' }}>
+              {footerContactTitle}
+            </h4>
+            <div className="flex flex-col gap-4 text-sm font-light">
+              <div>
+                <a
+                  href={`mailto:${contactEmail}`}
+                  className="flex items-center gap-2 transition-colors duration-500"
+                  style={{ color: 'hsla(0, 0%, 100%, 0.55)' }}
+                  onMouseEnter={e => (e.currentTarget.style.color = 'hsl(var(--primary))')}
+                  onMouseLeave={e => (e.currentTarget.style.color = 'hsla(0, 0%, 100%, 0.55)')}
+                >
+                  <Mail size={14} style={{ color: 'hsl(var(--primary))' }} />
+                  {contactEmail}
+                </a>
+              </div>
+              <div>
+                <a
+                  href={`tel:${contactPhone}`}
+                  className="flex items-center gap-2 transition-colors duration-500"
+                  style={{ color: 'hsla(0, 0%, 100%, 0.55)' }}
+                  onMouseEnter={e => (e.currentTarget.style.color = 'hsl(var(--primary))')}
+                  onMouseLeave={e => (e.currentTarget.style.color = 'hsla(0, 0%, 100%, 0.55)')}
+                >
+                  <Phone size={14} style={{ color: 'hsl(var(--primary))' }} />
+                  {contactPhone}
+                </a>
+              </div>
+              <div className="flex items-start gap-2" style={{ color: 'hsla(0, 0%, 100%, 0.55)' }}>
+                <MapPin size={14} className="mt-0.5" style={{ color: 'hsl(var(--primary))' }} />
+                <span>{contactAddress}</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        {/* Bottom legal bar */}
+        <div
+          className="flex flex-col md:flex-row justify-between items-center gap-4 pt-8"
+          style={{ borderTop: '1px solid hsla(0, 0%, 100%, 0.05)' }}
+        >
+          <p className="text-xs" style={{ color: 'hsla(0, 0%, 100%, 0.30)' }}>
+            {footerCopyright.replace('{year}', String(new Date().getFullYear()))}
+          </p>
+          {legalLinks.length > 0 && (
+            <div className="flex gap-8">
+              {legalLinks.map(link => (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  className="text-xs transition-colors duration-500"
+                  style={{ color: 'hsla(0, 0%, 100%, 0.30)' }}
+                  onMouseEnter={e => (e.currentTarget.style.color = 'hsla(0, 0%, 100%, 0.70)')}
+                  onMouseLeave={e => (e.currentTarget.style.color = 'hsla(0, 0%, 100%, 0.30)')}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </footer>

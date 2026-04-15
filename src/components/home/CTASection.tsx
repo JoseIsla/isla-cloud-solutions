@@ -17,39 +17,30 @@ const CTASection = () => {
 
   return (
     <section className="relative py-20 md:py-28 overflow-hidden bg-hero">
-      {/* Ambient glows */}
+      {/* Atmospheric spotlight gradients */}
       <div
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] rounded-[100%] pointer-events-none mix-blend-screen"
-        style={{ background: 'hsl(var(--primary) / 0.1)', filter: 'blur(120px)' }}
+        className="absolute top-0 right-[10%] w-[800px] h-[800px] rounded-full pointer-events-none mix-blend-screen opacity-60"
+        style={{ background: 'radial-gradient(circle at center, hsl(var(--hero) / 0.6), transparent 70%)', filter: 'blur(80px)' }}
       />
       <div
-        className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] rounded-[100%] pointer-events-none mix-blend-screen"
-        style={{ background: 'hsl(var(--accent) / 0.1)', filter: 'blur(150px)' }}
-      />
-
-      {/* Grid overlay */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          backgroundImage: 'linear-gradient(hsla(0, 0%, 100%, 0.02) 1px, transparent 1px), linear-gradient(90deg, hsla(0, 0%, 100%, 0.02) 1px, transparent 1px)',
-          backgroundSize: '64px 64px',
-          maskImage: 'radial-gradient(ellipse 60% 60% at 50% 50%, #000 10%, transparent 100%)',
-        }}
+        className="absolute bottom-[20%] left-[-10%] w-[600px] h-[600px] rounded-full pointer-events-none mix-blend-screen opacity-80"
+        style={{ background: 'radial-gradient(circle at center, hsl(var(--hero) / 0.4), transparent 60%)', filter: 'blur(80px)' }}
       />
 
       <div className="container mx-auto px-4 relative z-10">
-        <div className="flex flex-col items-center gap-20">
-          {/* Main CTA content */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-8 items-center">
+
+          {/* Left Content */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="flex flex-col items-center text-center gap-8 w-full max-w-3xl"
+            className="lg:col-span-5 flex flex-col items-start"
           >
             {/* Status pill */}
             <div
-              className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full"
+              className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full mb-8"
               style={{
                 background: 'hsla(0, 0%, 100%, 0.03)',
                 border: '1px solid hsla(0, 0%, 100%, 0.08)',
@@ -64,9 +55,8 @@ const CTASection = () => {
               </span>
             </div>
 
-            {/* Heading with gradient */}
             <h2
-              className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold tracking-tight text-balance leading-tight"
+              className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold tracking-tight text-balance leading-tight mb-8"
               style={{
                 backgroundImage: 'linear-gradient(to bottom, hsl(0, 0%, 100%), hsl(0, 0%, 90%), hsl(0, 0%, 60%))',
                 WebkitBackgroundClip: 'text',
@@ -76,117 +66,98 @@ const CTASection = () => {
               {title}
             </h2>
 
-            <p className="text-lg md:text-xl max-w-[55ch] text-pretty leading-relaxed" style={{ color: 'hsla(0, 0%, 100%, 0.45)' }}>
+            <p className="text-lg md:text-xl max-w-[45ch] text-pretty leading-relaxed mb-12" style={{ color: 'hsla(0, 0%, 100%, 0.45)' }}>
               {subtitle}
             </p>
 
-            <Button variant="hero" size="xl" asChild className="shadow-[0_0_40px_-10px_hsl(var(--primary)/0.6)]">
-              <Link to="/contacto">
-                {buttonText} <ArrowRight size={20} />
+            <Button variant="hero" size="xl" asChild className="group relative overflow-hidden rounded-full shadow-none" style={{
+              background: 'hsla(0, 0%, 100%, 0.03)',
+              border: '1px solid hsla(0, 0%, 100%, 0.10)',
+            }}>
+              <Link to="/contacto" className="flex items-center gap-3">
+                <span className="relative z-10 text-sm tracking-widest uppercase font-light text-hero-foreground">
+                  {buttonText}
+                </span>
+                <ArrowRight size={18} className="relative z-10 text-hero-foreground" />
               </Link>
             </Button>
           </motion.div>
 
-          {/* Info cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-5xl">
-            {/* Card 1 - Phone support */}
+          {/* Right Glass Cards – staggered */}
+          <div className="lg:col-span-6 lg:col-start-7 flex flex-col sm:flex-row gap-6 relative">
+            {/* Card 1 */}
             <motion.div
               initial={{ opacity: 0, y: 25 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2, duration: 0.5 }}
-              className="group relative flex flex-col p-8 rounded-3xl backdrop-blur-2xl transition-colors duration-300 overflow-hidden"
+              className="flex-1 flex flex-col p-8 md:p-10 rounded-3xl backdrop-blur-2xl transition-all duration-700 ease-out hover:-translate-y-2"
               style={{
-                background: 'hsla(0, 0%, 100%, 0.03)',
-                border: '1px solid hsla(0, 0%, 100%, 0.06)',
-                boxShadow: 'inset 0 1px 0 0 hsla(0, 0%, 100%, 0.05), 0 10px 40px -10px rgba(0,0,0,0.5)',
+                background: 'linear-gradient(to bottom, hsla(0, 0%, 100%, 0.04), transparent)',
+                boxShadow: 'inset 0 0 0 1px hsla(0, 0%, 100%, 0.05), 0 24px 48px -12px rgba(0,0,0,0.8)',
               }}
             >
-              {/* Hover glow */}
-              <div
-                className="absolute -top-24 -right-24 w-48 h-48 rounded-full pointer-events-none transition-colors duration-700"
-                style={{ background: 'hsl(var(--primary) / 0.15)', filter: 'blur(60px)' }}
-              />
-
-              <div className="flex flex-col h-full gap-6 relative z-10">
-                <div>
-                  <div className="text-xs font-semibold tracking-widest uppercase mb-3" style={{ color: 'hsl(var(--primary))' }}>
-                    Soporte directo
-                  </div>
-                  <h3 className="text-xl font-heading font-medium text-hero-foreground tracking-tight">
-                    {card1Title}
-                  </h3>
-                </div>
-                <p className="text-sm leading-relaxed max-w-[40ch]" style={{ color: 'hsla(0, 0%, 100%, 0.45)' }}>
-                  {card1Desc}
-                </p>
-                <div className="mt-auto pt-6" style={{ borderTop: '1px solid hsla(0, 0%, 100%, 0.06)' }}>
-                  <div className="flex items-baseline justify-between">
-                    <span className="text-xs uppercase tracking-wider font-medium" style={{ color: 'hsla(0, 0%, 100%, 0.3)' }}>
-                      Línea directa
-                    </span>
-                    <a
-                      href={`tel:${phone.replace(/\s/g, '')}`}
-                      className="text-sm font-medium hover:underline"
-                      style={{ color: 'hsla(0, 0%, 100%, 0.85)' }}
-                    >
-                      {phone}
-                    </a>
-                  </div>
+              <span className="text-xl italic mb-6 block" style={{ color: 'hsla(0, 0%, 100%, 0.3)' }}>01</span>
+              <h3 className="text-xl font-heading font-medium text-hero-foreground tracking-tight mb-4">
+                {card1Title}
+              </h3>
+              <p className="text-sm leading-relaxed text-pretty mb-8" style={{ color: 'hsla(0, 0%, 100%, 0.45)' }}>
+                {card1Desc}
+              </p>
+              <div className="mt-auto pt-6" style={{ borderTop: '1px solid hsla(0, 0%, 100%, 0.06)' }}>
+                <div className="flex items-baseline justify-between">
+                  <span className="text-xs uppercase tracking-wider font-medium" style={{ color: 'hsla(0, 0%, 100%, 0.3)' }}>
+                    Línea directa
+                  </span>
+                  <a
+                    href={`tel:${phone.replace(/\s/g, '')}`}
+                    className="text-sm font-medium hover:underline"
+                    style={{ color: 'hsla(0, 0%, 100%, 0.85)' }}
+                  >
+                    {phone}
+                  </a>
                 </div>
               </div>
             </motion.div>
 
-            {/* Card 2 - Proactive approach */}
+            {/* Card 2 – staggered down */}
             <motion.div
               initial={{ opacity: 0, y: 25 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.35, duration: 0.5 }}
-              className="group relative flex flex-col p-8 rounded-3xl backdrop-blur-2xl transition-colors duration-300 overflow-hidden"
+              className="flex-1 flex flex-col p-8 md:p-10 rounded-3xl backdrop-blur-2xl transition-all duration-700 ease-out hover:-translate-y-2 sm:mt-16"
               style={{
-                background: 'hsla(0, 0%, 100%, 0.03)',
-                border: '1px solid hsla(0, 0%, 100%, 0.06)',
-                boxShadow: 'inset 0 1px 0 0 hsla(0, 0%, 100%, 0.05), 0 10px 40px -10px rgba(0,0,0,0.5)',
+                background: 'linear-gradient(to bottom, hsla(0, 0%, 100%, 0.04), transparent)',
+                boxShadow: 'inset 0 0 0 1px hsla(0, 0%, 100%, 0.05), 0 24px 48px -12px rgba(0,0,0,0.8)',
               }}
             >
-              {/* Hover glow */}
-              <div
-                className="absolute -bottom-24 -left-24 w-48 h-48 rounded-full pointer-events-none transition-colors duration-700"
-                style={{ background: 'hsl(var(--accent) / 0.15)', filter: 'blur(60px)' }}
-              />
-
-              <div className="flex flex-col h-full gap-6 relative z-10">
-                <div>
-                  <div className="text-xs font-semibold tracking-widest uppercase mb-3" style={{ color: 'hsl(var(--accent))' }}>
-                    Metodología
-                  </div>
-                  <h3 className="text-xl font-heading font-medium text-hero-foreground tracking-tight">
-                    {card2Title}
-                  </h3>
-                </div>
-                <p className="text-sm leading-relaxed max-w-[40ch]" style={{ color: 'hsla(0, 0%, 100%, 0.45)' }}>
-                  {card2Desc}
-                </p>
-                <div className="mt-auto pt-6" style={{ borderTop: '1px solid hsla(0, 0%, 100%, 0.06)' }}>
-                  <div className="flex items-baseline justify-between">
-                    <span className="text-xs uppercase tracking-wider font-medium" style={{ color: 'hsla(0, 0%, 100%, 0.3)' }}>
-                      Estado
+              <span className="text-xl italic mb-6 block" style={{ color: 'hsla(0, 0%, 100%, 0.3)' }}>02</span>
+              <h3 className="text-xl font-heading font-medium text-hero-foreground tracking-tight mb-4">
+                {card2Title}
+              </h3>
+              <p className="text-sm leading-relaxed text-pretty mb-8" style={{ color: 'hsla(0, 0%, 100%, 0.45)' }}>
+                {card2Desc}
+              </p>
+              <div className="mt-auto pt-6" style={{ borderTop: '1px solid hsla(0, 0%, 100%, 0.06)' }}>
+                <div className="flex items-baseline justify-between">
+                  <span className="text-xs uppercase tracking-wider font-medium" style={{ color: 'hsla(0, 0%, 100%, 0.3)' }}>
+                    Estado
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <div
+                      className="w-1.5 h-1.5 rounded-full animate-pulse"
+                      style={{ background: 'hsl(var(--accent))' }}
+                    />
+                    <span className="text-sm font-medium" style={{ color: 'hsla(0, 0%, 100%, 0.85)' }}>
+                      Activo
                     </span>
-                    <div className="flex items-center gap-2">
-                      <div
-                        className="w-1.5 h-1.5 rounded-full animate-pulse"
-                        style={{ background: 'hsl(var(--accent))' }}
-                      />
-                      <span className="text-sm font-medium" style={{ color: 'hsla(0, 0%, 100%, 0.85)' }}>
-                        Activo
-                      </span>
-                    </div>
                   </div>
                 </div>
               </div>
             </motion.div>
           </div>
+
         </div>
       </div>
     </section>
