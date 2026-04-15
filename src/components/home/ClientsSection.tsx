@@ -84,6 +84,7 @@ const ClientsSection = () => {
   const sectionLabel = useCMSValue('clients_section_label', 'Clientes');
   const sectionTitle = useCMSValue('clients_section_title', 'Empresas que confían en nosotros');
   const sectionSubtitle = useCMSValue('clients_section_subtitle', 'Más de 60 empresas e instituciones de todos los sectores confían en nuestros servicios IT.');
+  const bgImage = useCMSValue('clients_bg_image', '');
 
   const [apiClients, setApiClients] = useState<ClientFromAPI[] | null>(null);
 

@@ -195,6 +195,7 @@ async function initDB() {
       ['clients_section_label', 'Etiqueta sección clientes', 'Clientes', 'text'],
       ['clients_section_title', 'Título sección clientes', 'Empresas que confían en nosotros', 'text'],
       ['clients_section_subtitle', 'Subtítulo sección clientes', 'Más de 60 empresas e instituciones de todos los sectores', 'text'],
+      ['clients_bg_image', 'Imagen de fondo sección clientes', '', 'text'],
       ['cta_title', 'Título CTA', '¿Listo para impulsar tu empresa?', 'text'],
       ['cta_subtitle', 'Subtítulo CTA', 'Contacta con nosotros y descubre cómo podemos ayudarte a optimizar tu infraestructura tecnológica.', 'text'],
       ['cta_button', 'Botón CTA', 'Contactar ahora', 'text'],
