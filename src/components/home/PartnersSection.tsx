@@ -8,6 +8,7 @@ const PartnersSection = () => {
   const sectionLabel = useCMSValue('partners_section_label', 'Partners');
   const sectionTitle = useCMSValue('partners_section_title', 'Nuestros partners tecnológicos');
   const sectionSubtitle = useCMSValue('partners_section_subtitle', 'Colaboramos con los líderes del sector para ofrecerte las mejores soluciones.');
+  const bgImage = useCMSValue('partners_bg_image', '');
 
   const [partners, setPartners] = useState<PartnerFromAPI[]>([]);
 
@@ -78,6 +79,16 @@ const PartnersSection = () => {
 
   return (
     <section className="relative py-20 md:py-28 overflow-hidden bg-hero">
+      {/* Optional background image */}
+      {bgImage && (
+        <>
+          <div
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            style={{ backgroundImage: `url(${bgImage})` }}
+          />
+          <div className="absolute inset-0" style={{ background: 'hsl(var(--hero-bg) / 0.85)' }} />
+        </>
+      )}
       {/* Ambient glows */}
       <div
         className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[600px] h-[600px] rounded-full pointer-events-none mix-blend-screen"
