@@ -67,9 +67,6 @@ const Index = () => {
       <Suspense fallback={<SectionFallback minH="min-h-[600px]" />}>
         <WhyUsSection />
       </Suspense>
-      <Suspense fallback={<SectionFallback minH="min-h-[300px]" />}>
-        <CountersSection />
-      </Suspense>
       <Suspense fallback={<SectionFallback minH="min-h-[400px]" />}>
         <ClientsSection />
       </Suspense>
@@ -78,6 +75,9 @@ const Index = () => {
       </Suspense>
       <Suspense fallback={<SectionFallback minH="min-h-[600px]" />}>
         <FAQSection />
+      </Suspense>
+      <Suspense fallback={<SectionFallback minH="min-h-[300px]" />}>
+        <CountersSection />
       </Suspense>
       <Suspense fallback={<SectionFallback minH="min-h-[400px]" />}>
         <CTASection />
