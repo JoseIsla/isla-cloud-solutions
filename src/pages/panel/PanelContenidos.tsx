@@ -7,6 +7,7 @@ import { Save, ChevronDown, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
 import RichEditor from '@/components/ui/rich-editor';
 import NavLinksManager from '@/components/panel/NavLinksManager';
+import MediaPicker from '@/components/panel/MediaPicker';
 import LogoUploader from '@/components/panel/LogoUploader';
 import HeroImagesUploader from '@/components/panel/HeroImagesUploader';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
@@ -51,6 +52,13 @@ const sectionGroups: SectionGroup[] = [
            'nav_link1_path', 'nav_link2_path', 'nav_link3_path', 'nav_link4_path', 'nav_link5_path',
            'nav_link1_visible', 'nav_link2_visible', 'nav_link3_visible', 'nav_link4_visible', 'nav_link5_visible',
            'nav_link1_order', 'nav_link2_order', 'nav_link3_order', 'nav_link4_order', 'nav_link5_order'],
+    customRenderer: true,
+  },
+  {
+    tab: 'visual',
+    label: '🤝 Imagen de Fondo Partners',
+    description: 'Cambia la imagen de fondo de la sección de Partners en el landing.',
+    keys: ['partners_bg_image'],
     customRenderer: true,
   },
 
@@ -127,6 +135,12 @@ const sectionGroups: SectionGroup[] = [
     label: '🏆 Casos de Éxito (Showcase)',
     description: 'Etiqueta, título, subtítulo y botones de la sección de casos de éxito en el landing.',
     keys: ['cases_section_label', 'cases_section_title', 'cases_section_subtitle', 'cases_view_detail_btn', 'cases_view_all_btn'],
+  },
+  {
+    tab: 'secciones',
+    label: '🤝 Partners (Textos)',
+    description: 'Etiqueta, título y subtítulo de la sección de partners tecnológicos.',
+    keys: ['partners_section_label', 'partners_section_title', 'partners_section_subtitle'],
   },
   {
     tab: 'secciones',
@@ -304,6 +318,42 @@ const PanelContenidos = () => {
               <LogoUploader contents={contents} editValues={editValues} setEditValues={setEditValues} />
             ) : group.customRenderer && group.label === '🌄 Imágenes del Hero' ? (
               <HeroImagesUploader contents={contents} editValues={editValues} setEditValues={setEditValues} />
+            ) : group.customRenderer && group.label === '🤝 Imagen de Fondo Partners' ? (
+              <div className="space-y-3">
+                <div className="p-4 rounded-xl bg-background border border-border">
+                  <div className="flex justify-between items-center mb-3">
+                    <label className="font-medium text-foreground text-sm">Imagen de fondo de la sección Partners</label>
+                    <Button variant="default" size="sm" onClick={() => handleSave('partners_bg_image')}>
+                      <Save size={14} /> Guardar
+                    </Button>
+                  </div>
+                  {editValues['partners_bg_image'] && (
+                    <div className="mb-3 rounded-xl overflow-hidden border border-border bg-muted/30" style={{ maxHeight: 180 }}>
+                      <img src={editValues['partners_bg_image']} alt="Partners BG" className="w-full h-full object-cover" style={{ maxHeight: 180 }} />
+                    </div>
+                  )}
+                  <div className="flex gap-2">
+                    <input
+                      value={editValues['partners_bg_image'] ?? ''}
+                      onChange={(e) => setEditValues({ ...editValues, partners_bg_image: e.target.value })}
+                      placeholder="URL de la imagen de fondo (déjalo vacío para usar el fondo por defecto)"
+                      className="flex-1 px-4 py-3 rounded-xl bg-card border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm"
+                    />
+                    <Button variant="outline" size="sm" type="button" onClick={() => setOpenSections(prev => ({ ...prev, __partners_media: true }))}>
+                      Galería
+                    </Button>
+                    <MediaPicker
+                      open={!!openSections['__partners_media']}
+                      onClose={() => setOpenSections(prev => ({ ...prev, __partners_media: false }))}
+                      onSelect={(url) => {
+                        setEditValues({ ...editValues, partners_bg_image: url });
+                        setOpenSections(prev => ({ ...prev, __partners_media: false }));
+                      }}
+                    />
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2">Selecciona una imagen de la galería o pega una URL. Deja vacío para el fondo oscuro por defecto.</p>
+                </div>
+              </div>
             ) : group.customRenderer && group.label === '👁️ Visibilidad en el Footer' ? (
               <div className="space-y-3">
                 {[

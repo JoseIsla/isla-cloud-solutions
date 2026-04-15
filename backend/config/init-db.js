@@ -391,6 +391,11 @@ async function initDB() {
     ['nav_link6_path', 'Nav: Enlace 6 Ruta', '/casos', 'text'],
     ['nav_link6_visible', 'Nav: Enlace 6 Visible', 'true', 'text'],
     ['nav_link6_order', 'Nav: Enlace 6 Orden', '6', 'text'],
+    // Partners section
+    ['partners_section_label', 'Partners: Etiqueta', 'Partners', 'text'],
+    ['partners_section_title', 'Partners: Título', 'Nuestros partners tecnológicos', 'text'],
+    ['partners_section_subtitle', 'Partners: Subtítulo', 'Colaboramos con los líderes del sector para ofrecerte las mejores soluciones.', 'text'],
+    ['partners_bg_image', 'Partners: Imagen de fondo', '', 'text'],
   ];
   for (const [key, title, value, type] of requiredContents) {
     await conn.query('INSERT IGNORE INTO contents (content_key, title, value, content_type) VALUES (?, ?, ?, ?)', [key, title, value, type]);
