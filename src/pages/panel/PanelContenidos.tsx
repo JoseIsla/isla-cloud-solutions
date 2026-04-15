@@ -7,6 +7,7 @@ import { Save, ChevronDown, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
 import RichEditor from '@/components/ui/rich-editor';
 import NavLinksManager from '@/components/panel/NavLinksManager';
+import MediaPicker from '@/components/panel/MediaPicker';
 import LogoUploader from '@/components/panel/LogoUploader';
 import HeroImagesUploader from '@/components/panel/HeroImagesUploader';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
