@@ -53,6 +53,13 @@ const sectionGroups: SectionGroup[] = [
            'nav_link1_order', 'nav_link2_order', 'nav_link3_order', 'nav_link4_order', 'nav_link5_order'],
     customRenderer: true,
   },
+  {
+    tab: 'visual',
+    label: '🤝 Imagen de Fondo Partners',
+    description: 'Cambia la imagen de fondo de la sección de Partners en el landing.',
+    keys: ['partners_bg_image'],
+    customRenderer: true,
+  },
 
   // TAB: Cabecera
   {
@@ -127,6 +134,12 @@ const sectionGroups: SectionGroup[] = [
     label: '🏆 Casos de Éxito (Showcase)',
     description: 'Etiqueta, título, subtítulo y botones de la sección de casos de éxito en el landing.',
     keys: ['cases_section_label', 'cases_section_title', 'cases_section_subtitle', 'cases_view_detail_btn', 'cases_view_all_btn'],
+  },
+  {
+    tab: 'secciones',
+    label: '🤝 Partners (Textos)',
+    description: 'Etiqueta, título y subtítulo de la sección de partners tecnológicos.',
+    keys: ['partners_section_label', 'partners_section_title', 'partners_section_subtitle'],
   },
   {
     tab: 'secciones',
