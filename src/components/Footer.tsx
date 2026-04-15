@@ -81,7 +81,7 @@ const Footer = () => {
 
           {/* Col 1: Brand */}
           <div className="lg:col-span-4 flex flex-col gap-6 pr-4">
-            <img src={footerLogo} alt="Isla Cloud Solutions" className="h-12 w-auto max-w-[220px] object-contain" />
+            <img src={footerLogo} alt="Isla Cloud Solutions" className="h-12 w-auto max-w-[220px] object-contain object-left" />
             <p className="text-sm leading-relaxed max-w-[35ch] text-balance" style={{ color: 'hsla(0, 0%, 100%, 0.40)' }}>
               {description}
             </p>
