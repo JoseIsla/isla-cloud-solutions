@@ -397,6 +397,17 @@ async function initDB() {
     ['partners_section_title', 'Partners: Título', 'Nuestros partners tecnológicos', 'text'],
     ['partners_section_subtitle', 'Partners: Subtítulo', 'Colaboramos con los líderes del sector para ofrecerte las mejores soluciones.', 'text'],
     ['partners_bg_image', 'Partners: Imagen de fondo', '', 'text'],
+    // Counters section header
+    ['counters_section_label', 'Contadores: Etiqueta', 'Métricas en vivo', 'text'],
+    ['counters_section_title', 'Contadores: Título', 'Nuestra trayectoria en cifras', 'text'],
+    ['counters_section_subtitle', 'Contadores: Subtítulo', 'Más de dos décadas de experiencia respaldan cada número.', 'text'],
+    // CTA additional labels
+    ['cta_pill_text', 'CTA: Texto pill', 'Hablemos', 'text'],
+    ['cta_card1_label', 'CTA: Tarjeta 1 Etiqueta', 'Línea directa', 'text'],
+    ['cta_card2_label', 'CTA: Tarjeta 2 Etiqueta', 'Estado', 'text'],
+    ['cta_card2_status', 'CTA: Tarjeta 2 Estado', 'Activo', 'text'],
+    // Services card CTA
+    ['services_card_cta', 'Servicios: Texto enlace tarjeta', 'Ver más', 'text'],
   ];
   for (const [key, title, value, type] of requiredContents) {
     await conn.query('INSERT IGNORE INTO contents (content_key, title, value, content_type) VALUES (?, ?, ?, ?)', [key, title, value, type]);
