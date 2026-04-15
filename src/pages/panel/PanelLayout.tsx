@@ -37,6 +37,7 @@ const sidebarSections = [
       { label: 'Noticias / Blog', path: '/panel/noticias', icon: Newspaper },
       { label: 'Sobre Nosotros', path: '/panel/sobre-nosotros', icon: Globe },
       { label: 'Clientes', path: '/panel/clientes', icon: Users },
+      { label: 'Partners', path: '/panel/partners', icon: Users },
       { label: 'Testimonios', path: '/panel/testimonios', icon: MessageCircle },
       { label: 'FAQs', path: '/panel/faqs', icon: HelpCircle },
     ],

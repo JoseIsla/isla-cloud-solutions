@@ -416,3 +416,23 @@ export interface MediaFromAPI {
   alt_text: string;
   created_at: string;
 }
+
+export interface PartnerFromAPI {
+  id: number;
+  name: string;
+  logo_url: string;
+  website_url: string;
+  sort_order: number;
+  is_active: number;
+}
+
+// Partners
+export const partnersApi = {
+  list: (token?: string | null) => apiRequest<PartnerFromAPI[]>('/api/partners', { token: token || undefined }),
+  create: (data: Partial<PartnerFromAPI>, token: string) =>
+    apiRequest<{ id: number }>('/api/partners', { method: 'POST', body: data, token }),
+  update: (id: number, data: Partial<PartnerFromAPI>, token: string) =>
+    apiRequest('/api/partners/' + id, { method: 'PUT', body: data, token }),
+  delete: (id: number, token: string) =>
+    apiRequest('/api/partners/' + id, { method: 'DELETE', token }),
+};
