@@ -81,7 +81,6 @@ const Footer = () => {
 
           {/* Col 1: Brand */}
           <div className="lg:col-span-4 flex flex-col gap-6 pr-4">
-            <img src={footerLogo} alt="Isla Cloud Solutions" className="h-10 w-auto max-w-[180px] object-contain" />
             <p className="text-sm leading-relaxed max-w-[35ch] text-balance" style={{ color: 'hsla(0, 0%, 100%, 0.40)' }}>
               {description}
             </p>
@@ -200,9 +199,12 @@ const Footer = () => {
           className="flex flex-col md:flex-row justify-between items-center gap-4 pt-8"
           style={{ borderTop: '1px solid hsla(0, 0%, 100%, 0.05)' }}
         >
-          <p className="text-xs" style={{ color: 'hsla(0, 0%, 100%, 0.30)' }}>
-            {footerCopyright.replace('{year}', String(new Date().getFullYear()))}
-          </p>
+          <div className="flex items-center gap-4">
+            <img src={footerLogo} alt="Isla Cloud Solutions" className="h-12 w-auto max-w-[220px] object-contain" />
+            <p className="text-xs" style={{ color: 'hsla(0, 0%, 100%, 0.30)' }}>
+              {footerCopyright.replace('{year}', String(new Date().getFullYear()))}
+            </p>
+          </div>
           {legalLinks.length > 0 && (
             <div className="flex gap-8">
               {legalLinks.map(link => (
