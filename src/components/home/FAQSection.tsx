@@ -40,10 +40,12 @@ const FAQSection = () => {
           transition={{ duration: 0.5 }}
           className="text-center mb-12"
         >
-          <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.2em] text-primary mb-4">
-            <HelpCircle size={14} />
-            {sectionLabel}
-          </span>
+          {sectionLabel && (
+            <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.2em] text-primary mb-4">
+              <HelpCircle size={14} />
+              {sectionLabel}
+            </span>
+          )}
           <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-4">
             {sectionTitle}
           </h2>

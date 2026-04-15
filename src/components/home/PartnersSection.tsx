@@ -106,24 +106,26 @@ const PartnersSection = () => {
           viewport={{ once: true }}
           className="flex flex-col items-center text-center mb-16"
         >
-          <div
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full backdrop-blur-md mb-6"
-            style={{
-              background: 'hsla(0, 0%, 100%, 0.03)',
-              border: '1px solid hsla(0, 0%, 100%, 0.08)',
-            }}
-          >
+          {sectionLabel && (
             <div
-              className="w-1.5 h-1.5 rounded-full animate-pulse"
-              style={{ background: 'hsl(var(--accent))' }}
-            />
-            <span
-              className="text-xs font-medium tracking-widest uppercase"
-              style={{ color: 'hsla(0, 0%, 80%, 0.9)' }}
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full backdrop-blur-md mb-6"
+              style={{
+                background: 'hsla(0, 0%, 100%, 0.03)',
+                border: '1px solid hsla(0, 0%, 100%, 0.08)',
+              }}
             >
-              {sectionLabel}
-            </span>
-          </div>
+              <div
+                className="w-1.5 h-1.5 rounded-full animate-pulse"
+                style={{ background: 'hsl(var(--accent))' }}
+              />
+              <span
+                className="text-xs font-medium tracking-widest uppercase"
+                style={{ color: 'hsla(0, 0%, 80%, 0.9)' }}
+              >
+                {sectionLabel}
+              </span>
+            </div>
+          )}
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-hero-foreground mt-2 leading-tight tracking-tight">
             {sectionTitle}
           </h2>

@@ -59,9 +59,11 @@ const TestimonialsSection = () => {
           viewport={{ once: true }}
           className="text-center max-w-3xl mx-auto mb-14"
         >
-          <span className="text-primary text-sm font-bold uppercase tracking-widest">
-            {sectionLabel}
-          </span>
+          {sectionLabel && (
+            <span className="text-primary text-sm font-bold uppercase tracking-widest">
+              {sectionLabel}
+            </span>
+          )}
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-foreground mt-4 leading-tight">
             {sectionTitle}
           </h2>
