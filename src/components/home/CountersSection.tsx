@@ -31,6 +31,10 @@ const AnimatedCounter = ({ target, duration = 2000 }: { target: number; duration
 };
 
 const CountersSection = () => {
+  const sectionLabel = useCMSValue('counters_section_label', 'Métricas en vivo');
+  const sectionTitle = useCMSValue('counters_section_title', 'Nuestra trayectoria en cifras');
+  const sectionSubtitle = useCMSValue('counters_section_subtitle', 'Más de dos décadas de experiencia respaldan cada número.');
+
   const counters = [
     {
       target: parseInt(useCMSValue('counter_projects', '298')) || 298,
@@ -85,14 +89,14 @@ const CountersSection = () => {
               className="text-[10px] tracking-[0.2em] uppercase font-medium"
               style={{ color: 'hsl(var(--primary))' }}
             >
-              Métricas en vivo
+              {sectionLabel}
             </span>
           </div>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-foreground tracking-tight">
-            Nuestra trayectoria en cifras
+            {sectionTitle}
           </h2>
           <p className="mt-4 font-light tracking-wide max-w-2xl text-lg text-muted-foreground">
-            Más de dos décadas de experiencia respaldan cada número.
+            {sectionSubtitle}
           </p>
         </motion.div>
 
