@@ -70,15 +70,9 @@ const CTASection = () => {
               {subtitle}
             </p>
 
-            <Button variant="hero" size="xl" asChild className="group relative overflow-hidden rounded-full shadow-none" style={{
-              background: 'hsla(0, 0%, 100%, 0.03)',
-              border: '1px solid hsla(0, 0%, 100%, 0.10)',
-            }}>
-              <Link to="/contacto" className="flex items-center gap-3">
-                <span className="relative z-10 text-sm tracking-widest uppercase font-light text-hero-foreground">
-                  {buttonText}
-                </span>
-                <ArrowRight size={18} className="relative z-10 text-hero-foreground" />
+            <Button variant="hero" size="xl" asChild className="shadow-[0_0_40px_-10px_hsl(var(--primary)/0.6)]">
+              <Link to="/contacto">
+                {buttonText} <ArrowRight size={20} />
               </Link>
             </Button>
           </motion.div>
