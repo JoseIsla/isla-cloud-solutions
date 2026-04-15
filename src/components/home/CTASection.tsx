@@ -43,21 +43,23 @@ const CTASection = () => {
             className="lg:col-span-5 flex flex-col items-start"
           >
             {/* Status pill */}
-            <div
-              className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full mb-8"
-              style={{
-                background: 'hsla(0, 0%, 100%, 0.03)',
-                border: '1px solid hsla(0, 0%, 100%, 0.08)',
-              }}
-            >
+            {pillText && (
               <div
-                className="w-1.5 h-1.5 rounded-full"
-                style={{ background: 'hsl(var(--accent))', boxShadow: '0 0 10px hsl(var(--accent) / 0.8)' }}
-              />
-              <span className="text-xs font-semibold tracking-widest uppercase" style={{ color: 'hsla(0, 0%, 80%, 0.9)' }}>
-                {pillText}
-              </span>
-            </div>
+                className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full mb-8"
+                style={{
+                  background: 'hsla(0, 0%, 100%, 0.03)',
+                  border: '1px solid hsla(0, 0%, 100%, 0.08)',
+                }}
+              >
+                <div
+                  className="w-1.5 h-1.5 rounded-full"
+                  style={{ background: 'hsl(var(--accent))', boxShadow: '0 0 10px hsl(var(--accent) / 0.8)' }}
+                />
+                <span className="text-xs font-semibold tracking-widest uppercase" style={{ color: 'hsla(0, 0%, 80%, 0.9)' }}>
+                  {pillText}
+                </span>
+              </div>
+            )}
 
             <h2
               className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold tracking-tight text-balance leading-tight mb-8"

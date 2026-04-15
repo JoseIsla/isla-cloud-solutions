@@ -29,24 +29,26 @@ const WhyUsSection = () => {
             transition={{ duration: 0.6 }}
             className="lg:sticky lg:top-32"
           >
-            <div
-              className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full mb-6"
-              style={{
-                background: 'hsl(var(--primary) / 0.06)',
-                border: '1px solid hsl(var(--primary) / 0.12)',
-              }}
-            >
-              <span
-                className="w-1.5 h-1.5 rounded-full"
-                style={{ background: 'hsl(var(--primary))' }}
-              />
-              <span
-                className="text-[10px] tracking-[0.2em] uppercase font-medium"
-                style={{ color: 'hsl(var(--primary))' }}
+            {sectionLabel && (
+              <div
+                className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full mb-6"
+                style={{
+                  background: 'hsl(var(--primary) / 0.06)',
+                  border: '1px solid hsl(var(--primary) / 0.12)',
+                }}
               >
-                {sectionLabel}
-              </span>
-            </div>
+                <span
+                  className="w-1.5 h-1.5 rounded-full"
+                  style={{ background: 'hsl(var(--primary))' }}
+                />
+                <span
+                  className="text-[10px] tracking-[0.2em] uppercase font-medium"
+                  style={{ color: 'hsl(var(--primary))' }}
+                >
+                  {sectionLabel}
+                </span>
+              </div>
+            )}
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-foreground leading-tight tracking-tight">
               {sectionTitle}
             </h2>
