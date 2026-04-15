@@ -30,6 +30,7 @@ const ServicesSection = () => {
     "services_section_title",
     "Resolvemos los Problemas Tecnológicos que Frenan tu Empresa"
   );
+  const servicesCta = useCMSValue("services_card_cta", "Ver más");
   const [apiServices, setApiServices] = useState<ServiceFromAPI[] | null>(null);
   const { language } = useLanguage();
 
@@ -118,9 +119,9 @@ const ServicesSection = () => {
                       </p>
                     )}
                   </div>
-                  <span className="flex items-center gap-1.5 text-primary/80 text-sm font-medium mt-5
-                    group-hover:text-primary group-hover:gap-2.5 transition-all duration-300">
-                    Ver más <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform duration-300" />
+                    <span className="flex items-center gap-1.5 text-primary/80 text-sm font-medium mt-5
+                      group-hover:text-primary group-hover:gap-2.5 transition-all duration-300">
+                      {servicesCta} <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform duration-300" />
                   </span>
                 </Link>
               </motion.div>

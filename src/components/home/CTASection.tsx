@@ -9,11 +9,15 @@ const CTASection = () => {
   const subtitle = useCMSValue('cta_subtitle', 'Contacta con nosotros y descubre cómo podemos ayudarte a optimizar tu infraestructura tecnológica.');
   const buttonText = useCMSValue('cta_button', 'Contactar ahora');
   const phone = useCMSValue('contact_phone', '+34 900 000 000');
+  const pillText = useCMSValue('cta_pill_text', 'Hablemos');
 
   const card1Title = useCMSValue('cta_card1_title', '¿Necesitas ayuda?');
   const card1Desc = useCMSValue('cta_card1_desc', 'Llama a nuestro equipo y te ayudaremos con cualquier consulta técnica.');
+  const card1Label = useCMSValue('cta_card1_label', 'Línea directa');
   const card2Title = useCMSValue('cta_card2_title', 'Enfoque proactivo');
   const card2Desc = useCMSValue('cta_card2_desc', 'Precios flexibles y adaptados. Solo pagas por lo que necesitas, cuando lo necesitas.');
+  const card2Label = useCMSValue('cta_card2_label', 'Estado');
+  const card2Status = useCMSValue('cta_card2_status', 'Activo');
 
   return (
     <section className="relative py-20 md:py-28 overflow-hidden bg-hero">
@@ -51,7 +55,7 @@ const CTASection = () => {
                 style={{ background: 'hsl(var(--accent))', boxShadow: '0 0 10px hsl(var(--accent) / 0.8)' }}
               />
               <span className="text-xs font-semibold tracking-widest uppercase" style={{ color: 'hsla(0, 0%, 80%, 0.9)' }}>
-                Hablemos
+                {pillText}
               </span>
             </div>
 
@@ -101,7 +105,7 @@ const CTASection = () => {
               <div className="mt-auto pt-6" style={{ borderTop: '1px solid hsla(0, 0%, 100%, 0.06)' }}>
                 <div className="flex items-baseline justify-between">
                   <span className="text-xs uppercase tracking-wider font-medium" style={{ color: 'hsla(0, 0%, 100%, 0.3)' }}>
-                    Línea directa
+                    {card1Label}
                   </span>
                   <a
                     href={`tel:${phone.replace(/\s/g, '')}`}
@@ -136,7 +140,7 @@ const CTASection = () => {
               <div className="mt-auto pt-6" style={{ borderTop: '1px solid hsla(0, 0%, 100%, 0.06)' }}>
                 <div className="flex items-baseline justify-between">
                   <span className="text-xs uppercase tracking-wider font-medium" style={{ color: 'hsla(0, 0%, 100%, 0.3)' }}>
-                    Estado
+                    {card2Label}
                   </span>
                   <div className="flex items-center gap-2">
                     <div
@@ -144,7 +148,7 @@ const CTASection = () => {
                       style={{ background: 'hsl(var(--accent))' }}
                     />
                     <span className="text-sm font-medium" style={{ color: 'hsla(0, 0%, 100%, 0.85)' }}>
-                      Activo
+                      {card2Status}
                     </span>
                   </div>
                 </div>
