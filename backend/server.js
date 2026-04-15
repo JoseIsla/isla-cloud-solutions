@@ -23,13 +23,7 @@ const authLimiter = rateLimit({
   message: { error: 'Demasiados intentos de login. Espera 15 minutos.' },
 });
 
-const contactLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hora
-  max: 10,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { error: 'Has enviado demasiados mensajes. Inténtalo más tarde.' },
-});
+
 
 const { authMiddleware } = require('./middleware/auth');
 const authRoutes = require('./routes/auth');
@@ -132,7 +126,7 @@ const cacheControl = require('./middleware/cache');
 app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/services', cacheControl({ maxAge: 300, swr: 600 }), servicesRoutes);
 app.use('/api/news', cacheControl({ maxAge: 120, swr: 300 }), newsRoutes);
-app.use('/api/contacts', contactLimiter, cacheControl({ isPrivate: true }), contactsRoutes);
+app.use('/api/contacts', cacheControl({ isPrivate: true }), contactsRoutes);
 app.use('/api/contents', cacheControl({ maxAge: 300, swr: 600 }), contentsRoutes);
 app.use('/api/upload', cacheControl({ isPrivate: true }), uploadRoutes);
 app.use('/api/clients', cacheControl({ maxAge: 600, swr: 1200 }), clientsRoutes);
