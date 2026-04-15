@@ -3,15 +3,7 @@ import { Clock, Headphones, Shield, Award } from "lucide-react";
 import { useCMSValue } from "@/hooks/useCMS";
 
 const icons = [Clock, Headphones, Shield, Award];
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { delay: i * 0.12, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] as const },
-  }),
-};
+const colors = ['primary', 'accent', 'primary', 'accent'] as const;
 
 const WhyUsSection = () => {
   const sectionLabel = useCMSValue('whyus_section_label', '¿Por qué elegirnos?');
@@ -26,7 +18,7 @@ const WhyUsSection = () => {
   ];
 
   return (
-    <section className="py-14 md:py-20 bg-background">
+    <section className="py-20 md:py-28 bg-background relative overflow-hidden">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
           {/* Left side - Title */}
@@ -35,14 +27,30 @@ const WhyUsSection = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
+            className="lg:sticky lg:top-32"
           >
-            <span className="text-primary text-sm font-bold uppercase tracking-widest">
-              {sectionLabel}
-            </span>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-foreground mt-4 leading-tight">
+            <div
+              className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full mb-6"
+              style={{
+                background: 'hsl(var(--primary) / 0.06)',
+                border: '1px solid hsl(var(--primary) / 0.12)',
+              }}
+            >
+              <span
+                className="w-1.5 h-1.5 rounded-full"
+                style={{ background: 'hsl(var(--primary))' }}
+              />
+              <span
+                className="text-[10px] tracking-[0.2em] uppercase font-medium"
+                style={{ color: 'hsl(var(--primary))' }}
+              >
+                {sectionLabel}
+              </span>
+            </div>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-foreground leading-tight tracking-tight">
               {sectionTitle}
             </h2>
-            <p className="text-muted-foreground text-lg mt-6 leading-relaxed">
+            <p className="text-muted-foreground text-lg mt-6 leading-relaxed font-light">
               {sectionSubtitle}
             </p>
           </motion.div>
@@ -51,24 +59,64 @@ const WhyUsSection = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {reasons.map((reason, index) => {
               const Icon = icons[index];
+              const color = colors[index];
+              const isOffset = index % 2 === 1;
+
               return (
                 <motion.div
                   key={index}
-                  custom={index}
-                  variants={cardVariants}
-                  initial="hidden"
-                  whileInView="visible"
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  whileHover={{ y: -6, transition: { duration: 0.25, ease: "easeOut" } }}
-                  className="p-6 rounded-2xl bg-card border border-border hover:border-primary/20 hover:shadow-xl hover:shadow-primary/[0.06] transition-[border-color,box-shadow] duration-300 cursor-default"
+                  transition={{ delay: index * 0.1, duration: 0.5 }}
+                  className={`group relative flex flex-col p-7 rounded-3xl overflow-hidden transition-all duration-500 ${isOffset ? 'sm:translate-y-4' : ''}`}
+                  style={{
+                    background: 'linear-gradient(to bottom right, hsl(var(--background)), hsl(var(--muted) / 0.5))',
+                    border: '1px solid hsl(var(--border) / 0.6)',
+                    boxShadow: '0 8px 40px -12px hsl(var(--foreground) / 0.08)',
+                  }}
                 >
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
-                    <Icon size={24} className="text-primary" />
+                  {/* Top accent line */}
+                  <div
+                    className="absolute top-0 left-0 right-0 h-px"
+                    style={{
+                      background: color === 'primary'
+                        ? 'linear-gradient(90deg, transparent, hsl(var(--primary) / 0.4), transparent)'
+                        : 'linear-gradient(90deg, transparent, hsl(var(--accent) / 0.4), transparent)',
+                    }}
+                  />
+
+                  {/* Hover glow */}
+                  <div
+                    className="absolute -top-20 -right-20 w-40 h-40 rounded-full pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-700"
+                    style={{
+                      background: color === 'primary'
+                        ? 'radial-gradient(circle, hsl(var(--primary) / 0.06), transparent 70%)'
+                        : 'radial-gradient(circle, hsl(var(--accent) / 0.06), transparent 70%)',
+                    }}
+                  />
+
+                  <div
+                    className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5 relative z-10 transition-colors duration-300"
+                    style={{
+                      background: color === 'primary'
+                        ? 'hsl(var(--primary) / 0.08)'
+                        : 'hsl(var(--accent) / 0.08)',
+                    }}
+                  >
+                    <Icon
+                      size={22}
+                      className="transition-colors duration-300"
+                      style={{
+                        color: color === 'primary' ? 'hsl(var(--primary))' : 'hsl(var(--accent))',
+                      }}
+                    />
                   </div>
-                  <h3 className="font-heading font-bold text-foreground mb-2">
+
+                  <h3 className="font-heading font-bold text-foreground mb-2 relative z-10">
                     {reason.title}
                   </h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
+                  <p className="text-muted-foreground text-sm leading-relaxed font-light relative z-10">
                     {reason.description}
                   </p>
                 </motion.div>
