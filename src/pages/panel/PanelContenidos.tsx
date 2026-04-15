@@ -48,10 +48,10 @@ const sectionGroups: SectionGroup[] = [
     tab: 'visual',
     label: '🧭 Navegación',
     description: 'Gestiona etiquetas, visibilidad y orden de los enlaces del menú.',
-    keys: ['nav_link1_label', 'nav_link2_label', 'nav_link3_label', 'nav_link4_label', 'nav_link5_label', 'nav_cta_text',
-           'nav_link1_path', 'nav_link2_path', 'nav_link3_path', 'nav_link4_path', 'nav_link5_path',
-           'nav_link1_visible', 'nav_link2_visible', 'nav_link3_visible', 'nav_link4_visible', 'nav_link5_visible',
-           'nav_link1_order', 'nav_link2_order', 'nav_link3_order', 'nav_link4_order', 'nav_link5_order'],
+    keys: ['nav_link1_label', 'nav_link2_label', 'nav_link3_label', 'nav_link4_label', 'nav_link5_label', 'nav_link6_label', 'nav_cta_text',
+           'nav_link1_path', 'nav_link2_path', 'nav_link3_path', 'nav_link4_path', 'nav_link5_path', 'nav_link6_path',
+           'nav_link1_visible', 'nav_link2_visible', 'nav_link3_visible', 'nav_link4_visible', 'nav_link5_visible', 'nav_link6_visible',
+           'nav_link1_order', 'nav_link2_order', 'nav_link3_order', 'nav_link4_order', 'nav_link5_order', 'nav_link6_order'],
     customRenderer: true,
   },
   {
@@ -93,8 +93,8 @@ const sectionGroups: SectionGroup[] = [
   {
     tab: 'secciones',
     label: '⚙️ Servicios',
-    description: 'Título de la sección de servicios en el landing y página de servicios.',
-    keys: ['services_section_title', 'services_page_title', 'services_page_subtitle'],
+    description: 'Etiqueta, títulos y textos de la sección de servicios en el landing y página.',
+    keys: ['services_section_label', 'services_section_title', 'services_section_subtitle', 'services_card_cta', 'services_page_title', 'services_page_subtitle'],
   },
   {
     tab: 'secciones',
@@ -111,8 +111,9 @@ const sectionGroups: SectionGroup[] = [
   {
     tab: 'secciones',
     label: '📊 Contadores',
-    description: 'Cifras y etiquetas de las métricas.',
+    description: 'Etiqueta, título, subtítulo, cifras y etiquetas de las métricas.',
     keys: [
+      'counters_section_label', 'counters_section_title', 'counters_section_subtitle',
       'counter_projects', 'counter_projects_label',
       'counter_maintenance', 'counter_maintenance_label',
       'counter_clients', 'counter_clients_label',
@@ -158,19 +159,19 @@ const sectionGroups: SectionGroup[] = [
   {
     tab: 'secciones',
     label: '🏢 Sobre Nosotros',
-    description: 'Título y subtítulo de la sección Sobre Nosotros (el contenido completo se edita en Gestión > Sobre Nosotros).',
-    keys: ['about_title', 'about_subtitle'],
+    description: 'Título, subtítulo y secciones de la página Sobre Nosotros (el contenido completo se edita en Gestión > Sobre Nosotros).',
+    keys: ['about_title', 'about_subtitle', 'about_history_title', 'about_values_title', 'about_history'],
   },
 
   // TAB: Footer y CTA
   {
     tab: 'footer',
     label: '📢 CTA (Llamada a la acción)',
-    description: 'Título, subtítulo, botón y tarjetas de contacto.',
+    description: 'Pill, título, subtítulo, botón, tarjetas y etiquetas de contacto.',
     keys: [
-      'cta_title', 'cta_subtitle', 'cta_button',
-      'cta_card1_title', 'cta_card1_desc',
-      'cta_card2_title', 'cta_card2_desc',
+      'cta_pill_text', 'cta_title', 'cta_subtitle', 'cta_button',
+      'cta_card1_title', 'cta_card1_desc', 'cta_card1_label',
+      'cta_card2_title', 'cta_card2_desc', 'cta_card2_label', 'cta_card2_status',
     ],
   },
   {
