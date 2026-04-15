@@ -14,7 +14,8 @@ export const useCMS = () => useContext(CMSContext);
 /** Get a CMS value with a fallback */
 export const useCMSValue = (key: string, fallback: string = '') => {
   const { contents } = useCMS();
-  return contents[key] || fallback;
+  // If the key exists in CMS (even as empty string), use that value; otherwise use fallback
+  return key in contents ? contents[key] : fallback;
 };
 
 export const CMSProvider = ({ children }: { children: ReactNode }) => {
