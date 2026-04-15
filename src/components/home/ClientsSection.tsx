@@ -104,6 +104,16 @@ const ClientsSection = () => {
 
   return (
     <section className="relative py-20 md:py-28 overflow-hidden bg-hero">
+      {/* Optional background image */}
+      {bgImage && (
+        <>
+          <div
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            style={{ backgroundImage: `url(${bgImage})` }}
+          />
+          <div className="absolute inset-0" style={{ background: 'hsl(var(--hero-bg) / 0.85)' }} />
+        </>
+      )}
       {/* Ambient prismatic glows */}
       <div
         className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full mix-blend-screen pointer-events-none"
