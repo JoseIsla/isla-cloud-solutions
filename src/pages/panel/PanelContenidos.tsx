@@ -317,6 +317,32 @@ const PanelContenidos = () => {
               <LogoUploader contents={contents} editValues={editValues} setEditValues={setEditValues} />
             ) : group.customRenderer && group.label === '🌄 Imágenes del Hero' ? (
               <HeroImagesUploader contents={contents} editValues={editValues} setEditValues={setEditValues} />
+            ) : group.customRenderer && group.label === '🤝 Imagen de Fondo Partners' ? (
+              <div className="space-y-3">
+                <div className="p-4 rounded-xl bg-background border border-border">
+                  <div className="flex justify-between items-center mb-3">
+                    <label className="font-medium text-foreground text-sm">Imagen de fondo de la sección Partners</label>
+                    <Button variant="default" size="sm" onClick={() => handleSave('partners_bg_image')}>
+                      <Save size={14} /> Guardar
+                    </Button>
+                  </div>
+                  {editValues['partners_bg_image'] && (
+                    <div className="mb-3 rounded-xl overflow-hidden border border-border bg-muted/30" style={{ maxHeight: 180 }}>
+                      <img src={editValues['partners_bg_image']} alt="Partners BG" className="w-full h-full object-cover" style={{ maxHeight: 180 }} />
+                    </div>
+                  )}
+                  <div className="flex gap-2">
+                    <input
+                      value={editValues['partners_bg_image'] ?? ''}
+                      onChange={(e) => setEditValues({ ...editValues, partners_bg_image: e.target.value })}
+                      placeholder="URL de la imagen de fondo (déjalo vacío para usar el fondo por defecto)"
+                      className="flex-1 px-4 py-3 rounded-xl bg-card border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm"
+                    />
+                    <MediaPicker onSelect={(url) => setEditValues({ ...editValues, partners_bg_image: url })} />
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2">Selecciona una imagen de la galería o pega una URL. Deja vacío para el fondo oscuro por defecto.</p>
+                </div>
+              </div>
             ) : group.customRenderer && group.label === '👁️ Visibilidad en el Footer' ? (
               <div className="space-y-3">
                 {[
