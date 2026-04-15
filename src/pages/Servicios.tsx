@@ -11,6 +11,7 @@ import { serviceImages } from "@/data/serviceImages";
 import { servicesApi, type ServiceFromAPI } from "@/lib/api";
 import { useCMSValue } from "@/hooks/useCMS";
 import { useT, useLanguage } from "@/i18n/LanguageContext";
+import BlurImage from "@/components/BlurImage";
 
 const iconMap: Record<string, LucideIcon> = {
   Server, Shield, Cloud, Monitor, Globe, Smartphone, Lock, Wrench, Database,
@@ -78,7 +79,7 @@ const ServiciosPage = () => {
     <Layout>
       <BreadcrumbJsonLd items={[{ name: t('breadcrumb.home'), path: '/' }, { name: t('services_page.label'), path: '/servicios' }]} />
 
-      {/* Hero */}
+      {/* Hero — same as before */}
       <section className="bg-hero grid-pattern py-14 md:py-16 overflow-hidden relative">
         <div className="container mx-auto px-4">
           <motion.div
@@ -105,57 +106,105 @@ const ServiciosPage = () => {
         </div>
       </section>
 
-      {/* Services Grid */}
+      {/* Services Grid — Premium glassmorphism image cards */}
       <section className="bg-background py-10 md:py-14 lg:py-16">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
             {items.map((service, index) => (
               <motion.div
                 key={service.slug}
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
-                  delay: 0.15 + index * 0.06,
+                  delay: 0.1 + index * 0.06,
                   duration: 0.5,
                   ease: [0.22, 1, 0.36, 1],
                 }}
               >
                 <Link
                   to={`/servicios/${service.slug}`}
-                  className="group flex items-center gap-4 md:gap-5 rounded-xl
-                    bg-card/65 backdrop-blur-xl
-                    border border-border/80
-                    p-4 md:p-5
-                    shadow-[0_2px_12px_hsl(var(--foreground)/0.02),inset_0_1px_1px_hsl(0_0%_100%/0.6)]
-                    hover:bg-card/90 hover:border-primary/25
-                    hover:shadow-[0_8px_32px_hsl(var(--primary)/0.08)]
-                    hover:-translate-y-0.5
-                    transition-all duration-300"
+                  className="group relative block h-[380px] md:h-[420px] rounded-2xl overflow-hidden
+                    ring-1 ring-border/60 shadow-lg
+                    transition-all duration-700 hover:shadow-2xl hover:-translate-y-1"
                 >
-                  {/* Icon */}
-                  <div className="flex-shrink-0 w-11 h-11 rounded-lg
-                    bg-card/50 border border-border/60
-                    flex items-center justify-center
-                    group-hover:bg-primary/10 group-hover:border-primary/20
-                    transition-all duration-300">
-                    <service.Icon size={20} className="text-muted-foreground group-hover:text-primary transition-colors duration-300" />
+                  {/* Background image */}
+                  <div className="absolute inset-0 bg-muted">
+                    {service.image ? (
+                      <BlurImage
+                        src={service.image}
+                        alt={service.title}
+                        placeholderColor="hsl(var(--muted))"
+                        className="w-full h-full object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-105"
+                        wrapperClassName="w-full h-full"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-muted">
+                        <service.Icon size={48} className="text-muted-foreground/30" />
+                      </div>
+                    )}
                   </div>
 
-                  {/* Content */}
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-heading font-semibold text-sm md:text-[15px] text-foreground
-                      group-hover:text-primary transition-colors duration-300 leading-tight truncate">
-                      {service.shortTitle}
+                  {/* Default state: title at bottom with gradient */}
+                  <div
+                    className="absolute bottom-0 left-0 right-0 p-6 md:p-8 transition-opacity duration-500 group-hover:opacity-0 z-10"
+                    style={{
+                      background: 'linear-gradient(to top, hsl(var(--hero-bg) / 0.85), hsl(var(--hero-bg) / 0.4) 60%, transparent)',
+                    }}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div
+                        className="w-9 h-9 rounded-lg flex items-center justify-center"
+                        style={{
+                          background: 'hsl(var(--primary) / 0.15)',
+                          border: '1px solid hsl(var(--primary) / 0.25)',
+                        }}
+                      >
+                        <service.Icon size={18} className="text-primary" />
+                      </div>
+                      <h3 className="text-lg md:text-xl font-heading font-semibold text-white">
+                        {service.shortTitle}
+                      </h3>
+                    </div>
+                  </div>
+
+                  {/* Hover state: frosted glass overlay */}
+                  <div
+                    className="absolute inset-3 rounded-xl flex flex-col p-6 md:p-8 z-20
+                      opacity-0 translate-y-8
+                      group-hover:translate-y-0 group-hover:opacity-100
+                      transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)]"
+                    style={{
+                      background: 'hsl(var(--card) / 0.82)',
+                      backdropFilter: 'blur(24px)',
+                      WebkitBackdropFilter: 'blur(24px)',
+                      boxShadow: 'inset 0 1px 1px hsl(0 0% 100% / 0.15), 0 8px 32px hsl(var(--foreground) / 0.08)',
+                      border: '1px solid hsl(var(--border) / 0.6)',
+                    }}
+                  >
+                    <div className="flex items-center gap-2 mb-6">
+                      <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                      <span className="text-xs font-semibold tracking-wider uppercase text-muted-foreground">
+                        {service.shortTitle}
+                      </span>
+                    </div>
+
+                    <h3 className="text-xl md:text-2xl font-heading font-semibold text-foreground tracking-tight mb-3">
+                      {service.title}
                     </h3>
-                    <p className="text-muted-foreground text-xs md:text-sm mt-0.5 truncate">
+
+                    <p className="text-muted-foreground text-sm leading-relaxed line-clamp-4">
                       {service.description}
                     </p>
-                  </div>
 
-                  {/* Arrow */}
-                  <div className="flex-shrink-0 text-muted-foreground/50
-                    group-hover:text-primary transition-colors duration-300">
-                    <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform duration-300" />
+                    <div
+                      className="mt-auto flex items-center justify-between pt-5"
+                      style={{ borderTop: '1px solid hsl(var(--border) / 0.5)' }}
+                    >
+                      <span className="text-primary font-medium text-sm">
+                        {t('services_page.view_detail') || 'Ver servicio'}
+                      </span>
+                      <ArrowRight size={16} className="text-primary group-hover:translate-x-0.5 transition-transform duration-300" />
+                    </div>
                   </div>
                 </Link>
               </motion.div>
