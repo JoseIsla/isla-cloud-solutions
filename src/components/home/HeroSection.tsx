@@ -289,7 +289,7 @@ const HeroSection = () => {
               animate={{ opacity: 1, x: 0, scale: 1 }}
               exit={{ opacity: 0, x: 40, scale: 0.95 }}
               transition={{ duration: 0.5, ease: [0.25, 1, 0.5, 1] }}
-              className="hidden lg:block flex-shrink-0 w-[420px] xl:w-[480px]"
+              className="hidden lg:block flex-shrink-0 w-[500px] xl:w-[580px] 2xl:w-[640px]"
             >
               <div className="rounded-2xl overflow-hidden shadow-2xl border border-white/10 bg-black/20 backdrop-blur-sm">
                 <img
