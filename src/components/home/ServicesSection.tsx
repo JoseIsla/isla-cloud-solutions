@@ -63,7 +63,7 @@ const ServicesSection = () => {
         style={{ bottom: "100%" }}
       />
 
-      <div className="relative z-10 min-h-screen overflow-hidden">
+      <div className="relative z-10 overflow-hidden">
         <div className="absolute inset-0">
           <BlurImage
             src={servicesBg}
@@ -76,7 +76,7 @@ const ServicesSection = () => {
           <div className="services-image-vignette absolute inset-0" />
         </div>
 
-        <div className="container relative z-10 mx-auto px-4 pt-24 pb-20 md:pt-32 md:pb-28 lg:pt-36 lg:pb-32">
+        <div className="container relative z-10 mx-auto px-4 pt-14 pb-14 md:pt-20 md:pb-16 lg:pt-24 lg:pb-20">
           {/* Header - top left aligned */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
