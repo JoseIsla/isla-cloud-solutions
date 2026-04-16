@@ -18,7 +18,7 @@ const MarqueeRow = ({
 
   return (
     <div
-      className={`flex w-max ${reverse ? "animate-marquee-reverse" : "animate-marquee"} gap-5 md:gap-6`}
+      className={`flex w-max ${reverse ? "animate-marquee-reverse" : "animate-marquee"} gap-5 md:gap-6 hover:[animation-play-state:paused]`}
       style={{ animationDuration: `${duration}s` }}
     >
       {doubled.map((client, index) => {
