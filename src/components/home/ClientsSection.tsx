@@ -24,7 +24,7 @@ const MarqueeRow = ({
       {doubled.map((client, index) => {
         const card = (
           <div
-            className="shrink-0 flex items-center justify-center w-[220px] sm:w-[260px] md:w-[280px] h-[100px] md:h-[120px] rounded-2xl backdrop-blur-xl relative overflow-hidden group transition-all duration-700 hover:-translate-y-1 hover:scale-105"
+            className="shrink-0 flex items-center justify-center w-[220px] sm:w-[260px] md:w-[280px] h-[100px] md:h-[120px] rounded-2xl backdrop-blur-xl relative overflow-hidden group transition-all duration-700 hover:-translate-y-1"
             style={{
               background: 'linear-gradient(145deg, hsla(0, 0%, 100%, 0.03) 0%, hsla(0, 0%, 100%, 0.01) 100%)',
               border: '1px solid hsla(0, 0%, 100%, 0.06)',
