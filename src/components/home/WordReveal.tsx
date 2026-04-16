@@ -37,7 +37,7 @@ const wordVariants = {
     filter: "blur(0px)",
     transition: {
       duration: 0.35,
-      ease: [0.25, 1, 0.5, 1],
+      ease: [0.25, 1, 0.5, 1] as [number, number, number, number],
     },
   },
   exit: {
@@ -46,7 +46,7 @@ const wordVariants = {
     filter: "blur(4px)",
     transition: {
       duration: 0.15,
-      ease: [0.5, 0, 0.75, 0],
+      ease: [0.5, 0, 0.75, 0] as [number, number, number, number],
     },
   },
 };
