@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import WordReveal from "./WordReveal";
 import defaultHeroBg from "@/assets/hero-bg.webp";
 import defaultHeroBlogBg from "@/assets/hero-blog-bg.webp";
 import defaultHeroCasesBg from "@/assets/hero-cases-bg.webp";
@@ -134,22 +135,6 @@ const HeroSection = () => {
     setActiveSlide(index);
   };
 
-  const renderTitle = (slide: SlideData) => {
-    if (slide.titleHighlight) {
-      const parts = slide.title.split(slide.titleHighlight);
-      if (parts.length > 1) {
-        return (
-          <>
-            {parts[0]}
-            <span className="text-gradient">{slide.titleHighlight}</span>
-            {parts[1]}
-          </>
-        );
-      }
-    }
-    return slide.title;
-  };
-
   const currentSlideData = slides[activeSlide];
 
   // Image to show in the right card for slides 2/3
@@ -190,71 +175,53 @@ const HeroSection = () => {
                 exit: { transition: { staggerChildren: 0.03 } },
               }}
             >
-              <motion.div
-                className="overflow-hidden mb-4"
-                variants={{
-                  hidden: { opacity: 0 },
-                  visible: { opacity: 1 },
-                  exit: { opacity: 0 },
-                }}
-              >
-                <motion.span
-                  className="inline-block text-white/60 text-sm md:text-base font-body uppercase tracking-wider"
-                  variants={{
-                    hidden: { y: "100%" },
-                    visible: { y: 0, transition: { duration: 0.35, ease: [0.25, 1, 0.5, 1] } },
-                    exit: { y: "-100%", transition: { duration: 0.2, ease: [0.5, 0, 0.75, 0] } },
-                  }}
+              {/* Badge - word reveal */}
+              <div className="mb-4">
+                <WordReveal
+                  className="text-white/60 text-sm md:text-base font-body uppercase tracking-wider"
+                  delay={0}
                 >
                   {currentSlideData.badge}
-                </motion.span>
-              </motion.div>
+                </WordReveal>
+              </div>
 
-              <motion.div
-                className="overflow-hidden mb-8"
-                variants={{
-                  hidden: { opacity: 0 },
-                  visible: { opacity: 1 },
-                  exit: { opacity: 0 },
-                }}
-              >
-                <motion.h1
+              {/* Title - word reveal with highlight */}
+              <div className="mb-8">
+                <WordReveal
                   className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] xl:text-6xl font-heading font-bold text-white leading-[1.1]"
-                  variants={{
-                    hidden: { y: "100%" },
-                    visible: { y: 0, transition: { duration: 0.4, ease: [0.25, 1, 0.5, 1] } },
-                    exit: { y: "-100%", transition: { duration: 0.2, ease: [0.5, 0, 0.75, 0] } },
-                  }}
+                  delay={0.1}
+                  highlight={currentSlideData.titleHighlight}
                 >
-                  {renderTitle(currentSlideData)}
-                </motion.h1>
-              </motion.div>
+                  {currentSlideData.title}
+                </WordReveal>
+              </div>
 
-              <motion.div
-                className="overflow-hidden mb-10"
-                variants={{
-                  hidden: { opacity: 0 },
-                  visible: { opacity: 1 },
-                  exit: { opacity: 0 },
-                }}
-              >
-                <motion.p
+              {/* Subtitle - word reveal */}
+              <div className="mb-10">
+                <WordReveal
                   className="text-lg md:text-xl text-white/60 max-w-2xl leading-relaxed"
-                  variants={{
-                    hidden: { y: "100%" },
-                    visible: { y: 0, transition: { duration: 0.4, ease: [0.25, 1, 0.5, 1] } },
-                    exit: { y: "-100%", transition: { duration: 0.2, ease: [0.5, 0, 0.75, 0] } },
-                  }}
+                  delay={0.25}
                 >
                   {currentSlideData.subtitle}
-                </motion.p>
-              </motion.div>
+                </WordReveal>
+              </div>
 
+              {/* CTAs - elastic bounce */}
               <motion.div
                 className="flex flex-col sm:flex-row gap-4 justify-start"
                 variants={{
-                  hidden: { opacity: 0, y: 20 },
-                  visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: [0.25, 1, 0.5, 1] } },
+                  hidden: { opacity: 0, y: 30, scale: 0.9 },
+                  visible: {
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                    transition: {
+                      type: "spring",
+                      stiffness: 300,
+                      damping: 20,
+                      delay: 0.45,
+                    },
+                  },
                   exit: { opacity: 0, y: -15, transition: { duration: 0.15 } },
                 }}
               >
@@ -280,15 +247,20 @@ const HeroSection = () => {
           </AnimatePresence>
         </div>
 
-        {/* Right: featured image card for slides 2/3 */}
+        {/* Right: featured image card for slides 2/3 - elastic bounce */}
         <AnimatePresence mode="wait">
           {rightCardImage && (
             <motion.div
               key={`card-${activeSlide}`}
-              initial={{ opacity: 0, x: 40, scale: 0.95 }}
+              initial={{ opacity: 0, x: 60, scale: 0.85 }}
               animate={{ opacity: 1, x: 0, scale: 1 }}
-              exit={{ opacity: 0, x: 40, scale: 0.95 }}
-              transition={{ duration: 0.5, ease: [0.25, 1, 0.5, 1] }}
+              exit={{ opacity: 0, x: 60, scale: 0.85 }}
+              transition={{
+                type: "spring",
+                stiffness: 250,
+                damping: 22,
+                delay: 0.15,
+              }}
               className="hidden lg:block flex-shrink-0 w-[500px] xl:w-[580px] 2xl:w-[640px]"
             >
               <div className="rounded-2xl overflow-hidden shadow-2xl border border-white/10 bg-black/20 backdrop-blur-sm">
