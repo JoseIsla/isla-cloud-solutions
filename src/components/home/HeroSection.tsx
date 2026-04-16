@@ -135,22 +135,6 @@ const HeroSection = () => {
     setActiveSlide(index);
   };
 
-  const renderTitle = (slide: SlideData) => {
-    if (slide.titleHighlight) {
-      const parts = slide.title.split(slide.titleHighlight);
-      if (parts.length > 1) {
-        return (
-          <>
-            {parts[0]}
-            <span className="text-gradient">{slide.titleHighlight}</span>
-            {parts[1]}
-          </>
-        );
-      }
-    }
-    return slide.title;
-  };
-
   const currentSlideData = slides[activeSlide];
 
   // Image to show in the right card for slides 2/3
