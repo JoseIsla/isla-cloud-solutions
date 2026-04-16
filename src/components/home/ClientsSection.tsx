@@ -103,7 +103,7 @@ const ClientsSection = () => {
   const row2 = clients.slice(half);
 
   return (
-    <section className="relative py-20 md:py-28 overflow-hidden bg-hero">
+    <section className="relative py-12 md:py-16 overflow-hidden bg-hero">
       {/* Optional background image */}
       {bgImage && (
         <>

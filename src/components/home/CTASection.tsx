@@ -20,7 +20,7 @@ const CTASection = () => {
   const card2Status = useCMSValue('cta_card2_status', 'Activo');
 
   return (
-    <section className="relative py-20 md:py-28 overflow-hidden bg-hero">
+    <section className="relative py-12 md:py-16 overflow-hidden bg-hero">
       {/* Atmospheric spotlight gradients */}
       <div
         className="absolute top-0 right-[10%] w-[800px] h-[800px] rounded-full pointer-events-none mix-blend-screen opacity-60"

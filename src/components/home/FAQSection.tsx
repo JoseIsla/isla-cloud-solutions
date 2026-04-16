@@ -30,7 +30,7 @@ const FAQSection = () => {
   if (faqs.length === 0) return null;
 
   return (
-    <section className="py-14 md:py-20 bg-background">
+    <section className="py-10 md:py-14 bg-background">
       <div className="max-w-3xl mx-auto px-4 sm:px-6">
         {/* Header */}
         <motion.div
