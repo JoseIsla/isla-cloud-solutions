@@ -170,8 +170,8 @@ const ClientsSection = () => {
         className="relative w-full flex flex-col gap-5 z-10"
         style={{ maskImage: 'linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%)' }}
       >
-        <MarqueeRow items={row1} duration={90} />
-        <MarqueeRow items={row2} reverse duration={100} />
+        <MarqueeRow items={row1} duration={row1.length * 5} />
+        <MarqueeRow items={row2} reverse duration={row2.length * 5} />
       </div>
     </section>
   );
