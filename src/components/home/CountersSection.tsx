@@ -65,7 +65,7 @@ const CountersSection = () => {
   ];
 
   return (
-    <section className="relative py-20 md:py-28 overflow-hidden bg-background">
+    <section className="relative py-12 md:py-16 overflow-hidden bg-background">
       <div className="container mx-auto px-4 relative z-10">
         {/* Header */}
         <motion.div
