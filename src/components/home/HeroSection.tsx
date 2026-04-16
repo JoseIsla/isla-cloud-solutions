@@ -10,6 +10,7 @@ import defaultHeroBlogBg from "@/assets/hero-blog-bg.webp";
 import defaultHeroCasesBg from "@/assets/hero-cases-bg.webp";
 import { useCMSValue } from "@/hooks/useCMS";
 import { newsApi, casesApi, type NewsFromAPI, type CaseFromAPI } from "@/lib/api";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 interface SlideData {
   tabLabel: string;
