@@ -10,6 +10,7 @@ import defaultHeroBlogBg from "@/assets/hero-blog-bg.webp";
 import defaultHeroCasesBg from "@/assets/hero-cases-bg.webp";
 import { useCMSValue } from "@/hooks/useCMS";
 import { newsApi, casesApi, type NewsFromAPI, type CaseFromAPI } from "@/lib/api";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 interface SlideData {
   tabLabel: string;
@@ -26,6 +27,7 @@ const HeroSection = () => {
   const [latestNews, setLatestNews] = useState<NewsFromAPI | null>(null);
   const [currentCase, setCurrentCase] = useState<CaseFromAPI | null>(null);
   const tabsContainerRef = useRef<HTMLDivElement>(null);
+  const { language } = useLanguage();
 
   const title = useCMSValue('hero_title', 'Soluciones Cloud y Tecnología para Empresas');
   const subtitle = useCMSValue('hero_subtitle', 'Más de 20 años siendo el socio tecnológico de empresas que necesitan un departamento IT profesional, cercano y disponible 24x7.');
@@ -78,23 +80,23 @@ const HeroSection = () => {
   const slide3CtaSec = useCMSValue('hero_slide3_cta_secondary', 'Nuestros servicios');
 
   useEffect(() => {
-    newsApi.list().then((news) => {
+    newsApi.list(language).then((news) => {
       const published = news.filter((n) => n.is_published);
       if (published.length > 0) {
         const randomIndex = Math.floor(Math.random() * published.length);
         setLatestNews(published[randomIndex]);
       }
     }).catch(() => {});
-  }, []);
+  }, [language]);
 
   useEffect(() => {
-    casesApi.list().then((cases) => {
+    casesApi.list(language).then((cases) => {
       const active = cases.filter((c: CaseFromAPI) => c.is_active);
       if (active.length > 0) {
         setCurrentCase(active[0]);
       }
     }).catch(() => {});
-  }, []);
+  }, [language]);
 
   const slides: SlideData[] = [
     {
