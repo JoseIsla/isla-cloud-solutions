@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import WordReveal from "./WordReveal";
 import defaultHeroBg from "@/assets/hero-bg.webp";
 import defaultHeroBlogBg from "@/assets/hero-blog-bg.webp";
 import defaultHeroCasesBg from "@/assets/hero-cases-bg.webp";
