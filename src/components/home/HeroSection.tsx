@@ -80,23 +80,23 @@ const HeroSection = () => {
   const slide3CtaSec = useCMSValue('hero_slide3_cta_secondary', 'Nuestros servicios');
 
   useEffect(() => {
-    newsApi.list().then((news) => {
+    newsApi.list(language).then((news) => {
       const published = news.filter((n) => n.is_published);
       if (published.length > 0) {
         const randomIndex = Math.floor(Math.random() * published.length);
         setLatestNews(published[randomIndex]);
       }
     }).catch(() => {});
-  }, []);
+  }, [language]);
 
   useEffect(() => {
-    casesApi.list().then((cases) => {
+    casesApi.list(language).then((cases) => {
       const active = cases.filter((c: CaseFromAPI) => c.is_active);
       if (active.length > 0) {
         setCurrentCase(active[0]);
       }
     }).catch(() => {});
-  }, []);
+  }, [language]);
 
   const slides: SlideData[] = [
     {
