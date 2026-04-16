@@ -152,33 +152,32 @@ const HeroSection = () => {
 
   const currentSlideData = slides[activeSlide];
 
+  // Image to show in the right card for slides 2/3
+  const rightCardImage = activeSlide === 1
+    ? (latestNews?.image_url || null)
+    : activeSlide === 2
+      ? (currentCase?.image_url || null)
+      : null;
+
   return (
     <section aria-label="Presentación principal" role="region" className="relative h-screen flex flex-col justify-center overflow-hidden">
+      {/* Background: always use first slide's image */}
       <div className="absolute inset-0">
-        <AnimatePresence>
-          <motion.img
-            key={activeSlide}
-            src={slideBackgrounds[activeSlide]}
-            alt=""
-            className="absolute inset-0 w-full h-full object-cover"
-            initial={{ opacity: 0, scale: 1 }}
-            animate={{
-              opacity: 1,
-              scale: 1.06,
-            }}
-            exit={{ opacity: 0 }}
-            transition={{
-              opacity: { duration: 1.2, ease: "easeOut" },
-              scale: { duration: 14, ease: "linear" },
-            }}
-          />
-        </AnimatePresence>
+        <motion.img
+          src={slideBackgrounds[0]}
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover"
+          initial={{ scale: 1 }}
+          animate={{ scale: 1.06 }}
+          transition={{ duration: 14, ease: "linear", repeat: Infinity, repeatType: "reverse" }}
+        />
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/30" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30" />
       </div>
 
-      <div className="container mx-auto px-4 relative z-10 pt-16 pb-28 md:pb-32 flex justify-start">
-        <div className="max-w-3xl text-left">
+      <div className="container mx-auto px-4 relative z-10 pt-16 pb-28 md:pb-32 flex items-center justify-between gap-8">
+        {/* Left: text content */}
+        <div className={`text-left ${rightCardImage ? 'max-w-2xl' : 'max-w-3xl'}`}>
           <AnimatePresence mode="wait">
             <motion.div
               key={activeSlide}
@@ -280,6 +279,28 @@ const HeroSection = () => {
             </motion.div>
           </AnimatePresence>
         </div>
+
+        {/* Right: featured image card for slides 2/3 */}
+        <AnimatePresence mode="wait">
+          {rightCardImage && (
+            <motion.div
+              key={`card-${activeSlide}`}
+              initial={{ opacity: 0, x: 40, scale: 0.95 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: 40, scale: 0.95 }}
+              transition={{ duration: 0.5, ease: [0.25, 1, 0.5, 1] }}
+              className="hidden lg:block flex-shrink-0 w-[420px] xl:w-[480px]"
+            >
+              <div className="rounded-2xl overflow-hidden shadow-2xl border border-white/10 bg-black/20 backdrop-blur-sm">
+                <img
+                  src={rightCardImage}
+                  alt={activeSlide === 1 ? (latestNews?.title || '') : (currentCase?.title || '')}
+                  className="w-full h-auto object-cover aspect-video"
+                />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       <nav aria-label="Pestañas del slider" className="absolute bottom-6 md:bottom-12 left-0 right-0 z-10">
