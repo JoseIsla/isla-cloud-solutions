@@ -263,13 +263,15 @@ const HeroSection = () => {
               }}
               className="hidden lg:block flex-shrink-0 w-[500px] xl:w-[580px] 2xl:w-[640px] group"
             >
-              <div className="rounded-2xl overflow-hidden border border-white/15 bg-black/20 backdrop-blur-sm shadow-[0_8px_40px_-8px_hsl(var(--primary)/0.3)] transition-all duration-500 group-hover:shadow-[0_12px_50px_-6px_hsl(var(--primary)/0.5)] group-hover:border-white/25 group-hover:scale-[1.02]">
-                <img
-                  src={rightCardImage}
-                  alt={activeSlide === 1 ? (latestNews?.title || '') : (currentCase?.title || '')}
-                  className="w-full h-auto object-cover aspect-video"
-                />
-              </div>
+              <Link to={currentSlideData.ctaPrimary.to} className="block">
+                <div className="rounded-2xl overflow-hidden border border-white/15 bg-black/20 backdrop-blur-sm shadow-[0_8px_40px_-8px_hsl(var(--primary)/0.3)] transition-all duration-500 group-hover:shadow-[0_12px_50px_-6px_hsl(var(--primary)/0.5)] group-hover:border-white/25 group-hover:scale-[1.02] cursor-pointer">
+                  <img
+                    src={rightCardImage}
+                    alt={activeSlide === 1 ? (latestNews?.title || '') : (currentCase?.title || '')}
+                    className="w-full h-auto object-cover aspect-video"
+                  />
+                </div>
+              </Link>
             </motion.div>
           )}
         </AnimatePresence>
