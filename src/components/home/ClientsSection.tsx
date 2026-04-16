@@ -167,7 +167,7 @@ const ClientsSection = () => {
 
       {/* Dual marquee */}
       <div
-        className="relative w-full flex flex-col gap-5 z-10"
+        className="relative w-full flex flex-col gap-5 z-10 overflow-hidden py-2"
         style={{ maskImage: 'linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%)' }}
       >
         <MarqueeRow items={row1} duration={row1.length * 5} />
