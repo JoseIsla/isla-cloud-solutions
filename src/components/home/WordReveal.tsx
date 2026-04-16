@@ -29,12 +29,10 @@ const wordVariants = {
   hidden: {
     opacity: 0,
     y: 20,
-    filter: "blur(8px)",
   },
   visible: {
     opacity: 1,
     y: 0,
-    filter: "blur(0px)",
     transition: {
       duration: 0.35,
       ease: [0.25, 1, 0.5, 1] as [number, number, number, number],
@@ -43,7 +41,6 @@ const wordVariants = {
   exit: {
     opacity: 0,
     y: -12,
-    filter: "blur(4px)",
     transition: {
       duration: 0.15,
       ease: [0.5, 0, 0.75, 0] as [number, number, number, number],
