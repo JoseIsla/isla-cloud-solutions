@@ -1,33 +1,58 @@
 const nodemailer = require('nodemailer');
 
 let transporter = null;
+let lastVerifyOk = false;
 
-function getTransporter() {
-  if (!transporter) {
-    const host = process.env.SMTP_HOST;
-    const port = parseInt(process.env.SMTP_PORT || '587', 10);
-    const user = process.env.SMTP_USER;
-    const pass = process.env.SMTP_PASS;
+function buildTransporter() {
+  const host = process.env.SMTP_HOST;
+  const port = parseInt(process.env.SMTP_PORT || '587', 10);
+  const user = process.env.SMTP_USER;
+  const pass = process.env.SMTP_PASS;
 
-    if (!host || !user || !pass) {
-      console.warn('⚠️  SMTP no configurado. Las notificaciones por email están desactivadas.');
-      return null;
-    }
-
-    transporter = nodemailer.createTransport({
-      host,
-      port,
-      secure: port === 465,
-      auth: { user, pass },
-    });
+  if (!host || !user || !pass) {
+    console.warn('[MAILER] ⚠️  SMTP no configurado (faltan SMTP_HOST/SMTP_USER/SMTP_PASS). Notificaciones desactivadas.');
+    return null;
   }
-  return transporter;
+
+  console.log(`[MAILER] Creando transporter SMTP → host=${host} port=${port} user=${user} secure=${port === 465}`);
+
+  return nodemailer.createTransport({
+    host,
+    port,
+    secure: port === 465,
+    auth: { user, pass },
+    connectionTimeout: 15000,
+    greetingTimeout: 15000,
+    socketTimeout: 20000,
+    tls: {
+      // Acepta certificados auto-firmados típicos de hostings tipo Plesk
+      rejectUnauthorized: false,
+    },
+  });
+}
+
+async function getTransporter() {
+  if (transporter && lastVerifyOk) return transporter;
+
+  transporter = buildTransporter();
+  if (!transporter) return null;
+
+  try {
+    await transporter.verify();
+    lastVerifyOk = true;
+    console.log('[MAILER] ✅ Conexión SMTP verificada correctamente');
+    return transporter;
+  } catch (err) {
+    lastVerifyOk = false;
+    console.error('[MAILER] ❌ Falló verify() SMTP:', err.message);
+    // Devolvemos el transporter igualmente para intentar el envío (algunos servidores no soportan VRFY)
+    return transporter;
+  }
 }
 
 const BRAND = {
   name: 'Isla Cloud Solutions',
   url: 'https://www.islacloudsolutions.com',
-  // Colores extraídos del diseño del sitio
   navy: '#0f172a',
   navyLight: '#1e3a5f',
   blue: '#0066ff',
@@ -63,50 +88,58 @@ function brandFooter() {
 
 /**
  * Envía un email de notificación al administrador cuando se recibe un nuevo contacto.
+ * Devuelve { ok: boolean, info?, error? } para poder auditar resultados.
  */
 async function sendContactNotification({ nombre, email, empresa, telefono, mensaje }, toEmail) {
-  const transport = getTransporter();
-  if (!transport) return;
+  const transport = await getTransporter();
+  if (!transport) return { ok: false, error: 'SMTP no configurado' };
 
   const fromName = process.env.SMTP_FROM_NAME || BRAND.name;
   const fromEmail = process.env.SMTP_USER;
 
-  try {
-    await transport.sendMail({
-      from: `"${fromName}" <${fromEmail}>`,
-      to: toEmail,
-      subject: `Nuevo contacto: ${nombre}`,
-      html: `
-        <div style="font-family: 'Space Grotesk', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-          ${brandHeader('📩 Nuevo mensaje de contacto')}
-          <div style="border: 1px solid ${BRAND.borderColor}; border-top: none; padding: 24px 30px;">
-            <table style="width: 100%; border-collapse: collapse;">
-              <tr>
-                <td style="padding: 8px 0; font-weight: bold; color: #334155; width: 120px;">Nombre:</td>
-                <td style="padding: 8px 0; color: ${BRAND.textDark};">${nombre}</td>
-              </tr>
-              <tr>
-                <td style="padding: 8px 0; font-weight: bold; color: #334155;">Email:</td>
-                <td style="padding: 8px 0;"><a href="mailto:${email}" style="color: ${BRAND.blue};">${email}</a></td>
-              </tr>
-              ${empresa ? `<tr><td style="padding: 8px 0; font-weight: bold; color: #334155;">Empresa:</td><td style="padding: 8px 0; color: ${BRAND.textDark};">${empresa}</td></tr>` : ''}
-              ${telefono ? `<tr><td style="padding: 8px 0; font-weight: bold; color: #334155;">Teléfono:</td><td style="padding: 8px 0;"><a href="tel:${telefono}" style="color: ${BRAND.blue};">${telefono}</a></td></tr>` : ''}
-            </table>
-            <div style="margin-top: 16px; padding: 16px; background: ${BRAND.bgLight}; border-radius: 8px; border-left: 4px solid ${BRAND.blue};">
-              <p style="margin: 0 0 4px; font-weight: bold; color: #334155;">Mensaje:</p>
-              <p style="margin: 0; color: ${BRAND.textMuted}; line-height: 1.6; white-space: pre-wrap;">${mensaje}</p>
-            </div>
-            <p style="margin-top: 20px; font-size: 12px; color: ${BRAND.textLight};">
-              Recibido el ${new Date().toLocaleString('es-ES', { timeZone: 'Europe/Madrid' })}
-            </p>
+  const mailOptions = {
+    from: `"${fromName}" <${fromEmail}>`,
+    to: toEmail,
+    replyTo: email,
+    subject: `Nuevo contacto: ${nombre}`,
+    html: `
+      <div style="font-family: 'Space Grotesk', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+        ${brandHeader('📩 Nuevo mensaje de contacto')}
+        <div style="border: 1px solid ${BRAND.borderColor}; border-top: none; padding: 24px 30px;">
+          <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+              <td style="padding: 8px 0; font-weight: bold; color: #334155; width: 120px;">Nombre:</td>
+              <td style="padding: 8px 0; color: ${BRAND.textDark};">${nombre}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 0; font-weight: bold; color: #334155;">Email:</td>
+              <td style="padding: 8px 0;"><a href="mailto:${email}" style="color: ${BRAND.blue};">${email}</a></td>
+            </tr>
+            ${empresa ? `<tr><td style="padding: 8px 0; font-weight: bold; color: #334155;">Empresa:</td><td style="padding: 8px 0; color: ${BRAND.textDark};">${empresa}</td></tr>` : ''}
+            ${telefono ? `<tr><td style="padding: 8px 0; font-weight: bold; color: #334155;">Teléfono:</td><td style="padding: 8px 0;"><a href="tel:${telefono}" style="color: ${BRAND.blue};">${telefono}</a></td></tr>` : ''}
+          </table>
+          <div style="margin-top: 16px; padding: 16px; background: ${BRAND.bgLight}; border-radius: 8px; border-left: 4px solid ${BRAND.blue};">
+            <p style="margin: 0 0 4px; font-weight: bold; color: #334155;">Mensaje:</p>
+            <p style="margin: 0; color: ${BRAND.textMuted}; line-height: 1.6; white-space: pre-wrap;">${mensaje}</p>
           </div>
-          ${brandFooter()}
+          <p style="margin-top: 20px; font-size: 12px; color: ${BRAND.textLight};">
+            Recibido el ${new Date().toLocaleString('es-ES', { timeZone: 'Europe/Madrid' })}
+          </p>
         </div>
-      `,
-    });
-    console.log('✅ Email de notificación enviado a', toEmail);
+        ${brandFooter()}
+      </div>
+    `,
+  };
+
+  console.log(`[MAILER] → Enviando NOTIFICACIÓN a admin: to=${toEmail} from=${fromEmail}`);
+  try {
+    const info = await transport.sendMail(mailOptions);
+    console.log(`[MAILER] ✅ Notificación enviada. messageId=${info.messageId} response="${info.response}" accepted=${JSON.stringify(info.accepted)} rejected=${JSON.stringify(info.rejected)}`);
+    return { ok: true, info };
   } catch (err) {
-    console.error('❌ Error enviando email de notificación:', err.message);
+    lastVerifyOk = false; // forzar re-verify la próxima vez
+    console.error(`[MAILER] ❌ Error enviando notificación a ${toEmail}: code=${err.code} command=${err.command} response=${err.response} message=${err.message}`);
+    return { ok: false, error: err.message, code: err.code };
   }
 }
 
@@ -114,53 +147,59 @@ async function sendContactNotification({ nombre, email, empresa, telefono, mensa
  * Envía un email de confirmación al usuario que envió el formulario de contacto.
  */
 async function sendContactConfirmation({ nombre, email }) {
-  const transport = getTransporter();
-  if (!transport) return;
+  const transport = await getTransporter();
+  if (!transport) return { ok: false, error: 'SMTP no configurado' };
 
   const fromName = process.env.SMTP_FROM_NAME || BRAND.name;
   const fromEmail = process.env.SMTP_USER;
 
-  try {
-    await transport.sendMail({
-      from: `"${fromName}" <${fromEmail}>`,
-      to: email,
-      subject: `Gracias por contactarnos, ${nombre}`,
-      html: `
-        <div style="font-family: 'Space Grotesk', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-          ${brandHeader('¡Hemos recibido tu mensaje!')}
-          <div style="border: 1px solid ${BRAND.borderColor}; border-top: none; padding: 30px;">
-            <p style="font-size: 16px; color: ${BRAND.textDark}; margin: 0 0 16px; line-height: 1.6;">
-              Hola <strong>${nombre}</strong>,
-            </p>
-            <p style="font-size: 15px; color: ${BRAND.textMuted}; margin: 0 0 20px; line-height: 1.7;">
-              Gracias por ponerte en contacto con nosotros. Hemos recibido tu mensaje correctamente y nuestro equipo lo revisará lo antes posible.
-            </p>
-            <p style="font-size: 15px; color: ${BRAND.textMuted}; margin: 0 0 24px; line-height: 1.7;">
-              Te responderemos en un plazo máximo de <strong style="color: ${BRAND.textDark};">24-48 horas laborables</strong>.
-            </p>
+  const mailOptions = {
+    from: `"${fromName}" <${fromEmail}>`,
+    to: email,
+    subject: `Gracias por contactarnos, ${nombre}`,
+    html: `
+      <div style="font-family: 'Space Grotesk', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+        ${brandHeader('¡Hemos recibido tu mensaje!')}
+        <div style="border: 1px solid ${BRAND.borderColor}; border-top: none; padding: 30px;">
+          <p style="font-size: 16px; color: ${BRAND.textDark}; margin: 0 0 16px; line-height: 1.6;">
+            Hola <strong>${nombre}</strong>,
+          </p>
+          <p style="font-size: 15px; color: ${BRAND.textMuted}; margin: 0 0 20px; line-height: 1.7;">
+            Gracias por ponerte en contacto con nosotros. Hemos recibido tu mensaje correctamente y nuestro equipo lo revisará lo antes posible.
+          </p>
+          <p style="font-size: 15px; color: ${BRAND.textMuted}; margin: 0 0 24px; line-height: 1.7;">
+            Te responderemos en un plazo máximo de <strong style="color: ${BRAND.textDark};">24-48 horas laborables</strong>.
+          </p>
 
-            <div style="text-align: center; margin: 28px 0;">
-              <a href="${BRAND.url}/servicios" style="display: inline-block; padding: 14px 32px; background: linear-gradient(135deg, ${BRAND.blue}, ${BRAND.cyan}); color: #ffffff; text-decoration: none; border-radius: 10px; font-weight: 600; font-size: 14px; letter-spacing: 0.3px;">
-                Descubre nuestros servicios
-              </a>
-            </div>
-
-            <div style="padding: 20px; background: ${BRAND.bgLight}; border-radius: 10px; border: 1px solid ${BRAND.borderColor};">
-              <p style="margin: 0 0 8px; font-size: 13px; font-weight: 600; color: ${BRAND.textDark};">¿Necesitas algo urgente?</p>
-              <p style="margin: 0; font-size: 13px; color: ${BRAND.textMuted}; line-height: 1.6;">
-                Puedes contactarnos directamente en 
-                <a href="mailto:${fromEmail}" style="color: ${BRAND.blue}; text-decoration: none; font-weight: 500;">${fromEmail}</a>
-              </p>
-            </div>
+          <div style="text-align: center; margin: 28px 0;">
+            <a href="${BRAND.url}/servicios" style="display: inline-block; padding: 14px 32px; background: linear-gradient(135deg, ${BRAND.blue}, ${BRAND.cyan}); color: #ffffff; text-decoration: none; border-radius: 10px; font-weight: 600; font-size: 14px; letter-spacing: 0.3px;">
+              Descubre nuestros servicios
+            </a>
           </div>
-          ${brandFooter()}
+
+          <div style="padding: 20px; background: ${BRAND.bgLight}; border-radius: 10px; border: 1px solid ${BRAND.borderColor};">
+            <p style="margin: 0 0 8px; font-size: 13px; font-weight: 600; color: ${BRAND.textDark};">¿Necesitas algo urgente?</p>
+            <p style="margin: 0; font-size: 13px; color: ${BRAND.textMuted}; line-height: 1.6;">
+              Puedes contactarnos directamente en 
+              <a href="mailto:${fromEmail}" style="color: ${BRAND.blue}; text-decoration: none; font-weight: 500;">${fromEmail}</a>
+            </p>
+          </div>
         </div>
-      `,
-    });
-    console.log('✅ Email de confirmación enviado a', email);
+        ${brandFooter()}
+      </div>
+    `,
+  };
+
+  console.log(`[MAILER] → Enviando CONFIRMACIÓN al usuario: to=${email} from=${fromEmail}`);
+  try {
+    const info = await transport.sendMail(mailOptions);
+    console.log(`[MAILER] ✅ Confirmación enviada. messageId=${info.messageId} response="${info.response}" accepted=${JSON.stringify(info.accepted)} rejected=${JSON.stringify(info.rejected)}`);
+    return { ok: true, info };
   } catch (err) {
-    console.error('❌ Error enviando email de confirmación:', err.message);
+    lastVerifyOk = false;
+    console.error(`[MAILER] ❌ Error enviando confirmación a ${email}: code=${err.code} command=${err.command} response=${err.response} message=${err.message}`);
+    return { ok: false, error: err.message, code: err.code };
   }
 }
 
-module.exports = { sendContactNotification, sendContactConfirmation };
+module.exports = { sendContactNotification, sendContactConfirmation, getTransporter };

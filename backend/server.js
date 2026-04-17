@@ -244,6 +244,41 @@ app.get('/api/health/smtp', authMiddleware, async (req, res) => {
   }
 });
 
+// SMTP test send (admin) - envía un correo real al contact_email para auditar
+app.post('/api/health/smtp/test', authMiddleware, async (req, res) => {
+  const { sendContactNotification } = require('./config/mailer');
+  let toEmail = process.env.SMTP_USER;
+  try {
+    const pool = require('./config/db');
+    const conn = await pool.getConnection();
+    const rows = await conn.query("SELECT value FROM contents WHERE content_key = 'contact_email'");
+    conn.release();
+    if (rows.length > 0 && rows[0].value) toEmail = rows[0].value;
+  } catch (_) {}
+
+  const result = await sendContactNotification({
+    nombre: 'TEST - Diagnóstico SMTP',
+    email: 'noreply@islacloudsolutions.com',
+    empresa: 'Isla Cloud (test interno)',
+    telefono: '',
+    mensaje: `Este es un correo de prueba enviado desde /api/health/smtp/test el ${new Date().toISOString()}. Si lo recibes, la configuración SMTP funciona correctamente.`,
+  }, toEmail);
+
+  if (result.ok) {
+    res.json({ status: 'ok', message: 'Email de prueba enviado', toEmail, messageId: result.info?.messageId, accepted: result.info?.accepted, rejected: result.info?.rejected, response: result.info?.response });
+  } else {
+    res.status(500).json({ status: 'error', message: 'No se pudo enviar el correo de prueba', toEmail, error: result.error, code: result.code });
+  }
+});
+
+// Capturar promesas no manejadas para evitar crashes silenciosos en Plesk/Passenger
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('[UNHANDLED REJECTION]', reason);
+});
+process.on('uncaughtException', (err) => {
+  console.error('[UNCAUGHT EXCEPTION]', err);
+});
+
 // Error handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
