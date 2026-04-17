@@ -49,27 +49,34 @@ router.post('/', contactLimiter, [
       'INSERT INTO contacts (nombre, email, empresa, telefono, mensaje) VALUES (?, ?, ?, ?, ?)',
       [nombre, email, empresa || '', telefono || '', mensaje]
     );
+
+    // Resolver email destino ANTES de responder
+    let toEmail = process.env.SMTP_USER;
+    try {
+      const rows = await conn.query("SELECT value FROM contents WHERE content_key = 'contact_email'");
+      if (rows.length > 0 && rows[0].value) toEmail = rows[0].value;
+    } catch (e) {
+      console.error('[CONTACTS] No se pudo leer contact_email de BD:', e.message);
+    }
+    console.log(`[CONTACTS] Lead guardado. Notificando a "${toEmail}". SMTP_USER="${process.env.SMTP_USER}"`);
+
+    // Responder al cliente inmediatamente (no bloqueamos UX por SMTP lento)
     res.status(201).json({ message: 'Mensaje enviado correctamente' });
 
-    // Enviar notificación por email (no bloqueante)
-    let notifConn;
-    try {
-      notifConn = await pool.getConnection();
-      const rows = await notifConn.query("SELECT value FROM contents WHERE content_key = 'contact_email'");
-      const toEmail = (rows.length > 0 && rows[0].value) ? rows[0].value : process.env.SMTP_USER;
-      if (toEmail) {
-        sendContactNotification({ nombre, email, empresa, telefono, mensaje }, toEmail);
-      }
-      // Confirmación al usuario
-      sendContactConfirmation({ nombre, email });
-    } catch (notifErr) {
-      console.error('Error obteniendo email destino:', notifErr.message);
-    } finally {
-      if (notifConn) notifConn.release();
-    }
+    // Disparar emails con manejo de errores asegurado (sin unhandledRejection)
+    Promise.allSettled([
+      sendContactNotification({ nombre, email, empresa, telefono, mensaje }, toEmail),
+      sendContactConfirmation({ nombre, email }),
+    ]).then((results) => {
+      const [notif, conf] = results;
+      console.log(`[CONTACTS] Resultado notificación admin: ${JSON.stringify(notif.value || notif.reason)}`);
+      console.log(`[CONTACTS] Resultado confirmación user: ${JSON.stringify(conf.value || conf.reason)}`);
+    }).catch((e) => {
+      console.error('[CONTACTS] Error inesperado en envío de emails:', e);
+    });
   } catch (err) {
     console.error('POST /api/contacts error:', err.message);
-    res.status(500).json({ error: 'Error del servidor' });
+    if (!res.headersSent) res.status(500).json({ error: 'Error del servidor' });
   } finally {
     if (conn) conn.release();
   }
