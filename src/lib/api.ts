@@ -436,3 +436,41 @@ export const partnersApi = {
   delete: (id: number, token: string) =>
     apiRequest('/api/partners/' + id, { method: 'DELETE', token }),
 };
+
+// Health / Diagnostics
+export interface SmtpHealthCheck {
+  status: 'ok' | 'error';
+  message: string;
+  smtp?: { host: string; port: number; user: string };
+  contactEmail?: string;
+  missing?: string[];
+  error?: string;
+}
+
+export interface SmtpTestResult {
+  status: 'ok' | 'error';
+  message: string;
+  toEmail?: string;
+  messageId?: string;
+  accepted?: string[];
+  rejected?: string[];
+  response?: string;
+  error?: string;
+  code?: string;
+}
+
+async function rawJsonRequest<T>(endpoint: string, token: string, method: string = 'GET'): Promise<T> {
+  const res = await fetch(`${API_BASE_URL}${endpoint}`, {
+    method,
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+    cache: 'no-store',
+  });
+  // Devuelve el JSON aunque el status no sea 2xx (queremos mostrar el diagnóstico)
+  const data = await res.json().catch(() => ({ status: 'error', message: `HTTP ${res.status}` }));
+  return data as T;
+}
+
+export const healthApi = {
+  smtpCheck: (token: string) => rawJsonRequest<SmtpHealthCheck>('/api/health/smtp', token, 'GET'),
+  smtpTest: (token: string) => rawJsonRequest<SmtpTestResult>('/api/health/smtp/test', token, 'POST'),
+};
