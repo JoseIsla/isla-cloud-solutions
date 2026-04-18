@@ -15,6 +15,42 @@ const PanelTraduccion = () => {
   const [diagnosticsLoading, setDiagnosticsLoading] = useState(false);
   const [diagnosticsError, setDiagnosticsError] = useState('');
 
+  // SMTP diagnostics
+  const [smtpCheck, setSmtpCheck] = useState<SmtpHealthCheck | null>(null);
+  const [smtpChecking, setSmtpChecking] = useState(false);
+  const [smtpTestResult, setSmtpTestResult] = useState<SmtpTestResult | null>(null);
+  const [smtpTesting, setSmtpTesting] = useState(false);
+
+  const handleSmtpCheck = useCallback(async () => {
+    if (!token) return;
+    setSmtpChecking(true);
+    try {
+      const res = await healthApi.smtpCheck(token);
+      setSmtpCheck(res);
+      if (res.status === 'ok') toast.success('Conexión SMTP verificada');
+      else toast.error(res.message || 'Error en SMTP');
+    } catch (e: any) {
+      toast.error(e.message || 'Error verificando SMTP');
+    } finally {
+      setSmtpChecking(false);
+    }
+  }, [token]);
+
+  const handleSmtpTest = useCallback(async () => {
+    if (!token) return;
+    setSmtpTesting(true);
+    try {
+      const res = await healthApi.smtpTest(token);
+      setSmtpTestResult(res);
+      if (res.status === 'ok') toast.success(`Email enviado a ${res.toEmail}`);
+      else toast.error(res.message || 'No se pudo enviar el email');
+    } catch (e: any) {
+      toast.error(e.message || 'Error enviando email de prueba');
+    } finally {
+      setSmtpTesting(false);
+    }
+  }, [token]);
+
   const loadDiagnostics = useCallback(async () => {
     if (!token) return;
     setDiagnosticsLoading(true);
