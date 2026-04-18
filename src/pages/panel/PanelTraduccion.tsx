@@ -167,6 +167,136 @@ const PanelTraduccion = () => {
           onRefresh={() => void loadDiagnostics()}
         />
       )}
+
+      {/* SMTP Diagnostics */}
+      <div className="mt-8 mb-4">
+        <h2 className="font-heading font-semibold text-xl text-foreground flex items-center gap-2">
+          <Mail size={20} /> Diagnóstico SMTP
+        </h2>
+        <p className="text-muted-foreground text-sm mt-1">
+          Verifica la conexión con el servidor de correo y envía un email real al destinatario configurado en <code className="text-xs bg-muted px-1.5 py-0.5 rounded">contact_email</code>.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+        <div className="p-5 rounded-2xl bg-card border border-border space-y-3">
+          <h3 className="font-heading font-semibold text-foreground text-sm">Verificar conexión</h3>
+          <p className="text-muted-foreground text-xs">
+            Comprueba host, puerto, credenciales y la conexión TLS al servidor SMTP sin enviar ningún correo.
+          </p>
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={smtpChecking || !token}
+            onClick={handleSmtpCheck}
+            className="gap-2 w-full"
+          >
+            {smtpChecking ? <Loader2 size={16} className="animate-spin" /> : <RefreshCw size={16} />}
+            {smtpChecking ? 'Verificando...' : 'Verificar SMTP'}
+          </Button>
+        </div>
+
+        <div className="p-5 rounded-2xl bg-card border border-border space-y-3">
+          <h3 className="font-heading font-semibold text-foreground text-sm">Enviar email de prueba</h3>
+          <p className="text-muted-foreground text-xs">
+            Envía un correo real al <code className="text-xs bg-muted px-1.5 py-0.5 rounded">contact_email</code> para validar entrega de extremo a extremo.
+          </p>
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={smtpTesting || !token}
+            onClick={handleSmtpTest}
+            className="gap-2 w-full"
+          >
+            {smtpTesting ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
+            {smtpTesting ? 'Enviando...' : 'Enviar email de prueba'}
+          </Button>
+        </div>
+      </div>
+
+      {/* SMTP check result */}
+      {smtpCheck && (
+        <div className={`p-5 rounded-2xl border mb-4 ${smtpCheck.status === 'ok' ? 'bg-primary/5 border-primary/20' : 'bg-destructive/5 border-destructive/30'}`}>
+          <div className="flex items-start gap-3">
+            {smtpCheck.status === 'ok' ? (
+              <CheckCircle2 size={20} className="text-primary shrink-0 mt-0.5" />
+            ) : (
+              <XCircle size={20} className="text-destructive shrink-0 mt-0.5" />
+            )}
+            <div className="flex-1 min-w-0">
+              <p className={`font-medium text-sm ${smtpCheck.status === 'ok' ? 'text-foreground' : 'text-destructive'}`}>
+                {smtpCheck.message}
+              </p>
+              {smtpCheck.smtp && (
+                <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+                  <div><span className="text-muted-foreground">Host: </span><span className="text-foreground font-mono">{smtpCheck.smtp.host}</span></div>
+                  <div><span className="text-muted-foreground">Puerto: </span><span className="text-foreground font-mono">{smtpCheck.smtp.port}</span></div>
+                  <div><span className="text-muted-foreground">Usuario: </span><span className="text-foreground font-mono break-all">{smtpCheck.smtp.user}</span></div>
+                </div>
+              )}
+              {smtpCheck.contactEmail && (
+                <p className="mt-2 text-xs text-muted-foreground">
+                  Destinatario: <span className="text-foreground font-mono">{smtpCheck.contactEmail}</span>
+                </p>
+              )}
+              {smtpCheck.missing && smtpCheck.missing.length > 0 && (
+                <p className="mt-2 text-xs text-destructive">
+                  Variables faltantes: {smtpCheck.missing.join(', ')}
+                </p>
+              )}
+              {smtpCheck.error && (
+                <pre className="mt-2 text-xs bg-muted/40 p-2 rounded overflow-x-auto whitespace-pre-wrap break-words">{smtpCheck.error}</pre>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* SMTP test result */}
+      {smtpTestResult && (
+        <div className={`p-5 rounded-2xl border ${smtpTestResult.status === 'ok' ? 'bg-primary/5 border-primary/20' : 'bg-destructive/5 border-destructive/30'}`}>
+          <div className="flex items-start gap-3">
+            {smtpTestResult.status === 'ok' ? (
+              <CheckCircle2 size={20} className="text-primary shrink-0 mt-0.5" />
+            ) : (
+              <XCircle size={20} className="text-destructive shrink-0 mt-0.5" />
+            )}
+            <div className="flex-1 min-w-0">
+              <p className={`font-medium text-sm ${smtpTestResult.status === 'ok' ? 'text-foreground' : 'text-destructive'}`}>
+                {smtpTestResult.message}
+              </p>
+              {smtpTestResult.toEmail && (
+                <p className="mt-2 text-xs text-muted-foreground">
+                  Enviado a: <span className="text-foreground font-mono">{smtpTestResult.toEmail}</span>
+                </p>
+              )}
+              {smtpTestResult.messageId && (
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Message ID: <span className="text-foreground font-mono break-all">{smtpTestResult.messageId}</span>
+                </p>
+              )}
+              {smtpTestResult.accepted && smtpTestResult.accepted.length > 0 && (
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Aceptados: <span className="text-foreground">{smtpTestResult.accepted.join(', ')}</span>
+                </p>
+              )}
+              {smtpTestResult.rejected && smtpTestResult.rejected.length > 0 && (
+                <p className="mt-1 text-xs text-destructive">
+                  Rechazados: {smtpTestResult.rejected.join(', ')}
+                </p>
+              )}
+              {smtpTestResult.response && (
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Respuesta SMTP: <span className="text-foreground font-mono break-all">{smtpTestResult.response}</span>
+                </p>
+              )}
+              {smtpTestResult.error && (
+                <pre className="mt-2 text-xs bg-muted/40 p-2 rounded overflow-x-auto whitespace-pre-wrap break-words">{smtpTestResult.error}{smtpTestResult.code ? ` (${smtpTestResult.code})` : ''}</pre>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </PanelLayout>
   );
 };
