@@ -436,3 +436,32 @@ export const partnersApi = {
   delete: (id: number, token: string) =>
     apiRequest('/api/partners/' + id, { method: 'DELETE', token }),
 };
+
+// Health / Diagnostics
+export interface SmtpHealthCheck {
+  status: 'ok' | 'error';
+  message: string;
+  smtp?: { host: string; port: number; user: string };
+  contactEmail?: string;
+  missing?: string[];
+  error?: string;
+}
+
+export interface SmtpTestResult {
+  status: 'ok' | 'error';
+  message: string;
+  toEmail?: string;
+  messageId?: string;
+  accepted?: string[];
+  rejected?: string[];
+  response?: string;
+  error?: string;
+  code?: string;
+}
+
+export const healthApi = {
+  smtpCheck: (token: string) =>
+    apiRequest<SmtpHealthCheck>('/api/health/smtp', { token }),
+  smtpTest: (token: string) =>
+    apiRequest<SmtpTestResult>('/api/health/smtp/test', { method: 'POST', token }),
+};
