@@ -175,6 +175,36 @@ app.get('/api/health', async (req, res) => {
   });
 });
 
+// SMTP config inspector — muestra qué variables está leyendo el backend (sin exponer la pass)
+app.get('/api/health/smtp/config', authMiddleware, (req, res) => {
+  const rawPass = process.env.SMTP_PASS || '';
+  const passInfo = rawPass
+    ? {
+        present: true,
+        length: rawPass.length,
+        firstChar: rawPass.charAt(0),
+        lastChar: rawPass.charAt(rawPass.length - 1),
+        hasSpaces: /\s/.test(rawPass),
+        hasQuotes: /["']/.test(rawPass),
+        hasSpecials: /[!?*$`\\]/.test(rawPass),
+      }
+    : { present: false };
+
+  res.json({
+    status: 'ok',
+    env: {
+      SMTP_HOST: process.env.SMTP_HOST || null,
+      SMTP_PORT: process.env.SMTP_PORT || null,
+      SMTP_USER: process.env.SMTP_USER || null,
+      SMTP_FROM_NAME: process.env.SMTP_FROM_NAME || null,
+      SMTP_PASS_info: passInfo,
+    },
+    node: process.version,
+    pid: process.pid,
+    uptime: Math.round(process.uptime()) + 's',
+  });
+});
+
 // SMTP health check
 app.get('/api/health/smtp', authMiddleware, async (req, res) => {
   const nodemailer = require('nodemailer');
