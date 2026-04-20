@@ -459,6 +459,29 @@ export interface SmtpTestResult {
   code?: string;
 }
 
+export interface SmtpConfigInfo {
+  status: 'ok' | 'error';
+  env?: {
+    SMTP_HOST: string | null;
+    SMTP_PORT: string | null;
+    SMTP_USER: string | null;
+    SMTP_FROM_NAME: string | null;
+    SMTP_PASS_info: {
+      present: boolean;
+      length?: number;
+      firstChar?: string;
+      lastChar?: string;
+      hasSpaces?: boolean;
+      hasQuotes?: boolean;
+      hasSpecials?: boolean;
+    };
+  };
+  node?: string;
+  pid?: number;
+  uptime?: string;
+  message?: string;
+}
+
 async function rawJsonRequest<T>(endpoint: string, token: string, method: string = 'GET'): Promise<T> {
   const res = await fetch(`${API_BASE_URL}${endpoint}`, {
     method,
@@ -473,4 +496,5 @@ async function rawJsonRequest<T>(endpoint: string, token: string, method: string
 export const healthApi = {
   smtpCheck: (token: string) => rawJsonRequest<SmtpHealthCheck>('/api/health/smtp', token, 'GET'),
   smtpTest: (token: string) => rawJsonRequest<SmtpTestResult>('/api/health/smtp/test', token, 'POST'),
+  smtpConfig: (token: string) => rawJsonRequest<SmtpConfigInfo>('/api/health/smtp/config', token, 'GET'),
 };
