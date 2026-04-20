@@ -20,6 +20,22 @@ const PanelTraduccion = () => {
   const [smtpChecking, setSmtpChecking] = useState(false);
   const [smtpTestResult, setSmtpTestResult] = useState<SmtpTestResult | null>(null);
   const [smtpTesting, setSmtpTesting] = useState(false);
+  const [smtpConfig, setSmtpConfig] = useState<SmtpConfigInfo | null>(null);
+  const [smtpConfigLoading, setSmtpConfigLoading] = useState(false);
+
+  const handleSmtpConfig = useCallback(async () => {
+    if (!token) return;
+    setSmtpConfigLoading(true);
+    try {
+      const res = await healthApi.smtpConfig(token);
+      setSmtpConfig(res);
+      toast.success('Configuración SMTP cargada');
+    } catch (e: any) {
+      toast.error(e.message || 'Error leyendo config SMTP');
+    } finally {
+      setSmtpConfigLoading(false);
+    }
+  }, [token]);
 
   const handleSmtpCheck = useCallback(async () => {
     if (!token) return;
