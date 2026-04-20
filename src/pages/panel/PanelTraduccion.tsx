@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import PanelLayout from './PanelLayout';
-import { contentsApi, healthApi, type ContentTranslationDiagnostics, type SmtpHealthCheck, type SmtpTestResult } from '@/lib/api';
+import { contentsApi, healthApi, type ContentTranslationDiagnostics, type SmtpHealthCheck, type SmtpTestResult, type SmtpConfigInfo } from '@/lib/api';
 import { Button } from '@/components/ui/button';
-import { Languages, Loader2, Mail, Send, CheckCircle2, XCircle, RefreshCw } from 'lucide-react';
+import { Languages, Loader2, Mail, Send, CheckCircle2, XCircle, RefreshCw, Settings } from 'lucide-react';
 import { toast } from 'sonner';
 import TranslationDiagnosticsCard from '@/components/panel/TranslationDiagnosticsCard';
 
@@ -20,6 +20,22 @@ const PanelTraduccion = () => {
   const [smtpChecking, setSmtpChecking] = useState(false);
   const [smtpTestResult, setSmtpTestResult] = useState<SmtpTestResult | null>(null);
   const [smtpTesting, setSmtpTesting] = useState(false);
+  const [smtpConfig, setSmtpConfig] = useState<SmtpConfigInfo | null>(null);
+  const [smtpConfigLoading, setSmtpConfigLoading] = useState(false);
+
+  const handleSmtpConfig = useCallback(async () => {
+    if (!token) return;
+    setSmtpConfigLoading(true);
+    try {
+      const res = await healthApi.smtpConfig(token);
+      setSmtpConfig(res);
+      toast.success('Configuración SMTP cargada');
+    } catch (e: any) {
+      toast.error(e.message || 'Error leyendo config SMTP');
+    } finally {
+      setSmtpConfigLoading(false);
+    }
+  }, [token]);
 
   const handleSmtpCheck = useCallback(async () => {
     if (!token) return;
@@ -178,7 +194,24 @@ const PanelTraduccion = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+        <div className="p-5 rounded-2xl bg-card border border-border space-y-3">
+          <h3 className="font-heading font-semibold text-foreground text-sm">Ver config cargada</h3>
+          <p className="text-muted-foreground text-xs">
+            Muestra qué <code className="text-xs bg-muted px-1.5 py-0.5 rounded">SMTP_HOST/PORT/USER</code> y longitud de la pass está leyendo el backend.
+          </p>
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={smtpConfigLoading || !token}
+            onClick={handleSmtpConfig}
+            className="gap-2 w-full"
+          >
+            {smtpConfigLoading ? <Loader2 size={16} className="animate-spin" /> : <Settings size={16} />}
+            {smtpConfigLoading ? 'Leyendo...' : 'Ver config SMTP'}
+          </Button>
+        </div>
+
         <div className="p-5 rounded-2xl bg-card border border-border space-y-3">
           <h3 className="font-heading font-semibold text-foreground text-sm">Verificar conexión</h3>
           <p className="text-muted-foreground text-xs">
@@ -213,6 +246,42 @@ const PanelTraduccion = () => {
           </Button>
         </div>
       </div>
+
+      {/* SMTP config result */}
+      {smtpConfig && smtpConfig.env && (
+        <div className="p-5 rounded-2xl bg-muted/30 border border-border mb-4">
+          <h4 className="font-heading font-semibold text-foreground text-sm mb-3 flex items-center gap-2">
+            <Settings size={16} /> Configuración cargada por el backend
+          </h4>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+            <div><span className="text-muted-foreground">SMTP_HOST: </span><span className="text-foreground font-mono">{smtpConfig.env.SMTP_HOST || '(vacío)'}</span></div>
+            <div><span className="text-muted-foreground">SMTP_PORT: </span><span className="text-foreground font-mono">{smtpConfig.env.SMTP_PORT || '(vacío)'}</span></div>
+            <div><span className="text-muted-foreground">SMTP_USER: </span><span className="text-foreground font-mono break-all">{smtpConfig.env.SMTP_USER || '(vacío)'}</span></div>
+            <div><span className="text-muted-foreground">SMTP_FROM_NAME: </span><span className="text-foreground font-mono break-all">{smtpConfig.env.SMTP_FROM_NAME || '(vacío)'}</span></div>
+          </div>
+          <div className="mt-3 pt-3 border-t border-border">
+            <p className="text-xs font-medium text-foreground mb-2">SMTP_PASS:</p>
+            {smtpConfig.env.SMTP_PASS_info.present ? (
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+                <div><span className="text-muted-foreground">Longitud: </span><span className="text-foreground font-mono">{smtpConfig.env.SMTP_PASS_info.length}</span></div>
+                <div><span className="text-muted-foreground">1er carácter: </span><span className="text-foreground font-mono">{smtpConfig.env.SMTP_PASS_info.firstChar}</span></div>
+                <div><span className="text-muted-foreground">Último carácter: </span><span className="text-foreground font-mono">{smtpConfig.env.SMTP_PASS_info.lastChar}</span></div>
+                <div><span className="text-muted-foreground">¿Tiene espacios? </span><span className={smtpConfig.env.SMTP_PASS_info.hasSpaces ? 'text-destructive font-medium' : 'text-foreground'}>{smtpConfig.env.SMTP_PASS_info.hasSpaces ? 'Sí ⚠️' : 'No'}</span></div>
+                <div><span className="text-muted-foreground">¿Tiene comillas? </span><span className={smtpConfig.env.SMTP_PASS_info.hasQuotes ? 'text-destructive font-medium' : 'text-foreground'}>{smtpConfig.env.SMTP_PASS_info.hasQuotes ? 'Sí ⚠️' : 'No'}</span></div>
+                <div><span className="text-muted-foreground">¿Caracteres especiales? </span><span className="text-foreground">{smtpConfig.env.SMTP_PASS_info.hasSpecials ? 'Sí (!?*$`\\)' : 'No'}</span></div>
+              </div>
+            ) : (
+              <p className="text-xs text-destructive">⚠️ SMTP_PASS no está definido en el entorno</p>
+            )}
+            <p className="mt-3 text-xs text-muted-foreground">
+              Tu contraseña real es <code className="bg-muted px-1.5 py-0.5 rounded">?1029HOTAs!*</code> → debería tener <strong>longitud 12</strong>, empezar por <code className="bg-muted px-1 rounded">?</code> y acabar en <code className="bg-muted px-1 rounded">*</code>. Si no coincide, Plesk está truncando o escapando mal el valor.
+            </p>
+          </div>
+          <p className="mt-3 text-xs text-muted-foreground">
+            Node: <span className="font-mono">{smtpConfig.node}</span> · PID: <span className="font-mono">{smtpConfig.pid}</span> · Uptime: <span className="font-mono">{smtpConfig.uptime}</span>
+          </p>
+        </div>
+      )}
 
       {/* SMTP check result */}
       {smtpCheck && (
