@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import PanelLayout from './PanelLayout';
-import { contentsApi, healthApi, type ContentTranslationDiagnostics, type SmtpHealthCheck, type SmtpTestResult } from '@/lib/api';
+import { contentsApi, healthApi, type ContentTranslationDiagnostics, type SmtpHealthCheck, type SmtpTestResult, type SmtpConfigInfo } from '@/lib/api';
 import { Button } from '@/components/ui/button';
-import { Languages, Loader2, Mail, Send, CheckCircle2, XCircle, RefreshCw } from 'lucide-react';
+import { Languages, Loader2, Mail, Send, CheckCircle2, XCircle, RefreshCw, Settings } from 'lucide-react';
 import { toast } from 'sonner';
 import TranslationDiagnosticsCard from '@/components/panel/TranslationDiagnosticsCard';
 
