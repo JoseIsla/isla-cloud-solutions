@@ -84,11 +84,11 @@ const CTASection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2, duration: 0.5 }}
-              className="flex-[1.3] flex flex-col p-8 md:p-10 rounded-3xl backdrop-blur-2xl transition-all duration-700 ease-out hover:-translate-y-2"
+              className="flex-[1.3] flex flex-col p-8 md:p-10 rounded-3xl transition-all duration-700 ease-out hover:-translate-y-2"
               style={{
-                background: 'linear-gradient(to bottom, hsla(220, 30%, 12%, 0.95), hsla(220, 30%, 8%, 0.95))',
-                border: '1px solid hsla(0, 0%, 100%, 0.06)',
-                boxShadow: '0 24px 48px -12px rgba(0,0,0,0.8)',
+                background: 'hsl(var(--hero-bg))',
+                border: '1px solid hsl(var(--hero-foreground) / 0.08)',
+                boxShadow: '0 24px 48px -12px hsl(var(--hero-bg) / 0.8)',
               }}
             >
               <h3 className="text-xl font-heading font-medium text-hero-foreground tracking-tight mb-4">
@@ -119,11 +119,11 @@ const CTASection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.35, duration: 0.5 }}
-              className="flex-1 flex flex-col p-8 md:p-10 rounded-3xl backdrop-blur-2xl transition-all duration-700 ease-out hover:-translate-y-2 sm:mt-16"
+              className="flex-1 flex flex-col p-8 md:p-10 rounded-3xl transition-all duration-700 ease-out hover:-translate-y-2 sm:mt-16"
               style={{
-                background: 'linear-gradient(to bottom, hsla(220, 30%, 12%, 0.95), hsla(220, 30%, 8%, 0.95))',
-                border: '1px solid hsla(0, 0%, 100%, 0.06)',
-                boxShadow: '0 24px 48px -12px rgba(0,0,0,0.8)',
+                background: 'hsl(var(--hero-bg))',
+                border: '1px solid hsl(var(--hero-foreground) / 0.08)',
+                boxShadow: '0 24px 48px -12px hsl(var(--hero-bg) / 0.8)',
               }}
             >
               
