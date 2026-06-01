@@ -13,7 +13,7 @@ const CTASection = () => {
 
   const card1Title = useCMSValue('cta_card1_title', '¿Necesitas ayuda?');
   const card1Desc = useCMSValue('cta_card1_desc', 'Llama a nuestro equipo y te ayudaremos con cualquier consulta técnica.');
-  const card1Label = useCMSValue('cta_card1_label', 'Línea directa');
+  const card1Label = useCMSValue('cta_card1_label', 'Teléfono');
   const card2Title = useCMSValue('cta_card2_title', 'Enfoque proactivo');
   const card2Desc = useCMSValue('cta_card2_desc', 'Precios flexibles y adaptados. Solo pagas por lo que necesitas, cuando lo necesitas.');
   const card2Label = useCMSValue('cta_card2_label', 'Estado');
@@ -22,7 +22,7 @@ const CTASection = () => {
   const ctaCardStyle = {
     background: 'linear-gradient(145deg, hsl(var(--hero-foreground) / 0.08) 0%, hsl(var(--primary) / 0.08) 42%, hsl(var(--hero-bg)) 100%)',
     border: '1px solid hsl(var(--hero-foreground) / 0.1)',
-    boxShadow: 'inset 0 1px 0 hsl(var(--hero-foreground) / 0.12), inset 0 -1px 0 hsl(var(--hero-bg) / 0.9), 0 28px 70px -24px hsl(var(--primary) / 0.45), 0 18px 50px -24px hsl(var(--hero-bg) / 0.95)',
+    boxShadow: 'inset 0 1px 0 hsl(var(--hero-foreground) / 0.12), inset 0 -1px 0 hsl(var(--hero-bg) / 0.9), 0 28px 70px -24px hsl(var(--primary) / 0.32), 0 18px 50px -24px hsl(var(--hero-bg) / 0.95)',
   };
 
   return (
@@ -140,19 +140,13 @@ const CTASection = () => {
                 {card2Desc}
               </p>
               <div className="relative mt-auto pt-6" style={{ borderTop: '1px solid hsl(var(--hero-foreground) / 0.08)' }}>
-                <div className="flex items-baseline justify-between">
+              <div className="flex items-baseline justify-between">
                   <span className="text-xs uppercase tracking-wider font-medium" style={{ color: 'hsla(0, 0%, 100%, 0.3)' }}>
                     {card2Label}
                   </span>
-                  <div className="flex items-center gap-2">
-                    <div
-                      className="w-1.5 h-1.5 rounded-full animate-pulse"
-                      style={{ background: 'hsl(var(--accent))' }}
-                    />
-                    <span className="text-sm font-medium" style={{ color: 'hsla(0, 0%, 100%, 0.85)' }}>
-                      {card2Status}
-                    </span>
-                  </div>
+                  <span className="text-sm font-medium" style={{ color: 'hsla(0, 0%, 100%, 0.85)' }}>
+                    Disponible
+                  </span>
                 </div>
               </div>
             </motion.div>
