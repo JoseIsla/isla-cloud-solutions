@@ -3,6 +3,8 @@ import BlurImage from "@/components/BlurImage";
 import { useEffect, useState, useMemo } from "react";
 import { partnersApi, type PartnerFromAPI } from "@/lib/api";
 import { useCMSValue } from "@/hooks/useCMS";
+import { toLogoThumb } from "@/lib/logoThumb";
+
 
 const PartnersSection = () => {
   const sectionLabel = useCMSValue('partners_section_label', 'Partners');
@@ -52,15 +54,18 @@ const PartnersSection = () => {
 
         {partner.logo_url ? (
           <BlurImage
-            src={partner.logo_url}
+            src={toLogoThumb(partner.logo_url) || partner.logo_url}
             alt={partner.name}
             placeholderColor="transparent"
             noWebp
+            loading="lazy"
+            decoding="async"
             className="w-full h-full object-contain relative z-10 group-hover:scale-105 transition-transform duration-300"
             wrapperClassName="flex items-center justify-center w-[170px] h-[64px] bg-transparent p-2"
             style={{ background: 'transparent', mixBlendMode: 'normal' }}
           />
         ) : (
+
           <span className="text-xl md:text-2xl font-bold tracking-tight relative z-10 transition-colors duration-500"
             style={{ color: 'hsla(0, 0%, 85%, 0.9)' }}
           >

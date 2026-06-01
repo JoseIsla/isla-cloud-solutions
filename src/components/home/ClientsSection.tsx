@@ -4,6 +4,8 @@ import { useEffect, useState, useMemo } from "react";
 import { clientsApi, type ClientFromAPI } from "@/lib/api";
 import { clientLogos } from "@/data/services";
 import { useCMSValue } from "@/hooks/useCMS";
+import { toLogoThumb } from "@/lib/logoThumb";
+
 
 const MarqueeRow = ({
   items,
@@ -52,15 +54,18 @@ const MarqueeRow = ({
 
             {client.logo_url ? (
               <BlurImage
-                src={client.logo_url}
+                src={toLogoThumb(client.logo_url) || client.logo_url}
                 alt={client.name}
                 placeholderColor="transparent"
                 noWebp
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-contain relative z-10 group-hover:scale-105 transition-transform duration-300"
                 wrapperClassName="flex items-center justify-center w-[170px] h-[64px] bg-transparent p-2"
                 style={{ background: 'transparent', mixBlendMode: 'normal' }}
               />
             ) : (
+
               <span className="text-lg md:text-xl font-bold tracking-tight relative z-10 transition-colors duration-300"
                 style={{ color: 'hsla(0, 0%, 100%, 0.7)' }}
               >
