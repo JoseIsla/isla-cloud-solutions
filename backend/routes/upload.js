@@ -22,11 +22,15 @@ const SIZE_PRESETS = {
   noticias:     { width: 1200, height: 675 },
   casos:        { width: 1200, height: 675 },
   fondos:       { width: 1920, height: 1080 },
-  clientes:     { width: 280, height: 80 },
+  clientes:     { width: 400, height: 140 },
+  partners:     { width: 400, height: 140 },
   testimonios:  { width: 200, height: 200 },
-  logos:        { width: 200, height: 60 },
+  logos:        { width: 400, height: 140 },
   general:      { width: 1200, height: 1200 },
 };
+
+// Categories that should be normalized to a fixed canvas with transparent background
+const LOGO_CATEGORIES = new Set(['clientes', 'partners', 'logos']);
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -97,21 +101,39 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
   if (sharp && ext !== '.svg') {
     try {
       const preset = SIZE_PRESETS[category] || SIZE_PRESETS.general;
+      const isLogo = LOGO_CATEGORIES.has(category);
       const isPng = ext === '.png';
 
-      let pipeline = sharp(filePath)
-        .resize(preset.width, preset.height, {
-          fit: 'inside',          // Scale down to fit, never upscale beyond original
-          withoutEnlargement: true,
-        });
+      let pipeline = sharp(filePath);
 
       let newExt;
-      if (isPng) {
-        // Preserve transparency for PNGs (logos, icons)
-        pipeline = pipeline.png({ quality: 85, compressionLevel: 9 });
+      if (isLogo) {
+        // Normalize all logos to the SAME canvas with transparent background.
+        // 'contain' scales to fit while preserving aspect ratio; padding is transparent.
+        pipeline = pipeline
+          .resize(preset.width, preset.height, {
+            fit: 'contain',
+            background: { r: 0, g: 0, b: 0, alpha: 0 },
+            withoutEnlargement: false, // allow small logos to scale up to the canvas
+          })
+          .png({ quality: 90, compressionLevel: 9, palette: false });
+        newExt = '.png';
+      } else if (isPng) {
+        // Preserve transparency for PNGs (icons, etc.)
+        pipeline = pipeline
+          .resize(preset.width, preset.height, {
+            fit: 'inside',
+            withoutEnlargement: true,
+          })
+          .png({ quality: 85, compressionLevel: 9 });
         newExt = '.png';
       } else {
-        pipeline = pipeline.jpeg({ quality: 85, mozjpeg: true });
+        pipeline = pipeline
+          .resize(preset.width, preset.height, {
+            fit: 'inside',
+            withoutEnlargement: true,
+          })
+          .jpeg({ quality: 85, mozjpeg: true });
         newExt = '.jpg';
       }
 
@@ -134,8 +156,9 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
     }
   }
 
-  // Generate WebP variant for content negotiation
-  const webpFilename = await generateWebpVariant(req.file.path);
+  // Generate WebP variant for content negotiation (skip for logos to preserve PNG transparency on frontend)
+  const isLogoFinal = LOGO_CATEGORIES.has(category);
+  const webpFilename = isLogoFinal ? null : await generateWebpVariant(req.file.path);
 
   const url = `/uploads/${req.file.filename}`;
   const fullUrl = `${API_BASE}${url}`;
