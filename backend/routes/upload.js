@@ -156,7 +156,7 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
             background: { r: 0, g: 0, b: 0, alpha: 0 },
             withoutEnlargement: false,
           })
-          .png({ quality: 85, compressionLevel: 9, palette: false })
+          .png(PNG_LOGO_THUMB)
           .toBuffer();
         thumbFilename = baseName + '-thumb.png';
         const thumbPath = path.join(path.dirname(filePath), thumbFilename);
