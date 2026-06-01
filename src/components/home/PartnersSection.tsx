@@ -55,6 +55,7 @@ const PartnersSection = () => {
         {partner.logo_url ? (
           <BlurImage
             src={toLogoThumb(partner.logo_url) || partner.logo_url}
+            fallbackSrc={partner.logo_url}
             alt={partner.name}
             placeholderColor="transparent"
             noWebp
