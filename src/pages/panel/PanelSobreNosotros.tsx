@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Save } from 'lucide-react';
 import { toast } from 'sonner';
 import RichEditor from '@/components/ui/rich-editor';
+import MediaPicker from '@/components/panel/MediaPicker';
 
 type Section = { title: string; description?: string; keys: string[] };
 
