@@ -93,8 +93,9 @@ const CTASection = () => {
               transition={{ delay: 0.2, duration: 0.5 }}
               className="flex-[1.3] flex flex-col p-8 md:p-10 rounded-3xl backdrop-blur-2xl transition-all duration-700 ease-out hover:-translate-y-2"
               style={{
-                background: 'linear-gradient(to bottom, hsla(0, 0%, 100%, 0.04), transparent)',
-                boxShadow: 'inset 0 0 0 1px hsla(0, 0%, 100%, 0.05), 0 24px 48px -12px rgba(0,0,0,0.8)',
+                background: 'hsla(0, 0%, 100%, 0.02)',
+                border: '1px solid hsla(0, 0%, 100%, 0.06)',
+                boxShadow: '0 24px 48px -12px rgba(0,0,0,0.8)',
               }}
             >
               <h3 className="text-xl font-heading font-medium text-hero-foreground tracking-tight mb-4">
@@ -127,8 +128,9 @@ const CTASection = () => {
               transition={{ delay: 0.35, duration: 0.5 }}
               className="flex-1 flex flex-col p-8 md:p-10 rounded-3xl backdrop-blur-2xl transition-all duration-700 ease-out hover:-translate-y-2 sm:mt-16"
               style={{
-                background: 'linear-gradient(to bottom, hsla(0, 0%, 100%, 0.04), transparent)',
-                boxShadow: 'inset 0 0 0 1px hsla(0, 0%, 100%, 0.05), 0 24px 48px -12px rgba(0,0,0,0.8)',
+                background: 'hsla(0, 0%, 100%, 0.02)',
+                border: '1px solid hsla(0, 0%, 100%, 0.06)',
+                boxShadow: '0 24px 48px -12px rgba(0,0,0,0.8)',
               }}
             >
               
