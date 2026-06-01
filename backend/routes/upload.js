@@ -32,6 +32,37 @@ const SIZE_PRESETS = {
 // Categories that should be normalized to a fixed canvas with transparent background
 const LOGO_CATEGORIES = new Set(['clientes', 'partners', 'logos']);
 
+// Optional: remove near-white background from logo uploads (useful for JPGs without alpha).
+// Enable via LOGO_REMOVE_WHITE_BG=true. Tolerance 0-255 (higher = more aggressive).
+const LOGO_REMOVE_WHITE_BG = String(process.env.LOGO_REMOVE_WHITE_BG || 'true').toLowerCase() === 'true';
+const LOGO_WHITE_BG_TOLERANCE = Math.min(255, Math.max(0, parseInt(process.env.LOGO_WHITE_BG_TOLERANCE, 10) || 235));
+
+/**
+ * Take a sharp input and, if enabled, convert near-white pixels to transparent.
+ * Returns a sharp instance with alpha channel ready for PNG output.
+ */
+async function ensureLogoAlpha(inputPath) {
+  const base = sharp(inputPath).ensureAlpha();
+  if (!LOGO_REMOVE_WHITE_BG) return base;
+  try {
+    const { data, info } = await base
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+    const { width, height, channels } = info;
+    const t = LOGO_WHITE_BG_TOLERANCE;
+    for (let i = 0; i < data.length; i += channels) {
+      const r = data[i], g = data[i + 1], b = data[i + 2];
+      if (r >= t && g >= t && b >= t) {
+        data[i + 3] = 0; // transparent
+      }
+    }
+    return sharp(data, { raw: { width, height, channels } });
+  } catch (e) {
+    console.warn('ensureLogoAlpha failed, falling back to original:', e.message);
+    return sharp(inputPath).ensureAlpha();
+  }
+}
+
 // PNG compression settings — configurable via env. All preserve transparency (palette: false)
 // Tuning: higher compressionLevel (0-9) = smaller files but slower; higher effort (1-10) for thumbs
 // uses sharp's adaptive filtering. quality (0-100) governs zlib + adaptive filtering tradeoffs.
