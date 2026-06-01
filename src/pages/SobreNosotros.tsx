@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import type { Variants } from "framer-motion";
 import { Shield, Clock, Sparkles, Users, ArrowRight, Building2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import Layout from "@/components/Layout";
 import ParallaxHero from "@/components/ParallaxHero";
 import usePageMeta, { SITE_URL, SITE_NAME } from "@/hooks/usePageMeta";
