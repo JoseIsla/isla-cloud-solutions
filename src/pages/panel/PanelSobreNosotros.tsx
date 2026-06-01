@@ -112,7 +112,35 @@ const PanelSobreNosotros = () => {
             <Save size={14} /> Guardar
           </Button>
         </div>
-        {c.content_type === 'html' ? (
+        {key === 'about_history_image' ? (
+          <div className="space-y-3">
+            {editValues[key] && (
+              <div className="rounded-xl overflow-hidden border border-border bg-muted/30" style={{ maxHeight: 220 }}>
+                <img src={editValues[key]} alt="Historia" className="w-full h-full object-cover" style={{ maxHeight: 220 }} />
+              </div>
+            )}
+            <div className="flex gap-2">
+              <input
+                value={editValues[key] ?? ''}
+                onChange={(e) => setEditValues({ ...editValues, [key]: e.target.value })}
+                placeholder="URL de la imagen (déjalo vacío para usar el icono por defecto)"
+                className="flex-1 px-4 py-3 rounded-xl bg-card border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm"
+              />
+              <Button variant="outline" size="sm" type="button" onClick={() => setMediaOpen(key)}>
+                Galería
+              </Button>
+              <MediaPicker
+                open={mediaOpen === key}
+                onClose={() => setMediaOpen(null)}
+                onSelect={(url) => {
+                  setEditValues({ ...editValues, [key]: url });
+                  setMediaOpen(null);
+                }}
+              />
+            </div>
+            <p className="text-xs text-muted-foreground">Selecciona una imagen de la galería o pega una URL. Si lo dejas vacío, se mostrará el icono por defecto.</p>
+          </div>
+        ) : c.content_type === 'html' ? (
           <RichEditor
             value={editValues[key] ?? ''}
             onChange={(html) => setEditValues({ ...editValues, [key]: html })}
