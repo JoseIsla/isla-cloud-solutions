@@ -139,16 +139,27 @@ const SobreNosotros = () => {
               className="order-2 lg:order-1"
             >
               <div className="relative rounded-2xl overflow-hidden border border-border aspect-video bg-card flex items-center justify-center">
-                <div
-                  aria-hidden
-                  className="absolute inset-0 opacity-30"
-                  style={{
-                    backgroundImage:
-                      "linear-gradient(hsl(var(--primary) / 0.15) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--primary) / 0.15) 1px, transparent 1px)",
-                    backgroundSize: "24px 24px",
-                  }}
-                />
-                <Building2 className="w-32 h-32 text-primary/40 relative" strokeWidth={1} />
+                {historyImage ? (
+                  <img
+                    src={historyImage}
+                    alt={historyTitle}
+                    loading="lazy"
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                ) : (
+                  <>
+                    <div
+                      aria-hidden
+                      className="absolute inset-0 opacity-30"
+                      style={{
+                        backgroundImage:
+                          "linear-gradient(hsl(var(--primary) / 0.15) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--primary) / 0.15) 1px, transparent 1px)",
+                        backgroundSize: "24px 24px",
+                      }}
+                    />
+                    <Building2 className="w-32 h-32 text-primary/40 relative" strokeWidth={1} />
+                  </>
+                )}
               </div>
             </motion.div>
 
