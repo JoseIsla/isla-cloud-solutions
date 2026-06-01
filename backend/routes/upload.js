@@ -189,11 +189,15 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
     if (conn) conn.release();
   }
 
+  const thumbUrl = req.file.thumbFilename ? `/uploads/${req.file.thumbFilename}` : null;
+
   res.json({
     url,
     filename: req.file.filename,
     webp: webpFilename ? `/uploads/${webpFilename}` : null,
+    thumb: thumbUrl,
   });
+
 });
 
 module.exports = router;
