@@ -13,7 +13,7 @@ const CTASection = () => {
 
   const card1Title = useCMSValue('cta_card1_title', '¿Necesitas ayuda?');
   const card1Desc = useCMSValue('cta_card1_desc', 'Llama a nuestro equipo y te ayudaremos con cualquier consulta técnica.');
-  const card1Label = useCMSValue('cta_card1_label', 'Línea directa');
+  const card1Label = useCMSValue('cta_card1_label', 'Teléfono');
   const card2Title = useCMSValue('cta_card2_title', 'Enfoque proactivo');
   const card2Desc = useCMSValue('cta_card2_desc', 'Precios flexibles y adaptados. Solo pagas por lo que necesitas, cuando lo necesitas.');
   const card2Label = useCMSValue('cta_card2_label', 'Estado');
