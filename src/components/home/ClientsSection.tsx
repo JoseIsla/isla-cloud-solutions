@@ -61,7 +61,7 @@ const MarqueeRow = ({
                 noWebp
                 loading="lazy"
                 decoding="async"
-                className="w-full h-full object-contain relative z-10 group-hover:scale-105 transition-transform duration-300"
+                className="max-h-[56px] md:max-h-[64px] max-w-[160px] md:max-w-[180px] w-auto h-auto object-contain relative z-10 group-hover:scale-105 transition-transform duration-300"
                 wrapperClassName="flex items-center justify-center w-[200px] md:w-[240px] h-[80px] md:h-[96px] bg-transparent p-2"
                 style={{ background: 'transparent', mixBlendMode: 'normal' }}
               />
