@@ -240,8 +240,7 @@ const SobreNosotros = () => {
       </section>
 
       {/* CTA */}
-      <section className="bg-hero grid-pattern py-20 md:py-24 relative overflow-hidden">
-        <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-primary/10 to-accent/10 blur-3xl pointer-events-none" />
+      <section className="bg-hero py-20 md:py-24 relative overflow-hidden">
         <div className="container mx-auto px-4 relative">
           <motion.div
             initial="hidden"
