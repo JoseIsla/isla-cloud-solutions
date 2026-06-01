@@ -10,6 +10,8 @@ interface WordRevealProps {
   as?: keyof JSX.IntrinsicElements;
   /** Optional highlighted word that gets wrapped in a span with text-gradient */
   highlight?: string;
+  /** If true, applies a continuous white→blue gradient across all words */
+  gradient?: boolean;
 }
 
 const containerVariants = {
