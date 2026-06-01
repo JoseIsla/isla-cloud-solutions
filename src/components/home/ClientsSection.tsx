@@ -4,6 +4,8 @@ import { useEffect, useState, useMemo } from "react";
 import { clientsApi, type ClientFromAPI } from "@/lib/api";
 import { clientLogos } from "@/data/services";
 import { useCMSValue } from "@/hooks/useCMS";
+import { toLogoThumb } from "@/lib/logoThumb";
+
 
 const MarqueeRow = ({
   items,
