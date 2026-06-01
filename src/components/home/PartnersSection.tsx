@@ -55,9 +55,10 @@ const PartnersSection = () => {
             src={partner.logo_url}
             alt={partner.name}
             placeholderColor="transparent"
-            className="max-w-[160px] max-h-[56px] w-auto h-auto object-contain relative z-10 group-hover:scale-105 transition-transform duration-300 brightness-125 contrast-110 group-hover:brightness-150"
+            noWebp
+            className="max-w-[160px] max-h-[56px] w-auto h-auto object-contain relative z-10 group-hover:scale-105 transition-transform duration-300"
             wrapperClassName="flex items-center justify-center w-[160px] h-[56px] bg-transparent"
-            style={{ background: 'transparent' }}
+            style={{ background: 'transparent', mixBlendMode: 'normal' }}
           />
         ) : (
           <span className="text-xl md:text-2xl font-bold tracking-tight relative z-10 transition-colors duration-500"
