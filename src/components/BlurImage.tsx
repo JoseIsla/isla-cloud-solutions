@@ -9,6 +9,8 @@ interface BlurImageProps extends Omit<ImgHTMLAttributes<HTMLImageElement>, "onLo
   webpSrc?: string;
   /** Disable automatic WebP source generation */
   noWebp?: boolean;
+  /** Fallback URL used when src fails to load (e.g. missing thumbnail) */
+  fallbackSrc?: string;
 }
 
 /**
@@ -40,12 +42,19 @@ const BlurImage = ({
   placeholderColor,
   webpSrc,
   noWebp = false,
+  fallbackSrc,
   style,
   ...rest
 }: BlurImageProps) => {
   const [loaded, setLoaded] = useState(false);
   const [inView, setInView] = useState(false);
+  const [errored, setErrored] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setErrored(false);
+    setLoaded(false);
+  }, [src]);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -70,12 +79,19 @@ const BlurImage = ({
     return () => observer.disconnect();
   }, []);
 
-  const resolvedSrc = inView ? src : undefined;
-  const resolvedWebp = !noWebp && inView ? (webpSrc || (src ? toWebpUrl(src) : null)) : null;
+  const effectiveSrc = errored && fallbackSrc ? fallbackSrc : src;
+  const resolvedSrc = inView ? effectiveSrc : undefined;
+  const resolvedWebp = !noWebp && inView && !errored ? (webpSrc || (effectiveSrc ? toWebpUrl(effectiveSrc) : null)) : null;
 
   const imgClasses = `transition-all duration-700 ease-out ${
     loaded ? "blur-0 scale-100 opacity-100" : "blur-md scale-105 opacity-0"
   } ${className}`;
+
+  const handleError = () => {
+    if (!errored && fallbackSrc && fallbackSrc !== src) {
+      setErrored(true);
+    }
+  };
 
   return (
     <div
@@ -94,6 +110,7 @@ const BlurImage = ({
             className={imgClasses}
             style={style}
             onLoad={() => setLoaded(true)}
+            onError={handleError}
             {...rest}
           />
         </picture>
@@ -104,6 +121,7 @@ const BlurImage = ({
           className={imgClasses}
           style={style}
           onLoad={() => setLoaded(true)}
+          onError={handleError}
           {...rest}
         />
       )}
