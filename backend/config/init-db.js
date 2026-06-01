@@ -252,6 +252,7 @@ async function initDB() {
       ['blog_page_title', 'Título página Blog', 'Noticias y actualidad IT', 'text'],
       ['blog_page_subtitle', 'Subtítulo página Blog', 'Mantente al día con las últimas noticias del sector tecnológico y novedades de Isla Cloud Solutions.', 'text'],
       ['about_history_title', 'Título sección Historia', 'Nuestra historia', 'text'],
+      ['about_history_image', 'Sobre Nosotros: Imagen de Historia', '', 'text'],
       ['about_values_title', 'Título sección Valores', 'Nuestros valores', 'text'],
       ['about_values_subtitle', 'Subtítulo sección Valores', 'La base sobre la que construimos cada infraestructura', 'text'],
       ['about_hero_badge', 'Sobre Nosotros: Badge Hero', 'Nuestra Identidad', 'text'],
