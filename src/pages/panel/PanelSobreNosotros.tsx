@@ -7,21 +7,54 @@ import { Save } from 'lucide-react';
 import { toast } from 'sonner';
 import RichEditor from '@/components/ui/rich-editor';
 
-const ABOUT_KEYS = [
-  'about_hero_badge',
-  'about_stat1_value', 'about_stat1_label', 'about_stat1_desc',
-  'about_stat2_value', 'about_stat2_label', 'about_stat2_desc',
-  'about_stat3_value', 'about_stat3_label', 'about_stat3_desc',
-  'about_stat4_value', 'about_stat4_label', 'about_stat4_desc',
-  'about_history_title',
-  'about_history',
-  'about_pillar1_title', 'about_pillar1_desc',
-  'about_pillar2_title', 'about_pillar2_desc',
-  'about_values_title',
-  'about_values_subtitle',
-  'about_cta_title',
-  'about_cta_subtitle',
-  'about_cta_button',
+type Section = { title: string; description?: string; keys: string[] };
+
+const SECTIONS: Section[] = [
+  {
+    title: 'Hero',
+    description: 'Título y subtítulo principal de la página.',
+    keys: ['about_title', 'about_subtitle'],
+  },
+  {
+    title: 'Estadísticas',
+    description: 'Las 4 tarjetas de cifras destacadas.',
+    keys: [
+      'about_stat1_value', 'about_stat1_label',
+      'about_stat2_value', 'about_stat2_label',
+      'about_stat3_value', 'about_stat3_label',
+      'about_stat4_value', 'about_stat4_label',
+    ],
+  },
+  {
+    title: 'Historia',
+    description: 'Título y contenido de la sección de historia.',
+    keys: ['about_history_title', 'about_history'],
+  },
+  {
+    title: 'Pilares',
+    description: 'Las 2 tarjetas con los pilares de la empresa.',
+    keys: [
+      'about_pillar1_title', 'about_pillar1_desc',
+      'about_pillar2_title', 'about_pillar2_desc',
+    ],
+  },
+  {
+    title: 'Valores',
+    description: 'Encabezado y las 4 tarjetas de valores corporativos.',
+    keys: [
+      'about_values_title',
+      'about_values_subtitle',
+      'whyus_reason_1_title', 'whyus_reason_1_desc',
+      'whyus_reason_2_title', 'whyus_reason_2_desc',
+      'whyus_reason_3_title', 'whyus_reason_3_desc',
+      'whyus_reason_4_title', 'whyus_reason_4_desc',
+    ],
+  },
+  {
+    title: 'CTA final',
+    description: 'Llamada a la acción al final de la página.',
+    keys: ['about_cta_title', 'about_cta_subtitle', 'about_cta_button'],
+  },
 ];
 
 const PanelSobreNosotros = () => {
@@ -58,14 +91,20 @@ const PanelSobreNosotros = () => {
 
   const renderField = (key: string) => {
     const c = contents[key];
-    if (!c) return null;
+    if (!c) {
+      return (
+        <div key={key} className="p-3 rounded-xl bg-muted/40 border border-dashed border-border text-xs text-muted-foreground">
+          Falta el campo <code className="px-1 py-0.5 rounded bg-background border border-border">{key}</code> en la base de datos. Reinicia el backend para sembrarlo desde <code>init-db</code>.
+        </div>
+      );
+    }
 
     return (
       <div key={key} className="p-4 rounded-xl bg-background border border-border">
-        <div className="flex justify-between items-center mb-2">
-          <div className="flex items-center gap-2">
-            <label className="font-medium text-foreground text-sm">{c.title || c.content_key}</label>
-            <span className="inline-flex items-center gap-1 text-[10px] font-medium text-muted-foreground bg-muted px-1.5 py-0.5 rounded-full">🌐 Auto-EN</span>
+        <div className="flex justify-between items-center mb-2 gap-3">
+          <div className="flex items-center gap-2 min-w-0">
+            <label className="font-medium text-foreground text-sm truncate">{c.title || c.content_key}</label>
+            <span className="inline-flex items-center gap-1 text-[10px] font-medium text-muted-foreground bg-muted px-1.5 py-0.5 rounded-full shrink-0">🌐 Auto-EN</span>
           </div>
           <Button variant="default" size="sm" onClick={() => handleSave(key)}>
             <Save size={14} /> Guardar
@@ -93,7 +132,7 @@ const PanelSobreNosotros = () => {
       <div className="mb-6">
         <h2 className="font-heading font-semibold text-xl text-foreground">Sobre Nosotros</h2>
         <p className="text-muted-foreground text-sm mt-1">
-          Edita los textos de la página Sobre Nosotros: historia, valores y contenido principal.
+          Edita todos los textos de la página Sobre Nosotros agrupados por sección.
         </p>
       </div>
 
@@ -102,8 +141,20 @@ const PanelSobreNosotros = () => {
           Cargando contenidos…
         </div>
       ) : (
-        <div className="space-y-4">
-          {ABOUT_KEYS.map(renderField)}
+        <div className="space-y-6">
+          {SECTIONS.map((section) => (
+            <section key={section.title} className="p-5 rounded-2xl bg-card border border-border">
+              <header className="mb-4">
+                <h3 className="font-heading font-semibold text-foreground">{section.title}</h3>
+                {section.description && (
+                  <p className="text-xs text-muted-foreground mt-1">{section.description}</p>
+                )}
+              </header>
+              <div className="space-y-3">
+                {section.keys.map(renderField)}
+              </div>
+            </section>
+          ))}
         </div>
       )}
     </PanelLayout>
