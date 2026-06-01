@@ -138,6 +138,20 @@ const CTASection = () => {
               <p className="relative text-sm leading-relaxed text-pretty mb-8" style={{ color: 'hsla(0, 0%, 100%, 0.45)' }}>
                 {card2Desc}
               </p>
+              <div className="relative mt-auto pt-6" style={{ borderTop: '1px solid hsl(var(--hero-foreground) / 0.08)' }}>
+                <div className="flex items-baseline justify-between">
+                  <span className="text-xs uppercase tracking-wider font-medium" style={{ color: 'hsla(0, 0%, 100%, 0.3)' }}>
+                    Teléfono
+                  </span>
+                  <a
+                    href={`tel:${phone.replace(/\s/g, '')}`}
+                    className="text-sm font-medium hover:underline"
+                    style={{ color: 'hsla(0, 0%, 100%, 0.85)' }}
+                  >
+                    {phone}
+                  </a>
+                </div>
+              </div>
             </motion.div>
           </div>
 
