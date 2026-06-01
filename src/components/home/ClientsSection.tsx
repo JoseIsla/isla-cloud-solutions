@@ -55,6 +55,7 @@ const MarqueeRow = ({
             {client.logo_url ? (
               <BlurImage
                 src={toLogoThumb(client.logo_url) || client.logo_url}
+                fallbackSrc={client.logo_url}
                 alt={client.name}
                 placeholderColor="transparent"
                 noWebp
