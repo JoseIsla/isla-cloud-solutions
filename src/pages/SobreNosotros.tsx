@@ -55,6 +55,7 @@ const SobreNosotros = () => {
     "<p>Isla Cloud Solutions nació en 2018 conjuntando profesionales del mundo IT con más de 25 años de experiencia.</p>",
   );
   const historyTitle = useCMSValue("about_history_title", "") || t("about.history_title");
+  const historyImage = useCMSValue("about_history_image", "");
   const valuesTitle = useCMSValue("about_values_title", "") || t("about.values_title");
   const valuesSubtitle = useCMSValue("about_values_subtitle", "La base sobre la que construimos cada infraestructura");
 
