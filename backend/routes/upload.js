@@ -104,52 +104,64 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
       const isLogo = LOGO_CATEGORIES.has(category);
       const isPng = ext === '.png';
 
-      let pipeline = sharp(filePath);
-
       let newExt;
+      let thumbFilename = null;
+
       if (isLogo) {
-        // Normalize all logos to the SAME canvas with transparent background.
-        // 'contain' scales to fit while preserving aspect ratio; padding is transparent.
-        pipeline = pipeline
+        // 1) Keep ORIGINAL (lightly optimized, preserve transparency, capped at 1200px wide)
+        const originalBuffer = await sharp(filePath)
+          .resize(1200, 1200, { fit: 'inside', withoutEnlargement: true })
+          .png({ quality: 90, compressionLevel: 9, palette: false })
+          .toBuffer();
+        newExt = '.png';
+        const baseName = path.basename(req.file.filename, path.extname(req.file.filename));
+        const originalFilename = baseName + newExt;
+        const originalPath = path.join(path.dirname(filePath), originalFilename);
+        fs.writeFileSync(originalPath, originalBuffer);
+
+        // 2) Generate normalized THUMBNAIL on fixed transparent canvas (for marquee/listings)
+        const thumbBuffer = await sharp(filePath)
           .resize(preset.width, preset.height, {
             fit: 'contain',
             background: { r: 0, g: 0, b: 0, alpha: 0 },
-            withoutEnlargement: false, // allow small logos to scale up to the canvas
+            withoutEnlargement: false,
           })
-          .png({ quality: 90, compressionLevel: 9, palette: false });
-        newExt = '.png';
-      } else if (isPng) {
-        // Preserve transparency for PNGs (icons, etc.)
-        pipeline = pipeline
-          .resize(preset.width, preset.height, {
-            fit: 'inside',
-            withoutEnlargement: true,
-          })
-          .png({ quality: 85, compressionLevel: 9 });
-        newExt = '.png';
+          .png({ quality: 85, compressionLevel: 9, palette: false })
+          .toBuffer();
+        thumbFilename = baseName + '-thumb.png';
+        const thumbPath = path.join(path.dirname(filePath), thumbFilename);
+        fs.writeFileSync(thumbPath, thumbBuffer);
+
+        // Remove the multer-uploaded source if it has a different name
+        if (filePath !== originalPath && fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
+
+        req.file.filename = originalFilename;
+        req.file.path = originalPath;
+        req.file.thumbFilename = thumbFilename;
       } else {
-        pipeline = pipeline
-          .resize(preset.width, preset.height, {
-            fit: 'inside',
-            withoutEnlargement: true,
-          })
-          .jpeg({ quality: 85, mozjpeg: true });
-        newExt = '.jpg';
+        let pipeline = sharp(filePath);
+        if (isPng) {
+          pipeline = pipeline
+            .resize(preset.width, preset.height, { fit: 'inside', withoutEnlargement: true })
+            .png({ quality: 85, compressionLevel: 9 });
+          newExt = '.png';
+        } else {
+          pipeline = pipeline
+            .resize(preset.width, preset.height, { fit: 'inside', withoutEnlargement: true })
+            .jpeg({ quality: 85, mozjpeg: true });
+          newExt = '.jpg';
+        }
+        const buffer = await pipeline.toBuffer();
+        const newFilename = path.basename(req.file.filename, path.extname(req.file.filename)) + newExt;
+        const newPath = path.join(path.dirname(filePath), newFilename);
+        fs.writeFileSync(newPath, buffer);
+        if (filePath !== newPath) fs.unlinkSync(filePath);
+        req.file.filename = newFilename;
+        req.file.path = newPath;
       }
 
-      const buffer = await pipeline.toBuffer();
-
-      const newFilename = path.basename(req.file.filename, path.extname(req.file.filename)) + newExt;
-      const newPath = path.join(path.dirname(filePath), newFilename);
-      fs.writeFileSync(newPath, buffer);
-
-      // Remove original if different file
-      if (filePath !== newPath) {
-        fs.unlinkSync(filePath);
-      }
-
-      req.file.filename = newFilename;
-      req.file.path = newPath;
     } catch (e) {
       console.error('Error resizing image, keeping original:', e.message);
       // Keep original file on resize failure
