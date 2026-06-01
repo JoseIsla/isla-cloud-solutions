@@ -22,7 +22,7 @@ const CTASection = () => {
   const ctaCardStyle = {
     background: 'linear-gradient(145deg, hsl(var(--hero-foreground) / 0.08) 0%, hsl(var(--primary) / 0.08) 42%, hsl(var(--hero-bg)) 100%)',
     border: '1px solid hsl(var(--hero-foreground) / 0.1)',
-    boxShadow: 'inset 0 1px 0 hsl(var(--hero-foreground) / 0.12), inset 0 -1px 0 hsl(var(--hero-bg) / 0.9), 0 28px 70px -24px hsl(var(--primary) / 0.45), 0 18px 50px -24px hsl(var(--hero-bg) / 0.95)',
+    boxShadow: 'inset 0 1px 0 hsl(var(--hero-foreground) / 0.12), inset 0 -1px 0 hsl(var(--hero-bg) / 0.9), 0 28px 70px -24px hsl(var(--primary) / 0.32), 0 18px 50px -24px hsl(var(--hero-bg) / 0.95)',
   };
 
   return (
