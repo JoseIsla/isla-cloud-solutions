@@ -257,13 +257,12 @@ const SobreNosotros = () => {
               <p className="text-hero-foreground/70 text-base md:text-lg max-w-2xl mx-auto">{ctaSubtitle}</p>
             )}
             <div className="pt-2">
-              <Link
-                to="/contacto"
-                className="group inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-heading font-semibold transition-all shadow-lg shadow-primary/25"
-              >
-                {ctaButton}
-                <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-              </Link>
+              <Button variant="hero" size="xl" asChild className="shadow-[0_0_40px_-10px_hsl(var(--primary)/0.6)]">
+                <Link to="/contacto">
+                  {ctaButton}
+                  <ArrowRight size={20} />
+                </Link>
+              </Button>
             </div>
           </motion.div>
         </div>
