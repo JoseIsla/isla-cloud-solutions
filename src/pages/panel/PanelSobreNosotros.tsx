@@ -29,7 +29,7 @@ const SECTIONS: Section[] = [
   {
     title: 'Historia',
     description: 'Título y contenido de la sección de historia.',
-    keys: ['about_history_title', 'about_history'],
+    keys: ['about_history_title', 'about_history_image', 'about_history'],
   },
   {
     title: 'Pilares',
