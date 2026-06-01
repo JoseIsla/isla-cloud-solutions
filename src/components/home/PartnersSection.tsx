@@ -3,6 +3,8 @@ import BlurImage from "@/components/BlurImage";
 import { useEffect, useState, useMemo } from "react";
 import { partnersApi, type PartnerFromAPI } from "@/lib/api";
 import { useCMSValue } from "@/hooks/useCMS";
+import { toLogoThumb } from "@/lib/logoThumb";
+
 
 const PartnersSection = () => {
   const sectionLabel = useCMSValue('partners_section_label', 'Partners');
