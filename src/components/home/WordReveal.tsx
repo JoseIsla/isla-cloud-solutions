@@ -56,18 +56,35 @@ const WordReveal = ({
   delay = 0,
   as: Tag = "span",
   highlight,
+  gradient = false,
 }: WordRevealProps) => {
   const words = children.split(" ");
+  const total = words.length;
 
   const renderWord = (word: string, i: number): ReactNode => {
     const isHighlighted = highlight && word.includes(highlight);
+
+    // For continuous gradient: each word gets the full gradient sized to span N words,
+    // shifted by its index so the gradient appears unbroken across the whole title.
+    const gradientStyle = gradient
+      ? ({
+          backgroundImage:
+            "linear-gradient(90deg, hsl(0 0% 100%) 0%, hsl(0 0% 100%) 35%, hsl(var(--primary)) 70%, hsl(var(--tech-cyan)) 100%)",
+          backgroundSize: `${total * 100}% 100%`,
+          backgroundPosition: `${(i / Math.max(total - 1, 1)) * 100}% 50%`,
+          WebkitBackgroundClip: "text",
+          backgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          color: "transparent",
+        } as React.CSSProperties)
+      : undefined;
 
     return (
       <motion.span
         key={i}
         variants={wordVariants}
         className="inline-block"
-        style={{ marginRight: "0.25em" }}
+        style={{ marginRight: "0.25em", ...(gradientStyle || {}) }}
       >
         {isHighlighted ? (
           <span className="text-gradient">{word}</span>
