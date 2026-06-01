@@ -32,6 +32,36 @@ const SIZE_PRESETS = {
 // Categories that should be normalized to a fixed canvas with transparent background
 const LOGO_CATEGORIES = new Set(['clientes', 'partners', 'logos']);
 
+// PNG compression settings — configurable via env. All preserve transparency (palette: false)
+// Tuning: higher compressionLevel (0-9) = smaller files but slower; higher effort (1-10) for thumbs
+// uses sharp's adaptive filtering. quality (0-100) governs zlib + adaptive filtering tradeoffs.
+const num = (v, def, min, max) => {
+  const n = parseInt(v, 10);
+  if (Number.isNaN(n)) return def;
+  return Math.min(max, Math.max(min, n));
+};
+const PNG_LOGO_ORIGINAL = {
+  quality: num(process.env.LOGO_PNG_QUALITY, 85, 0, 100),
+  compressionLevel: num(process.env.LOGO_PNG_COMPRESSION_LEVEL, 9, 0, 9),
+  effort: num(process.env.LOGO_PNG_EFFORT, 7, 1, 10),
+  adaptiveFiltering: true,
+  palette: false,
+};
+const PNG_LOGO_THUMB = {
+  quality: num(process.env.LOGO_THUMB_PNG_QUALITY, 80, 0, 100),
+  compressionLevel: num(process.env.LOGO_THUMB_PNG_COMPRESSION_LEVEL, 9, 0, 9),
+  effort: num(process.env.LOGO_THUMB_PNG_EFFORT, 8, 1, 10),
+  adaptiveFiltering: true,
+  palette: false,
+};
+const PNG_GENERIC = {
+  quality: num(process.env.PNG_QUALITY, 82, 0, 100),
+  compressionLevel: num(process.env.PNG_COMPRESSION_LEVEL, 9, 0, 9),
+  effort: num(process.env.PNG_EFFORT, 7, 1, 10),
+  adaptiveFiltering: true,
+};
+
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, process.env.UPLOAD_DIR || './uploads');
