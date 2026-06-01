@@ -62,6 +62,7 @@ const PanelSobreNosotros = () => {
   const { token } = useAuth();
   const [contents, setContents] = useState<Record<string, ContentFromAPI>>({});
   const [editValues, setEditValues] = useState<Record<string, string>>({});
+  const [mediaOpen, setMediaOpen] = useState<string | null>(null);
 
   const loadContents = useCallback(async () => {
     (token ? contentsApi.listFresh(token) : contentsApi.list()).then((data) => {
