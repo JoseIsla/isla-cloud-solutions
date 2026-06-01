@@ -72,7 +72,7 @@ const BlogPage = () => {
       <ParallaxHero>
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-2xl">
           <span className="text-primary text-sm font-semibold uppercase tracking-wider">{t('blog.label')}</span>
-          <h1 className="text-4xl md:text-5xl font-heading font-bold text-title-gradient mt-3 mb-6">
+          <h1 className="text-4xl md:text-5xl font-heading font-bold text-hero-foreground mt-3 mb-6">
             {useCMSValue('blog_page_title', '') || t('blog.title')}
           </h1>
           <p className="text-hero-foreground/70 text-lg">

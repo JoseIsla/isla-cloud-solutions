@@ -96,7 +96,7 @@ const ServiciosPage = () => {
             >
               {t('services_page.label')}
             </motion.span>
-            <h1 className="text-4xl md:text-5xl font-heading font-bold text-title-gradient mt-3 mb-4">
+            <h1 className="text-4xl md:text-5xl font-heading font-bold text-hero-foreground mt-3 mb-4">
               {useCMSValue('services_page_title', '') || t('services_page.title')}
             </h1>
             <p className="text-hero-foreground/70 text-lg">

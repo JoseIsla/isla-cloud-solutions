@@ -69,7 +69,7 @@ const Casos = () => {
       <ParallaxHero>
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-2xl">
           <span className="text-primary text-sm font-semibold uppercase tracking-wider">{t('cases.label')}</span>
-          <h1 className="text-4xl md:text-5xl font-heading font-bold text-title-gradient mt-3 mb-6">{t('cases.title')}</h1>
+          <h1 className="text-4xl md:text-5xl font-heading font-bold text-hero-foreground mt-3 mb-6">{t('cases.title')}</h1>
           <p className="text-hero-foreground/70 text-lg">{t('cases.subtitle')}</p>
         </motion.div>
       </ParallaxHero>
