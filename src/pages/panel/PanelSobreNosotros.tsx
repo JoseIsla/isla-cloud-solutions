@@ -8,9 +8,20 @@ import { toast } from 'sonner';
 import RichEditor from '@/components/ui/rich-editor';
 
 const ABOUT_KEYS = [
+  'about_hero_badge',
+  'about_stat1_value', 'about_stat1_label', 'about_stat1_desc',
+  'about_stat2_value', 'about_stat2_label', 'about_stat2_desc',
+  'about_stat3_value', 'about_stat3_label', 'about_stat3_desc',
+  'about_stat4_value', 'about_stat4_label', 'about_stat4_desc',
   'about_history_title',
   'about_history',
+  'about_pillar1_title', 'about_pillar1_desc',
+  'about_pillar2_title', 'about_pillar2_desc',
   'about_values_title',
+  'about_values_subtitle',
+  'about_cta_title',
+  'about_cta_subtitle',
+  'about_cta_button',
 ];
 
 const PanelSobreNosotros = () => {
