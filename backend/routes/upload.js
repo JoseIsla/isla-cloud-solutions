@@ -141,7 +141,7 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
         // 1) Keep ORIGINAL (lightly optimized, preserve transparency, capped at 1200px wide)
         const originalBuffer = await sharp(filePath)
           .resize(1200, 1200, { fit: 'inside', withoutEnlargement: true })
-          .png({ quality: 90, compressionLevel: 9, palette: false })
+          .png(PNG_LOGO_ORIGINAL)
           .toBuffer();
         newExt = '.png';
         const baseName = path.basename(req.file.filename, path.extname(req.file.filename));
