@@ -32,6 +32,36 @@ const SIZE_PRESETS = {
 // Categories that should be normalized to a fixed canvas with transparent background
 const LOGO_CATEGORIES = new Set(['clientes', 'partners', 'logos']);
 
+// PNG compression settings — configurable via env. All preserve transparency (palette: false)
+// Tuning: higher compressionLevel (0-9) = smaller files but slower; higher effort (1-10) for thumbs
+// uses sharp's adaptive filtering. quality (0-100) governs zlib + adaptive filtering tradeoffs.
+const num = (v, def, min, max) => {
+  const n = parseInt(v, 10);
+  if (Number.isNaN(n)) return def;
+  return Math.min(max, Math.max(min, n));
+};
+const PNG_LOGO_ORIGINAL = {
+  quality: num(process.env.LOGO_PNG_QUALITY, 85, 0, 100),
+  compressionLevel: num(process.env.LOGO_PNG_COMPRESSION_LEVEL, 9, 0, 9),
+  effort: num(process.env.LOGO_PNG_EFFORT, 7, 1, 10),
+  adaptiveFiltering: true,
+  palette: false,
+};
+const PNG_LOGO_THUMB = {
+  quality: num(process.env.LOGO_THUMB_PNG_QUALITY, 80, 0, 100),
+  compressionLevel: num(process.env.LOGO_THUMB_PNG_COMPRESSION_LEVEL, 9, 0, 9),
+  effort: num(process.env.LOGO_THUMB_PNG_EFFORT, 8, 1, 10),
+  adaptiveFiltering: true,
+  palette: false,
+};
+const PNG_GENERIC = {
+  quality: num(process.env.PNG_QUALITY, 82, 0, 100),
+  compressionLevel: num(process.env.PNG_COMPRESSION_LEVEL, 9, 0, 9),
+  effort: num(process.env.PNG_EFFORT, 7, 1, 10),
+  adaptiveFiltering: true,
+};
+
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, process.env.UPLOAD_DIR || './uploads');
@@ -111,7 +141,7 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
         // 1) Keep ORIGINAL (lightly optimized, preserve transparency, capped at 1200px wide)
         const originalBuffer = await sharp(filePath)
           .resize(1200, 1200, { fit: 'inside', withoutEnlargement: true })
-          .png({ quality: 90, compressionLevel: 9, palette: false })
+          .png(PNG_LOGO_ORIGINAL)
           .toBuffer();
         newExt = '.png';
         const baseName = path.basename(req.file.filename, path.extname(req.file.filename));
@@ -126,7 +156,7 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
             background: { r: 0, g: 0, b: 0, alpha: 0 },
             withoutEnlargement: false,
           })
-          .png({ quality: 85, compressionLevel: 9, palette: false })
+          .png(PNG_LOGO_THUMB)
           .toBuffer();
         thumbFilename = baseName + '-thumb.png';
         const thumbPath = path.join(path.dirname(filePath), thumbFilename);
@@ -145,7 +175,7 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
         if (isPng) {
           pipeline = pipeline
             .resize(preset.width, preset.height, { fit: 'inside', withoutEnlargement: true })
-            .png({ quality: 85, compressionLevel: 9 });
+            .png(PNG_GENERIC);
           newExt = '.png';
         } else {
           pipeline = pipeline
