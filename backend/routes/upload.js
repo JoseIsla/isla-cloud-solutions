@@ -175,7 +175,7 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
         if (isPng) {
           pipeline = pipeline
             .resize(preset.width, preset.height, { fit: 'inside', withoutEnlargement: true })
-            .png({ quality: 85, compressionLevel: 9 });
+            .png(PNG_GENERIC);
           newExt = '.png';
         } else {
           pipeline = pipeline
