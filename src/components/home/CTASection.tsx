@@ -13,16 +13,15 @@ const CTASection = () => {
 
   const card1Title = useCMSValue('cta_card1_title', '¿Necesitas ayuda?');
   const card1Desc = useCMSValue('cta_card1_desc', 'Llama a nuestro equipo y te ayudaremos con cualquier consulta técnica.');
-  const card1Label = useCMSValue('cta_card1_label', 'Teléfono');
+  const card1LabelRaw = useCMSValue('cta_card1_label', 'Teléfono');
+  const card1Label = card1LabelRaw.toLowerCase().includes('línea directa') || card1LabelRaw.toLowerCase().includes('linea directa') ? 'Teléfono' : card1LabelRaw;
   const card2Title = useCMSValue('cta_card2_title', 'Enfoque proactivo');
   const card2Desc = useCMSValue('cta_card2_desc', 'Precios flexibles y adaptados. Solo pagas por lo que necesitas, cuando lo necesitas.');
-  const card2Label = useCMSValue('cta_card2_label', 'Estado');
-  const card2Status = useCMSValue('cta_card2_status', 'Activo');
 
   const ctaCardStyle = {
-    background: 'linear-gradient(145deg, hsl(var(--hero-foreground) / 0.08) 0%, hsl(var(--primary) / 0.08) 42%, hsl(var(--hero-bg)) 100%)',
+    background: 'linear-gradient(145deg, hsl(var(--hero-foreground) / 0.08) 0%, hsl(var(--primary) / 0.035) 42%, hsl(var(--hero-bg)) 100%)',
     border: '1px solid hsl(var(--hero-foreground) / 0.1)',
-    boxShadow: 'inset 0 1px 0 hsl(var(--hero-foreground) / 0.12), inset 0 -1px 0 hsl(var(--hero-bg) / 0.9), 0 28px 70px -24px hsl(var(--primary) / 0.32), 0 18px 50px -24px hsl(var(--hero-bg) / 0.95)',
+    boxShadow: 'inset 0 1px 0 hsl(var(--hero-foreground) / 0.12), inset 0 -1px 0 hsl(var(--hero-bg) / 0.9), 0 28px 70px -24px hsl(var(--primary) / 0.08), 0 18px 50px -24px hsl(var(--hero-bg) / 0.95)',
   };
 
   return (
@@ -95,7 +94,7 @@ const CTASection = () => {
             >
               <div
                 className="pointer-events-none absolute inset-0 rounded-3xl"
-                style={{ background: 'radial-gradient(circle at 18% 12%, hsl(var(--accent) / 0.14), transparent 34%), linear-gradient(to bottom, hsl(var(--hero-foreground) / 0.06), transparent 38%)' }}
+                style={{ background: 'radial-gradient(circle at 18% 12%, hsl(var(--accent) / 0.06), transparent 34%), linear-gradient(to bottom, hsl(var(--hero-foreground) / 0.06), transparent 38%)' }}
               />
               <h3 className="relative text-xl font-heading font-medium text-hero-foreground tracking-tight mb-4">
                 {card1Title}
@@ -130,7 +129,7 @@ const CTASection = () => {
             >
               <div
                 className="pointer-events-none absolute inset-0 rounded-3xl"
-                style={{ background: 'radial-gradient(circle at 20% 14%, hsl(var(--primary) / 0.14), transparent 34%), linear-gradient(to bottom, hsl(var(--hero-foreground) / 0.06), transparent 38%)' }}
+                style={{ background: 'radial-gradient(circle at 20% 14%, hsl(var(--primary) / 0.05), transparent 34%), linear-gradient(to bottom, hsl(var(--hero-foreground) / 0.06), transparent 38%)' }}
               />
               
               <h3 className="relative text-xl font-heading font-medium text-hero-foreground tracking-tight mb-4">
@@ -139,16 +138,6 @@ const CTASection = () => {
               <p className="relative text-sm leading-relaxed text-pretty mb-8" style={{ color: 'hsla(0, 0%, 100%, 0.45)' }}>
                 {card2Desc}
               </p>
-              <div className="relative mt-auto pt-6" style={{ borderTop: '1px solid hsl(var(--hero-foreground) / 0.08)' }}>
-              <div className="flex items-baseline justify-between">
-                  <span className="text-xs uppercase tracking-wider font-medium" style={{ color: 'hsla(0, 0%, 100%, 0.3)' }}>
-                    {card2Label}
-                  </span>
-                  <span className="text-sm font-medium" style={{ color: 'hsla(0, 0%, 100%, 0.85)' }}>
-                    Disponible
-                  </span>
-                </div>
-              </div>
             </motion.div>
           </div>
 
