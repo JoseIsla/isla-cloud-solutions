@@ -21,15 +21,8 @@ const CTASection = () => {
 
   return (
     <section className="relative py-12 md:py-16 overflow-hidden bg-hero">
-      {/* Atmospheric spotlight gradients */}
-      <div
-        className="absolute top-0 right-[10%] w-[800px] h-[800px] rounded-full pointer-events-none mix-blend-screen opacity-60"
-        style={{ background: 'radial-gradient(circle at center, hsl(var(--hero) / 0.6), transparent 70%)', filter: 'blur(80px)' }}
-      />
-      <div
-        className="absolute bottom-[20%] left-[-10%] w-[600px] h-[600px] rounded-full pointer-events-none mix-blend-screen opacity-80"
-        style={{ background: 'radial-gradient(circle at center, hsl(var(--hero) / 0.4), transparent 60%)', filter: 'blur(80px)' }}
-      />
+      {/* Atmospheric spotlights removed to avoid visible bands behind cards */}
+
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-8 items-center">
