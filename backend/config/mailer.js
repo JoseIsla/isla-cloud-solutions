@@ -8,28 +8,45 @@ function buildTransporter() {
   const port = parseInt(process.env.SMTP_PORT || '587', 10);
   const user = process.env.SMTP_USER;
   const pass = process.env.SMTP_PASS;
+  const noAuth = String(process.env.SMTP_NO_AUTH || '').toLowerCase() === 'true';
+  const authMethod = process.env.SMTP_AUTH_METHOD || 'LOGIN';
 
-  if (!host || !user || !pass) {
-    console.warn('[MAILER] ⚠️  SMTP no configurado (faltan SMTP_HOST/SMTP_USER/SMTP_PASS). Notificaciones desactivadas.');
+  if (!host) {
+    console.warn('[MAILER] ⚠️  SMTP no configurado (falta SMTP_HOST). Notificaciones desactivadas.');
+    return null;
+  }
+  if (!noAuth && (!user || !pass)) {
+    console.warn('[MAILER] ⚠️  SMTP no configurado (faltan SMTP_USER/SMTP_PASS y SMTP_NO_AUTH no está activo). Notificaciones desactivadas.');
     return null;
   }
 
-  console.log(`[MAILER] Creando transporter SMTP → host=${host} port=${port} user=${user} secure=${port === 465}`);
+  const secure = port === 465;
+  const requireTLS = !secure && port === 587; // STARTTLS obligatorio en 587
+
+  console.log(
+    `[MAILER] Creando transporter SMTP → host=${host} port=${port} secure=${secure} requireTLS=${requireTLS} ` +
+      `auth=${noAuth ? 'OFF (relay sin auth)' : `${authMethod} (${user})`}`
+  );
 
   return nodemailer.createTransport({
     host,
     port,
-    secure: port === 465,
-    auth: { user, pass },
+    secure,
+    requireTLS,
+    auth: noAuth ? undefined : { user, pass },
+    authMethod: noAuth ? undefined : authMethod,
     connectionTimeout: 15000,
     greetingTimeout: 15000,
     socketTimeout: 20000,
     tls: {
       // Acepta certificados auto-firmados típicos de hostings tipo Plesk
       rejectUnauthorized: false,
+      // Asegura SNI correcto cuando el host es una IP o difiere del CN
+      servername: process.env.SMTP_TLS_SERVERNAME || host,
     },
   });
 }
+
 
 async function getTransporter() {
   if (transporter && lastVerifyOk) return transporter;
