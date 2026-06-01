@@ -133,14 +133,6 @@
       hsl(var(--primary)) 70%,
       hsl(var(--tech-cyan)) 100%
     );
-    background-size: 200% 100%;
-    background-position: 0% 50%;
-    animation: title-gradient-shift 14s ease-in-out infinite;
-  }
-
-  @keyframes title-gradient-shift {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
   }
 
   .bg-hero {
