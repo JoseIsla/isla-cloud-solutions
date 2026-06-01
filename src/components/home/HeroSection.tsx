@@ -187,11 +187,12 @@ const HeroSection = () => {
                 </WordReveal>
               </div>
 
-              {/* Title - word reveal with full gradient on slide 1 */}
+              {/* Title - word reveal with continuous gradient on slide 1 */}
               <div className="mb-8">
                 <WordReveal
-                  className={`text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] xl:text-6xl font-heading font-bold leading-[1.1] ${activeSlide === 0 ? 'text-title-gradient' : 'text-white'}`}
+                  className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] xl:text-6xl font-heading font-bold text-white leading-[1.1]"
                   delay={0.1}
+                  gradient={activeSlide === 0}
                   highlight={activeSlide === 0 ? undefined : currentSlideData.titleHighlight}
                 >
                   {currentSlideData.title}
