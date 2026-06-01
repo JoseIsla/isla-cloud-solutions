@@ -86,8 +86,8 @@ const CTASection = () => {
               transition={{ delay: 0.2, duration: 0.5 }}
               className="flex-[1.3] flex flex-col p-8 md:p-10 rounded-3xl transition-all duration-700 ease-out hover:-translate-y-2"
               style={{
-                background: 'hsl(var(--card))',
-                border: '1px solid hsl(var(--border))',
+                background: 'hsl(var(--hero-bg))',
+                border: '1px solid hsl(var(--hero-foreground) / 0.08)',
                 boxShadow: '0 24px 48px -12px hsl(var(--hero-bg) / 0.8)',
               }}
             >
@@ -121,8 +121,8 @@ const CTASection = () => {
               transition={{ delay: 0.35, duration: 0.5 }}
               className="flex-1 flex flex-col p-8 md:p-10 rounded-3xl transition-all duration-700 ease-out hover:-translate-y-2 sm:mt-16"
               style={{
-                background: 'hsl(var(--card))',
-                border: '1px solid hsl(var(--border))',
+                background: 'hsl(var(--hero-bg))',
+                border: '1px solid hsl(var(--hero-foreground) / 0.08)',
                 boxShadow: '0 24px 48px -12px hsl(var(--hero-bg) / 0.8)',
               }}
             >
