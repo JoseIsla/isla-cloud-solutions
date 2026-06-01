@@ -9,6 +9,8 @@ interface BlurImageProps extends Omit<ImgHTMLAttributes<HTMLImageElement>, "onLo
   webpSrc?: string;
   /** Disable automatic WebP source generation */
   noWebp?: boolean;
+  /** Fallback URL used when src fails to load (e.g. missing thumbnail) */
+  fallbackSrc?: string;
 }
 
 /**
