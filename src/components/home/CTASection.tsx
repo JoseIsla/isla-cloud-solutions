@@ -19,6 +19,12 @@ const CTASection = () => {
   const card2Label = useCMSValue('cta_card2_label', 'Estado');
   const card2Status = useCMSValue('cta_card2_status', 'Activo');
 
+  const ctaCardStyle = {
+    background: 'linear-gradient(145deg, hsl(var(--hero-foreground) / 0.08) 0%, hsl(var(--primary) / 0.08) 42%, hsl(var(--hero-bg)) 100%)',
+    border: '1px solid hsl(var(--hero-foreground) / 0.1)',
+    boxShadow: 'inset 0 1px 0 hsl(var(--hero-foreground) / 0.12), inset 0 -1px 0 hsl(var(--hero-bg) / 0.9), 0 28px 70px -24px hsl(var(--primary) / 0.45), 0 18px 50px -24px hsl(var(--hero-bg) / 0.95)',
+  };
+
   return (
     <section className="relative py-12 md:py-16 overflow-hidden bg-hero">
       {/* Atmospheric spotlights removed to avoid visible bands behind cards */}
@@ -84,20 +90,20 @@ const CTASection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2, duration: 0.5 }}
-              className="flex-[1.3] flex flex-col p-8 md:p-10 rounded-3xl transition-all duration-700 ease-out hover:-translate-y-2"
-              style={{
-                background: 'hsl(var(--hero-bg))',
-                border: '1px solid hsl(var(--hero-foreground) / 0.08)',
-                boxShadow: '0 24px 48px -12px hsl(var(--hero-bg) / 0.8)',
-              }}
+              className="relative isolate overflow-hidden flex-[1.3] flex flex-col p-8 md:p-10 rounded-3xl transition-all duration-700 ease-out hover:-translate-y-2"
+              style={ctaCardStyle}
             >
-              <h3 className="text-xl font-heading font-medium text-hero-foreground tracking-tight mb-4">
+              <div
+                className="pointer-events-none absolute inset-0 rounded-3xl"
+                style={{ background: 'radial-gradient(circle at 18% 12%, hsl(var(--accent) / 0.14), transparent 34%), linear-gradient(to bottom, hsl(var(--hero-foreground) / 0.06), transparent 38%)' }}
+              />
+              <h3 className="relative text-xl font-heading font-medium text-hero-foreground tracking-tight mb-4">
                 {card1Title}
               </h3>
-              <p className="text-sm leading-relaxed text-pretty mb-8" style={{ color: 'hsla(0, 0%, 100%, 0.45)' }}>
+              <p className="relative text-sm leading-relaxed text-pretty mb-8" style={{ color: 'hsla(0, 0%, 100%, 0.45)' }}>
                 {card1Desc}
               </p>
-              <div className="mt-auto pt-6" style={{ borderTop: '1px solid hsla(0, 0%, 100%, 0.06)' }}>
+              <div className="relative mt-auto pt-6" style={{ borderTop: '1px solid hsl(var(--hero-foreground) / 0.08)' }}>
                 <div className="flex items-baseline justify-between">
                   <span className="text-xs uppercase tracking-wider font-medium" style={{ color: 'hsla(0, 0%, 100%, 0.3)' }}>
                     {card1Label}
@@ -119,21 +125,21 @@ const CTASection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.35, duration: 0.5 }}
-              className="flex-1 flex flex-col p-8 md:p-10 rounded-3xl transition-all duration-700 ease-out hover:-translate-y-2 sm:mt-16"
-              style={{
-                background: 'hsl(var(--hero-bg))',
-                border: '1px solid hsl(var(--hero-foreground) / 0.08)',
-                boxShadow: '0 24px 48px -12px hsl(var(--hero-bg) / 0.8)',
-              }}
+              className="relative isolate overflow-hidden flex-1 flex flex-col p-8 md:p-10 rounded-3xl transition-all duration-700 ease-out hover:-translate-y-2 sm:mt-16"
+              style={ctaCardStyle}
             >
+              <div
+                className="pointer-events-none absolute inset-0 rounded-3xl"
+                style={{ background: 'radial-gradient(circle at 20% 14%, hsl(var(--primary) / 0.14), transparent 34%), linear-gradient(to bottom, hsl(var(--hero-foreground) / 0.06), transparent 38%)' }}
+              />
               
-              <h3 className="text-xl font-heading font-medium text-hero-foreground tracking-tight mb-4">
+              <h3 className="relative text-xl font-heading font-medium text-hero-foreground tracking-tight mb-4">
                 {card2Title}
               </h3>
-              <p className="text-sm leading-relaxed text-pretty mb-8" style={{ color: 'hsla(0, 0%, 100%, 0.45)' }}>
+              <p className="relative text-sm leading-relaxed text-pretty mb-8" style={{ color: 'hsla(0, 0%, 100%, 0.45)' }}>
                 {card2Desc}
               </p>
-              <div className="mt-auto pt-6" style={{ borderTop: '1px solid hsla(0, 0%, 100%, 0.06)' }}>
+              <div className="relative mt-auto pt-6" style={{ borderTop: '1px solid hsl(var(--hero-foreground) / 0.08)' }}>
                 <div className="flex items-baseline justify-between">
                   <span className="text-xs uppercase tracking-wider font-medium" style={{ color: 'hsla(0, 0%, 100%, 0.3)' }}>
                     {card2Label}
