@@ -169,19 +169,31 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
       let thumbFilename = null;
 
       if (isLogo) {
-        // 1) Keep ORIGINAL (lightly optimized, preserve transparency, capped at 1200px wide)
-        const originalBuffer = await sharp(filePath)
+        // For logos, force PNG output with alpha. If source is JPG (no alpha)
+        // and LOGO_REMOVE_WHITE_BG is enabled, strip near-white background so
+        // it blends with the dark site theme just like a real PNG with transparency.
+        const baseName = path.basename(req.file.filename, path.extname(req.file.filename));
+        newExt = '.png';
+
+        // Decode once with alpha (and optional white-removal) into a raw buffer
+        // that we can reuse for both the original and the thumbnail.
+        const prepared = await ensureLogoAlpha(filePath);
+        const { data: rawData, info: rawInfo } = await prepared
+          .raw()
+          .toBuffer({ resolveWithObject: true });
+        const rawOpts = { raw: { width: rawInfo.width, height: rawInfo.height, channels: rawInfo.channels } };
+
+        // 1) ORIGINAL (capped at 1200px, preserves transparency)
+        const originalBuffer = await sharp(rawData, rawOpts)
           .resize(1200, 1200, { fit: 'inside', withoutEnlargement: true })
           .png(PNG_LOGO_ORIGINAL)
           .toBuffer();
-        newExt = '.png';
-        const baseName = path.basename(req.file.filename, path.extname(req.file.filename));
         const originalFilename = baseName + newExt;
         const originalPath = path.join(path.dirname(filePath), originalFilename);
         fs.writeFileSync(originalPath, originalBuffer);
 
-        // 2) Generate normalized THUMBNAIL on fixed transparent canvas (for marquee/listings)
-        const thumbBuffer = await sharp(filePath)
+        // 2) THUMBNAIL on fixed transparent canvas (for marquee/listings)
+        const thumbBuffer = await sharp(rawData, rawOpts)
           .resize(preset.width, preset.height, {
             fit: 'contain',
             background: { r: 0, g: 0, b: 0, alpha: 0 },
