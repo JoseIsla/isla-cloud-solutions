@@ -56,8 +56,8 @@ const MarqueeRow = ({
                 alt={client.name}
                 placeholderColor="transparent"
                 noWebp
-                className="max-w-[160px] max-h-[56px] w-auto h-auto object-contain relative z-10 group-hover:scale-105 transition-transform duration-300"
-                wrapperClassName="flex items-center justify-center w-[160px] h-[56px] bg-transparent"
+                className="w-full h-full object-contain relative z-10 group-hover:scale-105 transition-transform duration-300"
+                wrapperClassName="flex items-center justify-center w-[170px] h-[64px] bg-transparent p-2"
                 style={{ background: 'transparent', mixBlendMode: 'normal' }}
               />
             ) : (
