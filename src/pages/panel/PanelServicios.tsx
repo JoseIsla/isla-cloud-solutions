@@ -269,7 +269,27 @@ const PanelServicios = () => {
                 </div>
                 <div>
                   <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Características (una por línea)</label>
-                  <textarea value={(editing.features || []).join('\n')} onChange={(e) => setEditing({ ...editing, features: e.target.value.split('\n') })} rows={3} className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm resize-none" />
+                  <textarea
+                    value={(editing.features || []).join('\n')}
+                    onChange={(e) => setEditing({ ...editing, features: e.target.value.split('\n') })}
+                    onPaste={(e) => {
+                      e.preventDefault();
+                      const pasted = e.clipboardData.getData('text');
+                      const current = editing.features || [];
+                      const target = e.target as HTMLTextAreaElement;
+                      const cursorPos = target.selectionStart || 0;
+                      const beforeCursor = target.value.slice(0, cursorPos);
+                      const afterCursor = target.value.slice(target.selectionEnd || cursorPos);
+                      const merged = (beforeCursor + pasted + afterCursor).split(/\r?\n|\r/);
+                      setEditing({ ...editing, features: merged });
+                      requestAnimationFrame(() => {
+                        const newCursor = cursorPos + pasted.length;
+                        target.setSelectionRange(newCursor, newCursor);
+                      });
+                    }}
+                    rows={3}
+                    className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm resize-none"
+                  />
                 </div>
                 <div className="flex gap-3 pt-2">
                   <Button onClick={handleSave}>Guardar</Button>
