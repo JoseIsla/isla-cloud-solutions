@@ -18,11 +18,16 @@ const PartnersSection = () => {
     partnersApi.list().then(setPartners).catch(() => setPartners([]));
   }, []);
 
-  // Duplicate partners for seamless loop
-  const marqueePartners = useMemo(() => [...partners, ...partners], [partners]);
+  // Repeat enough times to always fill viewport (avoid visible gaps with few partners)
+  const marqueePartners = useMemo(() => {
+    if (partners.length === 0) return [];
+    // Each card ~280px + gap ≈ 304px. Ensure total width >> 2x viewport for seamless loop.
+    const minCopies = Math.max(2, Math.ceil(8000 / (partners.length * 304)));
+    return Array.from({ length: minCopies }, () => partners).flat();
+  }, [partners]);
 
-  // Calculate animation duration based on partner count
-  const duration = partners.length * 5;
+  // Keep marquee speed roughly constant regardless of copy count
+  const duration = Math.max(20, marqueePartners.length * 4);
 
   if (partners.length === 0) return null;
 
