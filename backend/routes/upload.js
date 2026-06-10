@@ -34,7 +34,8 @@ const LOGO_CATEGORIES = new Set(['clientes', 'partners', 'logos']);
 
 // Optional: remove near-white background from logo uploads (useful for JPGs without alpha).
 // Enable via LOGO_REMOVE_WHITE_BG=true. Tolerance 0-255 (higher = more aggressive).
-const LOGO_REMOVE_WHITE_BG = String(process.env.LOGO_REMOVE_WHITE_BG || 'true').toLowerCase() === 'true';
+// Default OFF: respect PNG transparency as uploaded. Enable explicitly only for JPG logos with white background.
+const LOGO_REMOVE_WHITE_BG = String(process.env.LOGO_REMOVE_WHITE_BG || 'false').toLowerCase() === 'true';
 const LOGO_WHITE_BG_TOLERANCE = Math.min(255, Math.max(0, parseInt(process.env.LOGO_WHITE_BG_TOLERANCE, 10) || 235));
 
 /**
